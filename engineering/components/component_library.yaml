@@ -1,0 +1,485 @@
+# Slate pocket v1 component property library.
+# Values are placeholder screening ranges, not vendor-certified part data.
+# Profiles use conservative = heavier/larger/higher-power packaging burden,
+# nominal = midpoint planning case, and aggressive = optimistic integration case.
+metadata:
+  device: slate_pocket_v1
+  status: first_pass_placeholder_component_library
+  units:
+    mass_g: grams
+    volume_cm3: cubic centimeters
+    thickness_mm: millimeters
+    pcb_area_mm2: square millimeters
+    idle_power_w: watts
+    active_power_w: watts
+  profile_meaning:
+    conservative: higher burden / lower integration confidence
+    nominal: midpoint screening assumption
+    aggressive: optimistic but not vendor-certified assumption
+  disclaimer: >-
+    This library is for first-pass feasibility screening only. It does not
+    represent vendor quotations, certified component specifications, CAD-derived
+    volumes, measured power, or proof that the device is feasible.
+components:
+  display_module:
+    function: OLED display stack including panel, driver flex, and local stiffeners.
+    mass_g: {conservative: 65, nominal: 50, aggressive: 35}
+    volume_cm3: {conservative: 18, nominal: 12, aggressive: 8}
+    thickness_mm: {conservative: 1.8, nominal: 1.2, aggressive: 0.8}
+    pcb_area_mm2: {conservative: 0, nominal: 0, aggressive: 0}
+    idle_power_w: {conservative: 0.2, nominal: 0.08, aggressive: 0.03}
+    active_power_w: {conservative: 5.0, nominal: 2.5, aggressive: 0.8}
+    thermal_relevance: broad surface heat source
+    electrical_relevance: high-speed display interface and backplane power rails
+    mechanical_relevance: fragile large-area stack defining front z-height
+    rf_relevance: low direct RF relevance, but conductive layers can affect antennas
+    placement_constraints:
+      - must occupy the front face and align with the cover-glass opening
+      - driver flex needs routing space to the main PCB
+      - stack height competes directly with battery and thermal layers
+    unknowns:
+      - exact panel supplier stackup
+      - display driver location and flex geometry
+      - luminance-dependent power curve
+    feasibility_notes: Placeholder phone-class display module range; replace with vendor panel stack and measured power.
+  cover_glass:
+    function: Front impact, scratch, and optical cover layer.
+    mass_g: {conservative: 38, nominal: 28, aggressive: 20}
+    volume_cm3: {conservative: 9, nominal: 6.5, aggressive: 4.5}
+    thickness_mm: {conservative: 0.9, nominal: 0.65, aggressive: 0.45}
+    pcb_area_mm2: {conservative: 0, nominal: 0, aggressive: 0}
+    idle_power_w: {conservative: 0, nominal: 0, aggressive: 0}
+    active_power_w: {conservative: 0, nominal: 0, aggressive: 0}
+    thermal_relevance: passive front thermal resistance path
+    electrical_relevance: none except dielectric effects near sensors
+    mechanical_relevance: large brittle structural layer and impact surface
+    rf_relevance: generally RF-transparent relative to metal, with coatings still unknown
+    placement_constraints:
+      - must be bonded above display and touch stack
+      - edge bonding and drop protection need keep-out allowance
+      - coatings and black masks must not block sensors
+    unknowns:
+      - glass chemistry and strengthening process
+      - edge radius and exposed-area geometry
+      - optical coating stack
+    feasibility_notes: Placeholder cover glass range; not a drop-test or supplier-certified stack.
+  touch_digitizer:
+    function: Capacitive touch sensor layer, controller interface, and flex routing.
+    mass_g: {conservative: 8, nominal: 5, aggressive: 3}
+    volume_cm3: {conservative: 2.5, nominal: 1.5, aggressive: 0.8}
+    thickness_mm: {conservative: 0.35, nominal: 0.2, aggressive: 0.1}
+    pcb_area_mm2: {conservative: 120, nominal: 80, aggressive: 40}
+    idle_power_w: {conservative: 0.08, nominal: 0.04, aggressive: 0.02}
+    active_power_w: {conservative: 0.25, nominal: 0.12, aggressive: 0.06}
+    thermal_relevance: negligible heat source
+    electrical_relevance: noise-sensitive capacitive sensing and controller routing
+    mechanical_relevance: thin film layer sensitive to bending and lamination defects
+    rf_relevance: conductive grid can detune nearby antennas if routed poorly
+    placement_constraints:
+      - must laminate with display and cover glass
+      - controller should be near display flex and ESD protection
+      - avoid noisy power routing near sensor traces
+    unknowns:
+      - in-cell versus separate digitizer approach
+      - touch controller package location
+      - ESD structure area
+    feasibility_notes: Placeholder range covers separate or partially integrated touch implementations.
+  main_pcb:
+    function: Primary rigid or rigid-flex board carrying compute, power, storage, radios, connectors, and routing.
+    mass_g: {conservative: 32, nominal: 24, aggressive: 16}
+    volume_cm3: {conservative: 7, nominal: 4.8, aggressive: 3}
+    thickness_mm: {conservative: 1.4, nominal: 1.0, aggressive: 0.8}
+    pcb_area_mm2: {conservative: 1800, nominal: 1400, aggressive: 1000}
+    idle_power_w: {conservative: 0.25, nominal: 0.12, aggressive: 0.06}
+    active_power_w: {conservative: 0.8, nominal: 0.4, aggressive: 0.2}
+    thermal_relevance: distributed board heat and thermal bottleneck around dense packages
+    electrical_relevance: critical power distribution, signal integrity, and return paths
+    mechanical_relevance: rigid region that cannot overlap battery swelling or camera depth
+    rf_relevance: ground planes and shields strongly affect antenna performance
+    placement_constraints:
+      - must reserve dense routing near SoC, memory, storage, PMIC, and radios
+      - rigid regions must avoid battery swelling zones
+      - connector locations constrain board outline
+    unknowns:
+      - board layer count and rigid-flex split
+      - final component placement density
+      - shielding can sizes and keep-outs
+    feasibility_notes: Placeholder main-board burden; actual area and layer count require ECAD placement.
+  soc_package:
+    function: Main application processor, accelerator, NPU/GPU blocks, and package substrate.
+    mass_g: {conservative: 8, nominal: 5, aggressive: 3}
+    volume_cm3: {conservative: 1.2, nominal: 0.7, aggressive: 0.3}
+    thickness_mm: {conservative: 1.5, nominal: 1.1, aggressive: 0.8}
+    pcb_area_mm2: {conservative: 400, nominal: 260, aggressive: 150}
+    idle_power_w: {conservative: 1.0, nominal: 0.5, aggressive: 0.2}
+    active_power_w: {conservative: 18.0, nominal: 10.0, aggressive: 5.0}
+    thermal_relevance: hotspot
+    electrical_relevance: highest-current compute load and highest-speed routing hub
+    mechanical_relevance: rigid package needing controlled coplanarity and heat interface
+    rf_relevance: high-speed clocks and harmonics can interfere with radios
+    placement_constraints:
+      - must connect to memory with short high-bandwidth routing
+      - should sit near vapor chamber or heat spreader
+      - needs local power delivery and decoupling keep-outs
+    unknowns:
+      - actual SoC or NPU package dimensions
+      - sustained power at target workloads
+      - memory interface width and routing topology
+    feasibility_notes: Placeholder range follows first-pass guidance; no vendor package is implied.
+  memory_packages:
+    function: DRAM or stacked memory packages supporting local AI workloads.
+    mass_g: {conservative: 40, nominal: 20, aggressive: 8}
+    volume_cm3: {conservative: 12, nominal: 6, aggressive: 2}
+    thickness_mm: {conservative: 2.5, nominal: 1.5, aggressive: 0.8}
+    pcb_area_mm2: {conservative: 2500, nominal: 1200, aggressive: 400}
+    idle_power_w: {conservative: 5.0, nominal: 2.5, aggressive: 1.0}
+    active_power_w: {conservative: 14.0, nominal: 8.0, aggressive: 4.0}
+    thermal_relevance: distributed hotspot
+    electrical_relevance: high-bandwidth memory power and dense signal routing
+    mechanical_relevance: multiple rigid packages near compute and thermal interfaces
+    rf_relevance: high-speed bus emissions require shielding and layout care
+    placement_constraints:
+      - must be close to SoC
+      - routing density is high
+      - package count depends on achievable die/package density
+    unknowns:
+      - memory technology and package count
+      - achievable capacity in phone-class footprint
+      - workload-dependent bandwidth power
+    feasibility_notes: Placeholder range; memory capacity ambitions are a major unresolved blocker.
+  storage_package:
+    function: Nonvolatile storage package and controller interface.
+    mass_g: {conservative: 5, nominal: 3, aggressive: 1.5}
+    volume_cm3: {conservative: 1.2, nominal: 0.7, aggressive: 0.3}
+    thickness_mm: {conservative: 1.2, nominal: 0.9, aggressive: 0.6}
+    pcb_area_mm2: {conservative: 250, nominal: 160, aggressive: 90}
+    idle_power_w: {conservative: 0.08, nominal: 0.03, aggressive: 0.01}
+    active_power_w: {conservative: 1.5, nominal: 0.8, aggressive: 0.3}
+    thermal_relevance: intermittent local hotspot under sustained writes
+    electrical_relevance: high-speed storage interface and power integrity load
+    mechanical_relevance: small rigid package in dense PCB region
+    rf_relevance: limited direct RF relevance if shielded and routed well
+    placement_constraints:
+      - should remain near SoC storage interface
+      - avoid placement under camera z-height conflicts
+      - may need thermal path for sustained writes
+    unknowns:
+      - storage capacity and package size
+      - sustained write workload
+      - controller integration level
+    feasibility_notes: Placeholder storage range; replace with chosen UFS/eMMC/NVMe package data.
+  battery_pack:
+    function: Rechargeable lithium-based cell stack, pouch, protection allowance, and tabs.
+    mass_g: {conservative: 128, nominal: 96, aggressive: 77}
+    volume_cm3: {conservative: 47, nominal: 38, aggressive: 31}
+    thickness_mm: {conservative: 5.5, nominal: 4.5, aggressive: 3.5}
+    pcb_area_mm2: {conservative: 0, nominal: 0, aggressive: 0}
+    idle_power_w: {conservative: 0, nominal: 0, aggressive: 0}
+    active_power_w: {conservative: 0, nominal: 0, aggressive: 0}
+    thermal_relevance: thermal mass and temperature-limited energy source
+    electrical_relevance: primary energy source, charge/discharge limits, safety circuitry
+    mechanical_relevance: dominant internal volume with swelling and puncture constraints
+    rf_relevance: conductive tabs and shielding can affect nearby antennas
+    placement_constraints:
+      - dominates internal volume
+      - cannot overlap rigid package regions
+      - swelling allowance required
+    unknowns:
+      - final cell chemistry and safety stack
+      - pouch versus prismatic packaging
+      - usable energy after protection and cycle-life limits
+    feasibility_notes: Placeholder pack-level range; not a certified cell selection.
+  vapor_chamber:
+    function: Thin two-phase heat transport module from compute hotspots to larger surfaces.
+    mass_g: {conservative: 35, nominal: 22, aggressive: 12}
+    volume_cm3: {conservative: 8, nominal: 4.5, aggressive: 2}
+    thickness_mm: {conservative: 1.2, nominal: 0.8, aggressive: 0.4}
+    pcb_area_mm2: {conservative: 0, nominal: 0, aggressive: 0}
+    idle_power_w: {conservative: 0, nominal: 0, aggressive: 0}
+    active_power_w: {conservative: 0, nominal: 0, aggressive: 0}
+    thermal_relevance: heat transport
+    electrical_relevance: passive electrically conductive object requiring grounding strategy
+    mechanical_relevance: large thin part vulnerable to crush, bends, and z-stack conflicts
+    rf_relevance: conductive plane can shadow antennas and wireless charging
+    placement_constraints:
+      - should contact SoC thermal interface region
+      - must fit between board, battery, rear cover, and display stack without crush
+      - keep clear of antenna RF windows where possible
+    unknowns:
+      - vapor chamber supplier limits at target thickness
+      - wick structure and allowable bending
+      - interface material thickness and compression
+    feasibility_notes: Placeholder thermal transport range; does not prove sustained compute cooling.
+  graphite_spreader:
+    function: In-plane heat spreading film or sheet to distribute local thermal loads.
+    mass_g: {conservative: 8, nominal: 5, aggressive: 2}
+    volume_cm3: {conservative: 1.5, nominal: 0.8, aggressive: 0.3}
+    thickness_mm: {conservative: 0.25, nominal: 0.12, aggressive: 0.05}
+    pcb_area_mm2: {conservative: 0, nominal: 0, aggressive: 0}
+    idle_power_w: {conservative: 0, nominal: 0, aggressive: 0}
+    active_power_w: {conservative: 0, nominal: 0, aggressive: 0}
+    thermal_relevance: heat spreading
+    electrical_relevance: conductive sheet may require insulation and grounding decisions
+    mechanical_relevance: thin fragile film sensitive to tears and adhesive stackup
+    rf_relevance: conductive sheet may reduce RF transparency if continuous
+    placement_constraints:
+      - should bridge compute heat source to allowable surface area
+      - needs dielectric isolation from exposed electrical nodes
+      - must not cover RF keep-out zones without validation
+    unknowns:
+      - actual graphite grade and anisotropic conductivity
+      - adhesive thickness
+      - allowed cutouts near antennas
+    feasibility_notes: Placeholder spreader range; actual thermal value depends on interfaces and area.
+  phase_change_material:
+    function: Temporary thermal buffering material near transient hotspots.
+    mass_g: {conservative: 10, nominal: 5, aggressive: 2}
+    volume_cm3: {conservative: 6, nominal: 3, aggressive: 1}
+    thickness_mm: {conservative: 1.0, nominal: 0.5, aggressive: 0.2}
+    pcb_area_mm2: {conservative: 0, nominal: 0, aggressive: 0}
+    idle_power_w: {conservative: 0, nominal: 0, aggressive: 0}
+    active_power_w: {conservative: 0, nominal: 0, aggressive: 0}
+    thermal_relevance: transient heat buffer
+    electrical_relevance: passive material requiring compatibility with nearby electronics
+    mechanical_relevance: containment, pump-out, and expansion risks
+    rf_relevance: generally low unless package includes metallic containment
+    placement_constraints:
+      - must be near transient compute heat sources to matter
+      - needs containment and compatibility with adhesives
+      - consumes z-height that may be unavailable in an 8.8 mm stack
+    unknowns:
+      - phase-change temperature
+      - latent heat capacity in thin form
+      - long-term reliability under cycling
+    feasibility_notes: Placeholder option; use only as a transient buffer, not sustained cooling proof.
+  rear_camera_module:
+    function: Rear image sensor, lens stack, actuator if used, and local shield or bracket.
+    mass_g: {conservative: 18, nominal: 12, aggressive: 7}
+    volume_cm3: {conservative: 8, nominal: 5, aggressive: 2.5}
+    thickness_mm: {conservative: 6.5, nominal: 4.5, aggressive: 3.0}
+    pcb_area_mm2: {conservative: 220, nominal: 140, aggressive: 90}
+    idle_power_w: {conservative: 0.08, nominal: 0.03, aggressive: 0.01}
+    active_power_w: {conservative: 2.5, nominal: 1.2, aggressive: 0.5}
+    thermal_relevance: local active imaging heat and image-processing load contributor
+    electrical_relevance: high-speed camera interface and actuator power if present
+    mechanical_relevance: tall rigid module often defining camera bump and internal keep-out
+    rf_relevance: shield cans and metal brackets can affect nearby antennas
+    placement_constraints:
+      - usually requires rear-surface optical path and local z-height pocket
+      - cannot overlap battery swelling allowance or dense SoC region without a stack study
+      - needs clean routing to image processor or SoC
+    unknowns:
+      - sensor size and optics target
+      - autofocus or stabilization choice
+      - camera bump allowance
+    feasibility_notes: Placeholder camera range; optical targets can dominate z-height before electronics do.
+  front_camera_module:
+    function: Front image sensor and optics for user-facing capture.
+    mass_g: {conservative: 6, nominal: 4, aggressive: 2}
+    volume_cm3: {conservative: 2, nominal: 1.2, aggressive: 0.5}
+    thickness_mm: {conservative: 3.5, nominal: 2.5, aggressive: 1.6}
+    pcb_area_mm2: {conservative: 120, nominal: 70, aggressive: 40}
+    idle_power_w: {conservative: 0.04, nominal: 0.015, aggressive: 0.005}
+    active_power_w: {conservative: 1.0, nominal: 0.5, aggressive: 0.2}
+    thermal_relevance: small intermittent imaging heat source
+    electrical_relevance: camera interface and ESD-sensitive flex routing
+    mechanical_relevance: optical path through display or bezel with local z-height demand
+    rf_relevance: low direct RF relevance unless shielded near antennas
+    placement_constraints:
+      - must align with front optical aperture or under-display region
+      - display cutout or under-display approach affects panel choice
+      - avoid routing conflict with display flex and sensors
+    unknowns:
+      - aperture strategy
+      - image quality target
+      - under-display feasibility
+    feasibility_notes: Placeholder front camera range; actual optics and display integration drive feasibility.
+  antenna_modules:
+    function: Cellular, Wi-Fi, Bluetooth, GNSS, and diversity antenna structures and feeds.
+    mass_g: {conservative: 12, nominal: 7, aggressive: 3}
+    volume_cm3: {conservative: 5, nominal: 2.5, aggressive: 1}
+    thickness_mm: {conservative: 1.5, nominal: 0.8, aggressive: 0.3}
+    pcb_area_mm2: {conservative: 500, nominal: 280, aggressive: 120}
+    idle_power_w: {conservative: 0.15, nominal: 0.06, aggressive: 0.02}
+    active_power_w: {conservative: 3.0, nominal: 1.2, aggressive: 0.4}
+    thermal_relevance: RF heat
+    electrical_relevance: RF front-end, impedance matching, and coexistence constraints
+    mechanical_relevance: distributed parts needing edge, window, and keep-out volume
+    rf_relevance: primary RF radiating and receiving structures
+    placement_constraints:
+      - require RF windows or keep-out zones
+      - conflict with continuous metal frames
+      - need separation from large conductive thermal and charging structures
+    unknowns:
+      - radio bands and MIMO count
+      - chassis material and window strategy
+      - certified RF performance after integration
+    feasibility_notes: Placeholder RF range; regulatory and carrier validation are not represented.
+  wireless_charging_coil:
+    function: Rear inductive charging coil, ferrite, shield, and receive losses.
+    mass_g: {conservative: 15, nominal: 9, aggressive: 5}
+    volume_cm3: {conservative: 4, nominal: 2.5, aggressive: 1}
+    thickness_mm: {conservative: 0.8, nominal: 0.5, aggressive: 0.3}
+    pcb_area_mm2: {conservative: 150, nominal: 90, aggressive: 50}
+    idle_power_w: {conservative: 0.02, nominal: 0.005, aggressive: 0}
+    active_power_w: {conservative: 5.0, nominal: 2.5, aggressive: 1.0}
+    thermal_relevance: charging heat
+    electrical_relevance: charging power path, coil tuning, and foreign-object detection
+    mechanical_relevance: broad rear-surface layer competing with thermal and battery stack
+    rf_relevance: large coil and ferrite can affect antennas and NFC-like fields
+    placement_constraints:
+      - must sit near rear surface
+      - conflicts with metal backs and thermal layers
+      - needs alignment target and shielding from battery and PCB
+    unknowns:
+      - charging standard and power target
+      - coil diameter and ferrite thickness
+      - rear-cover material and thermal coupling
+    feasibility_notes: Placeholder charging-loss range; active power represents heat loss during charging, not device compute load.
+  speakers:
+    function: Acoustic transducers, chambers, mesh, and seals.
+    mass_g: {conservative: 12, nominal: 8, aggressive: 4}
+    volume_cm3: {conservative: 5, nominal: 3, aggressive: 1.5}
+    thickness_mm: {conservative: 3.0, nominal: 2.2, aggressive: 1.4}
+    pcb_area_mm2: {conservative: 120, nominal: 70, aggressive: 40}
+    idle_power_w: {conservative: 0.02, nominal: 0.005, aggressive: 0}
+    active_power_w: {conservative: 2.0, nominal: 0.8, aggressive: 0.2}
+    thermal_relevance: small audio-amplifier heat under high output
+    electrical_relevance: audio amplifier load and EMI management
+    mechanical_relevance: requires acoustic volume, seals, and openings
+    rf_relevance: metal meshes and magnets can interact with nearby RF structures
+    placement_constraints:
+      - need acoustic outlets at device edges
+      - chamber volume competes with battery and antennas
+      - seals and meshes must survive dust and liquid exposure targets
+    unknowns:
+      - acoustic loudness target
+      - number of drivers
+      - waterproofing target
+    feasibility_notes: Placeholder audio range; acoustic quality cannot be inferred from this mass model.
+  microphones:
+    function: Microphone capsules, ports, seals, and acoustic routing.
+    mass_g: {conservative: 3, nominal: 1.5, aggressive: 0.8}
+    volume_cm3: {conservative: 1, nominal: 0.5, aggressive: 0.2}
+    thickness_mm: {conservative: 1.2, nominal: 0.8, aggressive: 0.4}
+    pcb_area_mm2: {conservative: 80, nominal: 45, aggressive: 20}
+    idle_power_w: {conservative: 0.06, nominal: 0.025, aggressive: 0.01}
+    active_power_w: {conservative: 0.25, nominal: 0.1, aggressive: 0.04}
+    thermal_relevance: negligible heat source
+    electrical_relevance: low-noise audio bias and digital microphone routing
+    mechanical_relevance: port placement and gasket alignment sensitive to enclosure design
+    rf_relevance: limited direct RF relevance; ports can interact with antenna openings
+    placement_constraints:
+      - need exposed acoustic ports and contamination protection
+      - spacing matters for beamforming and noise cancellation
+      - avoid high-noise power converters and RF transmitters
+    unknowns:
+      - microphone count and array geometry
+      - always-on wake-word power target
+      - ingress protection design
+    feasibility_notes: Placeholder microphone range; measured SNR and port design are required later.
+  haptics:
+    function: Linear resonant actuator or haptic motor and driver.
+    mass_g: {conservative: 8, nominal: 5, aggressive: 3}
+    volume_cm3: {conservative: 2.5, nominal: 1.5, aggressive: 0.8}
+    thickness_mm: {conservative: 3.0, nominal: 2.2, aggressive: 1.5}
+    pcb_area_mm2: {conservative: 80, nominal: 45, aggressive: 20}
+    idle_power_w: {conservative: 0.005, nominal: 0, aggressive: 0}
+    active_power_w: {conservative: 1.2, nominal: 0.5, aggressive: 0.2}
+    thermal_relevance: negligible average heat but pulsed load
+    electrical_relevance: pulsed actuator current and driver routing
+    mechanical_relevance: needs rigid coupling to chassis for tactile response
+    rf_relevance: magnets and metal housing may affect nearby antennas if too close
+    placement_constraints:
+      - should couple mechanically into the chassis
+      - avoid placement inside antenna keep-out regions
+      - cannot intrude into battery swelling allowance
+    unknowns:
+      - actuator type and size
+      - desired haptic strength
+      - chassis coupling design
+    feasibility_notes: Placeholder actuator range; user-perceived quality requires prototypes.
+  usb_c_port:
+    function: External wired power, data connector, receptacle, shield, and local reinforcement.
+    mass_g: {conservative: 5, nominal: 3, aggressive: 2}
+    volume_cm3: {conservative: 1.5, nominal: 0.9, aggressive: 0.5}
+    thickness_mm: {conservative: 3.2, nominal: 2.8, aggressive: 2.4}
+    pcb_area_mm2: {conservative: 180, nominal: 110, aggressive: 70}
+    idle_power_w: {conservative: 0.02, nominal: 0.005, aggressive: 0}
+    active_power_w: {conservative: 1.0, nominal: 0.3, aggressive: 0.1}
+    thermal_relevance: local charging and connector heat
+    electrical_relevance: high-speed data, charge current, ESD, and orientation detection
+    mechanical_relevance: edge opening, insertion force, reinforcement, and water sealing
+    rf_relevance: shielded connector and cable can affect RF during use
+    placement_constraints:
+      - must align with enclosure edge opening
+      - needs reinforcement and ESD/protection components nearby
+      - constrains bottom board or flex geometry
+    unknowns:
+      - USB speed and charging power target
+      - waterproofing and port reinforcement strategy
+      - connector supplier geometry
+    feasibility_notes: Placeholder connector range; mechanical durability needs part selection and test data.
+  sensors:
+    function: IMU, proximity, ambient light, magnetometer, barometer, and related small sensors.
+    mass_g: {conservative: 4, nominal: 2, aggressive: 1}
+    volume_cm3: {conservative: 1.2, nominal: 0.6, aggressive: 0.2}
+    thickness_mm: {conservative: 1.0, nominal: 0.6, aggressive: 0.3}
+    pcb_area_mm2: {conservative: 160, nominal: 90, aggressive: 40}
+    idle_power_w: {conservative: 0.12, nominal: 0.04, aggressive: 0.015}
+    active_power_w: {conservative: 0.4, nominal: 0.15, aggressive: 0.05}
+    thermal_relevance: negligible heat source
+    electrical_relevance: mixed-signal sensing, calibration, and always-on rails
+    mechanical_relevance: some sensors require optical apertures or low-vibration placement
+    rf_relevance: magnetometer and proximity performance can be affected by metals and RF noise
+    placement_constraints:
+      - optical sensors need line of sight through cover or aperture
+      - magnetometer should avoid magnets and high-current conductors
+      - IMU placement should be mechanically stable
+    unknowns:
+      - final sensor suite
+      - always-on duty cycle
+      - calibration and placement limits
+    feasibility_notes: Placeholder sensor bundle; exact part count and placement need system architecture.
+  tpm_or_security_chip:
+    function: Discrete secure element, TPM-like security controller, or hardware root-of-trust package.
+    mass_g: {conservative: 2, nominal: 1, aggressive: 0.5}
+    volume_cm3: {conservative: 0.4, nominal: 0.2, aggressive: 0.1}
+    thickness_mm: {conservative: 1.0, nominal: 0.7, aggressive: 0.4}
+    pcb_area_mm2: {conservative: 80, nominal: 45, aggressive: 20}
+    idle_power_w: {conservative: 0.03, nominal: 0.01, aggressive: 0.003}
+    active_power_w: {conservative: 0.15, nominal: 0.06, aggressive: 0.02}
+    thermal_relevance: negligible heat source
+    electrical_relevance: security bus, secure boot, key storage, and tamper policy
+    mechanical_relevance: small rigid component with no major z-height burden
+    rf_relevance: low direct RF relevance
+    placement_constraints:
+      - should be routed securely to SoC or management controller
+      - may need tamper-aware placement and protected traces
+      - keep near trusted power and reset circuitry
+    unknowns:
+      - discrete chip versus SoC-integrated root of trust
+      - certification requirements
+      - secure manufacturing flow
+    feasibility_notes: Placeholder security component range; security assurance is architectural, not proven by package mass.
+  fasteners_adhesives_gaskets:
+    function: Screws, brackets, tapes, adhesives, seals, cushions, and miscellaneous retainers.
+    mass_g: {conservative: 18, nominal: 12, aggressive: 7}
+    volume_cm3: {conservative: 5, nominal: 3, aggressive: 1.5}
+    thickness_mm: {conservative: 1.0, nominal: 0.6, aggressive: 0.3}
+    pcb_area_mm2: {conservative: 0, nominal: 0, aggressive: 0}
+    idle_power_w: {conservative: 0, nominal: 0, aggressive: 0}
+    active_power_w: {conservative: 0, nominal: 0, aggressive: 0}
+    thermal_relevance: interface thermal resistance or unintended insulation
+    electrical_relevance: grounding, isolation, ESD paths, and dielectric spacing
+    mechanical_relevance: assembly retention, sealing, tolerance stack, and serviceability
+    rf_relevance: conductive fasteners and gaskets can detune RF if placed in antenna zones
+    placement_constraints:
+      - must preserve service, seal, and tolerance stack allowances
+      - adhesives consume z-height even when not visible in block diagrams
+      - conductive gaskets must respect RF and grounding strategy
+    unknowns:
+      - ingress protection target
+      - assembly sequence and serviceability
+      - tolerance stack and adhesive compression
+    feasibility_notes: Placeholder allowance for non-obvious mass and volume that often appears late in CAD.

@@ -34,6 +34,12 @@ BuildSlate's engineering foundation keeps future specs, CAD, simulations, SlateO
 - `validation/` contains repository checks that keep specs and dimensional constraints machine-checkable.
 - Future features must trace claims back to these foundations, a measured fact, an industry reference, or an explicit unresolved blocker.
 
+## Component Modeling
+
+- `engineering/components/component_library.yaml` defines subsystem properties.
+- `engineering/models/component_packaging.py` estimates packaging pressure.
+- `engineering/models/component_mass_budget.py` estimates mass drivers.
+- `engineering/models/component_power_budget.py` estimates power and runtime pressure.
 
 ## Hardware Ontology
 

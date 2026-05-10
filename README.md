@@ -21,6 +21,16 @@ The repository tracks both target concept specs and feasibility constraints. Tar
 4. **Validation**
    - `validation/` checks required spec fields, feasibility metadata, allowed feasibility labels, and first-pass dimensional constraints.
 
+## Engineering Foundation
+
+BuildSlate's engineering foundation keeps future specs, CAD, simulations, SlateOS claims, and feasibility statements traceable to first-principles inputs instead of unsupported assertions.
+
+- `engineering/constants/` contains conservative constants, units, notes, and profile ranges for battery, material, thermal, and compute estimates.
+- `engineering/models/` contains first-pass calculators that print their inputs, assumptions, formulas, outputs, confidence, basis, and primary blocker.
+- `engineering/assumptions/` contains assumption registries that separate known source-intent values, modeled estimates, aggressive assumptions, conceptual extrapolations, and research blockers.
+- `validation/` contains repository checks that keep specs and dimensional constraints machine-checkable.
+- Future features must trace claims back to these foundations, a measured fact, an industry reference, or an explicit unresolved blocker.
+
 ## Repository areas
 
 - `specs/` — PDF source intent, normalized YAML specs, baseline specs, and schema references.
@@ -56,6 +66,11 @@ python simulations/derived_metrics/model_memory.py
 python simulations/derived_metrics/model_memory.py --params-billions 70 --quant-bits 4
 python simulations/derived_metrics/battery_runtime.py
 python simulations/derived_metrics/thermal_density.py
+python engineering/models/battery_energy.py
+python engineering/models/model_memory.py
+python engineering/models/surface_area.py
+python engineering/models/thermal_limits.py
+python engineering/models/mass_budget.py
 ```
 
 These scripts are first-order engineering tools. They are intended to keep assumptions explicit and machine-checkable while the CAD, BOM, and simulation models mature.

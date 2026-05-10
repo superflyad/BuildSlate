@@ -1,0 +1,18 @@
+# Compute constants for first-pass local inference feasibility estimates.
+# These values estimate model storage/memory pressure, not end-to-end latency.
+quantization_overhead_factor:
+  conservative: 1.50
+  nominal: 1.25
+  aggressive: 1.15
+bytes_per_parameter:
+  int4: 0.5
+  int8: 1.0
+  fp16: 2.0
+  bf16: 2.0
+  fp32: 4.0
+sustained_efficiency_warning:
+  - TOPS ratings are peak marketing values unless sustained power and thermal data are known.
+  - Model runtime feasibility requires memory capacity, bandwidth, compute throughput, and thermal stability.
+notes:
+  - Memory estimates exclude implementation-specific KV cache growth unless represented by the overhead factor.
+  - Aggressive overhead assumes mature kernels, compact runtime state, and favorable model architecture.

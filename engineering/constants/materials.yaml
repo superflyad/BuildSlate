@@ -1,0 +1,17 @@
+# Material density constants for first-pass mass and packaging estimates.
+# Values are approximate and should be replaced by vendor data for detailed design.
+magnesium_alloy_density_g_cm3: 1.74
+aluminum_alloy_density_g_cm3: 2.70
+copper_density_g_cm3: 8.96
+graphite_density_g_cm3: 2.20
+ceramic_density_g_cm3:
+  conservative: 3.90
+  nominal: 3.60
+  aggressive: 3.20
+pcb_assembly_density_g_cm3:
+  conservative: 2.20
+  nominal: 1.90
+  aggressive: 1.60
+notes:
+  - Finished-part density can differ from raw material density because of coatings, fasteners, adhesives, voids, and structural ribs.
+  - PCB assembly density depends on copper weight, layer count, shielding, package mix, underfill, and local stiffeners.

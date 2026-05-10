@@ -1,0 +1,12 @@
+category,description,quantity,unit,placeholder_part,notes
+Display module,13.3 inch OLED touch display assembly,1,assembly,DISPLAY-OLED-13P3-2880x1920,Includes touch digitizer and cover glass stack
+SoC package,Tablet-class ARM SoC with integrated GPU/NPU,1,package,SOC-ARM-NPU-45TOPS,Thermal model requires package power map
+LPDDR package,LPDDR5X memory package set totaling 64 GB,1,set,LPDDR5X-64GB-128B,Capacity must match specs/slate-v1.yaml
+LSSD module,2 TB low-profile NVMe storage module,1,module,LSSD-NVME-2TB,Board-to-board connector geometry TBD
+Battery cells,Flat Li-ion polymer pouch cell pack 58 Wh,1,pack,BATT-LIPO-58WH,Requires pack protection and fuel gauge selection
+Vapor chamber,Ultra-thin copper vapor chamber,1,part,VC-CU-0P4MM,Spans SoC and chassis spreader region
+Graphite sheet,Pyrolytic graphite thermal spreading sheet,2,sheet,PGS-THERMAL-A4-CUT,Layer count and cutouts TBD
+Magnesium alloy chassis,Mg alloy mid-frame/enclosure structure,1,part,CHASSIS-MG-292x205,Dimensional blocking model first
+Ceramic back,Ceramic rear cover panel,1,part,BACK-CERAMIC-292x205,RF window impact to be validated
+TPM/security chip,Discrete TPM or secure element,1,IC,TPM2-SE-I2C,SPI/I2C bus choice TBD
+Antenna modules,Wi-Fi/Bluetooth/cellular antenna modules,4,module,ANT-MIMO-FLEX,Placement and detuning require EM review

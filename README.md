@@ -31,6 +31,17 @@ BuildSlate's engineering foundation keeps future specs, CAD, simulations, SlateO
 - `validation/` contains repository checks that keep specs and dimensional constraints machine-checkable.
 - Future features must trace claims back to these foundations, a measured fact, an industry reference, or an explicit unresolved blocker.
 
+
+## Hardware Ontology
+
+BuildSlate now separates hardware vocabulary, constants, formulas, and interpretation so future design changes remain traceable.
+
+- `engineering/ontology/` defines measurable attributes, component taxonomy, and material taxonomy for phone-class AI-device analysis.
+- `engineering/constants/` defines conservative values and ranges used by screening models.
+- `engineering/models/` uses explicit formulas to turn ontology-backed constants into mass, thermal, electrical, packaging, and material tradeoff estimates.
+- `docs/engineering/` explains how to interpret the model outputs and why no material, battery, chassis, or cooling decision should be treated as universally best.
+- Future design changes to thickness, chassis material, battery size, cooling strategy, or packaging must use these definitions before claiming feasibility.
+
 ## Repository areas
 
 - `specs/` — PDF source intent, normalized YAML specs, baseline specs, and schema references.
@@ -71,6 +82,8 @@ python engineering/models/model_memory.py
 python engineering/models/surface_area.py
 python engineering/models/thermal_limits.py
 python engineering/models/mass_budget.py
+python engineering/models/material_compare.py --material aluminum_alloy
+python engineering/models/material_screen.py
 ```
 
 These scripts are first-order engineering tools. They are intended to keep assumptions explicit and machine-checkable while the CAD, BOM, and simulation models mature.

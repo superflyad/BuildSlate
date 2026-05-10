@@ -1,0 +1,342 @@
+identity:
+  product_name:
+    unit: text
+    description: product name used as a first-order hardware tradeoff input.
+    used_by_models: &id001
+    - all traceability and review workflows
+    required_for_feasibility_review: true
+  device_class:
+    unit: text
+    description: device class used as a first-order hardware tradeoff input.
+    used_by_models: *id001
+    required_for_feasibility_review: true
+  generation:
+    unit: text
+    description: generation used as a first-order hardware tradeoff input.
+    used_by_models: *id001
+    required_for_feasibility_review: true
+  source_document:
+    unit: path or URI
+    description: Source document, spec, vendor sheet, measurement log, or model that
+      supports the value.
+    used_by_models: *id001
+    required_for_feasibility_review: true
+geometry:
+  length_mm:
+    unit: mm
+    description: length mm used as a first-order hardware tradeoff input.
+    used_by_models: &id002
+    - surface_area
+    - thermal_limits
+    - mass_budget
+    - packaging models
+    required_for_feasibility_review: true
+  width_mm:
+    unit: mm
+    description: width mm used as a first-order hardware tradeoff input.
+    used_by_models: *id002
+    required_for_feasibility_review: true
+  thickness_mm:
+    unit: mm
+    description: thickness mm used as a first-order hardware tradeoff input.
+    used_by_models: *id002
+    required_for_feasibility_review: true
+  corner_radius_mm:
+    unit: mm
+    description: corner radius mm used as a first-order hardware tradeoff input.
+    used_by_models: *id002
+    required_for_feasibility_review: true
+  display_diagonal_in:
+    unit: in
+    description: display diagonal in used as a first-order hardware tradeoff input.
+    used_by_models: *id002
+    required_for_feasibility_review: true
+  display_aspect_ratio:
+    unit: ratio
+    description: display aspect ratio used as a first-order hardware tradeoff input.
+    used_by_models: *id002
+    required_for_feasibility_review: true
+  internal_volume_cm3:
+    unit: cm^3
+    description: Estimated usable internal packaging volume after wall, display, and
+      keepout allowances.
+    used_by_models: *id002
+    required_for_feasibility_review: true
+  external_surface_area_cm2:
+    unit: cm^2
+    description: external surface area cm2 used as a first-order hardware tradeoff
+      input.
+    used_by_models: *id002
+    required_for_feasibility_review: true
+mass:
+  target_mass_g:
+    unit: g
+    description: target mass g used as a first-order hardware tradeoff input.
+    used_by_models: &id003
+    - mass_budget
+    - material_compare
+    - material_screen
+    required_for_feasibility_review: true
+  component_mass_g:
+    unit: g
+    description: component mass g used as a first-order hardware tradeoff input.
+    used_by_models: *id003
+    required_for_feasibility_review: true
+  mass_margin_g:
+    unit: g
+    description: mass margin g used as a first-order hardware tradeoff input.
+    used_by_models: *id003
+    required_for_feasibility_review: true
+thermal:
+  sustained_power_w:
+    unit: W
+    description: sustained power w used as a first-order hardware tradeoff input.
+    used_by_models: &id004
+    - thermal_limits
+    - material_compare
+    - material_screen
+    required_for_feasibility_review: true
+  peak_power_w:
+    unit: W
+    description: peak power w used as a first-order hardware tradeoff input.
+    used_by_models: *id004
+    required_for_feasibility_review: true
+  heat_density_w_cm3:
+    unit: W/cm^3
+    description: heat density w cm3 used as a first-order hardware tradeoff input.
+    used_by_models: *id004
+    required_for_feasibility_review: true
+  surface_heat_flux_w_cm2:
+    unit: W/cm^2
+    description: surface heat flux w cm2 used as a first-order hardware tradeoff input.
+    used_by_models: *id004
+    required_for_feasibility_review: true
+  skin_temperature_c:
+    unit: deg C
+    description: skin temperature c used as a first-order hardware tradeoff input.
+    used_by_models: *id004
+    required_for_feasibility_review: true
+  thermal_conductivity_w_mk:
+    unit: W/mK
+    description: thermal conductivity w mk used as a first-order hardware tradeoff
+      input.
+    used_by_models: *id004
+    required_for_feasibility_review: true
+  heat_capacity_j_gk:
+    unit: J/gK
+    description: heat capacity j gk used as a first-order hardware tradeoff input.
+    used_by_models: *id004
+    required_for_feasibility_review: true
+  emissivity:
+    unit: dimensionless
+    description: Effective exterior surface emissivity for passive radiation estimates.
+    used_by_models: *id004
+    required_for_feasibility_review: true
+electrical:
+  battery_wh:
+    unit: Wh
+    description: battery wh used as a first-order hardware tradeoff input.
+    used_by_models: &id005
+    - battery_energy
+    - power budget models
+    required_for_feasibility_review: true
+  nominal_voltage_v:
+    unit: V
+    description: nominal voltage v used as a first-order hardware tradeoff input.
+    used_by_models: *id005
+    required_for_feasibility_review: true
+  peak_current_a:
+    unit: A
+    description: peak current a used as a first-order hardware tradeoff input.
+    used_by_models: *id005
+    required_for_feasibility_review: true
+  sustained_current_a:
+    unit: A
+    description: sustained current a used as a first-order hardware tradeoff input.
+    used_by_models: *id005
+    required_for_feasibility_review: true
+  power_delivery_efficiency:
+    unit: fraction
+    description: power delivery efficiency used as a first-order hardware tradeoff
+      input.
+    used_by_models: *id005
+    required_for_feasibility_review: true
+  charging_power_w:
+    unit: W
+    description: charging power w used as a first-order hardware tradeoff input.
+    used_by_models: *id005
+    required_for_feasibility_review: true
+compute:
+  cpu_cores:
+    unit: count
+    description: cpu cores used as a first-order hardware tradeoff input.
+    used_by_models: &id006
+    - model_memory
+    - thermal_limits
+    - power budget models
+    required_for_feasibility_review: false
+  gpu_fp16_tflops:
+    unit: TFLOP/s FP16
+    description: gpu fp16 tflops used as a first-order hardware tradeoff input.
+    used_by_models: *id006
+    required_for_feasibility_review: false
+  npu_tops:
+    unit: TOPS
+    description: npu tops used as a first-order hardware tradeoff input.
+    used_by_models: *id006
+    required_for_feasibility_review: false
+  sustained_tops:
+    unit: TOPS
+    description: sustained tops used as a first-order hardware tradeoff input.
+    used_by_models: *id006
+    required_for_feasibility_review: false
+  tops_per_w:
+    unit: TOPS/W
+    description: tops per w used as a first-order hardware tradeoff input.
+    used_by_models: *id006
+    required_for_feasibility_review: false
+  memory_bandwidth_gbps:
+    unit: GB/s
+    description: memory bandwidth gbps used as a first-order hardware tradeoff input.
+    used_by_models: *id006
+    required_for_feasibility_review: false
+memory:
+  capacity_gb:
+    unit: GB
+    description: capacity gb used as a first-order hardware tradeoff input.
+    used_by_models: &id007
+    - model_memory
+    - power budget models
+    required_for_feasibility_review: false
+  package_count:
+    unit: count
+    description: package count used as a first-order hardware tradeoff input.
+    used_by_models: *id007
+    required_for_feasibility_review: false
+  bandwidth_gbps:
+    unit: GB/s
+    description: bandwidth gbps used as a first-order hardware tradeoff input.
+    used_by_models: *id007
+    required_for_feasibility_review: false
+  idle_power_w:
+    unit: W
+    description: idle power w used as a first-order hardware tradeoff input.
+    used_by_models: *id007
+    required_for_feasibility_review: false
+  active_power_w:
+    unit: W
+    description: active power w used as a first-order hardware tradeoff input.
+    used_by_models: *id007
+    required_for_feasibility_review: false
+  power_per_gb_w:
+    unit: W/GB
+    description: power per gb w used as a first-order hardware tradeoff input.
+    used_by_models: *id007
+    required_for_feasibility_review: false
+storage:
+  capacity_tb:
+    unit: TB
+    description: capacity tb used as a first-order hardware tradeoff input.
+    used_by_models: &id008
+    - packaging and power models
+    required_for_feasibility_review: false
+  interface:
+    unit: text
+    description: interface used as a first-order hardware tradeoff input.
+    used_by_models: *id008
+    required_for_feasibility_review: false
+  idle_power_w:
+    unit: W
+    description: idle power w used as a first-order hardware tradeoff input.
+    used_by_models: *id008
+    required_for_feasibility_review: false
+  active_power_w:
+    unit: W
+    description: active power w used as a first-order hardware tradeoff input.
+    used_by_models: *id008
+    required_for_feasibility_review: false
+  package_volume_cm3:
+    unit: cm^3
+    description: package volume cm3 used as a first-order hardware tradeoff input.
+    used_by_models: *id008
+    required_for_feasibility_review: false
+mechanical:
+  density_g_cm3:
+    unit: g/cm^3
+    description: density g cm3 used as a first-order hardware tradeoff input.
+    used_by_models: &id009
+    - material_compare
+    - material_screen
+    - durability models
+    required_for_feasibility_review: true
+  youngs_modulus_gpa:
+    unit: GPa
+    description: youngs modulus gpa used as a first-order hardware tradeoff input.
+    used_by_models: *id009
+    required_for_feasibility_review: true
+  yield_strength_mpa:
+    unit: MPa
+    description: yield strength mpa used as a first-order hardware tradeoff input.
+    used_by_models: *id009
+    required_for_feasibility_review: true
+  tensile_strength_mpa:
+    unit: MPa
+    description: tensile strength mpa used as a first-order hardware tradeoff input.
+    used_by_models: *id009
+    required_for_feasibility_review: true
+  coefficient_thermal_expansion_um_mk:
+    unit: um/mK
+    description: coefficient thermal expansion um mk used as a first-order hardware
+      tradeoff input.
+    used_by_models: *id009
+    required_for_feasibility_review: true
+rf:
+  antenna_keepout_mm:
+    unit: mm
+    description: antenna keepout mm used as a first-order hardware tradeoff input.
+    used_by_models: &id010
+    - antenna packaging and material screening
+    required_for_feasibility_review: true
+  rf_window_required:
+    unit: boolean
+    description: rf window required used as a first-order hardware tradeoff input.
+    used_by_models: *id010
+    required_for_feasibility_review: true
+  shielding_risk:
+    unit: category
+    description: shielding risk used as a first-order hardware tradeoff input.
+    used_by_models: *id010
+    required_for_feasibility_review: true
+  material_rf_penalty:
+    unit: category
+    description: Qualitative impact of selected materials on antenna efficiency, windows,
+      isolation, or keepout.
+    used_by_models: *id010
+    required_for_feasibility_review: true
+manufacturing:
+  process:
+    unit: text
+    description: process used as a first-order hardware tradeoff input.
+    used_by_models: &id011
+    - cost, yield, and manufacturability review
+    required_for_feasibility_review: false
+  tolerance_mm:
+    unit: mm
+    description: tolerance mm used as a first-order hardware tradeoff input.
+    used_by_models: *id011
+    required_for_feasibility_review: false
+  repairability:
+    unit: category
+    description: repairability used as a first-order hardware tradeoff input.
+    used_by_models: *id011
+    required_for_feasibility_review: false
+  yield_risk:
+    unit: category
+    description: yield risk used as a first-order hardware tradeoff input.
+    used_by_models: *id011
+    required_for_feasibility_review: false
+  cost_risk:
+    unit: category
+    description: cost risk used as a first-order hardware tradeoff input.
+    used_by_models: *id011
+    required_for_feasibility_review: false

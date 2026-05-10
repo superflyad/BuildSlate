@@ -1,0 +1,200 @@
+metals:
+  aluminum_alloy:
+    density_g_cm3: {min: 2.65, typical: 2.70, max: 2.85}
+    thermal_conductivity_w_mk: {min: 120, typical: 170, max: 230}
+    specific_heat_j_gk: {min: 0.85, typical: 0.90, max: 0.95}
+    youngs_modulus_gpa: {min: 68, typical: 70, max: 75}
+    coefficient_thermal_expansion_um_mk: {min: 21, typical: 23, max: 25}
+    electrical_conductivity_category: high
+    rf_behavior: Blocks or attenuates RF; requires antenna windows, breaks, or isolation.
+    manufacturability_notes: Mature CNC, extrusion, die-casting, forging, anodizing, and coating supply base.
+    use_cases: [midframe, rear_housing, heat_spreading_chassis]
+    feasibility_notes:
+      - Good thermal spreading and manufacturability for phone-class structures.
+      - RF design must account for conductive housing and antenna segmentation.
+  magnesium_alloy:
+    density_g_cm3: {min: 1.70, typical: 1.80, max: 1.90}
+    thermal_conductivity_w_mk: {min: 50, typical: 75, max: 110}
+    specific_heat_j_gk: {min: 0.95, typical: 1.00, max: 1.05}
+    youngs_modulus_gpa: {min: 42, typical: 45, max: 48}
+    coefficient_thermal_expansion_um_mk: {min: 24, typical: 26, max: 28}
+    electrical_conductivity_category: medium
+    rf_behavior: Conductive and RF-attenuating; typically still needs antenna windows or isolation.
+    manufacturability_notes: Lightweight but requires corrosion protection, process control, and fire-risk controls for chips/dust.
+    use_cases: [midframe, internal_support, weight_reduction_chassis]
+    feasibility_notes:
+      - Attractive for mass reduction but lower stiffness than aluminum.
+      - Corrosion, coatings, joining, and manufacturing safety are major review items.
+  titanium_alloy:
+    density_g_cm3: {min: 4.40, typical: 4.50, max: 4.60}
+    thermal_conductivity_w_mk: {min: 6, typical: 8, max: 22}
+    specific_heat_j_gk: {min: 0.50, typical: 0.53, max: 0.56}
+    youngs_modulus_gpa: {min: 100, typical: 110, max: 120}
+    coefficient_thermal_expansion_um_mk: {min: 8, typical: 9, max: 10}
+    electrical_conductivity_category: low_to_medium
+    rf_behavior: Conductive and RF-attenuating; needs antenna strategy similar to other metal housings.
+    manufacturability_notes: Strong and premium but slower to machine/form than aluminum and can raise tool wear and cost.
+    use_cases: [premium_frame, high_strength_edge_band]
+    feasibility_notes:
+      - Strength does not automatically solve thermal or RF constraints.
+      - Low thermal conductivity can worsen passive heat-spreading unless paired with other heat spreaders.
+  stainless_steel:
+    density_g_cm3: {min: 7.70, typical: 7.90, max: 8.10}
+    thermal_conductivity_w_mk: {min: 14, typical: 16, max: 25}
+    specific_heat_j_gk: {min: 0.45, typical: 0.50, max: 0.55}
+    youngs_modulus_gpa: {min: 185, typical: 200, max: 210}
+    coefficient_thermal_expansion_um_mk: {min: 10, typical: 16, max: 18}
+    electrical_conductivity_category: medium
+    rf_behavior: Conductive and RF-blocking; antenna windows/breaks are required.
+    manufacturability_notes: Excellent strength and finish options but high density and machining/forming effort.
+    use_cases: [edge_band, fasteners, brackets]
+    feasibility_notes:
+      - Strong and durable but usually mass-penalizing in phone-scale enclosures.
+      - Thermal spreading is much weaker than aluminum or copper.
+  copper:
+    density_g_cm3: {min: 8.80, typical: 8.96, max: 9.00}
+    thermal_conductivity_w_mk: {min: 300, typical: 390, max: 410}
+    specific_heat_j_gk: {min: 0.37, typical: 0.39, max: 0.40}
+    youngs_modulus_gpa: {min: 100, typical: 120, max: 130}
+    coefficient_thermal_expansion_um_mk: {min: 16, typical: 17, max: 18}
+    electrical_conductivity_category: very_high
+    rf_behavior: Strong RF shield/conductor; useful for shielding but hostile to antenna transparency.
+    manufacturability_notes: Excellent thermal conductor but heavy, soft in pure grades, and often used as local heat hardware.
+    use_cases: [vapor_chamber, heat_spreader, shielding, coils]
+    feasibility_notes:
+      - Best used selectively because density is too high for large structural shells.
+ceramics_and_glass:
+  aluminosilicate_glass:
+    density_g_cm3: {min: 2.35, typical: 2.45, max: 2.60}
+    thermal_conductivity_w_mk: {min: 0.8, typical: 1.1, max: 1.5}
+    specific_heat_j_gk: {min: 0.75, typical: 0.85, max: 0.95}
+    youngs_modulus_gpa: {min: 65, typical: 72, max: 78}
+    coefficient_thermal_expansion_um_mk: {min: 3, typical: 8, max: 10}
+    electrical_conductivity_category: insulator
+    rf_behavior: Generally RF-transparent compared with metals.
+    manufacturability_notes: Chemically strengthened cover/back glass is mature but brittle failure and edge damage need control.
+    use_cases: [cover_glass, rear_housing, rf_window]
+    feasibility_notes: [Supports wireless/RF paths but is a poor heat spreader and impact-sensitive.]
+  zirconia_ceramic:
+    density_g_cm3: {min: 5.6, typical: 6.0, max: 6.1}
+    thermal_conductivity_w_mk: {min: 2, typical: 3, max: 4}
+    specific_heat_j_gk: {min: 0.40, typical: 0.50, max: 0.60}
+    youngs_modulus_gpa: {min: 180, typical: 210, max: 230}
+    coefficient_thermal_expansion_um_mk: {min: 9, typical: 10, max: 11}
+    electrical_conductivity_category: insulator
+    rf_behavior: RF-friendly relative to metals, depending on additives and thickness.
+    manufacturability_notes: Hard, wear-resistant, slow to machine, sintering shrinkage and yield need attention.
+    use_cases: [premium_rear_housing, wear_surface, rf_transparent_back]
+    feasibility_notes: [Dense and thermally modest; premium feel can conflict with mass and heat goals.]
+  alumina_ceramic:
+    density_g_cm3: {min: 3.7, typical: 3.9, max: 4.0}
+    thermal_conductivity_w_mk: {min: 18, typical: 25, max: 35}
+    specific_heat_j_gk: {min: 0.75, typical: 0.85, max: 0.95}
+    youngs_modulus_gpa: {min: 300, typical: 350, max: 380}
+    coefficient_thermal_expansion_um_mk: {min: 6, typical: 8, max: 9}
+    electrical_conductivity_category: insulator
+    rf_behavior: Generally RF-friendly relative to metals.
+    manufacturability_notes: Hard and brittle; used more often in substrates/insulators than large cosmetic shells.
+    use_cases: [insulator, substrate, wear_surface]
+    feasibility_notes: [Better thermal conductivity than glass, but brittle and not usually a lightweight enclosure choice.]
+  glass_ceramic:
+    density_g_cm3: {min: 2.4, typical: 2.6, max: 2.8}
+    thermal_conductivity_w_mk: {min: 1, typical: 2, max: 4}
+    specific_heat_j_gk: {min: 0.75, typical: 0.85, max: 0.95}
+    youngs_modulus_gpa: {min: 80, typical: 95, max: 110}
+    coefficient_thermal_expansion_um_mk: {min: 0, typical: 5, max: 10}
+    electrical_conductivity_category: insulator
+    rf_behavior: Generally RF-transparent compared with metal.
+    manufacturability_notes: Properties vary strongly by composition and heat treatment; large thin parts require validation.
+    use_cases: [cover_glass, rear_housing, rf_window]
+    feasibility_notes: [Can improve scratch/thermal-shock behavior but still needs impact and heat-spreading validation.]
+thermal_materials:
+  pyrolytic_graphite_sheet:
+    density_g_cm3: {min: 1.8, typical: 2.1, max: 2.3}
+    thermal_conductivity_w_mk: {min: 700, typical: 1200, max: 1700}
+    specific_heat_j_gk: {min: 0.65, typical: 0.75, max: 0.85}
+    youngs_modulus_gpa: {min: 5, typical: 15, max: 30}
+    coefficient_thermal_expansion_um_mk: {min: -1, typical: 1, max: 4}
+    electrical_conductivity_category: medium_to_high
+    rf_behavior: Conductive sheet; can detune or shield antennas if placed in RF keepouts.
+    manufacturability_notes: Very anisotropic and fragile; laminated sheets need adhesive and insulation design.
+    use_cases: [graphite_spreader, display_back_spreader, hotspot_spreader]
+    feasibility_notes: [Excellent in-plane spreading, weak through-plane transfer, and not a structural material.]
+  synthetic_graphite_sheet:
+    density_g_cm3: {min: 1.6, typical: 2.0, max: 2.2}
+    thermal_conductivity_w_mk: {min: 300, typical: 700, max: 1200}
+    specific_heat_j_gk: {min: 0.65, typical: 0.75, max: 0.85}
+    youngs_modulus_gpa: {min: 5, typical: 10, max: 25}
+    coefficient_thermal_expansion_um_mk: {min: -1, typical: 1, max: 5}
+    electrical_conductivity_category: medium_to_high
+    rf_behavior: Conductive sheet; avoid antenna keepouts unless RF design validates it.
+    manufacturability_notes: Supplied as sheets/laminates with adhesive and die-cut tolerances.
+    use_cases: [graphite_spreader, battery_heat_spreader, rear_housing_spreader]
+    feasibility_notes: [Useful for spreading local peaks but performance depends on orientation and contact quality.]
+  copper_vapor_chamber:
+    density_g_cm3: {min: 4.0, typical: 5.5, max: 7.5}
+    thermal_conductivity_w_mk: {min: 1000, typical: 3000, max: 8000}
+    specific_heat_j_gk: {min: 0.37, typical: 0.40, max: 0.45}
+    youngs_modulus_gpa: {min: 80, typical: 110, max: 130}
+    coefficient_thermal_expansion_um_mk: {min: 16, typical: 17, max: 18}
+    electrical_conductivity_category: high
+    rf_behavior: Conductive metal sheet; can shield antennas and wireless charging fields.
+    manufacturability_notes: Effective conductivity is device-level and orientation/load dependent; thickness and sealing constrain packaging.
+    use_cases: [vapor_chamber, hotspot_transport]
+    feasibility_notes: [Strong heat transport but adds thickness, mass, cost, and puncture/crush concerns.]
+  thermal_interface_material:
+    density_g_cm3: {min: 1.5, typical: 2.5, max: 3.5}
+    thermal_conductivity_w_mk: {min: 1, typical: 4, max: 10}
+    specific_heat_j_gk: {min: 0.8, typical: 1.1, max: 1.5}
+    youngs_modulus_gpa: {min: 0.001, typical: 0.01, max: 0.1}
+    coefficient_thermal_expansion_um_mk: {min: 50, typical: 150, max: 300}
+    electrical_conductivity_category: insulator_or_filled
+    rf_behavior: Usually RF-neutral unless electrically conductive fillers are used.
+    manufacturability_notes: Gap pads, greases, and adhesives vary by compression, pump-out, and reworkability.
+    use_cases: [soc_tim, battery_gap_pad, chassis_coupling]
+    feasibility_notes: [Critical for contact resistance; bulk conductivity alone is not enough.]
+  phase_change_material:
+    density_g_cm3: {min: 0.8, typical: 1.1, max: 1.6}
+    thermal_conductivity_w_mk: {min: 0.2, typical: 0.8, max: 3}
+    specific_heat_j_gk: {min: 1.5, typical: 2.5, max: 4.0}
+    youngs_modulus_gpa: {min: 0.001, typical: 0.01, max: 0.1}
+    coefficient_thermal_expansion_um_mk: {min: 100, typical: 300, max: 700}
+    electrical_conductivity_category: insulator_or_composite
+    rf_behavior: Usually RF-neutral unless packaged with metal foils.
+    manufacturability_notes: Requires containment, expansion management, and cycling validation.
+    use_cases: [transient_thermal_buffer, hotspot_buffer]
+    feasibility_notes: [Helps short peaks but cannot remove sustained heat without a path to ambient.]
+polymers:
+  polycarbonate:
+    density_g_cm3: {min: 1.18, typical: 1.20, max: 1.25}
+    thermal_conductivity_w_mk: {min: 0.15, typical: 0.20, max: 0.30}
+    specific_heat_j_gk: {min: 1.1, typical: 1.2, max: 1.4}
+    youngs_modulus_gpa: {min: 2.0, typical: 2.4, max: 2.8}
+    coefficient_thermal_expansion_um_mk: {min: 60, typical: 70, max: 80}
+    electrical_conductivity_category: insulator
+    rf_behavior: RF-transparent and useful for antenna windows.
+    manufacturability_notes: Injection moldable and impact resistant but lower stiffness and heat spreading.
+    use_cases: [rf_window, bracket, internal_carrier]
+    feasibility_notes: [Useful for RF, poor for premium heat-spreading exterior shells.]
+  liquid_crystal_polymer:
+    density_g_cm3: {min: 1.35, typical: 1.50, max: 1.70}
+    thermal_conductivity_w_mk: {min: 0.2, typical: 0.5, max: 2.0}
+    specific_heat_j_gk: {min: 0.9, typical: 1.1, max: 1.3}
+    youngs_modulus_gpa: {min: 5, typical: 10, max: 20}
+    coefficient_thermal_expansion_um_mk: {min: 5, typical: 20, max: 60}
+    electrical_conductivity_category: insulator
+    rf_behavior: RF-friendly; often used in antenna and high-frequency structures.
+    manufacturability_notes: Good dimensional stability in thin molded parts; anisotropic properties require validation.
+    use_cases: [antenna_carrier, connector, thin_bracket]
+    feasibility_notes: [Good for RF/mechanical details, not a primary chassis heat spreader.]
+  epoxy_fiberglass_pcb:
+    density_g_cm3: {min: 1.6, typical: 1.9, max: 2.2}
+    thermal_conductivity_w_mk: {min: 0.3, typical: 1.0, max: 5.0}
+    specific_heat_j_gk: {min: 0.8, typical: 1.0, max: 1.2}
+    youngs_modulus_gpa: {min: 15, typical: 25, max: 35}
+    coefficient_thermal_expansion_um_mk: {min: 12, typical: 20, max: 70}
+    electrical_conductivity_category: composite_with_copper
+    rf_behavior: RF substrate behavior depends on laminate, copper layout, and frequency.
+    manufacturability_notes: Board properties vary with layer count, copper fraction, resin, vias, and packages.
+    use_cases: [main_pcb, flex_rigid_board, module_substrate]
+    feasibility_notes: [Treat as assembly property until stackup and copper density are known.]

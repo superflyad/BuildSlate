@@ -1,0 +1,250 @@
+display_module:
+  function: Visual output stack including panel, backplane, drivers, and local support films.
+  primary_attributes: [display_diagonal_in, display_aspect_ratio, component_mass_g, active_power_w, package_volume_cm3]
+  mass_driver: Panel area, cover support, driver ICs, films, and stiffness requirements.
+  volume_driver: Display area, stack thickness, bezel routing, and connector bend radius.
+  thermal_relevance: Medium; display self-heating and thermal insulation affect skin temperature.
+  electrical_relevance: High; display refresh, brightness, and driver losses can be major loads.
+  mechanical_relevance: High; panel flatness, impact support, and bond-line strain are critical.
+  rf_relevance: Low; may constrain antenna placement through conductive layers and routing.
+  typical_unknowns: [panel supplier stackup, luminance target, driver efficiency, bonded thickness]
+cover_glass:
+  function: Exterior transparent protective surface over the display.
+  primary_attributes: [density_g_cm3, youngs_modulus_gpa, tensile_strength_mpa, coefficient_thermal_expansion_um_mk]
+  mass_driver: Glass area, thickness, strengthening process, edge geometry, and coatings.
+  volume_driver: Cover thickness, curvature, adhesive thickness, and protective lip geometry.
+  thermal_relevance: Medium; glass limits heat spreading but participates in skin-temperature exposure.
+  electrical_relevance: Low; capacitive touch and display optical bonding are primary interactions.
+  mechanical_relevance: High; drop, scratch, edge chip, and bending durability dominate.
+  rf_relevance: Low; generally RF-transparent relative to metals.
+  typical_unknowns: [glass grade, ion exchange depth, coating stack, edge treatment]
+touch_digitizer:
+  function: Capacitive touch sensing layer, controller, and interconnects.
+  primary_attributes: [component_mass_g, active_power_w, package_volume_cm3]
+  mass_driver: Sensor area, flex circuits, controller, and shielding layers.
+  volume_driver: Sensor film thickness, flex tail routing, and connector space.
+  thermal_relevance: Low; typically a minor heat source.
+  electrical_relevance: Medium; controller power, noise immunity, and grounding matter.
+  mechanical_relevance: Medium; bend radius and optical bond reliability matter.
+  rf_relevance: Low; conductive mesh can weakly interact with antennas.
+  typical_unknowns: [sensor stack, controller selection, grounding strategy, flex routing]
+midframe:
+  function: Primary internal structural frame and mounting datum for modules.
+  primary_attributes: [density_g_cm3, thermal_conductivity_w_mk, youngs_modulus_gpa, yield_strength_mpa]
+  mass_driver: Material density, wall thickness, ribs, bosses, and fastener strategy.
+  volume_driver: Structural wall thickness, mounting features, keepouts, and tolerance stack.
+  thermal_relevance: High; can spread SoC, battery, and charging heat.
+  electrical_relevance: Medium; grounding, isolation, and current paths require control.
+  mechanical_relevance: High; stiffness, yield, creep, and drop load paths dominate.
+  rf_relevance: High; conductive frames can block antennas and require breaks/windows.
+  typical_unknowns: [material grade, manufacturing process, minimum wall thickness, antenna breaks]
+rear_housing:
+  function: Exterior rear enclosure, cosmetic surface, and secondary structural shell.
+  primary_attributes: [density_g_cm3, thermal_conductivity_w_mk, emissivity, material_rf_penalty]
+  mass_driver: Material density, wall thickness, coatings, camera island, and stiffening.
+  volume_driver: Wall thickness, curvature, antenna windows, adhesive ledges, and camera bump.
+  thermal_relevance: High; rear surface can spread and reject heat.
+  electrical_relevance: Medium; wireless charging, grounding, and insulation are affected.
+  mechanical_relevance: High; impact, scratch, bending, and repair loads matter.
+  rf_relevance: High; back material strongly affects antennas and wireless charging.
+  typical_unknowns: [back material, coating, wireless charging stack, antenna window layout]
+battery_pack:
+  function: Rechargeable energy storage including cells, protection, pouch/can, tabs, and packaging.
+  primary_attributes: [battery_wh, nominal_voltage_v, peak_current_a, sustained_current_a, component_mass_g]
+  mass_driver: Energy capacity, pack-level energy density, protection hardware, and swelling allowance.
+  volume_driver: Cell volume, protection PCB, tabs, compression pads, and safety gaps.
+  thermal_relevance: High; charging/discharging heat and temperature limits constrain operation.
+  electrical_relevance: High; voltage, current, impedance, protection, and aging dominate power design.
+  mechanical_relevance: High; compression, puncture, swelling, and drop isolation are safety-critical.
+  rf_relevance: Medium; large conductive foils and placement can detune antennas.
+  typical_unknowns: [cell chemistry, vendor energy density, swelling envelope, protection circuit]
+main_pcb:
+  function: Main printed circuit board carrying SoC, memory, storage, PMICs, RF, and connectors.
+  primary_attributes: [component_mass_g, package_volume_cm3, active_power_w, thermal_conductivity_w_mk]
+  mass_driver: Board area, layer count, copper weight, shielding cans, connectors, and packages.
+  volume_driver: Board outline, component heights, connector keepouts, and stacking.
+  thermal_relevance: High; routes heat from packages and can bottleneck spreading.
+  electrical_relevance: High; power integrity, high-speed routing, and grounding dominate.
+  mechanical_relevance: High; bending, solder fatigue, board support, and screw bosses matter.
+  rf_relevance: High; antenna feedlines, shielding, and grounding are central.
+  typical_unknowns: [layer count, copper weight, component placement, shield strategy]
+soc_package:
+  function: Primary compute silicon package including application processor or AI SoC.
+  primary_attributes: [npu_tops, sustained_power_w, peak_power_w, tops_per_w, component_mass_g]
+  mass_driver: Package size, substrate, heat spreader, underfill, and shield/retainer.
+  volume_driver: Package footprint, height, keepout, and thermal interface stack.
+  thermal_relevance: High; often the dominant localized heat source.
+  electrical_relevance: High; high current transients, rails, and memory interfaces dominate.
+  mechanical_relevance: Medium; package warpage and board strain affect reliability.
+  rf_relevance: Medium; noise and shielding may affect radio performance.
+  typical_unknowns: [SoC selection, package power, thermal resistance, sustained workload behavior]
+memory_packages:
+  function: DRAM packages or package-on-package memory serving compute workloads.
+  primary_attributes: [capacity_gb, package_count, bandwidth_gbps, active_power_w, idle_power_w]
+  mass_driver: Package count, substrate, and shielding.
+  volume_driver: Package footprint, height, spacing, and PoP stack if used.
+  thermal_relevance: Medium; bandwidth-heavy workloads add local heat near the SoC.
+  electrical_relevance: High; bandwidth, signal integrity, and power are central.
+  mechanical_relevance: Medium; solder reliability and board bending matter.
+  rf_relevance: Low; high-speed noise requires containment.
+  typical_unknowns: [memory type, bus width, package count, active power per workload]
+storage_package:
+  function: Nonvolatile storage package and controller if separate.
+  primary_attributes: [capacity_tb, interface, active_power_w, idle_power_w, package_volume_cm3]
+  mass_driver: Package size and count.
+  volume_driver: Package footprint, height, and routing keepout.
+  thermal_relevance: Medium; sustained writes and controller activity add local heat.
+  electrical_relevance: Medium; interface, idle power, and active current matter.
+  mechanical_relevance: Low; typical board-level package reliability applies.
+  rf_relevance: Low; high-speed interface noise may need containment.
+  typical_unknowns: [NAND generation, controller integration, sustained write power, package height]
+vapor_chamber:
+  function: Two-phase heat spreader moving heat from SoC/hotspots to larger areas.
+  primary_attributes: [thermal_conductivity_w_mk, component_mass_g, package_volume_cm3]
+  mass_driver: Copper thickness, wick structure, fluid charge, and footprint.
+  volume_driver: Thickness, bend limits, sealed edge, and contact area.
+  thermal_relevance: High; primary passive heat-spreading element.
+  electrical_relevance: Low; may require grounding/isolation.
+  mechanical_relevance: Medium; puncture, crush, and flatness affect performance.
+  rf_relevance: Medium; conductive sheet can interfere with antennas.
+  typical_unknowns: [vendor performance, minimum thickness, allowable bends, contact pressure]
+graphite_spreader:
+  function: Thin anisotropic graphite sheet for in-plane heat spreading.
+  primary_attributes: [thermal_conductivity_w_mk, component_mass_g, package_volume_cm3]
+  mass_driver: Sheet area, thickness, adhesive liners, and edge insulation.
+  volume_driver: Sheet thickness, overlap, adhesive thickness, and clearance.
+  thermal_relevance: High; strong in-plane spreading but weak through-plane transfer.
+  electrical_relevance: Low; conductive behavior may require insulation.
+  mechanical_relevance: Low; fragile sheets need lamination and handling control.
+  rf_relevance: Medium; conductive layers can affect antenna regions.
+  typical_unknowns: [in-plane conductivity, through-plane conductivity, thickness, adhesive]
+phase_change_material:
+  function: Thermal buffer that absorbs transient heat near a phase transition.
+  primary_attributes: [heat_capacity_j_gk, component_mass_g, package_volume_cm3, skin_temperature_c]
+  mass_driver: Required latent heat capacity, containment, and encapsulation.
+  volume_driver: PCM mass, packaging, expansion allowance, and placement.
+  thermal_relevance: High for short peaks; limited for steady-state dissipation.
+  electrical_relevance: Low; insulation/leakage risks must be controlled.
+  mechanical_relevance: Medium; containment and cycling reliability matter.
+  rf_relevance: Low unless metalized containment is used.
+  typical_unknowns: [phase temperature, latent heat, cycle life, containment design]
+camera_rear_module:
+  function: Rear imaging sensors, lenses, stabilization, flexes, and support structure.
+  primary_attributes: [component_mass_g, package_volume_cm3, peak_power_w]
+  mass_driver: Sensor size, lens count, OIS hardware, bracket, and cover glass.
+  volume_driver: Optical z-height, module footprint, camera bump, and keepout.
+  thermal_relevance: Medium; image processing and sensor heating can matter.
+  electrical_relevance: Medium; sensor, actuator, and ISP bandwidth affect power.
+  mechanical_relevance: High; optical alignment, drop, and camera bump loads dominate.
+  rf_relevance: Medium; metal brackets and placement can affect antenna routing.
+  typical_unknowns: [sensor size, OIS choice, lens stack height, bracket material]
+front_camera_module:
+  function: Front imaging module and associated flex/interconnect.
+  primary_attributes: [component_mass_g, package_volume_cm3, active_power_w]
+  mass_driver: Sensor/lens package, bracket, and flex.
+  volume_driver: Display cutout/notch area, z-height, and routing.
+  thermal_relevance: Low; typically intermittent heat source.
+  electrical_relevance: Medium; sensor and interface power matter.
+  mechanical_relevance: Medium; alignment and display integration matter.
+  rf_relevance: Low to medium depending on antenna proximity.
+  typical_unknowns: [module size, display integration, privacy hardware, routing]
+antenna_modules:
+  function: Cellular, Wi-Fi, Bluetooth, GNSS, UWB, NFC, and matching networks.
+  primary_attributes: [antenna_keepout_mm, rf_window_required, shielding_risk, material_rf_penalty]
+  mass_driver: Flex antennas, brackets, coax, matching parts, and window structures.
+  volume_driver: Keepout volume, ground clearance, feed routing, and isolation gaps.
+  thermal_relevance: Low; may be affected by nearby heat spreaders.
+  electrical_relevance: High; RF performance and coexistence dominate.
+  mechanical_relevance: Medium; flex reliability and housing integration matter.
+  rf_relevance: High; primary RF subsystem.
+  typical_unknowns: [band support, antenna topology, SAR constraints, material windows]
+speakers:
+  function: Acoustic output transducers, chambers, meshes, and seals.
+  primary_attributes: [component_mass_g, package_volume_cm3, peak_power_w]
+  mass_driver: Magnet size, enclosure volume, seal, and grille hardware.
+  volume_driver: Acoustic chamber volume, porting, gasket compression, and mesh area.
+  thermal_relevance: Low; high output can add localized heat.
+  electrical_relevance: Medium; amplifier power and impedance matter.
+  mechanical_relevance: Medium; seals and drop resistance affect reliability.
+  rf_relevance: Low; magnets/metal can constrain nearby antennas.
+  typical_unknowns: [acoustic target, chamber volume, driver choice, seal design]
+microphones:
+  function: Audio input transducers, ports, meshes, gaskets, and processing interface.
+  primary_attributes: [component_mass_g, package_volume_cm3, idle_power_w]
+  mass_driver: Mic count, port hardware, meshes, and flex routing.
+  volume_driver: Port geometry, acoustic channel, gasket, and board placement.
+  thermal_relevance: Low.
+  electrical_relevance: Medium; always-listening modes can affect power.
+  mechanical_relevance: Medium; port contamination, water resistance, and gasket tolerance matter.
+  rf_relevance: Low; routing and shielding can matter near radios.
+  typical_unknowns: [mic count, port layout, waterproofing, always-on power]
+haptics:
+  function: Tactile actuator and driver circuitry.
+  primary_attributes: [component_mass_g, package_volume_cm3, peak_current_a]
+  mass_driver: Actuator mass, mounting bracket, and damping materials.
+  volume_driver: Actuator size, keepout for movement, and mounting features.
+  thermal_relevance: Low; intermittent power.
+  electrical_relevance: Medium; peak current and driver efficiency matter.
+  mechanical_relevance: High; mounting stiffness and resonance define performance.
+  rf_relevance: Low; metal mass may affect nearby antennas.
+  typical_unknowns: [actuator type, mounting stiffness, drive waveform, acoustic leakage]
+buttons:
+  function: Physical switches, keycaps, flexes, seals, and tactile mechanisms.
+  primary_attributes: [component_mass_g, tolerance_mm, repairability]
+  mass_driver: Keycap material, switch count, brackets, and seals.
+  volume_driver: Button travel, seal compression, sidewall thickness, and flex routing.
+  thermal_relevance: Low.
+  electrical_relevance: Low; switch debounce and ESD matter.
+  mechanical_relevance: Medium; ingress protection, feel, and durability matter.
+  rf_relevance: Medium if buttons interrupt conductive frame antennas.
+  typical_unknowns: [button layout, sealing strategy, frame breaks, tactile target]
+usb_c_port:
+  function: Wired power, data, and accessory connector with retention and sealing.
+  primary_attributes: [charging_power_w, peak_current_a, tolerance_mm, repairability]
+  mass_driver: Connector shell, bracket, seal, flex/board, and reinforcement.
+  volume_driver: Receptacle size, keepout, cable clearance, and seal volume.
+  thermal_relevance: Medium; fast charging can heat contacts and nearby structures.
+  electrical_relevance: High; charging current, data lanes, ESD, and orientation matter.
+  mechanical_relevance: High; insertion cycles, drop with cable, and repairability matter.
+  rf_relevance: Medium; metal port and grounding affect antenna layout.
+  typical_unknowns: [USB speed, charging spec, waterproofing, daughterboard strategy]
+wireless_charging_coil:
+  function: Inductive charging and alignment assembly.
+  primary_attributes: [charging_power_w, active_power_w, package_volume_cm3]
+  mass_driver: Coil copper, ferrite, adhesive, magnets, and shielding.
+  volume_driver: Coil diameter, ferrite thickness, rear cover stack, and alignment magnets.
+  thermal_relevance: High during charging; losses heat rear housing and battery.
+  electrical_relevance: High; coil efficiency, rectification, and foreign-object detection matter.
+  mechanical_relevance: Medium; coil flatness, adhesive, and rear-cover integration matter.
+  rf_relevance: High; ferrite/metal stack interacts with NFC and antennas.
+  typical_unknowns: [charging power, coil size, ferrite material, magnet layout]
+tpm_or_security_chip:
+  function: Discrete security controller if not integrated into the SoC.
+  primary_attributes: [component_mass_g, idle_power_w, active_power_w]
+  mass_driver: Package size and required passives.
+  volume_driver: Footprint, security keepout, and routing.
+  thermal_relevance: Low.
+  electrical_relevance: Medium; secure boot, keys, and standby power matter.
+  mechanical_relevance: Low; board-level reliability applies.
+  rf_relevance: Low; may require shielding from fault injection depending threat model.
+  typical_unknowns: [integrated vs discrete choice, certification target, standby power]
+sensors:
+  function: IMU, ambient light, proximity, barometer, biometrics, and related sensor suite.
+  primary_attributes: [component_mass_g, idle_power_w, active_power_w, package_count]
+  mass_driver: Sensor count, packages, flexes, and optical windows.
+  volume_driver: Package footprints, optical paths, and placement constraints.
+  thermal_relevance: Low; thermal drift and proximity to heat sources may matter.
+  electrical_relevance: Medium; always-on sensing and sensor hub power matter.
+  mechanical_relevance: Medium; calibration, alignment, and board strain matter.
+  rf_relevance: Low; placement can interact with antenna keepouts.
+  typical_unknowns: [sensor set, always-on requirements, calibration method, placement]
+fasteners_adhesives_gaskets:
+  function: Mechanical joining, environmental sealing, tolerance take-up, and service features.
+  primary_attributes: [component_mass_g, tolerance_mm, repairability, yield_risk]
+  mass_driver: Screw count, adhesive area, gasket length, clips, and sealant.
+  volume_driver: Bond-line thickness, gasket compression, screw bosses, and service tabs.
+  thermal_relevance: Medium; adhesives and gaskets can block or route heat.
+  electrical_relevance: Low; grounding foams or conductive adhesives may be used.
+  mechanical_relevance: High; sealing, drop load paths, and repairability depend on them.
+  rf_relevance: Medium; conductive gaskets and frame breaks can affect antennas.
+  typical_unknowns: [IP rating target, service strategy, adhesive chemistry, gasket compression]

@@ -1,0 +1,211 @@
+identity:
+  product_name: Slate
+  version: v1.0
+  device_class: AI-native pocket workstation
+  source_document: specs/Slate_v1_Specifications.pdf
+
+display:
+  size_in: 7.5
+  technology: AMOLED
+  resolution: 3200x1800
+  refresh_rate_hz: 120
+  panel_type: LTPO
+  aspect_ratio: "16:10"
+  feasibility:
+    status: feasible_today
+    rationale: 7-8 inch AMOLED LTPO panels are within current manufacturing capability.
+    blockers: []
+
+compute:
+  cpu:
+    architecture: ARMv9
+    cores_total: 12
+    performance_cores: 4
+    medium_cores: 4
+    efficiency_cores: 4
+  gpu:
+    class: RDNA3-class integrated GPU
+    fp16_tflops_range: [8, 10]
+  npu:
+    tops: 100
+    optimized_for:
+      - INT4
+      - INT8
+      - transformer inference
+  feasibility:
+    status: near_term
+    rationale: ARMv9 heterogeneous SoCs and NPUs are available, but combining 100 TOPS sustained local inference in this form factor is aggressive.
+    blockers:
+      - sustained NPU thermals
+      - custom silicon availability
+      - memory bandwidth
+
+memory:
+  capacity_gb: 512
+  type: LPDDR6X
+  packaging: stacked TSV interposer
+  feasibility:
+    status: conceptual_extrapolation
+    rationale: 512GB LPDDR6X in a pocket device exceeds current mainstream mobile packaging and power limits.
+    blockers:
+      - package density
+      - board area
+      - memory thermals
+      - idle and active power draw
+
+storage:
+  capacity_tb: 4
+  type: LSSD
+  interface: PCIe Gen5 x4
+  design_goal: low-power AI model storage
+  feasibility:
+    status: near_term
+    rationale: 4TB NVMe-class storage exists, but PCIe Gen5 x4 power and thermal behavior in a pocket form factor is difficult.
+    blockers:
+      - storage thermals
+      - idle power
+      - package thickness
+
+battery:
+  capacity_mah: 6000
+  cell_config: dual-cell
+  charging_wired_w: 100
+  charging_wireless_w: 50
+  feasibility:
+    status: research_required
+    rationale: 6000mAh is plausible for mobile devices, but 100W wired and 50W wireless charging in an 8.8mm AI workstation chassis requires thermal validation.
+    blockers:
+      - charging heat
+      - battery volume
+      - cycle life
+      - safety envelope
+
+thermal:
+  cooling:
+    - dual-zone vapor chamber
+    - graphite spreaders
+    - graphene frame conduction
+    - PCM beneath NPU and RAM
+  design_goal: stabilize sustained local AI workloads
+  feasibility:
+    status: research_required
+    rationale: Passive/hybrid cooling may stabilize bursts, but sustained local LLM workloads require careful thermal density modeling.
+    blockers:
+      - watts per cubic centimeter
+      - skin temperature
+      - heat spreader area
+      - sustained inference power
+
+camera:
+  rear:
+    sensor_mp: 48
+    architecture: lateral optical system
+    optics: prism into horizontal lens array
+  front:
+    architecture: under-display camera
+  feasibility:
+    status: near_term
+    rationale: Periscope/lateral optics are commercially proven, but the exact horizontal lens array must be packaged around thermal and battery zones.
+    blockers:
+      - internal volume
+      - optical alignment
+      - sensor thickness
+
+wireless:
+  wifi: Wi-Fi 7
+  bluetooth: Bluetooth 6
+  uwb: UWB 2.0
+  cellular: optional 5G
+  feasibility:
+    status: feasible_today
+    rationale: Wi-Fi 7, UWB, Bluetooth, and 5G are all commercially available.
+    blockers:
+      - antenna detuning near thermal frame
+      - RF coexistence
+
+security:
+  hardware:
+    - TPM 2.0
+    - Secure Enclave
+    - encrypted RAM
+  modes:
+    - Airgap Mode
+  design_goal: verifiable offline execution and local key isolation
+  feasibility:
+    status: feasible_today
+    rationale: TPMs, secure enclaves, encrypted storage, and airplane-mode-like isolation are available; verifiable Airgap Mode requires explicit hardware indicators and firmware control.
+    blockers:
+      - radio kill verification
+      - supply-chain trust
+      - firmware auditability
+
+materials:
+  chassis:
+    - magnesium alloy
+    - graphene-enhanced ceramic
+  ingress_rating: IP68
+  feasibility:
+    status: near_term
+    rationale: Magnesium alloy, ceramic backs, graphite spreaders, and advanced thermal materials exist, but the exact combination requires manufacturability validation.
+    blockers:
+      - yield
+      - cost
+      - repairability
+
+dimensions:
+  thickness_mm: 8.8
+  display_size_in: 7.5
+  feasibility:
+    status: research_required
+    rationale: 8.8mm thickness with large battery, high memory capacity, cooling stack, LSSD, cameras, and antennas is likely the tightest system constraint.
+    blockers:
+      - z-height stack
+      - battery volume
+      - vapor chamber thickness
+      - PCB package height
+
+weight:
+  target_g: 250
+  feasibility:
+    status: research_required
+    rationale: 250g is aggressive given the target battery, thermal stack, ceramic/magnesium chassis, and high-density component load.
+    blockers:
+      - battery mass
+      - chassis mass
+      - thermal module mass
+
+runtime_targets:
+  local_models:
+    - LLaMA 3 13B
+    - LLaMA 3 30B
+    - Mixtral 8x7B
+    - Phi-3
+    - CLIP
+    - Whisper
+  quantization:
+    - INT4
+    - INT8
+    - BF16
+  capabilities:
+    - local inference
+    - context persistence
+    - vector memory
+    - encrypted model storage
+    - session caching
+  feasibility:
+    status: conceptual_extrapolation
+    rationale: Smaller quantized models are realistic locally; larger models depend on memory capacity, bandwidth, thermal limits, and sustained power.
+    blockers:
+      - sustained tokens per second
+      - memory bandwidth
+      - model load time
+      - thermal throttling
+
+feasibility:
+  status: research_required
+  rationale: Slate pocket v1 combines commercially available subsystems with aggressive memory, thermal, battery, and packaging targets that require validation before buildability can be claimed.
+  blockers:
+    - integrated system thermal budget
+    - internal volume allocation
+    - high-density memory packaging
+    - sustained local AI performance

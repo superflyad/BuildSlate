@@ -1,0 +1,80 @@
+{
+  "version": "slate-v1",
+  "display": {
+    "type": "OLED touch module",
+    "diagonal_in": 13.3,
+    "resolution_px": [2880, 1920],
+    "refresh_hz": 120,
+    "brightness_nits_typical": 500,
+    "interface": "eDP 1.4b"
+  },
+  "chassis": {
+    "construction": "magnesium alloy mid-frame with ceramic rear cover",
+    "dimensions_mm": {
+      "width": 292.0,
+      "height": 205.0,
+      "thickness": 6.8
+    },
+    "mass_g_target": 690,
+    "environmental_sealing": "gasketed display and port openings; target IP54"
+  },
+  "compute": {
+    "soc_class": "tablet-class ARM SoC with integrated NPU",
+    "cpu": "8-core heterogeneous CPU target",
+    "gpu": "integrated mobile GPU",
+    "npu_tops_target": 45,
+    "package": "PoP or adjacent LPDDR topology under thermal spreader"
+  },
+  "memory": {
+    "type": "LPDDR5X",
+    "capacity_gb": 64,
+    "bus_width_bits": 128,
+    "bandwidth_gbps_target": 120
+  },
+  "storage": {
+    "type": "LSSD module",
+    "capacity_tb": 2,
+    "interface": "PCIe NVMe",
+    "removable": false
+  },
+  "battery": {
+    "chemistry": "Li-ion polymer",
+    "capacity_wh": 58,
+    "cell_configuration": "multi-cell flat pouch pack",
+    "nominal_voltage_v": 7.7
+  },
+  "cooling": {
+    "architecture": "passive vapor chamber plus graphite spreader stack",
+    "target_sustained_power_w": 18,
+    "skin_temperature_limit_c": 42,
+    "primary_materials": ["copper vapor chamber", "pyrolytic graphite sheet", "magnesium chassis spreader"]
+  },
+  "camera": {
+    "front_mp": 12,
+    "rear_mp": 13,
+    "privacy_indicator": true,
+    "front_sensor_position": "landscape top bezel"
+  },
+  "security": {
+    "tpm": "discrete TPM/security chip",
+    "biometric": "fingerprint sensor in power key",
+    "secure_boot": true
+  },
+  "wireless": {
+    "wifi": "Wi-Fi 7 2x2 MIMO",
+    "bluetooth": "Bluetooth 5.4",
+    "cellular_option": "5G sub-6 module placeholder",
+    "antenna_count": 4
+  },
+  "operating_system": {
+    "primary": "Linux-based hardware bring-up image",
+    "kernel_target": "mainline-oriented BSP",
+    "bootloader": "UEFI or vendor boot chain placeholder"
+  },
+  "feasibility_notes": [
+    "Thermal design is constrained by passive surface temperature limits and thin enclosure volume.",
+    "Memory capacity is sized for local inference experiments and exceeds commodity tablet baselines.",
+    "CAD v1 is dimensional and does not represent manufacturing-ready mechanical detail.",
+    "Power budget scripts are first-order estimates and should be replaced with measured rail data."
+  ]
+}

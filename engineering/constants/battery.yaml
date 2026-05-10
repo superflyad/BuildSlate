@@ -1,0 +1,19 @@
+# Conservative battery constants for first-pass engineering estimates.
+# Values are industry-reference ranges, not vendor commitments.
+lithium_ion_nominal_voltage_v: 3.85
+battery_volumetric_energy_density_wh_per_l:
+  conservative: 500
+  nominal: 650
+  aggressive: 750
+battery_gravimetric_energy_density_wh_per_kg:
+  conservative: 180
+  nominal: 240
+  aggressive: 300
+usable_capacity_factor:
+  conservative: 0.80
+  nominal: 0.90
+  aggressive: 0.95
+notes:
+  - Units are stated in key names where practical.
+  - Pack-level performance depends on cell format, tabs, protection, swelling allowance, enclosure, and safety margins.
+  - Aggressive values are retained for target exploration and must not be treated as production validation.

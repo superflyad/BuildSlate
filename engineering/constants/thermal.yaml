@@ -1,0 +1,23 @@
+# Thermal constants and reference limits for passive/hybrid handheld devices.
+# These are conservative screening values, not thermal-simulation results.
+safe_skin_temperature_c:
+  conservative: 40
+  nominal: 43
+  aggressive: 45
+passive_sustained_power_w:
+  pocket_device:
+    conservative: 4
+    nominal: 7
+    aggressive: 10
+  tablet_device:
+    conservative: 8
+    nominal: 12
+    aggressive: 18
+thermal_risk_heat_density_w_cm3:
+  low_max: 0.05
+  moderate_max: 0.10
+  high_max: 0.20
+  extreme_min: 0.20
+notes:
+  - Passive device limits depend heavily on surface area, materials, ambient temperature, orientation, and user contact.
+  - Sustained power must be proven with thermal path design, sensor limits, workload behavior, and measured skin temperature.

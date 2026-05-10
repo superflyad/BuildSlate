@@ -27,6 +27,9 @@ BuildSlate's engineering foundation keeps future specs, CAD, simulations, SlateO
 
 - `engineering/constants/` contains conservative constants, units, notes, and profile ranges for battery, material, thermal, and compute estimates.
 - `engineering/models/` contains first-pass calculators that print their inputs, assumptions, formulas, outputs, confidence, basis, and primary blocker.
+- Composite chassis modeling:
+  - `engineering/models/composite_chassis.py` estimates mixed-material mass, RF-friendly volume, metal percentage, and first-order thermal conduction.
+  - It is a screening tool, not a production thermal model.
 - `engineering/assumptions/` contains assumption registries that separate known source-intent values, modeled estimates, aggressive assumptions, conceptual extrapolations, and research blockers.
 - `validation/` contains repository checks that keep specs and dimensional constraints machine-checkable.
 - Future features must trace claims back to these foundations, a measured fact, an industry reference, or an explicit unresolved blocker.
@@ -84,6 +87,7 @@ python engineering/models/thermal_limits.py
 python engineering/models/mass_budget.py
 python engineering/models/material_compare.py --material aluminum_alloy
 python engineering/models/material_screen.py
+python engineering/models/composite_chassis.py --preset aluminum_heat_frame_glass_windows
 ```
 
 These scripts are first-order engineering tools. They are intended to keep assumptions explicit and machine-checkable while the CAD, BOM, and simulation models mature.

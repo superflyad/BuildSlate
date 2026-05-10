@@ -1,0 +1,157 @@
+# Readable schema/reference for normalized Slate engineering specifications.
+# This is intentionally not full JSON Schema yet; it defines the first set of
+# required sections and keys that validation scripts can enforce.
+
+schema_name: Slate normalized engineering specification
+schema_version: 0.1
+allowed_feasibility_statuses:
+  - feasible_today
+  - near_term
+  - conceptual_extrapolation
+  - research_required
+
+required_top_level_sections:
+  - identity
+  - display
+  - compute
+  - memory
+  - storage
+  - battery
+  - thermal
+  - camera
+  - wireless
+  - security
+  - materials
+  - dimensions
+  - weight
+  - runtime_targets
+  - feasibility
+
+common_feasibility_metadata:
+  required:
+    - status
+    - rationale
+    - blockers
+
+identity:
+  required:
+    - product_name
+    - version
+    - device_class
+    - source_document
+
+display:
+  required:
+    - size_in
+    - technology
+    - resolution
+    - refresh_rate_hz
+    - aspect_ratio
+    - feasibility
+  optional:
+    - panel_type
+
+compute:
+  required:
+    - cpu
+    - gpu
+    - npu
+    - feasibility
+  cpu_required:
+    - architecture
+    - cores_total
+    - performance_cores
+    - medium_cores
+    - efficiency_cores
+  gpu_required:
+    - class
+    - fp16_tflops_range
+  npu_required:
+    - tops
+    - optimized_for
+
+memory:
+  required:
+    - capacity_gb
+    - type
+    - packaging
+    - feasibility
+
+storage:
+  required:
+    - capacity_tb
+    - type
+    - interface
+    - design_goal
+    - feasibility
+
+battery:
+  required:
+    - capacity_mah
+    - cell_config
+    - charging_wired_w
+    - charging_wireless_w
+    - feasibility
+
+thermal:
+  required:
+    - cooling
+    - design_goal
+    - feasibility
+
+camera:
+  required:
+    - rear
+    - front
+    - feasibility
+  rear_required:
+    - sensor_mp
+    - architecture
+    - optics
+  front_required:
+    - architecture
+
+wireless:
+  required:
+    - wifi
+    - bluetooth
+    - uwb
+    - cellular
+    - feasibility
+
+security:
+  required:
+    - hardware
+    - modes
+    - design_goal
+    - feasibility
+
+materials:
+  required:
+    - chassis
+    - ingress_rating
+    - feasibility
+
+dimensions:
+  required:
+    - thickness_mm
+    - display_size_in
+    - feasibility
+
+weight:
+  required:
+    - target_g
+    - feasibility
+
+runtime_targets:
+  required:
+    - local_models
+    - quantization
+    - capabilities
+    - feasibility
+
+feasibility:
+  required:
+    - status
+    - rationale
+    - blockers

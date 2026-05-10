@@ -1,29 +1,61 @@
 # BuildSlate
 
-BuildSlate is a hardware digital-twin repository for a tablet-class Slate v1 concept. The repository is organized around machine-readable specifications, CAD blocking models, bill-of-materials data, simulation scripts, and validation checks.
+BuildSlate is a hardware digital-twin repository for the Slate Ecosystem. It turns the Slate v1 source-intent concept into structured engineering data, validation checks, derived calculations, CAD planning, and feasibility documentation.
+
+The repository tracks both target concept specs and feasibility constraints. Target specs describe what Slate is intended to become; feasibility constraints describe what must be validated before those targets can be treated as buildable engineering claims.
+
+## Four engineering layers
+
+1. **Source intent**
+   - `specs/Slate_v1_Specifications.pdf` captures the canonical Slate v1 product concept and source intent.
+
+2. **Normalized machine-readable specs**
+   - `specs/slate-pocket-v1.yaml` converts the pocket Slate v1 concept into structured engineering assumptions.
+   - `specs/schema/slate.schema.yaml` documents required top-level sections, expected fields, and feasibility metadata.
+   - `specs/slate-v1.yaml` is preserved as the existing tablet-class baseline/reference spec.
+
+3. **Derived engineering models**
+   - `simulations/derived_metrics/` contains first-order calculators for model memory, battery runtime, and thermal density.
+   - These scripts expose contradictions and sizing pressure early; they are not substitutes for measured hardware data, CAD volume studies, or thermal simulation.
+
+4. **Validation**
+   - `validation/` checks required spec fields, feasibility metadata, allowed feasibility labels, and first-pass dimensional constraints.
 
 ## Repository areas
 
-- `specs/` — source-of-truth device specifications. `specs/slate-v1.yaml` is JSON-compatible YAML so it can be parsed without non-standard Python dependencies.
+- `specs/` — PDF source intent, normalized YAML specs, baseline specs, and schema references.
 - `specs/components/` — component-level specification files and interface notes.
-- `cad/slate-v1/` — mechanical CAD workspace for Slate v1 enclosure, thermal stack, and PCB placeholder models.
+- `cad/slate-v1/` — mechanical CAD workspace and CAD planning for enclosure, thermal stack, PCB placeholders, battery blocks, and camera paths.
 - `bom/` — structured bill-of-materials files with component categories, quantities, placeholder parts, and engineering notes.
+- `simulations/derived_metrics/` — derived feasibility estimates for local model memory, battery runtime, and thermal density.
 - `simulations/thermal/` — thermal models, assumptions, and future solver inputs.
 - `simulations/power/` — battery and workload runtime estimates.
 - `simulations/model-fit/` — memory-fit estimates for local model parameter counts and quantization levels.
 - `diagrams/` — system diagrams, mechanical stack diagrams, and architecture sketches.
 - `validation/` — scripts that verify specs and other digital-twin inputs are complete enough for downstream tooling.
-- `docs/` — design notes, decisions, and methodology documentation.
+- `docs/` — design notes, feasibility methodology, decisions, and engineering documentation.
 - `scripts/` — repository automation and utility scripts.
+
+## Feasibility labels
+
+BuildSlate uses conservative feasibility labels to avoid implying that the Slate pocket target is already buildable:
+
+- `feasible_today` — commercially available or demonstrably manufacturable with current technology.
+- `near_term` — credible with current or emerging parts, but integration risk remains.
+- `conceptual_extrapolation` — physically plausible direction, not commercially available today in the target form factor.
+- `research_required` — insufficient evidence to claim feasibility; more modeling, vendor data, experiments, or prototypes are needed.
 
 ## Current checks
 
-Run the baseline validation and simulation scripts from the repository root:
+Run the normalized validation and derived-metric scripts from the repository root:
 
 ```bash
 python validation/validate_specs.py
-python simulations/model-fit/model_fit.py 7B 4
-python simulations/power/power_budget.py
+python validation/dimensional_constraints.py
+python simulations/derived_metrics/model_memory.py
+python simulations/derived_metrics/model_memory.py --params-billions 70 --quant-bits 4
+python simulations/derived_metrics/battery_runtime.py
+python simulations/derived_metrics/thermal_density.py
 ```
 
 These scripts are first-order engineering tools. They are intended to keep assumptions explicit and machine-checkable while the CAD, BOM, and simulation models mature.

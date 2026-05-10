@@ -58,6 +58,13 @@ materials:
     notes:
       - Useful for cover glass, rear glass, and RF/wireless charging transparency.
       - Poor passive heat spreader and sensitive to edges, impacts, and bonding stresses.
+  polymer:
+    density_g_cm3: {min: 0.90, typical: 1.20, max: 1.50}
+    thermal_conductivity_w_mk: {min: 0.15, typical: 0.25, max: 0.40}
+    specific_heat_j_gk: {min: 1.0, typical: 1.4, max: 1.8}
+    notes:
+      - RF-friendly relative to metals and useful for antenna windows, gaskets, and inserts.
+      - Poor passive heat spreader; exact behavior depends on resin, fillers, reinforcement, and coating.
   pcb_assembly:
     density_g_cm3: {min: 1.60, typical: 1.90, max: 2.20}
     thermal_conductivity_w_mk: {min: 0.3, typical: 1.0, max: 5.0}

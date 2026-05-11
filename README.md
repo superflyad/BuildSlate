@@ -35,6 +35,19 @@ BuildSlate's engineering foundation keeps future specs, CAD, simulations, SlateO
 - Future features must trace claims back to these foundations, a measured fact, an industry reference, or an explicit unresolved blocker.
 
 
+
+## Local AI Runtime Models
+
+BuildSlate includes first-pass local AI runtime screening models in `engineering/runtime_models/`. These scripts estimate model residency, KV cache memory, context scaling, model load time, multimodal overhead, and a combined runtime memory budget.
+
+Run the grouped default report with:
+
+```bash
+python engineering/runtime_models/run_all_runtime_models.py
+```
+
+The models are conservative memory and load-time screens. They account for quantized weight residency, KV cache pressure, long-context growth, local storage load assumptions, multimodal resident components, OS reserve, and safety reserve. They do not predict real tokens/sec; real throughput still depends on memory bandwidth, compute kernels, NPU/GPU support, scheduling, thermal throttling, and runtime implementation.
+
 ## Interconnect and Power Delivery Models
 
 BuildSlate includes first-pass interconnect and power delivery screening models in `engineering/interconnect_models/`. These scripts estimate memory bandwidth pressure, PCB routing density, power delivery current, transient current and voltage droop, and package adjacency constraints before detailed board layout or SI/PI simulation exists.

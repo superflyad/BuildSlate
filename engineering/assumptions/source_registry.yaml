@@ -138,3 +138,47 @@ entries:
       - soc_package
     confidence: low
     notes: This is not an inference-performance claim; KV cache, scheduling, NPU efficiency, runtime software, memory latency, batching, and sparsity must be validated separately.
+
+  - id: kv_cache_formula
+    category: modeled_estimate
+    description: First-pass local LLM KV cache memory formula using keys plus values across layers, hidden size, context length, batch size, and element size.
+    applies_to:
+      - kv_cache
+      - runtime_memory_budget
+      - context_scaling
+    confidence: medium
+    notes: Architecture details such as grouped-query attention, paged cache layouts, cache compression, and runtime implementation can materially change realized cache memory.
+  - id: context_length_assumption
+    category: conceptual_extrapolation
+    description: Context lengths used to screen long-context local AI runtime memory pressure.
+    applies_to:
+      - context_scaling
+      - kv_cache
+      - runtime_memory_budget
+    confidence: low
+    notes: Longer contexts are memory-expensive and depend on model architecture, attention implementation, prompt workload, batching, and runtime cache management.
+  - id: multimodal_overhead_assumption
+    category: modeled_estimate
+    description: Placeholder additive resident memory overhead for vision, speech, embedding, vector-index, and runtime-reserve components.
+    applies_to:
+      - multimodal_overhead
+      - runtime_memory_budget
+    confidence: low
+    notes: Actual resident memory depends on concrete model choices, precision, runtime sharing, lazy loading, vector index size, and concurrent workload policy.
+  - id: model_load_bandwidth_assumption
+    category: modeled_estimate
+    description: First-pass model cold-load timing assumption based on local storage bandwidth and runtime overhead factors.
+    applies_to:
+      - model_load_time
+      - runtime_memory_budget
+    confidence: low
+    notes: Storage bandwidth is theoretical rather than guaranteed sustained; filesystem behavior, decompression, allocation, thermal state, and concurrent I/O can increase load time.
+  - id: runtime_memory_reserve_assumption
+    category: modeled_estimate
+    description: Placeholder OS and safety memory reserves used in combined local AI runtime budget screening.
+    applies_to:
+      - runtime_memory_budget
+      - model_residency
+      - multimodal_overhead
+    confidence: low
+    notes: Reserve requirements depend on operating system, runtime implementation, allocator behavior, background services, memory fragmentation, and workload concurrency.

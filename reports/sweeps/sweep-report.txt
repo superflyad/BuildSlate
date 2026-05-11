@@ -1,0 +1,17 @@
+Scenario Sweep
+generated: 2026-05-11T13:54:23+00:00
+profile: slate-pocket-v1
+profile_path: configs/devices/slate-pocket-v1.yaml
+parameter: memory.capacity_gb
+
+value | profile_value | memory_package_count | memory_area_mm2 | active_memory_power_w | runtime_used_gb | runtime_remaining_gb | runtime_pass | warnings       
+----- | ------------- | -------------------- | --------------- | --------------------- | --------------- | -------------------- | ------------ | ---------------
+128   | 128           | 4                    | 480             | 3.2                   | 207.6           | -79.6                | fail         | memory_pressure
+256   | 256           | 8                    | 960             | 6.4                   | 207.6           | 48.4                 | pass         | memory_pressure
+512   | 512           | 16                   | 1920            | 12.8                  | 207.6           | 304.4                | pass         | memory_pressure
+
+Notes:
+- Each row mutates one parameter in an in-memory copy of the source profile.
+- Source YAML profiles are not edited by this sweep runner.
+- Results are conservative first-pass sensitivity screens, not optimization or automatic target solving.
+- Warning labels are engineering information for follow-up review.

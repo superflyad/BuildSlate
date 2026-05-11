@@ -165,6 +165,18 @@ python engineering/comparison/compare_profiles.py \
 
 Use `python engineering/comparison/profile_matrix.py` for a compact matrix of targets, warnings, blockers, and qualitative confidence/pressure levels. Use `python engineering/comparison/tradeoff_summary.py` for qualitative engineering tradeoff summaries. Generated comparison reports are written under `reports/profile-comparisons/`.
 
+## Scenario Sweeps and Sensitivity Analysis
+
+BuildSlate can run controlled one-parameter sweeps for first-pass sensitivity analysis. Sweeps mutate one profile value in memory, run lightweight engineering checks, and write readable reports under `reports/sweeps/` without modifying source profile YAML files.
+
+Run a thickness sweep with:
+
+```bash
+python engineering/sweeps/sweep_runner.py --profile configs/devices/slate-pocket-v1.yaml --parameter geometry.thickness_mm --values 8.8 9.5 10.5 12.0
+```
+
+Use `engineering/sweeps/sweep_runner.py` for individual parameter sweeps and `engineering/sweeps/sensitivity_summary.py` for the default sensitivity set covering thickness, sustained power, battery capacity, memory capacity, and ambient temperature. These tools are screening aids, not optimizers or automatic constraint solvers.
+
 ## Feasibility Report
 
 Generate a unified Slate Pocket v1 first-pass engineering feasibility report with:

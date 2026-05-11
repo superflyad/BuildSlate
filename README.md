@@ -131,6 +131,24 @@ BuildSlate now separates hardware vocabulary, constants, formulas, and interpret
 - `docs/engineering/` explains how to interpret the model outputs and why no material, battery, chassis, or cooling decision should be treated as universally best.
 - Future design changes to thickness, chassis material, battery size, cooling strategy, or packaging must use these definitions before claiming feasibility.
 
+## Configurable Device Profiles
+
+BuildSlate supports profile-specific screening through YAML device profiles in `configs/devices/`. Profiles are structured inputs, not optimized answers: they define Slate hardware assumptions and run those values through the existing engineering validation and model scripts.
+
+Validate profiles with:
+
+```bash
+python validation/validate_device_profiles.py
+```
+
+Generate a profile-specific feasibility report with:
+
+```bash
+python engineering/run_device_profile.py --profile configs/devices/slate-pocket-v1.yaml
+```
+
+The runner writes a report under `reports/`, scans model output for warning and blocker language, and keeps aggressive or conservative assumptions visible without automatically adjusting targets.
+
 ## Feasibility Report
 
 Generate a unified Slate Pocket v1 first-pass engineering feasibility report with:

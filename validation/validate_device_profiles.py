@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+"""Validate BuildSlate device profile YAML files."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
+try:
+    import yaml
+except ImportError as exc:  # pragma: no cover - dependency guidance path
+    raise SystemExit("PyYAML is required. Install dependencies with: pip install -r requirements.txt") from exc
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+PROFILE_DIR = REPO_ROOT / "configs" / "devices"
+
+REQUIRED_TOP_LEVEL_SECTIONS = (
+    "identity",
+    "geometry",
+    "mass_targets",
+    "battery",
+    "display",
+    "compute",
+    "memory",
+    "storage",
+    "thermal",
+    "materials",
+    "chassis_composite",
+    "component_assumptions",
+    "interconnect",
+    "runtime",
+    "manufacturing",
+    "environment",
+    "notes",
+)
+
+REQUIRED_FIELD_PATHS = (
+    ("identity", "profile_id"),
+    ("geometry", "length_mm"),
+    ("geometry", "width_mm"),
+    ("geometry", "thickness_mm"),
+    ("battery", "capacity_mah"),
+    ("battery", "nominal_voltage_v"),
+    ("compute", "sustained_power_w"),
+    ("memory", "capacity_gb"),
+    ("storage", "capacity_tb"),
+    ("thermal", "sustained_w"),
+    ("runtime", "model_params_billions"),
+    ("runtime", "quantization_bits"),
+    ("environment", "condition"),
+)
+
+NUMERIC_FIELD_PATHS = tuple(path for path in REQUIRED_FIELD_PATHS if path not in (("identity", "profile_id"), ("environment", "condition")))
+
+
+def load_yaml(path: Path) -> dict[str, Any]:
+    with path.open("r", encoding="utf-8") as profile_file:
+        data = yaml.safe_load(profile_file)
+    if not isinstance(data, dict):
+        raise ValueError("profile root must be a mapping/object")
+    return data
+
+
+def require_mapping(profile: dict[str, Any], section_name: str) -> dict[str, Any]:
+    section = profile.get(section_name)
+    if not isinstance(section, dict):
+        raise ValueError(f"{section_name} must be a mapping")
+    return section
+
+
+def get_path(profile: dict[str, Any], path: tuple[str, str]) -> Any:
+    section_name, field_name = path
+    section = require_mapping(profile, section_name)
+    if field_name not in section:
+        raise ValueError(f"{section_name}.{field_name} is required")
+    return section[field_name]
+
+
+def validate_profile(path: Path) -> str:
+    profile = load_yaml(path)
+
+    missing_sections = [section for section in REQUIRED_TOP_LEVEL_SECTIONS if section not in profile]
+    if missing_sections:
+        raise ValueError(f"missing required top-level sections: {', '.join(missing_sections)}")
+
+    for section in REQUIRED_TOP_LEVEL_SECTIONS:
+        if section == "notes":
+            continue
+        require_mapping(profile, section)
+
+    for field_path in REQUIRED_FIELD_PATHS:
+        value = get_path(profile, field_path)
+        if value in (None, ""):
+            raise ValueError(f"{'.'.join(field_path)} must be populated")
+
+    for field_path in NUMERIC_FIELD_PATHS:
+        value = get_path(profile, field_path)
+        if not isinstance(value, (int, float)) or isinstance(value, bool):
+            raise ValueError(f"{'.'.join(field_path)} must be numeric")
+        if value <= 0:
+            raise ValueError(f"{'.'.join(field_path)} must be greater than zero")
+
+    return str(get_path(profile, ("identity", "profile_id")))
+
+
+def main() -> int:
+    if not PROFILE_DIR.exists():
+        print(f"FAIL: profile directory not found: {PROFILE_DIR.relative_to(REPO_ROOT)}")
+        return 1
+
+    profile_paths = sorted(PROFILE_DIR.glob("*.yaml"))
+    if not profile_paths:
+        print(f"FAIL: no device profiles found in {PROFILE_DIR.relative_to(REPO_ROOT)}")
+        return 1
+
+    failed = False
+    for path in profile_paths:
+        try:
+            profile_id = validate_profile(path)
+        except ValueError as exc:
+            failed = True
+            print(f"FAIL: {path.relative_to(REPO_ROOT)}: {exc}")
+        else:
+            print(f"PASS: {path.relative_to(REPO_ROOT)} ({profile_id})")
+
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

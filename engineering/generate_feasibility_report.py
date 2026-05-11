@@ -180,6 +180,9 @@ def render_report(results: list[CheckResult]) -> str:
         "  device: Slate Pocket v1",
         "  purpose: first-pass engineering screening",
         "  status: not production validation",
+        "Device Profile Reporting:",
+        "  configurable profile reports are available alongside this general report",
+        "  example: python engineering/run_device_profile.py --profile configs/devices/slate-pocket-v1.yaml",
         "",
     ]
 

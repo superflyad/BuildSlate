@@ -1,0 +1,95 @@
+identity:
+  name: Slate Pocket Conservative
+  profile_id: slate-pocket-conservative
+  source_spec: specs/slate-pocket-v1.yaml
+  intent: conservative screening profile for grounded comparison
+  label: conservative screening
+
+geometry:
+  length_mm: 180
+  width_mm: 95
+  thickness_mm: 10.5
+  display_diagonal_in: 7.5
+
+mass_targets:
+  aspirational_target_g: 300
+  engineering_estimate_g: 340
+  acceptable_range_g:
+    min: 320
+    max: 380
+
+battery:
+  capacity_mah: 7000
+  nominal_voltage_v: 3.85
+  charging_wired_w: 65
+  charging_wireless_w: 25
+
+display:
+  diagonal_in: 7.5
+  aspect_width: 16
+  aspect_height: 10
+  display_power_w: 3.0
+
+compute:
+  sustained_power_w: 16
+  peak_power_w: 35
+  npu_tops: 60
+
+memory:
+  capacity_gb: 256
+  gb_per_package: 32
+  bandwidth_gbps: 1024
+
+storage:
+  capacity_tb: 2
+  tb_per_package: 2
+  active_power_w: 3
+
+thermal:
+  sustained_w: 16
+  max_skin_c: 43
+  ambient_c: 25
+
+materials:
+  frame_material: aluminum_alloy
+  rear_window_material: glass
+  thermal_path_materials:
+    - graphite_sheet
+    - copper
+    - aluminum_alloy
+
+chassis_composite:
+  preset: aluminum_heat_frame_glass_windows
+
+component_assumptions:
+  packaging_class: grounded_pocket_ai_device_screen
+  battery_pack_type: high_density_lithium_polymer
+  display_stack: efficient_thin_display_candidate
+  cooling_strategy: passive_spreading_with_added_z_height
+
+interconnect:
+  memory_topology: reduced_capacity_high_bandwidth_memory
+  board_class: high_density_multilayer
+  power_delivery_note: lower sustained power reduces current density pressure but still requires SI/PI validation
+
+runtime:
+  model_params_billions: 70
+  quantization_bits: 4
+  context_tokens: 32768
+  available_memory_gb: 256
+
+manufacturing:
+  maturity: conservative_screening
+  assembly_note: thicker envelope and reduced load improve comparison baseline but do not prove manufacturability
+  validation_required:
+    - CAD volume study
+    - supplier package data
+    - thermal prototype
+
+environment:
+  condition: open_air
+  brightness_mode: normal
+
+notes:
+  - Conservative screening profile for comparing lower-power and lower-capacity assumptions.
+  - This is not a final product target and does not optimize automatically.

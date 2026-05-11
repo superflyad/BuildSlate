@@ -1,0 +1,217 @@
+Default Constraint Boundary Checks
+generated: 2026-05-11T21:31:56+00:00
+profile_path: configs/devices/slate-pocket-v1.yaml
+screening_result: screening result, not production validation
+
+## Minimum thickness for stackup
+Feasibility Boundary Analysis
+generated: 2026-05-11T21:31:56+00:00
+profile: slate-pocket-v1
+profile_path: configs/devices/slate-pocket-v1.yaml
+parameter_varied: geometry.thickness_mm
+range_tested: 8 to 14 step 0.25
+constraint_evaluated: zone_stackup_pass
+first_passing_value: 9
+last_failing_value_before_pass: 8.75
+best_passing_value_in_scan_order: 14
+last_passing_value_before_fail: 14
+first_failing_value_after_pass: none
+fail_pass_sequence: FFFFPPPPPPPPPPPPPPPPPPPPP
+screening_result: screening result, not production validation
+
+value | pass | reason                     | profile_value | zone_margin_mm | thermal_risk | battery_runtime_h | warnings                                  
+----- | ---- | -------------------------- | ------------- | -------------- | ------------ | ----------------- | ------------------------------------------
+8     | FAIL | worst zone margin -0.80 mm | 8             | -0.80          | high         | 0.71              | high_thermal_risk,runtime_low,stackup_fail
+8.25  | FAIL | worst zone margin -0.55 mm | 8.25          | -0.55          | high         | 0.71              | high_thermal_risk,runtime_low,stackup_fail
+8.5   | FAIL | worst zone margin -0.30 mm | 8.5           | -0.30          | high         | 0.71              | high_thermal_risk,runtime_low,stackup_fail
+8.75  | FAIL | worst zone margin -0.05 mm | 8.75          | -0.05          | high         | 0.71              | high_thermal_risk,runtime_low,stackup_fail
+9     | PASS | worst zone margin 0.20 mm  | 9             | 0.20           | high         | 0.71              | high_thermal_risk,runtime_low             
+9.25  | PASS | worst zone margin 0.45 mm  | 9.25          | 0.45           | high         | 0.71              | high_thermal_risk,runtime_low             
+9.5   | PASS | worst zone margin 0.70 mm  | 9.5           | 0.70           | high         | 0.71              | high_thermal_risk,runtime_low             
+9.75  | PASS | worst zone margin 0.95 mm  | 9.75          | 0.95           | high         | 0.71              | high_thermal_risk,runtime_low             
+10    | PASS | worst zone margin 1.20 mm  | 10            | 1.20           | high         | 0.71              | high_thermal_risk,runtime_low             
+10.25 | PASS | worst zone margin 1.45 mm  | 10.25         | 1.45           | high         | 0.71              | high_thermal_risk,runtime_low             
+10.5  | PASS | worst zone margin 1.70 mm  | 10.5          | 1.70           | high         | 0.71              | high_thermal_risk,runtime_low             
+10.75 | PASS | worst zone margin 1.95 mm  | 10.75         | 1.95           | high         | 0.71              | high_thermal_risk,runtime_low             
+11    | PASS | worst zone margin 2.20 mm  | 11            | 2.20           | moderate     | 0.71              | runtime_low                               
+11.25 | PASS | worst zone margin 2.45 mm  | 11.25         | 2.45           | moderate     | 0.71              | runtime_low                               
+11.5  | PASS | worst zone margin 2.70 mm  | 11.5          | 2.70           | moderate     | 0.71              | runtime_low                               
+11.75 | PASS | worst zone margin 2.95 mm  | 11.75         | 2.95           | moderate     | 0.71              | runtime_low                               
+12    | PASS | worst zone margin 3.20 mm  | 12            | 3.20           | moderate     | 0.71              | runtime_low                               
+12.25 | PASS | worst zone margin 3.45 mm  | 12.25         | 3.45           | moderate     | 0.71              | runtime_low                               
+12.5  | PASS | worst zone margin 3.70 mm  | 12.5          | 3.70           | moderate     | 0.71              | runtime_low                               
+12.75 | PASS | worst zone margin 3.95 mm  | 12.75         | 3.95           | moderate     | 0.71              | runtime_low                               
+13    | PASS | worst zone margin 4.20 mm  | 13            | 4.20           | moderate     | 0.71              | runtime_low                               
+13.25 | PASS | worst zone margin 4.45 mm  | 13.25         | 4.45           | moderate     | 0.71              | runtime_low                               
+13.5  | PASS | worst zone margin 4.70 mm  | 13.5          | 4.70           | moderate     | 0.71              | runtime_low                               
+13.75 | PASS | worst zone margin 4.95 mm  | 13.75         | 4.95           | moderate     | 0.71              | runtime_low                               
+14    | PASS | worst zone margin 5.20 mm  | 14            | 5.20           | moderate     | 0.71              | runtime_low                               
+
+Notes:
+- Each row mutates one parameter in an in-memory copy of the source profile.
+- Source YAML profiles are not edited by this boundary tool.
+- Boundary results identify explicit pass/fail transitions; they do not optimize or automatically redesign Slate.
+- Constraints and outputs are model-dependent screening classifications, not certification results.
+- Warnings highlight model limitations and follow-up engineering review needs.
+
+## Maximum sustained power before thermal becomes extreme
+Feasibility Boundary Analysis
+generated: 2026-05-11T21:31:56+00:00
+profile: slate-pocket-v1
+profile_path: configs/devices/slate-pocket-v1.yaml
+parameter_varied: compute.sustained_power_w
+range_tested: 4 to 40 step 2
+constraint_evaluated: thermal_risk_not_extreme
+first_passing_value: 4
+last_failing_value_before_pass: none
+best_passing_value_in_scan_order: 36
+last_passing_value_before_fail: 36
+first_failing_value_after_pass: 38
+fail_pass_sequence: PPPPPPPPPPPPPPPPPFF
+screening_result: screening result, not production validation
+
+value | pass | reason                | profile_value | thermal_risk | heat_density_w_cm3 | battery_runtime_h | warnings                     
+----- | ---- | --------------------- | ------------- | ------------ | ------------------ | ----------------- | -----------------------------
+4     | PASS | thermal risk low      | 4             | low          | 0.027              | 4.97              | none                         
+6     | PASS | thermal risk low      | 6             | low          | 0.040              | 3.31              | none                         
+8     | PASS | thermal risk low      | 8             | low          | 0.053              | 2.48              | none                         
+10    | PASS | thermal risk low      | 10            | low          | 0.066              | 1.99              | none                         
+12    | PASS | thermal risk low      | 12            | low          | 0.080              | 1.66              | none                         
+14    | PASS | thermal risk moderate | 14            | moderate     | 0.093              | 1.42              | none                         
+16    | PASS | thermal risk moderate | 16            | moderate     | 0.106              | 1.24              | none                         
+18    | PASS | thermal risk moderate | 18            | moderate     | 0.120              | 1.10              | none                         
+20    | PASS | thermal risk moderate | 20            | moderate     | 0.133              | 0.99              | runtime_low                  
+22    | PASS | thermal risk moderate | 22            | moderate     | 0.146              | 0.90              | runtime_low                  
+24    | PASS | thermal risk high     | 24            | high         | 0.159              | 0.83              | high_thermal_risk,runtime_low
+26    | PASS | thermal risk high     | 26            | high         | 0.173              | 0.76              | high_thermal_risk,runtime_low
+28    | PASS | thermal risk high     | 28            | high         | 0.186              | 0.71              | high_thermal_risk,runtime_low
+30    | PASS | thermal risk high     | 30            | high         | 0.199              | 0.66              | high_thermal_risk,runtime_low
+32    | PASS | thermal risk high     | 32            | high         | 0.213              | 0.62              | high_thermal_risk,runtime_low
+34    | PASS | thermal risk high     | 34            | high         | 0.226              | 0.58              | high_thermal_risk,runtime_low
+36    | PASS | thermal risk high     | 36            | high         | 0.239              | 0.55              | high_thermal_risk,runtime_low
+38    | FAIL | thermal risk extreme  | 38            | extreme      | 0.253              | 0.52              | high_thermal_risk,runtime_low
+40    | FAIL | thermal risk extreme  | 40            | extreme      | 0.266              | 0.50              | high_thermal_risk,runtime_low
+
+Notes:
+- Each row mutates one parameter in an in-memory copy of the source profile.
+- Source YAML profiles are not edited by this boundary tool.
+- Boundary results identify explicit pass/fail transitions; they do not optimize or automatically redesign Slate.
+- Constraints and outputs are model-dependent screening classifications, not certification results.
+- Warnings highlight model limitations and follow-up engineering review needs.
+
+## Maximum ambient temperature before skin temp fails
+Feasibility Boundary Analysis
+generated: 2026-05-11T21:31:56+00:00
+profile: slate-pocket-v1
+profile_path: configs/devices/slate-pocket-v1.yaml
+parameter_varied: thermal.ambient_c
+range_tested: 20 to 50 step 2.5
+constraint_evaluated: skin_temp_pass
+first_passing_value: 20
+last_failing_value_before_pass: none
+best_passing_value_in_scan_order: 25
+last_passing_value_before_fail: 25
+first_failing_value_after_pass: 27.5
+fail_pass_sequence: PPPFFFFFFFFFF
+screening_result: screening result, not production validation
+
+value | pass | reason                    | profile_value | estimated_skin_c | max_skin_c | skin_margin_c | warnings         
+----- | ---- | ------------------------- | ------------- | ---------------- | ---------- | ------------- | -----------------
+20    | PASS | skin 38.0 C <= max 43.0 C | 20            | 38.0             | 43.0       | 5.0           | none             
+22.5  | PASS | skin 40.5 C <= max 43.0 C | 22.5          | 40.5             | 43.0       | 2.5           | throttle_pressure
+25    | PASS | skin 43.0 C <= max 43.0 C | 25            | 43.0             | 43.0       | 0.0           | throttle_pressure
+27.5  | FAIL | skin 45.5 C <= max 43.0 C | 27.5          | 45.5             | 43.0       | -2.5          | throttle_pressure
+30    | FAIL | skin 48.0 C <= max 43.0 C | 30            | 48.0             | 43.0       | -5.0          | throttle_pressure
+32.5  | FAIL | skin 50.5 C <= max 43.0 C | 32.5          | 50.5             | 43.0       | -7.5          | throttle_pressure
+35    | FAIL | skin 53.0 C <= max 43.0 C | 35            | 53.0             | 43.0       | -10.0         | throttle_pressure
+37.5  | FAIL | skin 55.5 C <= max 43.0 C | 37.5          | 55.5             | 43.0       | -12.5         | throttle_pressure
+40    | FAIL | skin 58.0 C <= max 43.0 C | 40            | 58.0             | 43.0       | -15.0         | throttle_pressure
+42.5  | FAIL | skin 60.5 C <= max 43.0 C | 42.5          | 60.5             | 43.0       | -17.5         | throttle_pressure
+45    | FAIL | skin 63.0 C <= max 43.0 C | 45            | 63.0             | 43.0       | -20.0         | throttle_pressure
+47.5  | FAIL | skin 65.5 C <= max 43.0 C | 47.5          | 65.5             | 43.0       | -22.5         | throttle_pressure
+50    | FAIL | skin 68.0 C <= max 43.0 C | 50            | 68.0             | 43.0       | -25.0         | throttle_pressure
+
+Notes:
+- Each row mutates one parameter in an in-memory copy of the source profile.
+- Source YAML profiles are not edited by this boundary tool.
+- Boundary results identify explicit pass/fail transitions; they do not optimize or automatically redesign Slate.
+- Constraints and outputs are model-dependent screening classifications, not certification results.
+- Warnings highlight model limitations and follow-up engineering review needs.
+
+## Minimum battery capacity for 1 hour at sustained power
+Feasibility Boundary Analysis
+generated: 2026-05-11T21:31:56+00:00
+profile: slate-pocket-v1
+profile_path: configs/devices/slate-pocket-v1.yaml
+parameter_varied: battery.capacity_mah
+range_tested: 4000 to 10000 step 500
+constraint_evaluated: runtime_minimum
+first_passing_value: 8500
+last_failing_value_before_pass: 8000
+best_passing_value_in_scan_order: 10000
+last_passing_value_before_fail: 10000
+first_failing_value_after_pass: none
+fail_pass_sequence: FFFFFFFFFPPPP
+screening_result: screening result, not production validation
+
+value | pass | reason                          | profile_value | battery_runtime_h | target_runtime_h | warnings                 
+----- | ---- | ------------------------------- | ------------- | ----------------- | ---------------- | -------------------------
+4000  | FAIL | runtime 0.47 h >= target 1.00 h | 4000          | 0.47              | 1.00             | runtime_low              
+4500  | FAIL | runtime 0.53 h >= target 1.00 h | 4500          | 0.53              | 1.00             | runtime_low              
+5000  | FAIL | runtime 0.59 h >= target 1.00 h | 5000          | 0.59              | 1.00             | runtime_low              
+5500  | FAIL | runtime 0.65 h >= target 1.00 h | 5500          | 0.65              | 1.00             | runtime_low              
+6000  | FAIL | runtime 0.71 h >= target 1.00 h | 6000          | 0.71              | 1.00             | runtime_low              
+6500  | FAIL | runtime 0.77 h >= target 1.00 h | 6500          | 0.77              | 1.00             | runtime_low              
+7000  | FAIL | runtime 0.83 h >= target 1.00 h | 7000          | 0.83              | 1.00             | runtime_low,mass_pressure
+7500  | FAIL | runtime 0.89 h >= target 1.00 h | 7500          | 0.89              | 1.00             | runtime_low,mass_pressure
+8000  | FAIL | runtime 0.95 h >= target 1.00 h | 8000          | 0.95              | 1.00             | runtime_low,mass_pressure
+8500  | PASS | runtime 1.01 h >= target 1.00 h | 8500          | 1.01              | 1.00             | mass_pressure            
+9000  | PASS | runtime 1.06 h >= target 1.00 h | 9000          | 1.06              | 1.00             | mass_pressure            
+9500  | PASS | runtime 1.12 h >= target 1.00 h | 9500          | 1.12              | 1.00             | mass_pressure            
+10000 | PASS | runtime 1.18 h >= target 1.00 h | 10000         | 1.18              | 1.00             | mass_pressure            
+
+Notes:
+- Each row mutates one parameter in an in-memory copy of the source profile.
+- Source YAML profiles are not edited by this boundary tool.
+- Boundary results identify explicit pass/fail transitions; they do not optimize or automatically redesign Slate.
+- Constraints and outputs are model-dependent screening classifications, not certification results.
+- Warnings highlight model limitations and follow-up engineering review needs.
+
+## Memory capacity runtime budget
+Feasibility Boundary Analysis
+generated: 2026-05-11T21:31:56+00:00
+profile: slate-pocket-v1
+profile_path: configs/devices/slate-pocket-v1.yaml
+parameter_varied: memory.capacity_gb
+range_tested: 64 to 512 step 64
+constraint_evaluated: memory_runtime_pass
+first_passing_value: 256
+last_failing_value_before_pass: 192
+best_passing_value_in_scan_order: 512
+last_passing_value_before_fail: 512
+first_failing_value_after_pass: none
+fail_pass_sequence: FFFPPPPP
+screening_result: screening result, not production validation
+
+value | pass | reason                                        | profile_value | runtime_used_gb | available_memory_gb | runtime_remaining_gb | warnings       
+----- | ---- | --------------------------------------------- | ------------- | --------------- | ------------------- | -------------------- | ---------------
+64    | FAIL | runtime memory 207.6 GB <= available 64.0 GB  | 64            | 207.6           | 64.0                | -143.6               | memory_pressure
+128   | FAIL | runtime memory 207.6 GB <= available 128.0 GB | 128           | 207.6           | 128.0               | -79.6                | memory_pressure
+192   | FAIL | runtime memory 207.6 GB <= available 192.0 GB | 192           | 207.6           | 192.0               | -15.6                | memory_pressure
+256   | PASS | runtime memory 207.6 GB <= available 256.0 GB | 256           | 207.6           | 256.0               | 48.4                 | memory_pressure
+320   | PASS | runtime memory 207.6 GB <= available 320.0 GB | 320           | 207.6           | 320.0               | 112.4                | memory_pressure
+384   | PASS | runtime memory 207.6 GB <= available 384.0 GB | 384           | 207.6           | 384.0               | 176.4                | memory_pressure
+448   | PASS | runtime memory 207.6 GB <= available 448.0 GB | 448           | 207.6           | 448.0               | 240.4                | memory_pressure
+512   | PASS | runtime memory 207.6 GB <= available 512.0 GB | 512           | 207.6           | 512.0               | 304.4                | memory_pressure
+
+Notes:
+- Each row mutates one parameter in an in-memory copy of the source profile.
+- Source YAML profiles are not edited by this boundary tool.
+- Boundary results identify explicit pass/fail transitions; they do not optimize or automatically redesign Slate.
+- Constraints and outputs are model-dependent screening classifications, not certification results.
+- Warnings highlight model limitations and follow-up engineering review needs.
+
+Global Notes:
+- These checks evaluate explicit constraints over fixed numeric ranges.
+- They do not optimize, rank architectures, or modify source device profiles.
+- Model limits and warning labels must be reviewed before making engineering decisions.

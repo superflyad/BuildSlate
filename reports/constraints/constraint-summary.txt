@@ -1,0 +1,17 @@
+Constraint Boundary Summary
+generated: 2026-05-11T21:31:57+00:00
+profile_path: configs/devices/slate-pocket-v1.yaml
+screening result, not production validation
+
+Plain-language findings:
+- Minimum passing thickness for current stack assumptions: 9 mm.
+- Runtime target requires at least 8500 mAh under current sustained load.
+- Sustained power should remain at or below 36 W before thermal risk escalates to EXTREME at 38 W in this scan.
+- Ambient sensitivity becomes critical above 25 C; the first failing scan point is 27.5 C.
+- Runtime memory budget first passes at 256 GB available memory in this scan.
+
+Model limitation warnings:
+- Boundary values depend on simplified stackup, thermal, battery, mass, and runtime-memory equations.
+- Scan steps discretize the transition; the true boundary may sit between adjacent tested values.
+- Passing a screening constraint is not certification, production validation, regulatory evidence, or a complete device architecture decision.
+- These tools do not optimize or automatically redesign Slate; they only classify explicit constraints against mutated in-memory profiles.

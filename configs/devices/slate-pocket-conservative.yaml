@@ -1,3 +1,8 @@
+profile_class: conservative
+feasibility_status: screening_candidate
+review_notes:
+  - Grounding reference for lower-power and thicker-envelope comparison.
+
 identity:
   name: Slate Pocket Conservative
   profile_id: slate-pocket-conservative

@@ -52,6 +52,9 @@ REQUIRED_FIELD_PATHS = (
 
 NUMERIC_FIELD_PATHS = tuple(path for path in REQUIRED_FIELD_PATHS if path not in (("identity", "profile_id"), ("environment", "condition")))
 
+OPTIONAL_PROFILE_CLASSES = {"aggressive", "canonical", "conservative", "experimental"}
+OPTIONAL_FEASIBILITY_STATUSES = {"conceptual", "research_required", "screening_candidate"}
+
 
 def load_yaml(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as profile_file:
@@ -76,6 +79,28 @@ def get_path(profile: dict[str, Any], path: tuple[str, str]) -> Any:
     return section[field_name]
 
 
+def validate_optional_metadata(profile: dict[str, Any]) -> None:
+    profile_class = profile.get("profile_class")
+    if profile_class is not None:
+        if profile_class not in OPTIONAL_PROFILE_CLASSES:
+            allowed = ", ".join(sorted(OPTIONAL_PROFILE_CLASSES))
+            raise ValueError(f"profile_class must be one of: {allowed}")
+
+    feasibility_status = profile.get("feasibility_status")
+    if feasibility_status is not None:
+        if feasibility_status not in OPTIONAL_FEASIBILITY_STATUSES:
+            allowed = ", ".join(sorted(OPTIONAL_FEASIBILITY_STATUSES))
+            raise ValueError(f"feasibility_status must be one of: {allowed}")
+
+    review_notes = profile.get("review_notes")
+    if review_notes is not None:
+        if not isinstance(review_notes, list):
+            raise ValueError("review_notes must be a list when present")
+        for index, note in enumerate(review_notes, start=1):
+            if not isinstance(note, str) or not note.strip():
+                raise ValueError(f"review_notes[{index}] must be a non-empty string")
+
+
 def validate_profile(path: Path) -> str:
     profile = load_yaml(path)
 
@@ -92,6 +117,8 @@ def validate_profile(path: Path) -> str:
         value = get_path(profile, field_path)
         if value in (None, ""):
             raise ValueError(f"{'.'.join(field_path)} must be populated")
+
+    validate_optional_metadata(profile)
 
     for field_path in NUMERIC_FIELD_PATHS:
         value = get_path(profile, field_path)

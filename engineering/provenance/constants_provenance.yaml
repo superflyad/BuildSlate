@@ -1,0 +1,689 @@
+entries:
+  - id: lithium_ion_nominal_voltage_v
+    name: Lithium-ion nominal cell voltage
+    value_or_range: 3.6-3.85
+    units: V
+    category: industry_reference
+    confidence: high
+    used_by:
+      - battery_energy
+      - runtime_models
+    rationale: First-pass conversion from amp-hours to watt-hours needs a representative lithium-ion nominal voltage before a cell stack is selected.
+    limitations: Pack voltage, charge window, cell chemistry, load current, temperature, and aging can shift usable voltage from this screening range.
+    future_validation: Replace with selected cell vendor datasheet nominal voltage and measured discharge curves at target loads.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Typical range varies by lithium-ion chemistry and operating window.
+
+  - id: battery_volumetric_energy_density_wh_per_l
+    name: Battery volumetric energy density
+    value_or_range: 550-750
+    units: Wh/L
+    category: industry_reference
+    confidence: medium
+    used_by:
+      - battery_pack
+      - dimensional_constraints
+      - mass_budget
+    rationale: Estimates minimum battery volume during early stackup and capacity feasibility screening.
+    limitations: Pack-level density depends on pouch geometry, protection electronics, tabs, enclosure allowances, swelling margin, supplier process, and safety spacing.
+    future_validation: Replace with pack-level supplier data for the selected cell and protection architecture.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Typical value range varies by supplier, chemistry, packaging overhead, and qualification target.
+
+  - id: battery_gravimetric_energy_density_wh_per_kg
+    name: Battery gravimetric energy density
+    value_or_range: 220-300
+    units: Wh/kg
+    category: industry_reference
+    confidence: medium
+    used_by:
+      - battery_pack
+      - mass_budget
+      - runtime_models
+    rationale: Converts target energy into an estimated battery mass for first-order pocket-device mass budgets.
+    limitations: Pack-level mass includes tabs, protection, adhesive, pouch, foam, shielding, and mechanical retention not captured by cell-only values.
+    future_validation: Replace with selected battery pack bill-of-material mass and measured usable energy.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Initial screening range; replace with vendor cell and finished-pack data.
+
+  - id: usable_capacity_factor
+    name: Usable battery capacity factor
+    value_or_range: 0.80-0.90
+    units: fraction
+    category: modeled_estimate
+    confidence: medium
+    used_by:
+      - battery_runtime
+      - runtime_targets
+    rationale: Accounts for reserve capacity, conversion losses, protection limits, and lifecycle-friendly operating windows in runtime estimates.
+    limitations: Depends on charge policy, discharge rate, thermal throttling, battery age, regulator efficiency, and cutoff voltage.
+    future_validation: Replace with measured system energy delivered over representative workloads and battery-management policy.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+        - Initial screening value; replace with measured prototype data.
+
+  - id: battery_swelling_percent
+    name: Battery swelling allowance
+    value_or_range: 8-12
+    units: percent thickness growth
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - battery_swelling_model
+      - stackup_clearance
+      - manufacturing_models
+    rationale: Reserves mechanical clearance for pouch or pack growth over life before cell supplier limits are known.
+    limitations: Swelling depends on chemistry, state of charge, cycle life, temperature, mechanical preload, age, and abuse history.
+    future_validation: Replace with selected cell swelling specifications and accelerated-life test measurements.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+        - Conservative clearance screen only; not a battery safety certification value.
+
+  - id: safe_skin_temperature_c
+    name: Safe exterior skin temperature screening limit
+    value_or_range: 42-45
+    units: degC
+    category: industry_reference
+    confidence: medium
+    used_by:
+      - thermal_limits
+      - thermal_resistance_network
+      - runtime_throttling
+    rationale: Provides an early touch-temperature guardrail for passive handheld operation.
+    limitations: Acceptable temperature depends on contact duration, surface material, user population, ambient temperature, standards context, and product policy.
+    future_validation: Replace with applicable safety standard limits and measured exterior temperature maps.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Review against relevant touch-temperature safety standards before design freeze.
+
+  - id: passive_sustained_power_pocket_w
+    name: Passive sustained power for pocket device
+    value_or_range: 3-6
+    units: W
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - thermal_limits
+      - thermal_density
+      - runtime_models
+    rationale: Sets a conservative sustained heat rejection envelope for phone-class passive AI operation.
+    limitations: Strongly depends on surface area, frame material, ambient conditions, grip, orientation, heat spreaders, workload duty cycle, and skin-temperature policy.
+    future_validation: Replace with thermal chamber measurements on prototypes and calibrated compact thermal models.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+        - High-risk screening assumption for sustained local AI workloads.
+
+  - id: passive_sustained_power_tablet_w
+    name: Passive sustained power for tablet device
+    value_or_range: 7-12
+    units: W
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - thermal_limits
+      - comparative_thermal_models
+    rationale: Provides a larger-form-factor comparison point for passive heat rejection estimates.
+    limitations: Depends on chassis area, thickness, materials, ambient conditions, display heating, orientation, and throttling policy.
+    future_validation: Replace with measured tablet-class reference data or validated thermal simulation.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+        - Comparative screening value only.
+
+  - id: thermal_risk_heat_density_w_cm3
+    name: Thermal risk heat density threshold
+    value_or_range: 0.25-0.5
+    units: W/cm3
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - thermal_density
+      - feasibility_flags
+    rationale: Flags concentrated compute power that likely requires spreading, throttling, or architecture changes.
+    limitations: Heat density alone ignores thermal path resistance, surface area, duty cycle, external temperature, and local material stack.
+    future_validation: Calibrate against detailed thermal simulation and measured hotspot-to-skin temperature rise.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+        - Threshold is a triage marker, not a pass/fail design limit.
+
+  - id: contact_resistance_cm2k_w
+    name: Thermal contact resistance
+    value_or_range: 0.2-2.0
+    units: cm2*K/W
+    category: industry_reference
+    confidence: medium
+    used_by:
+      - thermal_resistance_network
+      - composite_chassis
+    rationale: Represents interface losses through TIMs, adhesives, graphite interfaces, and mechanical contacts.
+    limitations: Interface resistance varies with material, bondline thickness, pressure, flatness, aging, contamination, and assembly process.
+    future_validation: Replace with supplier TIM data and measured interface resistance under target preload.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Typical value range varies widely by interface material and compression.
+
+  - id: vapor_chamber_effective_conductivity_w_mk
+    name: Vapor chamber effective conductivity
+    value_or_range: 1000-10000
+    units: W/mK effective
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - thermal_module
+      - thermal_resistance_network
+      - composite_chassis
+    rationale: Simplifies two-phase vapor-chamber heat spreading for early thermal path screening.
+    limitations: Effective performance depends on geometry, wick design, fluid charge, orientation, dryout limit, heat flux, thickness, and contact quality.
+    future_validation: Replace with supplier vapor-chamber performance curves or measured thermal resistance in the target stack.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+        - Effective conductivity is a model convenience and should not be treated as bulk material conductivity.
+
+  - id: graphite_in_plane_conductivity_w_mk
+    name: Graphite in-plane thermal conductivity
+    value_or_range: 700-1500
+    units: W/mK
+    category: industry_reference
+    confidence: medium
+    used_by:
+      - thermal_module
+      - thermal_resistance_network
+      - composite_chassis
+    rationale: Captures the high lateral heat-spreading potential of graphite sheets in compact devices.
+    limitations: Graphite is anisotropic; through-thickness conduction, adhesive layers, bends, cuts, grounding, and RF keepouts can dominate actual performance.
+    future_validation: Replace with selected graphite grade datasheet and stack-level thermal measurements.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Typical range varies by graphite grade, thickness, lamination, and temperature.
+
+  - id: aluminum_alloy_density_g_cm3
+    name: Aluminum alloy density
+    value_or_range: 2.65-2.85
+    units: g/cm3
+    category: industry_reference
+    confidence: high
+    used_by:
+      - material_compare
+      - mass_budget
+      - composite_chassis
+    rationale: Supports first-pass chassis and heat-spreader mass estimates for aluminum alloys.
+    limitations: Exact value varies by alloy, temper, casting or wrought process, coating, and joining details.
+    future_validation: Replace with selected alloy material certificate and finished-part mass measurements.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Typical value range varies by alloy and processing route.
+
+  - id: aluminum_alloy_thermal_conductivity_w_mk
+    name: Aluminum alloy thermal conductivity
+    value_or_range: 120-220
+    units: W/mK
+    category: industry_reference
+    confidence: medium
+    used_by:
+      - material_compare
+      - thermal_resistance_network
+      - composite_chassis
+    rationale: Estimates heat spreading through aluminum frame and structural members during material screening.
+    limitations: Conductivity varies substantially by alloy, temper, grain structure, manufacturing process, coating, and temperature.
+    future_validation: Replace with selected alloy datasheet and measured conductivity for the actual process state.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Typical value range varies by alloy, supplier, process, and temperature.
+
+  - id: magnesium_alloy_density_g_cm3
+    name: Magnesium alloy density
+    value_or_range: 1.7-1.9
+    units: g/cm3
+    category: industry_reference
+    confidence: high
+    used_by:
+      - material_compare
+      - mass_budget
+    rationale: Supports lightweight chassis mass comparisons against aluminum, titanium, steel, glass, and ceramic options.
+    limitations: Exact density depends on alloy system, process, coating, and inserts or reinforcements.
+    future_validation: Replace with selected alloy datasheet and finished-part mass measurements.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Typical value range varies by magnesium alloy family.
+
+  - id: magnesium_alloy_thermal_conductivity_w_mk
+    name: Magnesium alloy thermal conductivity
+    value_or_range: 50-100
+    units: W/mK
+    category: industry_reference
+    confidence: medium
+    used_by:
+      - material_compare
+      - thermal_resistance_network
+    rationale: Screens magnesium structural concepts for heat spreading versus weight benefits.
+    limitations: Conductivity varies by alloy, process, coating, porosity, and temperature.
+    future_validation: Replace with selected alloy datasheet and thermal test data for the manufacturing route.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Typical value range varies by alloy, supplier, process, and temperature.
+
+  - id: titanium_alloy_density_g_cm3
+    name: Titanium alloy density
+    value_or_range: 4.4-4.6
+    units: g/cm3
+    category: industry_reference
+    confidence: high
+    used_by:
+      - material_compare
+      - mass_budget
+    rationale: Provides mass screening for premium high-strength structural parts.
+    limitations: Exact density varies by alloy, process, and part geometry; titanium may require less volume for stiffness in some features.
+    future_validation: Replace with selected titanium grade datasheet and CAD-derived part masses.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Typical value range varies by titanium alloy grade.
+
+  - id: titanium_alloy_thermal_conductivity_w_mk
+    name: Titanium alloy thermal conductivity
+    value_or_range: 6-22
+    units: W/mK
+    category: industry_reference
+    confidence: medium
+    used_by:
+      - material_compare
+      - thermal_resistance_network
+    rationale: Flags the thermal penalty of titanium structures in heat-spreading paths.
+    limitations: Conductivity varies by alloy, heat treatment, temperature, and surface stack.
+    future_validation: Replace with selected alloy datasheet and stack-level thermal measurements.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Typical value range varies by titanium alloy and temperature.
+
+  - id: stainless_steel_density_g_cm3
+    name: Stainless steel density
+    value_or_range: 7.7-8.1
+    units: g/cm3
+    category: industry_reference
+    confidence: high
+    used_by:
+      - material_compare
+      - mass_budget
+    rationale: Provides mass screening for steel brackets, shields, fasteners, and structural inserts.
+    limitations: Exact value varies by stainless grade and part geometry.
+    future_validation: Replace with selected grade datasheet and CAD-derived part masses.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Typical value range varies by stainless steel grade.
+
+  - id: copper_density_g_cm3
+    name: Copper density
+    value_or_range: 8.9-9.0
+    units: g/cm3
+    category: industry_reference
+    confidence: high
+    used_by:
+      - material_compare
+      - thermal_module
+      - mass_budget
+    rationale: Estimates mass impact of copper straps, foils, shields, coils, and vapor-chamber walls.
+    limitations: Alloying, plating, voiding, and geometric fill factors can shift finished-part mass.
+    future_validation: Replace with selected copper alloy or laminate stack data and CAD-derived volumes.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Typical reference value; final mass depends on actual copper volume.
+
+  - id: glass_density_g_cm3
+    name: Glass density
+    value_or_range: 2.4-2.7
+    units: g/cm3
+    category: industry_reference
+    confidence: medium
+    used_by:
+      - material_compare
+      - mass_budget
+      - display_stack
+    rationale: Supports mass screening for display cover glass and rear-cover concepts.
+    limitations: Exact density depends on glass chemistry, strengthening process, coatings, and composite stack layers.
+    future_validation: Replace with selected glass supplier datasheet and measured display or cover assembly mass.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Typical value range varies by glass family and coating stack.
+
+  - id: ceramic_density_g_cm3
+    name: Ceramic density
+    value_or_range: 3.0-6.0
+    units: g/cm3
+    category: industry_reference
+    confidence: medium
+    used_by:
+      - material_compare
+      - mass_budget
+      - rf_window_tradeoffs
+    rationale: Screens ceramic inserts or covers for mechanical, RF, thermal, and mass tradeoffs.
+    limitations: Ceramic density varies widely by composition, porosity, reinforcement, and manufacturing process.
+    future_validation: Replace with selected ceramic material datasheet and finished-part mass measurements.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Broad range covers multiple ceramic families; narrow after material selection.
+
+  - id: pcb_assembly_density_g_cm3
+    name: PCB assembly effective density
+    value_or_range: 1.6-2.2
+    units: g/cm3
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - mass_budget
+      - pcb_stackup
+      - component_models
+    rationale: Approximates board plus mounted-component mass before layout, layer count, copper weight, and component population are fixed.
+    limitations: Effective density depends on PCB area, thickness, copper weight, laminate, shields, connectors, solder, packages, and stiffeners.
+    future_validation: Replace with board layout mass properties and measured PCBA mass from prototypes.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+        - Initial screening value; replace with CAD and manufacturing data.
+
+  - id: coefficient_thermal_expansion_values
+    name: Coefficient of thermal expansion values
+    value_or_range: material-dependent ranges
+    units: ppm/K
+    category: industry_reference
+    confidence: medium
+    used_by:
+      - thermal_expansion_mismatch
+      - reliability_models
+      - bonded_materials
+    rationale: Enables early mismatch screening among glass, metals, ceramics, PCB laminates, adhesives, and battery stack materials.
+    limitations: CTE can be anisotropic, temperature-dependent, process-dependent, and altered by composite layups or constraints.
+    future_validation: Replace with selected material datasheets and measured dimensional change for bonded assemblies.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+        - Use material-specific CTE values once the stack is selected.
+
+  - id: int4_bytes_per_parameter
+    name: INT4 bytes per parameter
+    value_or_range: 0.5
+    units: bytes/parameter
+    category: measured_fact
+    confidence: high
+    used_by:
+      - local_ai_runtime_modeling
+      - model_memory
+    rationale: Four-bit quantized weights occupy one half byte per parameter before packing overhead and metadata.
+    limitations: Real deployments include packing alignment, scales, zero points, metadata, embeddings, runtime buffers, and graph overhead.
+    future_validation: Confirm against target inference runtime model packaging format and memory profiler output.
+    source_notes:
+      source_type: arithmetic definition
+      citation_status: citation optional
+      notes:
+        - Derived from bit width; runtime overhead is tracked separately.
+
+  - id: quantization_overhead_factor
+    name: Quantization overhead factor
+    value_or_range: 1.05-1.25
+    units: multiplier
+    category: modeled_estimate
+    confidence: medium
+    used_by:
+      - local_ai_runtime_modeling
+      - model_memory
+    rationale: Adds storage and memory overhead for quantization scales, grouping metadata, alignment, and runtime representation.
+    limitations: Overhead varies by quantization scheme, group size, runtime layout, tensor padding, and model architecture.
+    future_validation: Replace with measured loaded-model memory for the selected runtime and quantization format.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+        - Initial screening range; replace with runtime measurements.
+
+  - id: kv_cache_formula
+    name: Transformer KV cache formula
+    value_or_range: 2 * layers * hidden_size * context_tokens * batch_size * kv_bytes_per_element
+    units: bytes
+    category: modeled_estimate
+    confidence: medium
+    used_by:
+      - local_ai_runtime_modeling
+      - memory_capacity
+      - runtime_targets
+    rationale: Estimates autoregressive attention key and value cache memory for first-order context-length screening.
+    limitations: Some architectures use grouped-query attention, multi-query attention, paged caches, compression, sliding windows, or implementation-specific layouts.
+    future_validation: Replace with target model architecture formula and runtime memory profiler data.
+    source_notes:
+      source_type: engineering model
+      citation_status: citation recommended
+      notes:
+        - Formula is explicitly documented as a baseline model and may overstate or understate optimized runtimes.
+
+  - id: lpddr_bandwidth_assumption
+    name: LPDDR memory bandwidth assumption
+    value_or_range: 100-250
+    units: GB/s
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - memory_bandwidth
+      - interconnect_models
+      - local_ai_runtime_modeling
+    rationale: Screens whether local AI workloads are likely memory-bandwidth-bound on a mobile memory subsystem.
+    limitations: Sustained bandwidth depends on memory generation, channel width, controller efficiency, thermals, power policy, locality, and concurrent display or ISP traffic.
+    future_validation: Replace with target SoC memory subsystem specifications and sustained benchmark measurements.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+        - Peak and sustained bandwidth must be separated when vendor data is available.
+
+  - id: model_load_bandwidth_assumption
+    name: Model load bandwidth assumption
+    value_or_range: 1-4
+    units: GB/s
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - runtime_models
+      - storage_loading
+    rationale: Estimates load time for local model weights from storage into memory before storage technology and filesystem behavior are fixed.
+    limitations: Actual load rate depends on storage class, encryption, compression, file layout, thermal throttling, memory copy path, and OS caching.
+    future_validation: Replace with measured model load times on target storage and software stack.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+        - Screening value; storage benchmark data required.
+
+  - id: transient_current_factor
+    name: Transient current factor
+    value_or_range: 1.5-2.5
+    units: multiplier
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - power_delivery
+      - power_integrity
+      - interconnect_models
+    rationale: Adds margin for burst current above average rail current during overlapping compute, memory, radio, display, and charging events.
+    limitations: Depends on workload waveform, regulator response, decoupling, package inductance, rail partitioning, battery impedance, and firmware limits.
+    future_validation: Replace with measured current transients from rail telemetry and oscilloscope captures on prototype hardware.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+        - Initial PDN stress factor; not a substitute for power integrity simulation.
+
+  - id: pdn_resistance_assumption
+    name: PDN effective resistance assumption
+    value_or_range: 5-25
+    units: mOhm
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - power_integrity
+      - power_delivery
+      - interconnect_models
+    rationale: Provides a lumped resistance for first-pass voltage droop and heat generation screening.
+    limitations: A lumped value hides frequency-dependent impedance, plane geometry, vias, connectors, PMIC behavior, battery impedance, and decoupling network effects.
+    future_validation: Replace with extracted board/package PDN impedance and measured load-step response.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+        - Placeholder only; detailed SI/PI analysis is required.
+
+  - id: slate_512gb_memory_target
+    name: Slate 512 GB memory target
+    value_or_range: 512
+    units: GB
+    category: conceptual_extrapolation
+    confidence: low
+    used_by:
+      - memory_package
+      - specs
+      - interconnect_models
+    rationale: Captures the source-intent target for extremely high local AI memory capacity in a pocket device.
+    limitations: Package availability, die stacking, board area, routing, power, thermals, cost, and supplier roadmap evidence are unresolved.
+    future_validation: Replace with vendor memory roadmap, package dimensions, power data, signal-integrity review, and procurement feasibility.
+    source_notes:
+      source_type: concept target
+      citation_status: needs external citation
+      notes:
+        - High-risk assumption; do not present as available commodity mobile memory without supplier evidence.
+
+  - id: slate_100tops_npu_target
+    name: Slate 100 TOPS NPU target
+    value_or_range: 100
+    units: TOPS
+    category: unresolved_research_blocker
+    confidence: low
+    used_by:
+      - compute_specs
+      - thermal_limits
+      - runtime_targets
+    rationale: Captures the source-intent AI accelerator performance target for local model execution.
+    limitations: Sustained TOPS depends on precision, sparsity, utilization, memory bandwidth, software support, process node, power, and passive thermal limits.
+    future_validation: Replace with vendor SoC/NPU specifications, sustained benchmark data, power telemetry, and thermal chamber results.
+    source_notes:
+      source_type: concept target
+      citation_status: needs external citation
+      notes:
+        - Treat sustained 100 TOPS in phone-class passive operation as a research blocker until proven.
+
+  - id: slate_6000mah_battery_target
+    name: Slate 6000 mAh battery target
+    value_or_range: 6000
+    units: mAh
+    category: conceptual_extrapolation
+    confidence: low
+    used_by:
+      - battery_pack
+      - specs
+      - runtime_targets
+    rationale: Captures the source-intent capacity target for extended local AI runtime in a thin pocket device.
+    limitations: Must fit within pack volume, swelling clearance, safety spacing, mass target, thermal limits, and local z-height constraints.
+    future_validation: Replace with selected battery pack CAD, vendor capacity data, safety review, and measured usable energy.
+    source_notes:
+      source_type: concept target
+      citation_status: needs external citation
+      notes:
+        - Target must be reconciled with stackup and mass budgets.
+
+  - id: slate_8_8mm_thickness_target
+    name: Slate 8.8 mm thickness target
+    value_or_range: 8.8
+    units: mm
+    category: conceptual_extrapolation
+    confidence: low
+    used_by:
+      - dimensions
+      - stackup_constraints
+      - manufacturing_models
+    rationale: Captures the source-intent global device thickness for early stackup pressure checks.
+    limitations: Global thickness can hide local conflicts among camera, battery swelling, display stack, thermal module, connectors, and tolerance accumulation.
+    future_validation: Replace with CAD stackup, tolerance analysis, prototype measurements, and supplier component envelopes.
+    source_notes:
+      source_type: concept target
+      citation_status: needs external citation
+      notes:
+        - Local z-height zones may fail even if the headline thickness appears plausible.
+
+  - id: slate_250g_mass_target
+    name: Slate 250 g mass target
+    value_or_range: 250
+    units: g
+    category: conceptual_extrapolation
+    confidence: low
+    used_by:
+      - mass_budget
+      - specs
+      - dimensional_constraints
+    rationale: Captures the source-intent mass target for a pocketable device with high local AI capability.
+    limitations: Battery capacity, chassis stiffness, display size, camera hardware, thermal hardware, shielding, and manufacturing allowances may exceed this target.
+    future_validation: Replace with CAD-derived mass rollup, supplier part masses, and measured prototype mass.
+    source_notes:
+      source_type: concept target
+      citation_status: needs external citation
+      notes:
+        - High-risk target until reconciled with the full bill of materials.
+
+  - id: slate_320g_engineering_mass_estimate
+    name: Slate 320 g engineering mass estimate
+    value_or_range: 320
+    units: g
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - mass_budget
+      - feasibility_flags
+    rationale: Provides a more conservative engineering estimate when concept targets are reconciled with battery, structure, thermal, and display mass pressure.
+    limitations: Still lacks CAD geometry, supplier mass data, detailed PCB population, adhesive mass, fastener count, and manufacturing tolerances.
+    future_validation: Replace with CAD mass properties, supplier quotes, and prototype weigh-ins.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+        - Screening estimate; should be superseded by a part-level mass budget.

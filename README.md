@@ -149,6 +149,22 @@ python engineering/run_device_profile.py --profile configs/devices/slate-pocket-
 
 The runner writes a report under `reports/`, scans model output for warning and blocker language, and keeps aggressive or conservative assumptions visible without automatically adjusting targets.
 
+## Profile Comparison and Tradeoff Analysis
+
+BuildSlate can compare multiple device profiles without optimizing or declaring a winner. The comparison workflow uses the same first-pass engineering assumptions to show side-by-side geometry, mass, battery, compute, memory, storage, thermal, runtime, and environment tradeoffs.
+
+Run a comparison report with:
+
+```bash
+python engineering/comparison/compare_profiles.py \
+  --profiles \
+  configs/devices/slate-pocket-v1.yaml \
+  configs/devices/slate-pocket-aggressive.yaml \
+  configs/devices/slate-pocket-conservative.yaml
+```
+
+Use `python engineering/comparison/profile_matrix.py` for a compact matrix of targets, warnings, blockers, and qualitative confidence/pressure levels. Use `python engineering/comparison/tradeoff_summary.py` for qualitative engineering tradeoff summaries. Generated comparison reports are written under `reports/profile-comparisons/`.
+
 ## Feasibility Report
 
 Generate a unified Slate Pocket v1 first-pass engineering feasibility report with:

@@ -1,3 +1,8 @@
+profile_class: aggressive
+feasibility_status: research_required
+review_notes:
+  - Aggressive stress-test profile; warnings and blockers are expected review inputs.
+
 identity:
   name: Slate Pocket Aggressive
   profile_id: slate-pocket-aggressive

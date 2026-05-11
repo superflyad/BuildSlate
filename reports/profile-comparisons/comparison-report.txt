@@ -1,0 +1,55 @@
+Profile Comparison
+-------------------------  ------------  ---------  --------  -----------  ------
+profile                    class         thickness  est_mass  sustained_w  memory
+-------------------------  ------------  ---------  --------  -----------  ------
+slate-pocket-v1            canonical     8.8mm      320g      28W          512GB 
+slate-pocket-aggressive    aggressive    8.8mm      320g      32W          512GB 
+slate-pocket-conservative  conservative  10.5mm     340g      16W          256GB 
+
+Geometry and Mass
+-------------------------  ---------  -------  ------  --------  ----------
+profile                    thickness  display  target  estimate  acceptable
+-------------------------  ---------  -------  ------  --------  ----------
+slate-pocket-v1            8.8mm      7.5in    250g    320g      290g-350g 
+slate-pocket-aggressive    8.8mm      7.5in    250g    320g      290g-350g 
+slate-pocket-conservative  10.5mm     7.5in    300g    340g      320g-380g 
+
+Battery and Compute
+-------------------------  ----------------  -------------------------  -------  ---------  ----  --------
+profile                    capacity          charge                     runtime  sustained  peak  NPU     
+-------------------------  ----------------  -------------------------  -------  ---------  ----  --------
+slate-pocket-v1            6000mAh / 23.1Wh  100W wired / 50W wireless  0.83h    28W        45W   100 TOPS
+slate-pocket-aggressive    6000mAh / 23.1Wh  100W wired / 50W wireless  0.72h    32W        55W   120 TOPS
+slate-pocket-conservative  7000mAh / 26.9Wh  65W wired / 25W wireless   1.68h    16W        35W   60 TOPS 
+
+Memory, Storage, and Runtime
+-------------------------  ------  ---------  ---------------------------------------------------  -------  -------------  -------------  -------------
+profile                    memory  bandwidth  package                                              storage  storage_power  model/context  reserve      
+-------------------------  ------  ---------  ---------------------------------------------------  -------  -------------  -------------  -------------
+slate-pocket-v1            512GB   2048Gbps   32GB/pkg; high_bandwidth_on_package_or_near_package  4TB      5W             70B/32768 tok  466.2GB (LOW)
+slate-pocket-aggressive    512GB   2048Gbps   32GB/pkg; high_bandwidth_on_package_or_near_package  4TB      5W             70B/32768 tok  466.2GB (LOW)
+slate-pocket-conservative  256GB   1024Gbps   32GB/pkg; reduced_capacity_high_bandwidth_memory     2TB      3W             70B/32768 tok  210.2GB (LOW)
+
+Thermal and Environment
+-------------------------  ---------  ------------  -------  ---------  ----------  -----------
+profile                    sustained  thermal_risk  ambient  condition  brightness  environment
+-------------------------  ---------  ------------  -------  ---------  ----------  -----------
+slate-pocket-v1            28W        EXTREME       25C      open_air   normal      LOW        
+slate-pocket-aggressive    32W        EXTREME       35C      open_air   sunlight    EXTREME    
+slate-pocket-conservative  16W        MODERATE      25C      open_air   normal      LOW        
+
+Engineering Pressure Matrix
+-------------------------  --------  --------  -------  -------  -------------  -----------  ---------------------------------------------------------------------------------
+profile                    thermal   mass      stackup  runtime  manufacturing  environment  blockers                                                                         
+-------------------------  --------  --------  -------  -------  -------------  -----------  ---------------------------------------------------------------------------------
+slate-pocket-v1            EXTREME   HIGH      EXTREME  LOW      EXTREME        LOW          thermal risk, stackup pressure, manufacturing pressure                           
+slate-pocket-aggressive    EXTREME   HIGH      EXTREME  LOW      EXTREME        EXTREME      thermal risk, stackup pressure, manufacturing pressure, environmental sensitivity
+slate-pocket-conservative  MODERATE  MODERATE  LOW      LOW      LOW            LOW          none                                                                             
+
+
+Notes
+-----
+Comparison is exploratory: no profile is selected as best and no auto-solving is performed.
+slate-pocket-v1: Canonical comparison anchor for repeatable engineering tradeoff reviews.
+slate-pocket-aggressive: Aggressive stress-test profile; warnings and blockers are expected review inputs.
+slate-pocket-conservative: Grounding reference for lower-power and thicker-envelope comparison.

@@ -1,3 +1,8 @@
+profile_class: canonical
+feasibility_status: screening_candidate
+review_notes:
+  - Canonical comparison anchor for repeatable engineering tradeoff reviews.
+
 identity:
   name: Slate Pocket v1
   profile_id: slate-pocket-v1

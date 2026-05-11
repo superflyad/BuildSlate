@@ -156,3 +156,9 @@ python engineering/models/composite_chassis.py --preset aluminum_heat_frame_glas
 ```
 
 These scripts are first-order engineering tools. They are intended to keep assumptions explicit and machine-checkable while the CAD, BOM, and simulation models mature.
+
+## Constants Provenance
+
+BuildSlate tracks engineering constants and assumptions in `engineering/provenance/constants_provenance.yaml`. The registry records each constant's source category, confidence, units, rationale, limitations, future validation path, and citation status so reviewers can distinguish measured facts, industry references, modeled estimates, conceptual extrapolations, and unresolved blockers.
+
+Use `python validation/validate_provenance.py` to validate the provenance schema. Use `python engineering/provenance/provenance_report.py` to print counts by category and confidence, citation gaps, conceptual extrapolations, unresolved research blockers, and the highest-risk assumptions.

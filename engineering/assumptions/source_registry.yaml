@@ -235,3 +235,12 @@ entries:
       - reliability_hotspots
     confidence: low
     notes: Serviceability depends on mechanical design, adhesive choices, access sequence, tools, manuals, spare parts, and authorized repair process constraints.
+  - id: constants_provenance_registry
+    category: industry_reference
+    description: Detailed per-constant provenance registry for engineering constants, concept targets, modeled estimates, and unresolved assumptions.
+    applies_to:
+      - engineering/provenance/constants_provenance.yaml
+      - constants_provenance
+      - assumption_traceability
+    confidence: high
+    notes: Higher-level source registry entry pointing reviewers to engineering/provenance/constants_provenance.yaml for source category, confidence, units, rationale, limitations, future validation, and citation status.

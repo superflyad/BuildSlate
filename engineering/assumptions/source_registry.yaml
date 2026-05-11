@@ -182,3 +182,56 @@ entries:
       - multimodal_overhead
     confidence: low
     notes: Reserve requirements depend on operating system, runtime implementation, allocator behavior, background services, memory fragmentation, and workload concurrency.
+  - id: tolerance_stackup_assumption
+    category: modeled_estimate
+    description: Conservative first-pass dimensional tolerance accumulation for stacked thin-device components.
+    applies_to:
+      - tolerance_stackup
+      - structural_stackup
+      - zone_stackup
+    confidence: low
+    notes: Actual assembly variation depends on part drawings, process capability, fixturing, adhesive compression, fastener preload, flatness, and measured distributions.
+  - id: battery_swelling_assumption
+    category: modeled_estimate
+    description: Battery swelling clearance allowance used to screen pressure on adjacent displays, housings, and thermal stacks.
+    applies_to:
+      - battery_swelling
+      - battery_pack
+      - structural_stackup
+    confidence: low
+    notes: Swelling behavior depends on cell chemistry, age, state of charge, thermal history, charge policy, mechanical preload, and supplier safety requirements.
+  - id: thermal_expansion_coefficients
+    category: modeled_estimate
+    description: Typical material CTE constants used for first-pass bonded-interface thermal expansion mismatch screening.
+    applies_to:
+      - thermal_expansion
+      - material_screen
+      - composite_chassis
+    confidence: low
+    notes: Exact CTE depends on alloy, glass type, ceramic grade, PCB stackup, graphite orientation, adhesives, constraints, temperature range, and aging.
+  - id: thin_device_yield_pressure
+    category: conceptual_extrapolation
+    description: Assumption that sub-9 mm integrated device packaging increases manufacturing sensitivity and yield pressure.
+    applies_to:
+      - yield_risk
+      - assembly_complexity
+      - tolerance_stackup
+    confidence: low
+    notes: This is a qualitative pressure indicator only; real yield requires production process data, inspection results, supplier capability, and factory ramp evidence.
+  - id: assembly_complexity_model
+    category: modeled_estimate
+    description: Weighted score for manufacturing pressure from component count, PCB layers, camera modules, antenna windows, thermal stack layers, and repairability target.
+    applies_to:
+      - assembly_complexity
+      - yield_risk
+    confidence: low
+    notes: The score is comparative and should not be interpreted as cycle time, cost, defect probability, or factory yield.
+  - id: repairability_tradeoff_assumption
+    category: conceptual_extrapolation
+    description: Assumption that thin bonded assemblies, adhesives, buried batteries, and stacked thermal paths increase repairability pressure.
+    applies_to:
+      - repairability
+      - assembly_complexity
+      - reliability_hotspots
+    confidence: low
+    notes: Serviceability depends on mechanical design, adhesive choices, access sequence, tools, manuals, spare parts, and authorized repair process constraints.

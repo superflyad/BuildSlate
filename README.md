@@ -48,6 +48,19 @@ python engineering/runtime_models/run_all_runtime_models.py
 
 The models are conservative memory and load-time screens. They account for quantized weight residency, KV cache pressure, long-context growth, local storage load assumptions, multimodal resident components, OS reserve, and safety reserve. They do not predict real tokens/sec; real throughput still depends on memory bandwidth, compute kernels, NPU/GPU support, scheduling, thermal throttling, and runtime implementation.
 
+
+## Manufacturing and Reliability Models
+
+BuildSlate includes first-pass manufacturing and reliability screening models in `engineering/manufacturing_models/`. These scripts estimate tolerance stackup, thermal expansion mismatch, battery swelling allowance, assembly complexity, repairability pressure, reliability hotspots, and yield risk indicators for thin AI-device architectures.
+
+Run the grouped default report with:
+
+```bash
+python engineering/manufacturing_models/run_all_manufacturing_models.py
+```
+
+The models are conservative screening tools. They do not predict factory yield, certify durability, or claim manufacturing feasibility; they make tolerance, swelling, bonded-material, assembly, repair, and integration pressure visible for later CAD, supplier, and validation work.
+
 ## Interconnect and Power Delivery Models
 
 BuildSlate includes first-pass interconnect and power delivery screening models in `engineering/interconnect_models/`. These scripts estimate memory bandwidth pressure, PCB routing density, power delivery current, transient current and voltage droop, and package adjacency constraints before detailed board layout or SI/PI simulation exists.

@@ -6,6 +6,7 @@ materials:
     density_g_cm3: {min: 2.65, typical: 2.70, max: 2.85}
     thermal_conductivity_w_mk: {min: 120, typical: 170, max: 230}
     specific_heat_j_gk: {min: 0.85, typical: 0.90, max: 0.95}
+    cte_per_c: {min: 0.000021, typical: 0.000023, max: 0.000025}
     notes:
       - Good phone-scale heat spreading and mature machining/forming.
       - Conductive and RF-hostile without antenna breaks, windows, or isolation.
@@ -13,6 +14,7 @@ materials:
     density_g_cm3: {min: 1.70, typical: 1.80, max: 1.90}
     thermal_conductivity_w_mk: {min: 50, typical: 75, max: 110}
     specific_heat_j_gk: {min: 0.95, typical: 1.00, max: 1.05}
+    cte_per_c: {min: 0.000024, typical: 0.000026, max: 0.000028}
     notes:
       - Lightweight structural candidate with lower stiffness than aluminum.
       - Needs corrosion protection and manufacturing controls for chip/dust fire risk.
@@ -34,6 +36,7 @@ materials:
     density_g_cm3: {min: 8.80, typical: 8.96, max: 9.00}
     thermal_conductivity_w_mk: {min: 300, typical: 390, max: 410}
     specific_heat_j_gk: {min: 0.37, typical: 0.39, max: 0.40}
+    cte_per_c: {min: 0.000016, typical: 0.000017, max: 0.000018}
     notes:
       - Excellent local heat and electrical conductor.
       - Too dense for broad structural shells; useful in vapor chambers, shields, and coils.
@@ -41,6 +44,7 @@ materials:
     density_g_cm3: {min: 1.6, typical: 2.0, max: 2.3}
     thermal_conductivity_w_mk: {min: 300, typical: 900, max: 1700}
     specific_heat_j_gk: {min: 0.65, typical: 0.75, max: 0.85}
+    cte_per_c: {min: 0.000001, typical: 0.000004, max: 0.000008}
     notes:
       - Highly anisotropic; listed conductivity is in-plane screening range.
       - Conductive sheets can interact with RF keepouts and require insulation.
@@ -48,6 +52,7 @@ materials:
     density_g_cm3: {min: 3.2, typical: 3.9, max: 6.1}
     thermal_conductivity_w_mk: {min: 2, typical: 25, max: 35}
     specific_heat_j_gk: {min: 0.40, typical: 0.80, max: 0.95}
+    cte_per_c: {min: 0.000004, typical: 0.000007, max: 0.000010}
     notes:
       - Broad class covering zirconia/alumina-like materials; validate exact grade.
       - RF-friendly relative to metals but impact, brittleness, cost, and mass can dominate.
@@ -55,6 +60,7 @@ materials:
     density_g_cm3: {min: 2.35, typical: 2.50, max: 2.80}
     thermal_conductivity_w_mk: {min: 0.8, typical: 1.2, max: 4.0}
     specific_heat_j_gk: {min: 0.75, typical: 0.85, max: 0.95}
+    cte_per_c: {min: 0.000003, typical: 0.0000085, max: 0.000010}
     notes:
       - Useful for cover glass, rear glass, and RF/wireless charging transparency.
       - Poor passive heat spreader and sensitive to edges, impacts, and bonding stresses.
@@ -69,6 +75,7 @@ materials:
     density_g_cm3: {min: 1.60, typical: 1.90, max: 2.20}
     thermal_conductivity_w_mk: {min: 0.3, typical: 1.0, max: 5.0}
     specific_heat_j_gk: {min: 0.8, typical: 1.0, max: 1.2}
+    cte_per_c: {min: 0.000012, typical: 0.000016, max: 0.000020}
     notes:
       - Assembly density and conductivity depend on copper weight, layer count, packages, shields, vias, and stiffeners.
       - Treat as an assembly property until board stackup and placement are known.
@@ -96,3 +103,4 @@ notes:
   - Finished-part density can differ from raw material density because of coatings, fasteners, adhesives, voids, and structural ribs.
   - PCB assembly density depends on copper weight, layer count, shielding, package mix, underfill, and local stiffeners.
   - Material constants are screening values; vendor data and measured stackups supersede them.
+  - CTE constants are typical linear screening values; exact alloy, glass, ceramic, PCB stackup, graphite orientation, and adhesive compliance can dominate thermal expansion mismatch.

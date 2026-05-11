@@ -54,6 +54,13 @@ python engineering/component_models/run_all_component_models.py
 
 These models are used before device profiles or optimization. They make assumptions, equations, warnings, confidence, basis, and primary blockers explicit so future CAD, BOM, datasheet, and validation work can replace placeholders with measured or supplier-backed values.
 
+
+## Thermal and Stackup Screening
+
+- `engineering/component_models/thermal_resistance_network.py` estimates first-pass heat path risk from a hotspot through TIM, spreaders, frame material, and exterior skin.
+- `engineering/component_models/zone_stackup.py` checks local z-height conflicts across display, battery, SoC/memory, storage, camera, wireless charging, and antenna zones.
+- `engineering/assumptions/source_registry.yaml` tracks assumption confidence so constants, targets, and unresolved blockers remain visible during review.
+
 ## Hardware Ontology
 
 BuildSlate now separates hardware vocabulary, constants, formulas, and interpretation so future design changes remain traceable.

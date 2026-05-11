@@ -1,0 +1,101 @@
+entries:
+  - id: lithium_ion_nominal_voltage
+    category: industry_reference
+    description: Nominal voltage used for first-pass lithium-ion battery energy conversion.
+    applies_to:
+      - battery_energy
+      - dimensional_constraints
+    confidence: high
+    notes: Typical single-cell lithium-ion nominal voltage is used until pack-specific cell data is selected.
+  - id: battery_energy_density
+    category: industry_reference
+    description: Volumetric energy density range used to estimate battery pack volume.
+    applies_to:
+      - battery_pack
+      - dimensional_constraints
+    confidence: medium
+    notes: Pack-level density depends on cell chemistry, pouch geometry, protection, tabs, swelling allowance, and supplier data.
+  - id: passive_pocket_power_limit
+    category: modeled_estimate
+    description: Conservative sustained passive heat rejection limit for phone-class pocket hardware.
+    applies_to:
+      - thermal_limits
+      - thermal_module
+      - thermal_resistance_network
+    confidence: low
+    notes: Strongly dependent on surface area, skin material, ambient conditions, user grip, workload transients, and throttling policy.
+  - id: aluminum_thermal_conductivity
+    category: industry_reference
+    description: Aluminum alloy thermal conductivity placeholder for first-pass frame heat spreading.
+    applies_to:
+      - material_compare
+      - composite_chassis
+      - thermal_resistance_network
+    confidence: medium
+    notes: Exact value varies widely by alloy, temper, manufacturing process, and coating stack.
+  - id: magnesium_density
+    category: industry_reference
+    description: Magnesium alloy density placeholder for chassis mass screening.
+    applies_to:
+      - material_compare
+      - mass_budget
+    confidence: medium
+    notes: Supplier alloy choice and structural geometry are required before treating this as a design value.
+  - id: graphite_in_plane_conductivity
+    category: industry_reference
+    description: In-plane thermal conductivity placeholder for graphite sheet heat spreading.
+    applies_to:
+      - thermal_module
+      - thermal_resistance_network
+    confidence: medium
+    notes: Graphite is anisotropic; through-thickness conductivity and contact quality can be much lower than in-plane values.
+  - id: vapor_chamber_effective_conductivity
+    category: modeled_estimate
+    description: Effective conductivity simplification for a copper vapor chamber heat spreader.
+    applies_to:
+      - thermal_module
+      - thermal_resistance_network
+    confidence: low
+    notes: Effective vapor chamber performance is geometry-, orientation-, wick-, fluid-, and heat-load-dependent and is not bulk copper conductivity.
+  - id: 512gb_lpddr6x_package_assumption
+    category: conceptual_extrapolation
+    description: Placeholder assumption for very high capacity mobile memory package feasibility.
+    applies_to:
+      - memory_package
+      - soc_memory_zone
+    confidence: low
+    notes: Requires supplier roadmap evidence, package dimensions, signal integrity review, power data, and thermal validation.
+  - id: 100tops_npu_sustained_assumption
+    category: unresolved_research_blocker
+    description: Assumption that a phone-class NPU can sustain 100 TOPS-class workloads within passive constraints.
+    applies_to:
+      - soc_package
+      - thermal_resistance_network
+      - thermal_limits
+    confidence: low
+    notes: Sustained performance depends on process node, workload sparsity, memory bandwidth, power management, cooling, and skin-temperature limits.
+  - id: 6000mah_battery_target
+    category: conceptual_extrapolation
+    description: Source-intent battery capacity target for a thin pocket device.
+    applies_to:
+      - battery_pack
+      - dimensional_constraints
+    confidence: low
+    notes: Must be reconciled with pack volume, swelling allowance, safety margins, mass, and local z-height constraints.
+  - id: 8_8mm_chassis_target
+    category: conceptual_extrapolation
+    description: Source-intent chassis thickness target used for stackup screening.
+    applies_to:
+      - structural_stackup
+      - zone_stackup
+      - dimensional_constraints
+    confidence: low
+    notes: Local zones may fail even if a global thickness target appears plausible; CAD and tolerance analysis are required.
+  - id: 250g_mass_target
+    category: conceptual_extrapolation
+    description: Source-intent mass target for the pocket device.
+    applies_to:
+      - mass_budget
+      - dimensional_constraints
+    confidence: low
+    notes: Needs reconciliation with battery size, chassis stiffness, display size, camera hardware, thermal mass, and manufacturing constraints.

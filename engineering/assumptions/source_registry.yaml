@@ -99,3 +99,42 @@ entries:
       - dimensional_constraints
     confidence: low
     notes: Needs reconciliation with battery size, chassis stiffness, display size, camera hardware, thermal mass, and manufacturing constraints.
+  - id: lpddr_bandwidth_assumption
+    category: modeled_estimate
+    description: Peak LPDDR-class bandwidth placeholder used for first-pass AI memory bandwidth screening.
+    applies_to:
+      - memory_bandwidth
+      - package_interconnect
+    confidence: low
+    notes: Real sustained bandwidth depends on memory generation, channel width, package topology, controller efficiency, thermals, workload locality, and software stack.
+  - id: high_speed_routing_density
+    category: modeled_estimate
+    description: Routing density proxy for high-speed internal links in a constrained phone-class PCB area.
+    applies_to:
+      - routing_density
+      - package_interconnect
+    confidence: low
+    notes: Requires board floorplanning, layer stack definition, impedance rules, via strategy, length matching, and signal-integrity simulation before design use.
+  - id: thin_device_pdn_constraint
+    category: modeled_estimate
+    description: First-order power delivery constraint for high-current rails in a thin pocket device.
+    applies_to:
+      - power_delivery
+      - power_integrity
+    confidence: low
+    notes: PMIC selection, VRM placement, battery protection, connector limits, copper geometry, decoupling, and thermal limits can dominate the real constraint.
+  - id: transient_current_factor
+    category: modeled_estimate
+    description: Conservative multiplier for fast workload-step current spikes in low-voltage AI compute rails.
+    applies_to:
+      - power_integrity
+    confidence: low
+    notes: Real transient current depends on workload, clock and power gating, package parasitics, regulator response, decoupling network, and board layout.
+  - id: ai_memory_bandwidth_requirement
+    category: unresolved_research_blocker
+    description: Placeholder requirement linking local AI token targets to memory bandwidth demand.
+    applies_to:
+      - memory_bandwidth
+      - soc_package
+    confidence: low
+    notes: This is not an inference-performance claim; KV cache, scheduling, NPU efficiency, runtime software, memory latency, batching, and sparsity must be validated separately.

@@ -34,6 +34,19 @@ BuildSlate's engineering foundation keeps future specs, CAD, simulations, SlateO
 - `validation/` contains repository checks that keep specs and dimensional constraints machine-checkable.
 - Future features must trace claims back to these foundations, a measured fact, an industry reference, or an explicit unresolved blocker.
 
+
+## Interconnect and Power Delivery Models
+
+BuildSlate includes first-pass interconnect and power delivery screening models in `engineering/interconnect_models/`. These scripts estimate memory bandwidth pressure, PCB routing density, power delivery current, transient current and voltage droop, and package adjacency constraints before detailed board layout or SI/PI simulation exists.
+
+Run the grouped default report with:
+
+```bash
+python engineering/interconnect_models/run_all_interconnect_models.py
+```
+
+The models are conservative engineering screens. They do not predict real inference performance, fabricate PCB traces, or replace supplier-backed package, memory, PMIC, battery, thermal, and signal-integrity data.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

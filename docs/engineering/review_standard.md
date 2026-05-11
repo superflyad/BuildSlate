@@ -21,3 +21,9 @@ Every model should print:
 - primary blocker
 
 Avoid fake precision. Prefer ranges over single-point claims. If math contradicts a target, preserve the contradiction and flag it.
+
+Assumptions must also stay traceable:
+
+- Every major assumption should eventually map to `engineering/assumptions/source_registry.yaml`.
+- Low-confidence assumptions are allowed, but they must be labeled.
+- "Unknown" is acceptable; hidden unknowns are not.

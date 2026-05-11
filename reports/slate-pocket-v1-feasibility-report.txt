@@ -1,0 +1,1713 @@
+BuildSlate Engineering Feasibility Report
+Generated: 2026-05-11T03:34:47+00:00
+Scope:
+  device: Slate Pocket v1
+  purpose: first-pass engineering screening
+  status: not production validation
+
+Validation Summary
+### python validation/validate_specs.py
+Status: PASSED (exit code 0)
+PASS: specs/slate-pocket-v1.yaml
+PASS: specs/slate-v1.yaml
+All spec validations passed.
+### python validation/dimensional_constraints.py
+Status: PASSED (exit code 0)
+Slate pocket dimensional constraints
+  battery Wh: 23.10 Wh
+  estimated battery volume: 39.60 cm^3
+  display size target: 7.5 in
+  thickness target: 8.8 mm
+  weight target: 250 g
+  assumptions:
+    nominal voltage: 3.85 V
+    battery energy density: 700 Wh/L
+    battery pack overhead: 1.20x
+  warnings:
+    - 8.x mm chassis with >=512GB memory requires aggressive package and thermal validation
+    - <=250g target with >=6000mAh battery leaves limited mass for chassis and thermal stack
+    - >=4TB storage in <9mm chassis may conflict with package thickness and heat spreading
+### python validation/validate_source_registry.py
+Status: PASSED (exit code 0)
+PASS: engineering/assumptions/source_registry.yaml
+All source registry validations passed.
+### python validation/validate_provenance.py
+Status: PASSED (exit code 0)
+Validated entries: 43
+WARNING: usable_capacity_factor citation_status=needs external citation
+WARNING: battery_swelling_percent citation_status=needs external citation
+WARNING: passive_sustained_power_pocket_w citation_status=needs external citation
+WARNING: passive_sustained_power_tablet_w citation_status=needs external citation
+WARNING: thermal_risk_heat_density_w_cm3 citation_status=needs external citation
+WARNING: vapor_chamber_effective_conductivity_w_mk citation_status=needs external citation
+WARNING: pcb_assembly_density_g_cm3 citation_status=needs external citation
+WARNING: quantization_overhead_factor citation_status=needs external citation
+WARNING: lpddr_bandwidth_assumption citation_status=needs external citation
+WARNING: model_load_bandwidth_assumption citation_status=needs external citation
+WARNING: transient_current_factor citation_status=needs external citation
+WARNING: pdn_resistance_assumption citation_status=needs external citation
+WARNING: slate_512gb_memory_target citation_status=needs external citation
+WARNING: slate_100tops_npu_target citation_status=needs external citation
+WARNING: slate_6000mah_battery_target citation_status=needs external citation
+WARNING: slate_8_8mm_thickness_target citation_status=needs external citation
+WARNING: slate_250g_mass_target citation_status=needs external citation
+WARNING: slate_320g_engineering_mass_estimate citation_status=needs external citation
+Citation warnings: 18
+PASS: engineering/provenance/constants_provenance.yaml
+
+Mass and Volume
+### python engineering/models/mass_budget.py
+Status: PASSED (exit code 0)
+Mass budget estimate
+inputs:
+  target_mass_g: 250
+  battery_wh: 23.1
+assumptions:
+  constants_source: engineering/constants/battery.yaml
+  component masses are rough placeholders until CAD, BOM, and vendor data replace them
+  battery mass uses pack-level gravimetric density as a screening range
+formulas:
+  battery_mass_g = battery_wh / Wh_per_kg * 1000
+  total_mass_g = non_battery_component_mass_g + battery_mass_g
+  margin_vs_target_g = target_mass_g - total_mass_g
+outputs:
+  estimated_component_masses_g:
+    display_module_g: 45
+    pcb_and_soc_g: 35
+    thermal_module_g: 35
+    chassis_and_back_g: 55
+    cameras_and_sensors_g: 15
+    speakers_haptics_antennas_g: 15
+    fasteners_adhesives_misc_g: 15
+  non_battery_component_mass_g: 215.0
+  conservative:
+    battery_gravimetric_density_wh_per_kg: 180
+    battery_mass_g: 128.3
+    total_mass_g: 343.3
+    margin_vs_target_g: -93.3
+    target_status: over target
+  nominal:
+    battery_gravimetric_density_wh_per_kg: 240
+    battery_mass_g: 96.2
+    total_mass_g: 311.2
+    margin_vs_target_g: -61.2
+    target_status: over target
+  aggressive:
+    battery_gravimetric_density_wh_per_kg: 300
+    battery_mass_g: 77.0
+    total_mass_g: 292.0
+    margin_vs_target_g: -42.0
+    target_status: over target
+confidence: low
+basis: estimated
+primary blocker: CAD-derived part masses, vendor component masses, battery packaging, and thermal-module design
+### python engineering/models/composite_chassis.py --preset aluminum_heat_frame_glass_windows
+Status: PASSED (exit code 0)
+Composite chassis model
+inputs:
+  preset: aluminum_heat_frame_glass_windows
+  heat_path_length_mm: 80.00
+  heat_cross_section_area_mm2: 150.00
+  delta_temp_c: 10.00
+  material_volumes_cm3:
+    aluminum: 14.00
+    magnesium: 0.00
+    glass: 6.00
+    ceramic: 0.00
+    polymer: 0.00
+    graphite: 1.50
+    copper: 1.00
+assumptions:
+  constants_source: engineering/constants/materials.yaml
+  typical density and thermal conductivity values are used before min/max ranges
+  graphite conductivity uses the graphite_sheet in-plane screening value when available
+  magnesium is counted as a thermal-path material with lower confidence than aluminum/copper/graphite
+  RF-friendly volume counts glass, ceramic, and polymer only
+  vapor-chamber behavior is approximated as copper/graphite material volume, not modeled as two-phase flow
+formulas:
+  mass_g = volume_cm3 * density_g_cm3
+  total_mass_g = sum(material_mass_g)
+  volume_fraction = material_volume_cm3 / total_volume_cm3
+  k_weighted = sum(k_material * volume_fraction)
+  Q = k * A * deltaT / L
+  A_m2 = heat_cross_section_area_mm2 * 1e-6
+  L_m = heat_path_length_mm * 1e-3
+  rf_friendly_percent = RF_friendly_volume / total_volume * 100
+  metal_percent = metal_volume / total_volume * 100
+  thermal_path_percent = thermal_path_volume / total_volume * 100
+outputs:
+  material_volumes_cm3:
+    aluminum: 14.00
+    magnesium: 0.00
+    glass: 6.00
+    ceramic: 0.00
+    polymer: 0.00
+    graphite: 1.50
+    copper: 1.00
+  mass_by_material_g:
+    aluminum: 37.80 g
+    magnesium: 0.00 g
+    glass: 15.00 g
+    ceramic: 0.00 g
+    polymer: 0.00 g
+    graphite: 3.00 g
+    copper: 8.96 g
+  total_volume_cm3: 22.50
+  total_mass_g: 64.76
+  volume_fractions:
+    aluminum: 0.62
+    magnesium: 0.00
+    glass: 0.27
+    ceramic: 0.00
+    polymer: 0.00
+    graphite: 0.07
+    copper: 0.04
+  weighted_thermal_conductivity_w_mk: 183.43
+  simplified_conduction_w: 3.44
+  rf_friendly_percent: 26.67
+  metal_percent: 66.67
+  thermal_path_percent: 73.33
+  resolved_material_constants:
+    aluminum: aluminum_alloy
+    magnesium: magnesium_alloy
+    glass: glass
+    ceramic: ceramic
+    polymer: polymer
+    graphite: graphite_sheet
+    copper: copper
+risk_notes:
+  - WARNING: weighted thermal conductivity is a crude screening approximation and does not represent true anisotropic heat spreading
+confidence: low
+basis: first-order screening from typical material constants, simple volume fractions, and one-dimensional conduction
+primary_blocker: real feasibility requires CAD geometry, thermal contacts, anisotropic spreading, antenna layout, manufacturing process data, and CFD/FEA validation
+
+Battery and Runtime
+### python engineering/models/battery_energy.py
+Status: PASSED (exit code 0)
+Battery energy model
+inputs:
+  capacity_mAh: 6000
+  nominal_voltage_v: 3.85
+  workload_w: 28.00
+assumptions:
+  constants_source: engineering/constants/battery.yaml
+  battery chemistry represented as nominal lithium-ion voltage
+  usable capacity varies by reserve margin, discharge rate, temperature, and aging
+formulas:
+  Ah = mAh / 1000
+  Wh = Ah * V
+  usable_Wh = Wh * usable_capacity_factor
+  runtime_h = usable_Wh / workload_w
+  volume_L = Wh / volumetric_energy_density
+  mass_kg = Wh / gravimetric_energy_density
+outputs:
+  total_energy_wh: 23.10
+  conservative:
+    usable_capacity_factor: 0.80
+    usable_wh: 18.48
+    runtime_h: 0.66
+    runtime_min: 40
+    battery_volume_l: 0.046
+    battery_volume_cm3: 46.2
+    battery_mass_kg: 0.128
+    battery_mass_g: 128.3
+  nominal:
+    usable_capacity_factor: 0.90
+    usable_wh: 20.79
+    runtime_h: 0.74
+    runtime_min: 45
+    battery_volume_l: 0.036
+    battery_volume_cm3: 35.5
+    battery_mass_kg: 0.096
+    battery_mass_g: 96.2
+  aggressive:
+    usable_capacity_factor: 0.95
+    usable_wh: 21.95
+    runtime_h: 0.78
+    runtime_min: 47
+    battery_volume_l: 0.031
+    battery_volume_cm3: 30.8
+    battery_mass_kg: 0.077
+    battery_mass_g: 77.0
+confidence: medium for energy arithmetic; low for real-world runtime
+basis: estimated
+primary blocker: validated workload power, cell packaging, thermal limits, and usable discharge policy
+
+Thermal Risk
+### python engineering/models/thermal_limits.py
+Status: PASSED (exit code 0)
+Thermal limits estimate
+inputs:
+  length_mm: 180.0
+  width_mm: 95.0
+  thickness_mm: 8.8
+  sustained_w: 28.0
+assumptions:
+  constants_source: engineering/constants/thermal.yaml
+  rectangular geometry is a screening approximation, not CAD or CFD
+  all sustained electrical power is treated as heat inside the chassis
+  passive references are conservative screening values, not device-specific limits
+formulas:
+  volume_cm3 = L*W*T / 1000
+  heat_density_w_cm3 = sustained_w / volume_cm3
+  surface_area_cm2 = 2 * (L*W + L*T + W*T) / 100
+  heat_flux_w_cm2 = sustained_w / surface_area_cm2
+outputs:
+  volume_cm3: 150.5
+  surface_area_cm2: 390.4
+  heat_density_w_cm3: 0.186
+  heat_flux_w_cm2: 0.072
+  passive_sustained_pocket_device_reference_w:
+    conservative: 4
+    nominal: 7
+    aggressive: 10
+  risk: high
+confidence: low
+basis: estimated
+primary blocker: thermal stack design, contact conditions, ambient temperature, controls, and measured skin temperature
+### python engineering/component_models/thermal_resistance_network.py
+Status: PASSED (exit code 0)
+Thermal resistance network model
+inputs:
+  heat_w: 28.0
+  hotspot_area_mm2: 324.0
+  skin_area_cm2: 250.0
+  ambient_c: 25.0
+  max_skin_c: 43.0
+  tim_thickness_mm: 0.080
+  tim_k_w_mk: 5.0
+  vapor_thickness_mm: 0.800
+  vapor_k_effective_w_mk: 5000
+  graphite_thickness_mm: 0.100
+  graphite_k_in_plane_w_mk: 900
+  frame_thickness_mm: 0.800
+  frame_k_w_mk: 170
+  contact_resistance_cm2k_w: 1.00
+assumptions:
+  1D screening path: SoC/NPU hotspot -> TIM -> vapor chamber -> graphite -> frame -> exterior skin
+  spreading is collapsed into effective layer conductivities and contact resistance
+  vapor chamber effective conductivity is not the same as bulk copper conductivity
+  graphite is anisotropic; in-plane spreading and through-thickness transfer differ
+  contact resistance can dominate real assemblies
+  model is not CFD and does not represent transient control, airflow, grip, or local skin nonuniformity
+formulas:
+  A_m2 = hotspot_area_mm2 * 1e-6
+  R_layer = L / (k * A)
+  contact_R_total = contact_resistance_cm2k_w / hotspot_area_cm2
+  delta_T_layer = heat_w * R_layer
+  skin_heat_flux_w_cm2 = heat_w / skin_area_cm2
+  estimated_skin_temperature_C = ambient_C + heat_W * total_R_C_per_W
+per-layer thermal resistance:
+  TIM: 0.0494 C/W (through-thickness interface layer)
+  copper_vapor_chamber: 0.0005 C/W (effective spreading value, not bulk copper conductivity)
+  graphite_spreader: 0.0003 C/W (anisotropic in-plane spreading approximation)
+  aluminum_magnesium_frame: 0.0145 C/W (frame conduction path)
+  contact_interfaces: 0.3086 C/W
+per-layer delta T:
+  TIM: 1.38 C
+  copper_vapor_chamber: 0.01 C
+  graphite_spreader: 0.01 C
+  aluminum_magnesium_frame: 0.41 C
+  contact_interfaces: 8.64 C
+outputs:
+  total_thermal_resistance_c_per_w: 0.3734
+  estimated_skin_delta_t_above_ambient_c: 10.45
+  estimated_skin_temperature_c: 35.45
+  skin_heat_flux_w_cm2: 0.112
+  pass_max_skin_temp: True
+warnings:
+  - skin heat flux exceeds 0.05 W/cm2 comfort screening threshold
+  - hotspot area is small for a 28 W-class load
+  - contact resistance dominates the modeled layer stack
+confidence: low to medium; suitable for first-pass heat-path risk ranking only
+basis: modeled estimate using 1D conduction, effective spreading conductivities, and assumed contact resistance
+primary blocker: sustained high-power hotspot rejection while keeping exterior skin touch-safe
+
+Local Stackup
+### python engineering/component_models/zone_stackup.py
+Status: PASSED (exit code 0)
+Zone stackup model
+inputs:
+  target_thickness_mm: 8.80
+  zone: all
+  profile: nominal
+assumptions:
+  phone thickness is checked as separate local zones rather than one global stack
+  layer values are nominal first-pass z-height placeholders
+  profile is nominal only; conservative and aggressive profiles are intentionally not added yet
+  local overlap, cutouts, fasteners, tolerances, cable bends, and CAD keepouts are not modeled
+formulas:
+  total_thickness_mm = sum(zone_layer_thicknesses_mm)
+  margin_vs_target_mm = target_thickness_mm - total_thickness_mm
+  pass = margin_vs_target_mm >= 0
+zone name: display_general_zone
+layer list:
+  cover_glass: 0.60 mm
+  display_module: 1.20 mm
+  adhesive: 0.20 mm
+  midframe_allowance: 0.70 mm
+  rear_housing: 0.80 mm
+outputs:
+  total_thickness_mm: 3.50
+  target_thickness_mm: 8.80
+  margin_vs_target_mm: 5.30
+  pass: True
+warnings:
+  none
+
+zone name: battery_zone
+layer list:
+  cover_glass: 0.60 mm
+  display_module: 1.20 mm
+  adhesive: 0.20 mm
+  battery_pack: 4.50 mm
+  swelling_allowance: 0.40 mm
+  rear_housing: 0.80 mm
+outputs:
+  total_thickness_mm: 7.70
+  target_thickness_mm: 8.80
+  margin_vs_target_mm: 1.10
+  pass: True
+warnings:
+  none
+
+zone name: soc_memory_zone
+layer list:
+  cover_glass: 0.60 mm
+  display_module: 1.20 mm
+  adhesive: 0.20 mm
+  vapor_chamber: 0.80 mm
+  pcb: 0.80 mm
+  package_height: 1.50 mm
+  rear_housing: 0.80 mm
+  thermal_interface_allowance: 0.20 mm
+outputs:
+  total_thickness_mm: 6.10
+  target_thickness_mm: 8.80
+  margin_vs_target_mm: 2.70
+  pass: True
+warnings:
+  none
+
+zone name: storage_zone
+layer list:
+  cover_glass: 0.60 mm
+  display_module: 1.20 mm
+  adhesive: 0.20 mm
+  pcb: 0.80 mm
+  storage_package: 1.50 mm
+  graphite_spreader: 0.10 mm
+  rear_housing: 0.80 mm
+outputs:
+  total_thickness_mm: 5.20
+  target_thickness_mm: 8.80
+  margin_vs_target_mm: 3.60
+  pass: True
+warnings:
+  none
+
+zone name: camera_zone
+layer list:
+  cover_glass: 0.60 mm
+  display_module: 1.20 mm
+  adhesive: 0.20 mm
+  camera_module_depth: 5.00 mm
+  prism_path_allowance: 1.00 mm
+  rear_housing: 0.80 mm
+outputs:
+  total_thickness_mm: 8.80
+  target_thickness_mm: 8.80
+  margin_vs_target_mm: 0.00
+  pass: True
+warnings:
+  none
+
+zone name: wireless_charging_zone
+layer list:
+  cover_glass: 0.60 mm
+  display_module: 1.20 mm
+  adhesive: 0.20 mm
+  battery_pack: 4.50 mm
+  coil: 0.60 mm
+  ferrite_or_shield: 0.30 mm
+  rear_housing: 0.80 mm
+outputs:
+  total_thickness_mm: 8.20
+  target_thickness_mm: 8.80
+  margin_vs_target_mm: 0.60
+  pass: True
+warnings:
+  - wireless charging zone overlaps battery zone with limited clearance
+
+zone name: antenna_edge_zone
+layer list:
+  cover_glass: 0.60 mm
+  display_module: 1.20 mm
+  adhesive: 0.20 mm
+  antenna_clearance: 1.00 mm
+  structural_frame: 1.00 mm
+  rear_housing: 0.80 mm
+outputs:
+  total_thickness_mm: 4.80
+  target_thickness_mm: 8.80
+  margin_vs_target_mm: 4.00
+  pass: True
+warnings:
+  none
+
+worst zone summary:
+  zone_name: camera_zone
+  total_thickness_mm: 8.80
+  margin_vs_target_mm: 0.00
+  pass: True
+warnings:
+  - wireless charging zone overlaps battery zone with limited clearance
+confidence: medium for arithmetic; low to medium for layer placeholders before CAD and supplier stackups
+basis: modeled estimate using nominal local z-height stacks
+primary blocker: camera_zone has the tightest z-height margin
+
+Component Packaging
+### python engineering/component_models/component_packaging.py
+SKIP: engineering/component_models/component_packaging.py not found
+### python engineering/component_models/run_all_component_models.py
+Status: PASSED (exit code 0)
+Component physics model grouped report
+These are screening models only; they do not claim production feasibility.
+
+==============================================================================
+MODEL: battery_pack.py
+==============================================================================
+Battery pack physics model
+inputs:
+  capacity_mAh: 6000
+  nominal_voltage_v: 3.85
+  workload_w: 28
+  charging_w: 100
+  footprint_area_mm2: 7500
+assumptions:
+  usable energy is 82-90% after reserve, aging, voltage cutoffs, and high-load losses
+  pack volumetric density range is 580-720 Wh/L (0.58-0.72 Wh/cm3) including pouch and tabs
+  pack gravimetric density range is 220-260 Wh/kg including packaging
+  charge heat uses 8-18% loss as a screening range, not a validated charge curve
+formulas:
+  Wh = capacity_mAh / 1000 * nominal_voltage_V
+  usable_Wh = Wh * usable_fraction
+  runtime_h = usable_Wh / workload_W
+  volume_cm3 = Wh / volumetric_density_Wh_per_cm3
+  mass_g = Wh / Wh_per_kg * 1000 g/kg
+  thickness_mm = volume_mm3 / footprint_area_mm2
+  charge_current_A = charging_W / nominal_voltage_V
+outputs:
+  total_energy_wh: 23.1
+  usable_energy_wh_range: 19-21
+  runtime_min_range_at_workload: 41-45
+  pack_volume_cm3_range: 32-40
+  pack_mass_g_range: 89-105
+  estimated_pack_thickness_mm_range: 4.3-5.3
+  charge_current_a_estimate: 26
+  charging_loss_heat_w_range: 8-18
+warnings:
+  workload is laptop-class for a phone pack; runtime and cell temperature are aggressive
+  fast charging may create roughly 8-18 W of pack/electronics heat
+  pack thickness estimate exceeds common thin-phone battery allowances
+confidence: medium for energy arithmetic; low for packaging, cycle life, and fast-charge thermals
+basis: conservative first-pass lithium-ion pack screening ranges
+primary blocker: fitting high energy and high charge heat into safe cell thickness and thermal limits
+
+==============================================================================
+MODEL: display_module.py
+==============================================================================
+Display module physics model
+inputs:
+  diagonal_in: 7.5
+  aspect_ratio: 16:10
+  device_length_mm: 180
+  device_width_mm: 95
+  thickness_mm: 1.2
+  power_w: 3.5
+assumptions:
+  active area is derived from diagonal and rectangular aspect ratio
+  module area adds 8% for driver border, rounded corners, and bonding margin
+  mass range is 1.8-3.0 mg/mm2 for display/touch support stack
+  power range is 0.6-1.8x nominal for content, brightness, refresh, and APL
+formulas:
+  diagonal_mm = diagonal_in * 25.4
+  active_width_mm = diagonal_mm * aspect_width / sqrt(aspect_width^2 + aspect_height^2)
+  active_height_mm = diagonal_mm * aspect_height / sqrt(aspect_width^2 + aspect_height^2)
+  module_area_mm2 = active_area_mm2 * 1.08
+  volume_cm3 = module_area_mm2 * thickness_mm / 1000
+  surface_percent = active_area_mm2 / device_face_area_mm2 * 100
+outputs:
+  active_width_mm: 162
+  active_height_mm: 101
+  active_area_mm2: 16310
+  module_area_mm2: 17615
+  estimated_mass_g_range: 32-53
+  estimated_volume_cm3_range: 19-25
+  power_w_range: 2.1-6.3
+  heat_load_w_range: 2.1-6.3
+  device_face_coverage_percent: 95
+warnings:
+  active display consumes most of the front face; bezels, corners, cameras, and antennas are constrained
+  high brightness or high refresh operation creates a major front-surface heat load
+confidence: medium for geometry; low for supplier-specific OLED/LCD mass and power
+basis: phone/tablet-class display screening assumptions
+primary blocker: front-face area, display heat, camera openings, and border electronics packaging
+
+==============================================================================
+MODEL: pcb_stack.py
+==============================================================================
+PCB stack physics model
+inputs:
+  device_length_mm: 180
+  device_width_mm: 95
+  pcb_area_fraction: 0.35
+  pcb_thickness_mm: 0.8
+  component_area_mm2: 3500
+assumptions:
+  available PCB area is a fraction of device face after battery, camera, speaker, and antenna keep-outs
+  component occupancy excludes routing channels, shields, test pads, board-to-board connectors, and flex tails
+  FR-4/HDI effective density range is 1.6-2.1 g/cm3
+  layer-count risk is inferred from utilization, not routed CAD
+formulas:
+  device_face_area_mm2 = length_mm * width_mm
+  available_pcb_area_mm2 = device_face_area_mm2 * pcb_area_fraction
+  utilization_percent = component_area_mm2 / available_pcb_area_mm2 * 100
+  pcb_volume_cm3 = available_pcb_area_mm2 * pcb_thickness_mm / 1000
+  pcb_mass_g = pcb_volume_cm3 * density_g_per_cm3
+outputs:
+  available_pcb_area_mm2: 5985
+  component_occupancy_mm2: 3500
+  utilization_percent: 58
+  estimated_layer_count_risk: high
+  pcb_volume_cm3: 4.8
+  pcb_mass_g_range: 8-10
+warnings:
+  component occupancy leaves limited room for routing, shields, connectors, and keep-outs
+  estimated layer count likely rises because dense memory/SoC/RF routing competes for area
+confidence: medium for area arithmetic; low for actual routing feasibility
+basis: first-pass HDI PCB area and density screening
+primary blocker: dense routing around SoC, memory, storage, RF, cameras, and connectors
+
+==============================================================================
+MODEL: soc_package.py
+==============================================================================
+SoC/NPU package physics model
+inputs:
+  package_length_mm: 18
+  package_width_mm: 18
+  package_thickness_mm: 1.2
+  sustained_power_w: 12
+  peak_power_w: 28
+  npu_tops: 100
+assumptions:
+  package footprint is rectangular and approximates thermal contact footprint
+  passive spreading target is roughly 4 W/cm2 at the contact patch for screening
+  package volume excludes nearby PMIC, memory, shields, and underfill allowances
+  TOPS is reported as capability context, not a performance guarantee
+formulas:
+  package_area_mm2 = length_mm * width_mm
+  power_density_W_per_cm2 = power_W / (package_area_mm2 / 100)
+  heat_flux_W_per_cm2 = package_power_W / package_area_cm2
+  required_contact_area_cm2 = power_W / 4 W_per_cm2
+  package_volume_cm3 = package_area_mm2 * thickness_mm / 1000
+outputs:
+  package_area_mm2: 324
+  package_volume_cm3: 0.4
+  sustained_power_density_w_per_cm2: 3.7
+  peak_heat_flux_w_per_cm2: 8.6
+  required_contact_area_cm2_sustained: 3.0
+  required_contact_area_cm2_peak: 7.0
+  npu_tops_context: 100
+warnings:
+  peak package heat flux is high for passive phone-class spreading
+  peak power is more than 2x sustained; throttling or short bursts should be expected
+  100 TOPS-class claim needs memory bandwidth and sustained thermal validation
+confidence: medium for package arithmetic; low for die stack and real thermal resistance
+basis: first-pass phone-class passive thermal spreading screen
+primary blocker: sustained SoC/NPU heat removal without throttling or hot spots
+
+==============================================================================
+MODEL: memory_package.py
+==============================================================================
+Memory package physics model
+inputs:
+  capacity_gb: 512
+  gb_per_package: 32
+  package_area_mm2: 120
+  package_thickness_mm: 1.2
+  idle_power_per_gb_w: 0.005
+  active_power_per_gb_w: 0.025
+assumptions:
+  package count is rounded up to whole packages
+  per-GB power is a coarse LPDDR/HBM-like screening placeholder, not vendor data
+  area excludes decoupling capacitors, PMICs, routing escape, and keep-out spacing
+  capacity target is treated as raw installed memory, not usable OS memory
+formulas:
+  package_count = ceil(capacity_GB / GB_per_package)
+  total_area_mm2 = package_count * package_area_mm2
+  total_volume_cm3 = total_area_mm2 * package_thickness_mm / 1000
+  idle_power_W = capacity_GB * idle_power_per_GB_W
+  active_power_W = capacity_GB * active_power_per_GB_W
+  power_per_GB_W = total_power_W / capacity_GB
+outputs:
+  memory_required_gb: 512
+  estimated_package_count: 16
+  total_package_area_mm2: 1920
+  total_package_volume_cm3: 2.3
+  idle_memory_power_w: 2.6
+  active_memory_power_w: 13
+  active_power_per_gb_w: 0.025
+  routing_pressure_note: 16 high-pin-count packages require short routes and wide power delivery
+warnings:
+  large package count creates severe board area, escape routing, and power rail pressure
+  active memory power is high enough to be a major thermal load
+  phone-class 256 GB+ RAM target is likely availability, cost, and packaging constrained
+confidence: low because package capacity and availability are supplier-specific
+basis: capacity-driven first-pass memory packaging screen
+primary blocker: sourcing and routing enough high-density memory in phone-class board area
+
+==============================================================================
+MODEL: storage_package.py
+==============================================================================
+Storage package physics model
+inputs:
+  capacity_tb: 4
+  tb_per_package: 2
+  package_area_mm2: 180
+  package_thickness_mm: 1.5
+  idle_power_w_per_package: 0.5
+  active_power_w_per_package: 5.0
+assumptions:
+  storage package count is rounded up to whole packages
+  power values are per package and include controller/NAND activity as a screening placeholder
+  package area excludes PMIC, shielding, decoupling, and thermal pad clearance
+  capacity is raw installed storage before filesystem reserves and wear management
+formulas:
+  package_count = ceil(capacity_TB / TB_per_package)
+  total_area_mm2 = package_count * package_area_mm2
+  volume_cm3 = total_area_mm2 * package_thickness_mm / 1000
+  idle_power_W = package_count * idle_power_W_per_package
+  active_power_W = package_count * active_power_W_per_package
+outputs:
+  estimated_package_count: 2
+  total_area_mm2: 360
+  total_volume_cm3: 0.5
+  idle_power_w: 1.0
+  active_power_w: 10
+  active_heat_warning_threshold_w: 8
+warnings:
+  active storage heat can throttle sustained writes and warm nearby battery/display areas
+  multi-TB phone storage is package-height, cost, and availability constrained
+  PCIe Gen5-class storage increases controller thermal risk unless bandwidth is capped or well spread
+confidence: medium for count arithmetic; low for sustained bandwidth and controller thermals
+basis: first-pass NAND/UFS/NVMe-like package screening
+primary blocker: sustained storage heat and package placement near battery, SoC, and RF zones
+
+==============================================================================
+MODEL: thermal_module.py
+==============================================================================
+Thermal module physics model
+inputs:
+  device_length_mm: 180
+  device_width_mm: 95
+  vapor_chamber_area_fraction: 0.45
+  vapor_chamber_thickness_mm: 0.8
+  graphite_area_fraction: 0.75
+  graphite_thickness_mm: 0.1
+  sustained_w: 28
+assumptions:
+  vapor chamber effective density is 3.5 g/cm3 including walls and wick voids
+  graphite sheet density is 1.8 g/cm3
+  TIM patch is approximated as 350 mm2 by 0.08 mm
+  passive reference is 8 W sustained for conservative phone-class comfort screening
+formulas:
+  component_area_mm2 = device_face_area_mm2 * area_fraction
+  volume_cm3 = area_mm2 * thickness_mm / 1000
+  mass_g = volume_cm3 * density_g_per_cm3
+  heat_path_coverage_percent = max(vapor_chamber_fraction, graphite_fraction) * 100
+  passive_ratio = sustained_W / passive_reference_W
+outputs:
+  vapor_chamber_volume_cm3: 6.2
+  vapor_chamber_mass_g: 22
+  graphite_sheet_volume_cm3: 1.3
+  graphite_sheet_mass_g: 2
+  tim_layer_volume_cm3_estimate: 0.03
+  combined_thermal_module_mass_g: 24
+  heat_path_coverage_percent: 75
+  sustained_to_passive_reference_ratio: 3.5x
+warnings:
+  sustained heat is far above conservative passive phone reference and likely needs throttling or active cooling
+  vapor chamber thickness consumes meaningful z-height in an 8-9 mm device
+confidence: medium for volume/mass; low for thermal resistance and skin temperature
+basis: first-pass passive spreading module screen
+primary blocker: rejecting sustained heat while staying thin, light, and touch-safe
+
+==============================================================================
+MODEL: camera_system.py
+==============================================================================
+Camera system physics model
+inputs:
+  rear_module_length_mm: 35
+  rear_module_width_mm: 12
+  rear_module_thickness_mm: 5.0
+  prism_path_length_mm: 40
+  device_thickness_mm: 8.8
+assumptions:
+  rear module is represented as a rectangular bounding box
+  1.4 mm is reserved for local cover, adhesive, decoration, and clearance above the module
+  prism path length is a packaging placeholder for folded optics, not an optical prescription
+  front camera is treated as a display aperture/keep-out conflict
+formulas:
+  rear_module_volume_cm3 = length_mm * width_mm * thickness_mm / 1000
+  z_margin_mm = device_thickness_mm - rear_module_thickness_mm - reserved_clearance_mm
+  lateral_camera_packaging_ratio = prism_path_length_mm / rear_module_length_mm
+outputs:
+  rear_camera_module_volume_cm3: 2.1
+  prism_path_length_estimate_mm: 40
+  z_height_margin_after_clearance_mm: 2.4
+  lateral_camera_packaging_ratio: 1.1x
+  front_camera_display_conflict_note: aperture or under-display camera reduces active display/design freedom
+warnings:
+  long folded-optics prism path creates lateral packaging conflict with battery and PCB zones
+  front camera/display conflict requires notch, hole, under-display tradeoff, or bezel allocation
+confidence: low because camera modules are vendor-specific optical/mechanical assemblies
+basis: first-pass camera bounding-box and folded-path screen
+primary blocker: camera z-height and lateral folded-optics volume competing with battery and PCB
+
+==============================================================================
+MODEL: antenna_rf.py
+==============================================================================
+Antenna/RF physics model
+inputs:
+  device_perimeter_mm: 550
+  antenna_keepout_width_mm: 5
+  rf_window_area_mm2: 1200
+  metal_percent: 65
+  rf_friendly_percent: 25
+assumptions:
+  antenna keep-out is approximated as perimeter length times keep-out width
+  keep-out volume assumes 1.2 mm local clearance depth for nearby metal, PCB, and battery effects
+  RF-friendly material percentage is a chassis/material allocation placeholder
+  coexistence is qualitative until antenna tuning and SAR simulation exist
+formulas:
+  antenna_keepout_area_mm2 = device_perimeter_mm * antenna_keepout_width_mm
+  rf_window_share_percent = rf_window_area_mm2 / antenna_keepout_area_mm2 * 100
+  antenna_keepout_volume_cm3 = antenna_keepout_area_mm2 * clearance_depth_mm / 1000
+  rf_friendly_material_percent = input_percent
+outputs:
+  rf_window_area_requirement_mm2: 1200
+  antenna_keepout_area_mm2: 2750
+  rf_window_share_of_keepout_percent: 44
+  rf_friendly_material_percentage: 25
+  antenna_keepout_volume_cm3_estimate: 3.3
+  wireless_coexistence_notes: cellular/Wi-Fi/Bluetooth/GNSS/NFC/UWB need separated apertures, filters, and tuning margin
+warnings:
+  metal frame percentage is high and can detune antennas without breaks, windows, and isolation
+  RF-friendly material share is low for multi-band cellular, Wi-Fi, Bluetooth, GNSS, NFC, and UWB coexistence
+confidence: low until RF simulation, antenna vendor review, and SAR testing
+basis: first-pass perimeter keep-out and material compatibility screen
+primary blocker: achieving RF performance with high metal content and crowded perimeter keep-outs
+
+==============================================================================
+MODEL: wireless_charging.py
+==============================================================================
+Wireless charging physics model
+inputs:
+  coil_diameter_mm: 45
+  coil_thickness_mm: 0.6
+  charging_power_w: 50
+  efficiency: 0.75
+  rear_metal_present: True
+assumptions:
+  coil is circular and represented by its outer diameter
+  coil volume excludes ferrite, adhesives, alignment magnets, shielding, and controller electronics
+  loss heat equals input electrical power minus delivered charging power
+  rear material compatibility is binary screening, not electromagnetic simulation
+formulas:
+  coil_area_mm2 = pi * (coil_diameter_mm / 2)^2
+  coil_volume_cm3 = coil_area_mm2 * coil_thickness_mm / 1000
+  input_power_W = charging_power_W / efficiency
+  charging_loss_heat_W = input_power_W - charging_power_W
+outputs:
+  coil_area_mm2: 1590
+  coil_volume_cm3: 1.0
+  input_power_w_estimate: 67
+  charging_loss_heat_w: 17
+  rear_material_compatibility_warning: metal rear requires window/ferrite isolation
+  conflict_with_metal_thermal_frame: yes
+warnings:
+  wireless charging loss heat is high and must be spread away from battery hot spots
+  rear metal blocks or heats under inductive charging unless broken by RF/charging window or ferrite stack
+  50 W wireless charging is aggressive for phone-class temperature limits
+confidence: medium for loss arithmetic; low for electromagnetic coupling and temperature
+basis: first-pass inductive charging geometry and heat screen
+primary blocker: wireless charge heat and metal rear/thermal-frame compatibility
+
+==============================================================================
+MODEL: structural_stackup.py
+==============================================================================
+Structural stackup physics model
+inputs:
+  target_thickness_mm: 8.8
+  cover_glass_mm: 0.6
+  display_mm: 1.2
+  adhesive_mm: 0.2
+  vapor_chamber_mm: 0.8
+  pcb_mm: 0.8
+  max_package_mm: 1.5
+  battery_mm: 4.5
+  rear_housing_mm: 0.8
+assumptions:
+  layers are summed as a worst-case local vertical stack
+  no credit is taken for cavities, offsets, local recesses, compression, or curved surfaces
+  manufacturing tolerances, seals, screws, ribs, camera bump, and drop margins are not included
+  overlap warning is qualitative until CAD placement zones exist
+formulas:
+  stacked_thickness_mm = sum(layer_thickness_mm)
+  remaining_thickness_mm = target_thickness_mm - stacked_thickness_mm
+  overflow_thickness_mm = max(0, stacked_thickness_mm - target_thickness_mm)
+outputs:
+  stacked_thickness_mm: 10.4
+  target_thickness_mm: 8.8
+  overflow_thickness_mm: 1.6
+  rigid_zone_overlap_warning: battery/PCB/package stack should not be assumed co-located
+warnings:
+  stack exceeds target thickness before camera bumps, ribs, tolerances, seals, and local reinforcements
+  battery, PCB, and package rigid zones cannot all occupy the same z-stack everywhere
+  rigid-zone overlap must be resolved by side-by-side placement, pockets, steps, flexes, or local thickness growth
+confidence: medium for arithmetic; low for real mechanical packaging without CAD
+basis: first-pass local z-stack screening
+primary blocker: fitting battery, PCB packages, cooling, structure, and display within target thickness
+
+completed all component models successfully
+
+Interconnect and Power Delivery
+### python engineering/interconnect_models/run_all_interconnect_models.py
+Status: PASSED (exit code 0)
+
+========================================================================
+Memory bandwidth
+========================================================================
+Memory bandwidth screening model
+
+assumptions:
+- model weights dominate bytes moved per generated token in this conservative first-order screen
+- active model footprint adds a 25% overhead allowance for metadata, activations, runtime buffers, and fragmentation
+- memory bandwidth is treated as peak theoretical bandwidth, not sustained application bandwidth
+- this is NOT a real inference-performance predictor
+- KV cache, scheduling, NPU efficiency, runtime software, memory latency, batching, and sparsity are not modeled
+
+formulas:
+- raw_model_size_GB = model_params_B * quantization_bits / 8
+- active_model_footprint_GB = raw_model_size_GB * 1.25
+- bytes_per_token_estimate_GB = active_model_footprint_GB
+- bandwidth_demand_Gbps = bytes_per_token_estimate_GB * target_tokens_per_sec * 8
+- bandwidth_utilization_percent = bandwidth_demand_Gbps / memory_bandwidth_Gbps * 100
+
+outputs:
+- memory_capacity_gb: 512
+- memory_bandwidth_gbps: 2048
+- model_params_b: 70
+- quantization_bits: 4
+- target_tokens_per_sec: 25
+- raw_model_size_gb: 35.0
+- estimated_active_model_footprint_gb: 43.8
+- bytes_per_token_estimate_gb: 43.8
+- estimated_bandwidth_demand_gbps: 8750
+- bandwidth_utilization_percent: 427
+- capacity_headroom_gb: 468.2
+
+warnings:
+- bandwidth utilization exceeds 70%; memory bandwidth is likely a first-order limiter
+confidence: low for performance prediction; medium for arithmetic screening
+basis: conservative weight-streaming bandwidth estimate for local AI workload feasibility triage
+primary blocker: memory bandwidth headroom
+
+========================================================================
+Power delivery
+========================================================================
+Power delivery screening model
+
+assumptions:
+- loads are summed as a conservative simultaneous-use case
+- battery-side current uses nominal battery voltage and ignores regulator efficiency
+- USB-PD rail stress is represented by a normalized overlap-power index, not connector or charger qualification
+- thermal, charging policy, cable limits, PMIC selection, and battery cell limits require later detailed design
+
+formulas:
+- total_system_power_W = SoC + memory + storage + display
+- battery_side_current_A = total_system_power_W / battery_voltage_V
+- charging_current_A = charging_power_W / battery_voltage_V
+- overlap_power_W = total_system_power_W + charging_power_W
+- pd_rail_stress_index = overlap_power_W / 100 W
+
+outputs:
+- total_system_power_w: 49.0
+- battery_side_current_a: 12.7
+- charging_current_a_at_battery_voltage_equivalent: 26.0
+- overlap_power_w: 149.0
+- overlap_battery_equivalent_current_a: 38.7
+- pd_rail_stress_index: 1.49
+
+warnings:
+- >10A battery-side current during sustained internal load
+- >30W sustained internal dissipation requires aggressive thermal and rail design
+- charging plus sustained AI overlap can stress thermals, battery protection, PMICs, and USB-PD policy
+- combined charge/load current equivalent is very high for a thin pocket device
+confidence: medium for current arithmetic; low for real rail/PMIC implementation
+basis: first-order thin-device power delivery and charging-overlap screen
+primary blocker: current density, connector/PMIC limits, and thermal dissipation during overlap events
+
+========================================================================
+Routing density
+========================================================================
+PCB routing density screening model
+
+assumptions:
+- memory package area uses an 80 mm2 placeholder per package for crowding pressure only
+- high-speed links are counted as abstract lanes/interfaces, not exact differential pairs or byte lanes
+- routing density proxy is normalized per 1000 mm2 of PCB area
+- vias, impedance rules, blind/buried via choices, keepouts, antennas, and flex routing are not modeled
+
+formulas:
+- memory_area_mm2 = memory_package_count * 80 mm2
+- area_utilization_percent = (SoC_package_area + memory_area) / PCB_area * 100
+- high_speed_links_per_layer = high_speed_links / PCB_layer_count
+- routing_density_proxy = high_speed_links / PCB_area_mm2 * 1000
+- interconnect_pressure = routing_density_proxy * (12 / layer_count) * (1 + area_utilization_percent / 100)
+
+outputs:
+- pcb_area_mm2: 6000
+- soc_package_area_mm2: 324
+- memory_package_count: 16
+- estimated_memory_package_area_mm2: 1280
+- package_area_utilization_percent: 27
+- high_speed_links: 128
+- pcb_layer_count: 12
+- high_speed_links_per_layer: 10.7
+- routing_density_proxy_per_1000mm2: 21.3
+- interconnect_pressure_score: 27.0
+
+warnings:
+- memory package crowding is likely around the SoC keepout and escape-routing region
+- excessive high-speed density may increase crosstalk, length-matching, and via-stub risk
+- likely layer-count escalation beyond the nominal PCB stackup
+confidence: low; intended only for routing-pressure triage before board floorplanning
+basis: package count, link count, board area, and layer-count screening heuristics
+primary blocker: memory escape routing and high-speed signal-integrity margin in limited board area
+
+========================================================================
+Package interconnect
+========================================================================
+Package interconnect screening model
+
+assumptions:
+- high-bandwidth systems prefer short routing between the SoC/NPU and memory packages
+- routing complexity increases rapidly with package count because escape routing, length matching, and keepouts multiply
+- distance values are package-to-package floorplan placeholders, not measured trace lengths
+- signal integrity, skew budgets, channel loss, connector/flex effects, and package pin maps are not modeled
+
+formulas:
+- bandwidth_Tbps = target_memory_bandwidth_Gbps / 1000
+- short_path_pressure_score = bandwidth_Tbps * SoC_memory_distance_mm * (memory_package_count / 8)
+- package_clustering_density = memory_package_count / SoC_memory_distance_mm
+- storage_path_pressure_score = storage_distance_mm / SoC_memory_distance_mm
+
+outputs:
+- soc_memory_distance_mm: 8.0
+- memory_package_count: 16
+- storage_distance_mm: 25.0
+- target_memory_bandwidth_gbps: 2048
+- short_path_pressure_score: 32.8
+- package_clustering_density_packages_per_mm: 2.00
+- storage_path_pressure_score: 3.1
+
+warnings:
+- routing complexity increases rapidly with memory package count and escape-routing fanout
+confidence: low; package maps and board floorplan are required for real interconnect feasibility
+basis: first-order adjacency pressure from bandwidth, distance, and memory package count
+primary blocker: keeping high-bandwidth memory physically close enough while leaving room for routing escape
+
+========================================================================
+Power integrity
+========================================================================
+Power integrity screening model
+
+assumptions:
+- peak power is applied to a low-voltage compute rail for worst-case current screening
+- PDN resistance is a lumped effective resistance placeholder
+- transient current factor approximates fast workload steps and simultaneous switching demand
+- inductance, capacitor ESR/ESL, control-loop response, package parasitics, and board layout are not modeled
+
+formulas:
+- peak_current_A = peak_power_W / voltage_V
+- transient_current_A = peak_current_A * transient_current_factor
+- pdn_resistance_ohm = pdn_resistance_mohm / 1000
+- estimated_voltage_droop_V = transient_current_A * pdn_resistance_ohm
+- droop_percent = estimated_voltage_droop_V / voltage_V * 100
+
+outputs:
+- peak_power_w: 45.0
+- voltage_v: 0.90
+- pdn_resistance_mohm: 0.50
+- transient_current_factor: 1.8
+- peak_current_a: 50.0
+- transient_current_a: 90.0
+- estimated_voltage_droop_v: 0.045
+- droop_percent: 5.0
+
+warnings:
+- transient current spikes require close VRM, capacitor, package, and workload-step review
+- thin-device capacitor/VRM constraint risk is high at this transient current
+confidence: low; real power integrity depends on impedance versus frequency and layout
+basis: conservative Ohm-law transient droop screen for low-voltage AI rails
+primary blocker: transient current delivery with limited decoupling and VRM area in a thin device
+
+AI Runtime Memory
+### python engineering/runtime_models/runtime_memory_budget.py
+Status: PASSED (exit code 0)
+Runtime memory budget estimate
+inputs:
+  available_memory_gb: 512.00
+  params_billions: 70.0
+  quantization_bits: 4.0
+  model_overhead_factor: 1.25
+  layers: 80
+  hidden_size: 8192
+  context_tokens: 32768
+  batch_size: 1
+  kv_bytes_per_element: 2.0
+  multimodal_overhead_gb: 30.00
+  os_reserve_gb: 16.00
+  safety_reserve_gb: 32.00
+assumptions:
+  model residency uses quantized weight storage plus a conservative runtime overhead factor
+  KV cache scales linearly with context length, layers, hidden size, and batch size
+  multimodal overhead, OS reserve, and safety reserve are additive placeholders
+  this combined memory budget does not predict real tokens/sec
+formulas:
+  raw_model_gb = params_billions * 1e9 * quantization_bits / 8 / 1e9
+  model_resident_gb = raw_model_gb * model_overhead_factor
+  kv_cache_gb = 2 * layers * hidden_size * context_tokens * batch_size * kv_bytes_per_element / 1e9
+  total_used_gb = model_resident_gb + kv_cache_gb + multimodal_overhead_gb + os_reserve_gb + safety_reserve_gb
+  remaining_gb = available_memory_gb - total_used_gb
+outputs:
+  model_resident_gb: 43.75
+  kv_cache_gb: 85.90
+  multimodal_overhead_gb: 30.00
+  os_reserve_gb: 16.00
+  safety_reserve_gb: 32.00
+  total_used_gb: 207.65
+  remaining_gb: 304.35
+  pass_fail: pass
+warnings:
+  KV cache is larger than model weights/resident model estimate
+confidence: low for complete runtime feasibility; medium for combined memory arithmetic
+basis: additive first-pass local AI runtime memory budget
+primary blocker: KV cache dominates resident model weights
+
+Manufacturing and Reliability
+### python engineering/manufacturing_models/run_all_manufacturing_models.py
+Status: PASSED (exit code 0)
+Running tolerance_stackup.py
+Tolerance stackup screening model
+inputs:
+  - component_count: 12
+  - avg_tolerance_mm: 0.05
+  - target_clearance_mm: 0.30
+  - target_thickness_mm: 8.8
+formulas:
+  - worst_case_mm = component_count * avg_tolerance_mm
+  - rss_mm = sqrt(component_count) * avg_tolerance_mm
+  - remaining_clearance_mm = target_clearance_mm - worst_case_mm
+outputs:
+  - worst_case_tolerance_mm: 0.60
+  - rss_tolerance_mm: 0.17
+  - remaining_clearance_mm: -0.30
+  - screening_result: fail
+warnings:
+  - remaining clearance is below 0.2 mm; tolerance stack should be reviewed before packaging claims
+  - worst-case tolerance exceeds target clearance
+  - thin-device assembly risk: small z-height reserve amplifies every tolerance contributor
+confidence: medium for arithmetic; low for real assembly without measured part distributions
+basis: conservative first-order tolerance stackup screen
+
+========================================================================
+Running thermal_expansion.py
+Thermal expansion mismatch screening model
+inputs:
+  - delta_temp_c: 35
+  - bond_length_mm: 120
+assumptions:
+  - CTE values use typical screening constants from engineering/constants/materials.yaml
+  - bonded interfaces are treated as straight free-expansion lengths before constraint effects
+  - adhesive compliance, part geometry, creep, and local features are not modeled
+formulas:
+  - expansion_mm = length_mm * cte_per_c * delta_temp_c
+  - mismatch_mm = abs(expansion_a_mm - expansion_b_mm)
+outputs:
+  - aluminum/glass: expansion_a_mm=0.097, expansion_b_mm=0.036, mismatch_mm=0.061
+  - magnesium/glass: expansion_a_mm=0.109, expansion_b_mm=0.036, mismatch_mm=0.073
+  - aluminum/ceramic: expansion_a_mm=0.097, expansion_b_mm=0.029, mismatch_mm=0.067
+  - copper/graphite: expansion_a_mm=0.071, expansion_b_mm=0.017, mismatch_mm=0.055
+  - pcb/aluminum: expansion_a_mm=0.067, expansion_b_mm=0.097, mismatch_mm=0.029
+warnings:
+  - high mismatch for aluminum/glass; bonded interface stress risk
+  - thermal cycling fatigue risk for aluminum/glass over long bonded surfaces
+  - high mismatch for magnesium/glass; bonded interface stress risk
+  - thermal cycling fatigue risk for magnesium/glass over long bonded surfaces
+  - high mismatch for aluminum/ceramic; bonded interface stress risk
+  - thermal cycling fatigue risk for aluminum/ceramic over long bonded surfaces
+  - high mismatch for copper/graphite; bonded interface stress risk
+  - thermal cycling fatigue risk for copper/graphite over long bonded surfaces
+confidence: low; use FEA and measured materials for bonded-stack reliability decisions
+basis: first-pass CTE mismatch screen
+
+========================================================================
+Running battery_swelling.py
+Battery swelling allowance screening model
+inputs:
+  - battery_thickness_mm: 4.5
+  - swelling_percent: 8
+  - available_clearance_mm: 0.4
+formulas:
+  - required_clearance_mm = battery_thickness_mm * swelling_percent / 100
+  - expanded_thickness_mm = battery_thickness_mm + required_clearance_mm
+  - remaining_allowance_mm = available_clearance_mm - required_clearance_mm
+outputs:
+  - expanded_thickness_mm: 4.86
+  - required_swelling_clearance_mm: 0.36
+  - remaining_allowance_mm: 0.04
+  - screening_result: pass
+warnings:
+  - low swelling margin can transfer pressure into the display or rear housing
+  - long-term reliability concern: swelling allowance should not be consumed by nominal stackup
+confidence: low; actual swelling depends on cell chemistry, age, charge policy, temperature, and mechanical preload
+basis: first-pass clearance allowance screen, not a cell safety qualification
+
+========================================================================
+Running assembly_complexity.py
+Assembly complexity screening model
+inputs:
+  - component_count: 25
+  - pcb_layer_count: 12
+  - camera_count: 3
+  - antenna_window_count: 4
+  - thermal_stack_layers: 5
+  - repairability_target: low
+formulas:
+  - base_score = components + 2*pcb_layers + 4*cameras + 3*antenna_windows + 5*thermal_layers + repairability_factor
+  - assembly_complexity_score = round(base_score * thin_device_multiplier)
+outputs:
+  - base_score: 106
+  - thin_device_difficulty_multiplier: 1.25
+  - assembly_complexity_score: 132
+warnings:
+  - high integration complexity
+  - likely yield pressure from dense assembly and inspection sensitivity
+  - repair difficulty: bonded or stacked assemblies may block clean disassembly
+confidence: low; this is a comparative pressure index, not a factory yield predictor
+basis: first-pass manufacturing complexity screen
+
+========================================================================
+Running reliability_hotspots.py
+Reliability hotspot screening model
+inputs:
+  - sustained_power_w: 28
+  - device_thickness_mm: 8.8
+  - battery_thickness_mm: 4.5
+  - camera_module_depth_mm: 5.0
+  - wireless_charging_w: 50
+assumptions:
+  - hotspots are qualitative screens from concentration of heat, load paths, z-height, or repeated assembly stress
+  - drop, vibration, thermal cycling, corrosion, ingress, and connector life are not quantified
+thermal hotspot zones:
+  - SoC/NPU, memory packages, vapor chamber interface, and exterior skin above compute region
+  - wireless charging coil, ferrite stack, rear glass, and adjacent battery face
+structural weak zones:
+  - thin midframe rails, antenna window breaks, button cutouts, and large glass spans
+battery pressure zones:
+  - battery-to-display and battery-to-rear-housing clearance stack
+connector stress zones:
+  - flex tails crossing hinge-like bend regions, board-to-board connectors, and charging port anchors
+camera island stress zones:
+  - camera bump perimeter, lens stack adhesive, OIS module mounts, and local frame step
+warnings:
+  - thermal, structural, battery, connector, and camera concentrations should be reviewed together, not independently
+  - hotspot list is not a durability prediction or qualification result
+confidence: low; physical prototypes, FEA, thermal tests, and reliability qualification are required
+basis: first-pass reliability-critical region screen
+
+========================================================================
+Running repairability.py
+Repairability pressure screening model
+inputs:
+  - adhesive_level: high
+  - battery_removability: low
+  - screen_removal_risk: high
+  - modular_component_count: 2
+  - internal_layer_complexity: high
+formulas:
+  - score increases with adhesive, low battery removability, screen removal risk, and layer complexity
+  - score decreases with modular replaceable component count
+outputs:
+  - repairability_pressure_score: 208
+likely repair blockers:
+  - battery difficult to replace
+  - stacked thermal assembly may require destructive or high-risk disassembly
+  - bonded glass/frame complexity raises breakage risk
+  - few modular replaceable subassemblies
+warnings:
+  - battery difficult to replace
+  - stacked thermal assembly may require destructive or high-risk disassembly
+  - bonded glass/frame complexity raises breakage risk
+  - few modular replaceable subassemblies
+confidence: low; service procedure design and teardown validation are required
+basis: first-pass repairability pressure screen
+
+========================================================================
+Running yield_risk.py
+Yield risk pressure screening model
+inputs:
+  - pcb_layer_count: 12
+  - memory_package_count: 16
+  - device_thickness_mm: 8.8
+  - thermal_stack_complexity: high
+  - antenna_window_count: 4
+  - camera_module_complexity: high
+formulas:
+  - base_score = 3*pcb_layers + 2*memory_packages + thermal_complexity + antenna_windows + camera_complexity terms
+  - yield_risk_score = round(base_score * thin_device_multiplier)
+outputs:
+  - base_score: 166
+  - thin_device_multiplier: 1.30
+  - yield_risk_score: 216
+  - complexity_escalation: high
+warnings:
+  - high packaging density
+  - likely assembly sensitivity from thin-device clearance and inspection limits
+  - high integration risk; factory yield cannot be inferred from this screen
+confidence: low; indicator only, not a first-pass yield percentage or manufacturing feasibility claim
+basis: conservative first-order yield pressure screen
+
+Environmental Conditions
+### python engineering/environment_models/run_all_environment_models.py
+Status: PASSED (exit code 0)
+================================================================================
+environment model 1: ambient_temperature.py
+================================================================================
+Ambient temperature skin-margin model
+inputs:
+  - ambient_c: 25.0
+  - skin_rise_c: 18.0
+  - max_skin_c: 43.0
+assumptions:
+  - skin rise is treated as a fixed workload-driven delta above ambient
+  - ambient air is uniform around the device with no sunlight, enclosure, or hand-contact penalty
+  - maximum skin temperature is a screening target, not a compliance or certification limit
+formulas:
+  - estimated_skin_c = ambient_c + skin_rise_c
+  - margin_c = max_skin_c - estimated_skin_c
+outputs:
+  - estimated_skin_c: 43.0
+  - margin_c: 0.0
+warnings:
+  - skin-temperature margin is below 5 C; workload or cooling assumptions need review
+confidence: low; requires thermal chamber testing, skin-temperature mapping, and workload calibration
+basis: first-pass environmental derating from ambient temperature to exterior skin margin
+primary blocker: fixed skin-rise assumption does not capture enclosure, airflow, solar load, or dynamic throttling
+
+================================================================================
+environment model 2: hand_contact.py
+================================================================================
+Hand-contact heat-flux model
+inputs:
+  - sustained_w: 28.0
+  - skin_area_cm2: 250.0
+  - hand_contact_percent: 35.0
+  - insulation_factor: 1.25
+assumptions:
+  - hand coverage removes contacted skin area from effective heat-spreading surface
+  - insulation factor represents poorer convection and higher perceived temperature at contacted areas
+  - heat is treated as uniformly spread across the remaining area, which is optimistic for local hotspots
+formulas:
+  - effective_area_cm2 = skin_area_cm2 * (1 - hand_contact_percent / 100)
+  - heat_flux_w_per_cm2 = sustained_w / effective_area_cm2
+  - adjusted_heat_flux_w_per_cm2 = heat_flux_w_per_cm2 * insulation_factor
+outputs:
+  - effective_area_cm2: 162.5
+  - heat_flux_w_per_cm2: 0.172
+  - adjusted_heat_flux_w_per_cm2: 0.215
+warnings:
+  - adjusted heat flux exceeds 0.05 W/cm2
+  - hand contact likely increases perceived temperature and reduces useful heat rejection
+confidence: low; human grip, posture, material texture, and local hotspot tests are required
+basis: first-pass contact-area derating for handheld thermal screening
+primary blocker: uniform-area approximation ignores local SoC, battery, and display heat paths
+
+================================================================================
+environment model 3: enclosure_condition.py
+================================================================================
+Enclosure condition thermal-risk model
+inputs:
+  - condition: open_air
+  - sustained_w: 28.0
+  - ambient_c: 25.0
+assumptions:
+  - heat_escape_factor: 1.00
+  - risk_multiplier: 1.00
+  - enclosed conditions reduce convection and trap heat around the device
+  - risk score is a relative screening metric, not a calibrated temperature prediction
+formulas:
+  - effective_dissipation_w = sustained_w * heat_escape_factor
+  - thermal_risk_score = sustained_w * risk_multiplier
+outputs:
+  - effective_dissipation_w: 28.0
+  - thermal_risk_score: 28.0
+warnings:
+  none
+confidence: low; enclosure, textile, bag, sunlight, and airflow measurements are required
+basis: first-pass heat-escape derating by operating condition
+primary blocker: real enclosure thermal impedance depends on fabric, orientation, airflow, and solar loading
+
+================================================================================
+environment model 4: sunlight_display_load.py
+================================================================================
+Sunlight display-load model
+inputs:
+  - base_display_w: 3.5
+  - brightness_mode: normal
+assumptions:
+  - brightness_multiplier: 1.00
+  - display power scales with a coarse brightness-mode multiplier
+  - solar heating of the enclosure is not included, so sunlight mode understates total outdoor thermal risk
+formulas:
+  - display_power_w = base_display_w * multiplier
+  - additional_power_w = display_power_w - base_display_w
+outputs:
+  - display_power_w: 3.5
+  - additional_power_w: 0.0
+warnings:
+  none
+confidence: low; panel, driver, brightness, APL, and sunlight readability data are required
+basis: first-pass brightness multiplier for display thermal and runtime screening
+primary blocker: no panel-specific luminance, APL, reflectance, or solar absorption model is included
+
+================================================================================
+environment model 5: charging_overlap.py
+================================================================================
+Charging-overlap thermal-risk model
+inputs:
+  - ai_workload_w: 28.0
+  - charging_power_w: 100.0
+  - charging_efficiency: 0.88 (wired default)
+  - battery_charge_heat_fraction: 0.08
+  - wireless: False
+assumptions:
+  - charger conversion loss and battery charge heat add to AI workload heat during overlap
+  - wireless charging receives a lower default efficiency unless the user supplies --charging-efficiency
+  - thermal distribution among adapter, coil, PMIC, battery, and skin is not spatially resolved
+formulas:
+  - charging_loss_w = charging_power_w * (1 - charging_efficiency)
+  - battery_heat_w = charging_power_w * battery_charge_heat_fraction
+  - combined_internal_heat_w = ai_workload_w + charging_loss_w + battery_heat_w
+outputs:
+  - charging_loss_w: 12.0
+  - battery_heat_w: 8.0
+  - combined_internal_heat_w: 48.0
+warnings:
+  - combined heat exceeds 35 W
+  - charging while sustained AI is active should throttle
+confidence: low; charger, PMIC, battery, coil, and enclosure thermal tests are required
+basis: first-pass overlap heat budget for AI workload plus active charging
+primary blocker: no charge taper, battery temperature feedback, coil alignment, or PMIC placement model is included
+
+================================================================================
+environment model 6: thermal_throttle_policy.py
+================================================================================
+Thermal throttle policy model
+inputs:
+  - skin_temp_c: 43.0
+  - battery_temp_c: 40.0
+  - soc_temp_c: 85.0
+  - ai_workload_w: 28.0
+assumptions:
+  - skin thresholds: caution >= 40 C, limit >= 43 C, critical >= 45 C
+  - battery thresholds: caution >= 40 C, limit >= 45 C
+  - SoC thresholds: caution >= 80 C, limit >= 90 C
+  - policy recommends the most conservative mode triggered by measured thermal state
+formulas:
+  - threshold comparisons assign skin, battery, and SoC thermal levels
+  - recommended_mode is selected from unrestricted, reduce_ai_power, burst_only, stop_charging, emergency_cooldown
+outputs:
+  - skin_level: limit
+  - battery_level: caution
+  - soc_level: caution
+  - recommended_mode: burst_only
+warnings:
+  - skin temperature is at or above limit threshold
+  - battery temperature is at or above caution threshold
+  - SoC temperature is at or above caution threshold
+confidence: low; firmware policy must be validated against sensors, user comfort, safety, and workload behavior
+basis: first-pass threshold policy for thermal screening and control intent
+primary blocker: thresholds are placeholder engineering assumptions, not certified safety limits or product firmware
+
+================================================================================
+environment model 7: ambient_temperature.py --ambient-c 35
+================================================================================
+Ambient temperature skin-margin model
+inputs:
+  - ambient_c: 35.0
+  - skin_rise_c: 18.0
+  - max_skin_c: 43.0
+assumptions:
+  - skin rise is treated as a fixed workload-driven delta above ambient
+  - ambient air is uniform around the device with no sunlight, enclosure, or hand-contact penalty
+  - maximum skin temperature is a screening target, not a compliance or certification limit
+formulas:
+  - estimated_skin_c = ambient_c + skin_rise_c
+  - margin_c = max_skin_c - estimated_skin_c
+outputs:
+  - estimated_skin_c: 53.0
+  - margin_c: -10.0
+warnings:
+  - skin-temperature margin is below 5 C; workload or cooling assumptions need review
+  - estimated skin temperature exceeds the maximum skin-temperature target
+  - ambient temperature is at or above 35 C; hot-environment operation materially reduces thermal headroom
+confidence: low; requires thermal chamber testing, skin-temperature mapping, and workload calibration
+basis: first-pass environmental derating from ambient temperature to exterior skin margin
+primary blocker: fixed skin-rise assumption does not capture enclosure, airflow, solar load, or dynamic throttling
+
+================================================================================
+environment model 8: enclosure_condition.py --condition pocket
+================================================================================
+Enclosure condition thermal-risk model
+inputs:
+  - condition: pocket
+  - sustained_w: 28.0
+  - ambient_c: 25.0
+assumptions:
+  - heat_escape_factor: 0.35
+  - risk_multiplier: 2.00
+  - enclosed conditions reduce convection and trap heat around the device
+  - risk score is a relative screening metric, not a calibrated temperature prediction
+formulas:
+  - effective_dissipation_w = sustained_w * heat_escape_factor
+  - thermal_risk_score = sustained_w * risk_multiplier
+outputs:
+  - effective_dissipation_w: 9.8
+  - thermal_risk_score: 56.0
+warnings:
+  - pocket/bag sustained AI should be disallowed or aggressively throttled
+  - charging under enclosed conditions is unsafe without throttling
+confidence: low; enclosure, textile, bag, sunlight, and airflow measurements are required
+basis: first-pass heat-escape derating by operating condition
+primary blocker: real enclosure thermal impedance depends on fabric, orientation, airflow, and solar loading
+
+================================================================================
+environment model 9: sunlight_display_load.py --brightness-mode sunlight
+================================================================================
+Sunlight display-load model
+inputs:
+  - base_display_w: 3.5
+  - brightness_mode: sunlight
+assumptions:
+  - brightness_multiplier: 2.20
+  - display power scales with a coarse brightness-mode multiplier
+  - solar heating of the enclosure is not included, so sunlight mode understates total outdoor thermal risk
+formulas:
+  - display_power_w = base_display_w * multiplier
+  - additional_power_w = display_power_w - base_display_w
+outputs:
+  - display_power_w: 7.7
+  - additional_power_w: 4.2
+warnings:
+  - sunlight mode adds meaningful thermal load
+  - display power competes with AI sustained load and battery runtime
+  - high brightness plus charging plus AI is high risk
+confidence: low; panel, driver, brightness, APL, and sunlight readability data are required
+basis: first-pass brightness multiplier for display thermal and runtime screening
+primary blocker: no panel-specific luminance, APL, reflectance, or solar absorption model is included
+
+================================================================================
+environment model 10: charging_overlap.py --wireless true
+================================================================================
+Charging-overlap thermal-risk model
+inputs:
+  - ai_workload_w: 28.0
+  - charging_power_w: 100.0
+  - charging_efficiency: 0.78 (wireless default derate)
+  - battery_charge_heat_fraction: 0.08
+  - wireless: True
+assumptions:
+  - charger conversion loss and battery charge heat add to AI workload heat during overlap
+  - wireless charging receives a lower default efficiency unless the user supplies --charging-efficiency
+  - thermal distribution among adapter, coil, PMIC, battery, and skin is not spatially resolved
+formulas:
+  - charging_loss_w = charging_power_w * (1 - charging_efficiency)
+  - battery_heat_w = charging_power_w * battery_charge_heat_fraction
+  - combined_internal_heat_w = ai_workload_w + charging_loss_w + battery_heat_w
+outputs:
+  - charging_loss_w: 22.0
+  - battery_heat_w: 8.0
+  - combined_internal_heat_w: 58.0
+warnings:
+  - combined heat exceeds 35 W
+  - charging while sustained AI is active should throttle
+  - wireless charging plus sustained AI is high risk
+confidence: low; charger, PMIC, battery, coil, and enclosure thermal tests are required
+basis: first-pass overlap heat budget for AI workload plus active charging
+primary blocker: no charge taper, battery temperature feedback, coil alignment, or PMIC placement model is included
+
+Provenance and Assumption Confidence
+### python engineering/provenance/provenance_report.py
+Status: PASSED (exit code 0)
+BuildSlate constants provenance report
+Total entries: 43
+Counts by category:
+  - conceptual_extrapolation: 4
+  - industry_reference: 17
+  - measured_fact: 1
+  - modeled_estimate: 20
+  - unresolved_research_blocker: 1
+Counts by confidence:
+  - high: 7
+  - low: 22
+  - medium: 14
+Entries needing citation:
+  - usable_capacity_factor (medium): Usable battery capacity factor
+  - battery_swelling_percent (low): Battery swelling allowance
+  - passive_sustained_power_pocket_w (low): Passive sustained power for pocket device
+  - passive_sustained_power_tablet_w (low): Passive sustained power for tablet device
+  - thermal_risk_heat_density_w_cm3 (low): Thermal risk heat density threshold
+  - vapor_chamber_effective_conductivity_w_mk (low): Vapor chamber effective conductivity
+  - pcb_assembly_density_g_cm3 (low): PCB assembly effective density
+  - quantization_overhead_factor (medium): Quantization overhead factor
+  - lpddr_bandwidth_assumption (low): LPDDR memory bandwidth assumption
+  - model_load_bandwidth_assumption (low): Model load bandwidth assumption
+  - transient_current_factor (low): Transient current factor
+  - pdn_resistance_assumption (low): PDN effective resistance assumption
+  - slate_512gb_memory_target (low): Slate 512 GB memory target
+  - slate_100tops_npu_target (low): Slate 100 TOPS NPU target
+  - slate_6000mah_battery_target (low): Slate 6000 mAh battery target
+  - slate_8_8mm_thickness_target (low): Slate 8.8 mm thickness target
+  - slate_250g_mass_target (low): Slate 250 g mass target
+  - slate_320g_engineering_mass_estimate (low): Slate 320 g engineering mass estimate
+Conceptual extrapolations:
+  - slate_512gb_memory_target (low): Slate 512 GB memory target
+  - slate_6000mah_battery_target (low): Slate 6000 mAh battery target
+  - slate_8_8mm_thickness_target (low): Slate 8.8 mm thickness target
+  - slate_250g_mass_target (low): Slate 250 g mass target
+Unresolved research blockers:
+  - slate_100tops_npu_target (low): Slate 100 TOPS NPU target
+Top high-risk assumptions:
+  - slate_512gb_memory_target [conceptual_extrapolation, low]
+    value_or_range: 512 GB
+    limitation: Package availability, die stacking, board area, routing, power, thermals, cost, and supplier roadmap evidence are unresolved.
+    future_validation: Replace with vendor memory roadmap, package dimensions, power data, signal-integrity review, and procurement feasibility.
+  - slate_100tops_npu_target [unresolved_research_blocker, low]
+    value_or_range: 100 TOPS
+    limitation: Sustained TOPS depends on precision, sparsity, utilization, memory bandwidth, software support, process node, power, and passive thermal limits.
+    future_validation: Replace with vendor SoC/NPU specifications, sustained benchmark data, power telemetry, and thermal chamber results.
+  - slate_8_8mm_thickness_target [conceptual_extrapolation, low]
+    value_or_range: 8.8 mm
+    limitation: Global thickness can hide local conflicts among camera, battery swelling, display stack, thermal module, connectors, and tolerance accumulation.
+    future_validation: Replace with CAD stackup, tolerance analysis, prototype measurements, and supplier component envelopes.
+  - slate_250g_mass_target [conceptual_extrapolation, low]
+    value_or_range: 250 g
+    limitation: Battery capacity, chassis stiffness, display size, camera hardware, thermal hardware, shielding, and manufacturing allowances may exceed this target.
+    future_validation: Replace with CAD-derived mass rollup, supplier part masses, and measured prototype mass.
+  - passive_sustained_power_pocket_w [modeled_estimate, low]
+    value_or_range: 3-6 W
+    limitation: Strongly depends on surface area, frame material, ambient conditions, grip, orientation, heat spreaders, workload duty cycle, and skin-temperature policy.
+    future_validation: Replace with thermal chamber measurements on prototypes and calibrated compact thermal models.
+
+Top Engineering Blockers
+Warning/risk lines:
+- validation/dimensional_constraints.py: warnings:
+- validation/validate_provenance.py: WARNING: usable_capacity_factor citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: battery_swelling_percent citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: passive_sustained_power_pocket_w citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: passive_sustained_power_tablet_w citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: thermal_risk_heat_density_w_cm3 citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: vapor_chamber_effective_conductivity_w_mk citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: pcb_assembly_density_g_cm3 citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: quantization_overhead_factor citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: lpddr_bandwidth_assumption citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: model_load_bandwidth_assumption citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: transient_current_factor citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: pdn_resistance_assumption citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: slate_512gb_memory_target citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: slate_100tops_npu_target citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: slate_6000mah_battery_target citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: slate_8_8mm_thickness_target citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: slate_250g_mass_target citation_status=needs external citation
+- validation/validate_provenance.py: WARNING: slate_320g_engineering_mass_estimate citation_status=needs external citation
+- validation/validate_provenance.py: Citation warnings: 18
+- engineering/models/battery_energy.py: primary blocker: validated workload power, cell packaging, thermal limits, and usable discharge policy
+- engineering/models/thermal_limits.py: risk: high
+- engineering/models/thermal_limits.py: primary blocker: thermal stack design, contact conditions, ambient temperature, controls, and measured skin temperature
+- engineering/models/mass_budget.py: target_status: over target
+- engineering/models/mass_budget.py: primary blocker: CAD-derived part masses, vendor component masses, battery packaging, and thermal-module design
+- engineering/models/composite_chassis.py: - WARNING: weighted thermal conductivity is a crude screening approximation and does not represent true anisotropic heat spreading
+- engineering/models/composite_chassis.py: primary_blocker: real feasibility requires CAD geometry, thermal contacts, anisotropic spreading, antenna layout, manufacturing process data, and CFD/FEA validation
+- engineering/component_models/thermal_resistance_network.py: warnings:
+- engineering/component_models/thermal_resistance_network.py: - skin heat flux exceeds 0.05 W/cm2 comfort screening threshold
+- engineering/component_models/thermal_resistance_network.py: primary blocker: sustained high-power hotspot rejection while keeping exterior skin touch-safe
+- engineering/component_models/zone_stackup.py: warnings:
+- engineering/component_models/zone_stackup.py: primary blocker: camera_zone has the tightest z-height margin
+- engineering/component_models/run_all_component_models.py: warnings:
+- engineering/component_models/run_all_component_models.py: pack thickness estimate exceeds common thin-phone battery allowances
+- engineering/component_models/run_all_component_models.py: primary blocker: fitting high energy and high charge heat into safe cell thickness and thermal limits
+- engineering/component_models/run_all_component_models.py: primary blocker: front-face area, display heat, camera openings, and border electronics packaging
+- engineering/component_models/run_all_component_models.py: estimated_layer_count_risk: high
+- engineering/component_models/run_all_component_models.py: primary blocker: dense routing around SoC, memory, storage, RF, cameras, and connectors
+- engineering/component_models/run_all_component_models.py: primary blocker: sustained SoC/NPU heat removal without throttling or hot spots
+- engineering/component_models/run_all_component_models.py: primary blocker: sourcing and routing enough high-density memory in phone-class board area
+- engineering/component_models/run_all_component_models.py: active_heat_warning_threshold_w: 8
+- engineering/component_models/run_all_component_models.py: primary blocker: sustained storage heat and package placement near battery, SoC, and RF zones
+- engineering/component_models/run_all_component_models.py: primary blocker: rejecting sustained heat while staying thin, light, and touch-safe
+- engineering/component_models/run_all_component_models.py: primary blocker: camera z-height and lateral folded-optics volume competing with battery and PCB
+- engineering/component_models/run_all_component_models.py: primary blocker: achieving RF performance with high metal content and crowded perimeter keep-outs
+- engineering/component_models/run_all_component_models.py: rear_material_compatibility_warning: metal rear requires window/ferrite isolation
+- engineering/component_models/run_all_component_models.py: primary blocker: wireless charge heat and metal rear/thermal-frame compatibility
+- engineering/component_models/run_all_component_models.py: overlap warning is qualitative until CAD placement zones exist
+- engineering/component_models/run_all_component_models.py: rigid_zone_overlap_warning: battery/PCB/package stack should not be assumed co-located
+- engineering/component_models/run_all_component_models.py: stack exceeds target thickness before camera bumps, ribs, tolerances, seals, and local reinforcements
+- engineering/component_models/run_all_component_models.py: primary blocker: fitting battery, PCB packages, cooling, structure, and display within target thickness
+- engineering/interconnect_models/run_all_interconnect_models.py: warnings:
+- engineering/interconnect_models/run_all_interconnect_models.py: - bandwidth utilization exceeds 70%; memory bandwidth is likely a first-order limiter
+- engineering/interconnect_models/run_all_interconnect_models.py: primary blocker: memory bandwidth headroom
+- engineering/interconnect_models/run_all_interconnect_models.py: primary blocker: current density, connector/PMIC limits, and thermal dissipation during overlap events
+- engineering/interconnect_models/run_all_interconnect_models.py: primary blocker: memory escape routing and high-speed signal-integrity margin in limited board area
+- engineering/interconnect_models/run_all_interconnect_models.py: primary blocker: keeping high-bandwidth memory physically close enough while leaving room for routing escape
+- engineering/interconnect_models/run_all_interconnect_models.py: primary blocker: transient current delivery with limited decoupling and VRM area in a thin device
+- engineering/runtime_models/runtime_memory_budget.py: pass_fail: pass
+- engineering/runtime_models/runtime_memory_budget.py: warnings:
+- engineering/runtime_models/runtime_memory_budget.py: primary blocker: KV cache dominates resident model weights
+- engineering/manufacturing_models/run_all_manufacturing_models.py: - screening_result: fail
+- engineering/manufacturing_models/run_all_manufacturing_models.py: warnings:
+- engineering/manufacturing_models/run_all_manufacturing_models.py: - worst-case tolerance exceeds target clearance
+- engineering/manufacturing_models/run_all_manufacturing_models.py: - thin-device assembly risk: small z-height reserve amplifies every tolerance contributor
+- engineering/manufacturing_models/run_all_manufacturing_models.py: - screen_removal_risk: high
+- engineering/manufacturing_models/run_all_manufacturing_models.py: likely repair blockers:
+- engineering/environment_models/run_all_environment_models.py: warnings:
+- engineering/environment_models/run_all_environment_models.py: primary blocker: fixed skin-rise assumption does not capture enclosure, airflow, solar load, or dynamic throttling
+- engineering/environment_models/run_all_environment_models.py: - adjusted heat flux exceeds 0.05 W/cm2
+- engineering/environment_models/run_all_environment_models.py: primary blocker: uniform-area approximation ignores local SoC, battery, and display heat paths
+- engineering/environment_models/run_all_environment_models.py: primary blocker: real enclosure thermal impedance depends on fabric, orientation, airflow, and solar loading
+- engineering/environment_models/run_all_environment_models.py: primary blocker: no panel-specific luminance, APL, reflectance, or solar absorption model is included
+- engineering/environment_models/run_all_environment_models.py: - combined heat exceeds 35 W
+- engineering/environment_models/run_all_environment_models.py: primary blocker: no charge taper, battery temperature feedback, coil alignment, or PMIC placement model is included
+- engineering/environment_models/run_all_environment_models.py: primary blocker: thresholds are placeholder engineering assumptions, not certified safety limits or product firmware
+- engineering/environment_models/run_all_environment_models.py: - estimated skin temperature exceeds the maximum skin-temperature target
+- engineering/provenance/provenance_report.py: - unresolved_research_blocker: 1
+- engineering/provenance/provenance_report.py: Unresolved research blockers:
+- engineering/provenance/provenance_report.py: - slate_100tops_npu_target [unresolved_research_blocker, low]
+
+Skipped Checks
+- SKIP: engineering/component_models/component_packaging.py not found
+
+Conclusion
+Required validations and available checks completed, but warning/risk lines require engineering review before feasibility claims are strengthened.

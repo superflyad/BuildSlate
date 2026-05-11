@@ -131,6 +131,16 @@ BuildSlate now separates hardware vocabulary, constants, formulas, and interpret
 - `docs/engineering/` explains how to interpret the model outputs and why no material, battery, chassis, or cooling decision should be treated as universally best.
 - Future design changes to thickness, chassis material, battery size, cooling strategy, or packaging must use these definitions before claiming feasibility.
 
+## Feasibility Report
+
+Generate a unified Slate Pocket v1 first-pass engineering feasibility report with:
+
+```bash
+python engineering/generate_feasibility_report.py
+```
+
+The command runs required validations and available engineering model checks, summarizes warning/risk lines as top engineering blockers, and writes the snapshot to `reports/slate-pocket-v1-feasibility-report.txt`. The report is an engineering screening artifact, not production validation or certification.
+
 ## Repository areas
 
 - `specs/` — PDF source intent, normalized YAML specs, baseline specs, and schema references.

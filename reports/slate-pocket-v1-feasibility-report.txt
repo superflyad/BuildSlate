@@ -1,5 +1,10 @@
 BuildSlate Engineering Feasibility Report
-Generated: 2026-05-11T03:34:47+00:00
+Report Metadata:
+  generated timestamp: 2026-05-11T12:25:28+00:00
+  Python version: 3.14.4
+  platform: Linux-6.12.47-x86_64-with-glibc2.39
+  repo root: /workspace/BuildSlate
+  report generator version: v0.1
 Scope:
   device: Slate Pocket v1
   purpose: first-pass engineering screening
@@ -467,8 +472,6 @@ basis: modeled estimate using nominal local z-height stacks
 primary blocker: camera_zone has the tightest z-height margin
 
 Component Packaging
-### python engineering/component_models/component_packaging.py
-SKIP: engineering/component_models/component_packaging.py not found
 ### python engineering/component_models/run_all_component_models.py
 Status: PASSED (exit code 0)
 Component physics model grouped report
@@ -881,6 +884,80 @@ basis: first-pass local z-stack screening
 primary blocker: fitting battery, PCB packages, cooling, structure, and display within target thickness
 
 completed all component models successfully
+### python engineering/models/component_packaging.py
+Status: PASSED (exit code 0)
+Component packaging model
+inputs:
+  profile: nominal
+  component_library: engineering/components/component_library.yaml
+assumptions:
+  component values are placeholder screening ranges, not vendor-certified values
+  device_length_mm: 180.0
+  device_width_mm: 95.0
+  pcb_area_fraction: 0.35
+  target_thickness_mm: 8.8
+  z_height_stack includes battery_pack + vapor_chamber + display_module only
+formulas:
+  total_component_mass_g = sum(component.mass_g[profile])
+  total_component_volume_cm3 = sum(component.volume_cm3[profile])
+  total_idle_power_w = sum(component.idle_power_w[profile])
+  total_active_power_w = sum(component.active_power_w[profile])
+  pcb_area_used_mm2 = sum(component.pcb_area_mm2[profile])
+  available_pcb_area_mm2 = device_length_mm * device_width_mm * pcb_area_fraction
+  pcb_utilization_percent = pcb_area_used_mm2 / available_pcb_area_mm2 * 100
+  z_height_stack_mm = battery_pack + vapor_chamber + display_module thickness
+outputs:
+  profile: nominal
+  total_component_mass_g: 327.5
+  total_component_volume_cm3: 99.4
+  total_idle_power_w: 3.46
+  total_active_power_w: 29.13
+  pcb_area_used_mm2: 4085.0
+  available_pcb_area_mm2: 5985.0
+  pcb_utilization_percent: 68.3
+  z_height_stack_mm: 6.50
+  thermal_hotspots:
+    - soc_package: hotspot
+    - memory_packages: distributed hotspot
+    - storage_package: intermittent local hotspot under sustained writes
+    - antenna_modules: RF heat
+    - wireless_charging_coil: charging heat
+  placement_constraints:
+    soc_package:
+      - must connect to memory with short high-bandwidth routing
+      - should sit near vapor chamber or heat spreader
+      - needs local power delivery and decoupling keep-outs
+    memory_packages:
+      - must be close to SoC
+      - routing density is high
+      - package count depends on achievable die/package density
+    battery_pack:
+      - dominates internal volume
+      - cannot overlap rigid package regions
+      - swelling allowance required
+    vapor_chamber:
+      - should contact SoC thermal interface region
+      - must fit between board, battery, rear cover, and display stack without crush
+      - keep clear of antenna RF windows where possible
+    antenna_modules:
+      - require RF windows or keep-out zones
+      - conflict with continuous metal frames
+      - need separation from large conductive thermal and charging structures
+    wireless_charging_coil:
+      - must sit near rear surface
+      - conflicts with metal backs and thermal layers
+      - needs alignment target and shielding from battery and PCB
+    rear_camera_module:
+      - usually requires rear-surface optical path and local z-height pocket
+      - cannot overlap battery swelling allowance or dense SoC region without a stack study
+      - needs clean routing to image processor or SoC
+warnings:
+  - rear_camera_module nominal thickness 4.50 mm exceeds 2.5 mm rigid-component screening threshold
+  - usb_c_port nominal thickness 2.80 mm exceeds 2.5 mm rigid-component screening threshold
+  - Total active component power exceeds 25 W placeholder handheld thermal screening level
+confidence: low
+basis: placeholder component ranges in engineering/components/component_library.yaml
+primary_blocker: vendor package data, ECAD placement, CAD stackups, thermal validation, and measured power
 
 Interconnect and Power Delivery
 ### python engineering/interconnect_models/run_all_interconnect_models.py
@@ -1065,6 +1142,197 @@ basis: conservative Ohm-law transient droop screen for low-voltage AI rails
 primary blocker: transient current delivery with limited decoupling and VRM area in a thin device
 
 AI Runtime Memory
+### python engineering/runtime_models/run_all_runtime_models.py
+Status: PASSED (exit code 0)
+
+========================================================================
+Model residency
+========================================================================
+Model residency estimate
+inputs:
+  params_billions: 70.0
+  quantization_bits: 4.0
+  overhead_factor: 1.25
+  available_memory_gb: 512.0
+assumptions:
+  quantization affects weight storage only; KV cache, activations, buffers, and runtime metadata remain additional costs
+  overhead factor represents scales, metadata, allocator fragmentation, and runtime buffers
+  this model estimates residency only and does not predict real tokens/sec
+formulas:
+  raw_gb = params_billions * 1e9 * quantization_bits / 8 / 1e9
+  resident_gb = raw_gb * overhead_factor
+  remaining_gb = available_memory_gb - resident_gb
+outputs:
+  raw_model_weight_gb: 35.00
+  estimated_resident_model_gb: 43.75
+  remaining_memory_gb: 468.25
+  pass_fail: pass
+warnings:
+  none
+confidence: medium for weight-size arithmetic; low for full local runtime feasibility
+basis: first-pass parameter storage calculation with conservative residency overhead
+primary blocker: none flagged by weight residency arithmetic
+
+========================================================================
+KV cache
+========================================================================
+KV cache memory estimate
+inputs:
+  layers: 80
+  hidden_size: 8192
+  context_tokens: 32768
+  batch_size: 1
+  kv_bytes_per_element: 2.0
+  available_memory_gb: 512.0
+assumptions:
+  factor 2 represents keys and values
+  KV cache sizing is architecture-dependent
+  grouped-query attention and implementation details can reduce KV size
+  this model estimates memory pressure only and does not predict real tokens/sec
+formulas:
+  kv_bytes = 2 * layers * hidden_size * context_tokens * batch_size * kv_bytes_per_element
+  kv_gb = kv_bytes / 1e9
+  percent_available_memory = kv_gb / available_memory_gb * 100
+outputs:
+  kv_cache_gb: 85.90
+  percent_available_memory: 16.78
+warnings:
+  none
+confidence: medium for dense KV arithmetic; low for architecture-specific runtime residency
+basis: standard first-pass keys-plus-values cache capacity estimate
+primary blocker: none flagged by KV cache arithmetic
+
+========================================================================
+Context scaling
+========================================================================
+Context scaling estimate
+inputs:
+  layers: 80
+  hidden_size: 8192
+  batch_size: 1
+  kv_bytes_per_element: 2.0
+  available_memory_gb: 512.0
+assumptions:
+  KV cache scales linearly with context length, layers, hidden size, and batch size
+  factor 2 represents keys and values
+  architecture choices such as grouped-query attention can change the realized cache size
+  this model does not predict real tokens/sec
+formulas:
+  kv_bytes = 2 * layers * hidden_size * context_tokens * batch_size * kv_bytes_per_element
+  kv_cache_gb = kv_bytes / 1e9
+  percent_available_memory = kv_cache_gb / available_memory_gb * 100
+outputs:
+  context_tokens | kv_cache_gb | percent_available_memory
+            4096 |       10.74 |                     2.10
+            8192 |       21.47 |                     4.19
+           16384 |       42.95 |                     8.39
+           32768 |       85.90 |                    16.78
+           65536 |      171.80 |                    33.55
+          131072 |      343.60 |                    67.11
+warnings:
+  65536 tokens exceeds 32768 and consumes 33.6% of available memory
+  131072 tokens exceeds 32768 and consumes 67.1% of available memory
+confidence: medium for relative scaling; low for architecture-specific runtime residency
+basis: repeated first-pass KV cache formula across fixed context lengths
+primary blocker: long-context KV cache memory growth
+
+========================================================================
+Model load time
+========================================================================
+Model load time estimate
+inputs:
+  model_size_gb: 43.75
+  storage_bandwidth_gbps: 7.00
+  decompression_factor: 1.00
+  load_overhead_factor: 1.25
+assumptions:
+  model size is the local weight payload to read from storage
+  storage bandwidth is treated as GB/s and as a theoretical upper bound rather than guaranteed sustained throughput
+  load overhead covers filesystem, runtime initialization, allocation, and staging costs
+  this model estimates cold-load latency only and does not predict real tokens/sec
+formulas:
+  load_seconds = model_size_gb / storage_bandwidth_gbps * load_overhead_factor * decompression_factor
+outputs:
+  load_seconds: 7.81
+warnings:
+  storage bandwidth value is theoretical, not guaranteed sustained
+confidence: medium for arithmetic; low for real sustained storage/runtime behavior
+basis: first-pass sequential read time with runtime and decompression multipliers
+primary blocker: none flagged by load-time arithmetic
+
+========================================================================
+Multimodal overhead
+========================================================================
+Multimodal overhead estimate
+inputs:
+  llm_resident_gb: 43.75
+  vision_model_gb: 3.00
+  whisper_model_gb: 2.00
+  embedding_model_gb: 1.00
+  vector_index_gb: 8.00
+  runtime_reserve_gb: 16.00
+  available_memory_gb: 512.00
+assumptions:
+  vision, speech, embedding, vector index, and runtime reserve may need resident memory alongside the LLM
+  component sizes are placeholders until model choices, precision, and runtime implementation are known
+  power overhead is acknowledged qualitatively but not converted into watts in this first-pass memory model
+  this model estimates resident memory pressure only and does not predict real tokens/sec
+formulas:
+  total_multimodal_resident_gb = llm_resident_gb + vision_model_gb + whisper_model_gb + embedding_model_gb + vector_index_gb + runtime_reserve_gb
+  remaining_memory_gb = available_memory_gb - total_multimodal_resident_gb
+  percent_used = total_multimodal_resident_gb / available_memory_gb * 100
+outputs:
+  total_multimodal_resident_memory_gb: 73.75
+  remaining_memory_gb: 438.25
+  percent_used: 14.40
+warnings:
+  none
+confidence: low; multimodal component sizes are placeholders
+basis: additive resident-memory budget for local multimodal runtime components
+primary blocker: none flagged by multimodal residency arithmetic
+
+========================================================================
+Runtime memory budget
+========================================================================
+Runtime memory budget estimate
+inputs:
+  available_memory_gb: 512.00
+  params_billions: 70.0
+  quantization_bits: 4.0
+  model_overhead_factor: 1.25
+  layers: 80
+  hidden_size: 8192
+  context_tokens: 32768
+  batch_size: 1
+  kv_bytes_per_element: 2.0
+  multimodal_overhead_gb: 30.00
+  os_reserve_gb: 16.00
+  safety_reserve_gb: 32.00
+assumptions:
+  model residency uses quantized weight storage plus a conservative runtime overhead factor
+  KV cache scales linearly with context length, layers, hidden size, and batch size
+  multimodal overhead, OS reserve, and safety reserve are additive placeholders
+  this combined memory budget does not predict real tokens/sec
+formulas:
+  raw_model_gb = params_billions * 1e9 * quantization_bits / 8 / 1e9
+  model_resident_gb = raw_model_gb * model_overhead_factor
+  kv_cache_gb = 2 * layers * hidden_size * context_tokens * batch_size * kv_bytes_per_element / 1e9
+  total_used_gb = model_resident_gb + kv_cache_gb + multimodal_overhead_gb + os_reserve_gb + safety_reserve_gb
+  remaining_gb = available_memory_gb - total_used_gb
+outputs:
+  model_resident_gb: 43.75
+  kv_cache_gb: 85.90
+  multimodal_overhead_gb: 30.00
+  os_reserve_gb: 16.00
+  safety_reserve_gb: 32.00
+  total_used_gb: 207.65
+  remaining_gb: 304.35
+  pass_fail: pass
+warnings:
+  KV cache is larger than model weights/resident model estimate
+confidence: low for complete runtime feasibility; medium for combined memory arithmetic
+basis: additive first-pass local AI runtime memory budget
+primary blocker: KV cache dominates resident model weights
 ### python engineering/runtime_models/runtime_memory_budget.py
 Status: PASSED (exit code 0)
 Runtime memory budget estimate
@@ -1652,11 +1920,6 @@ Warning/risk lines:
 - engineering/models/mass_budget.py: primary blocker: CAD-derived part masses, vendor component masses, battery packaging, and thermal-module design
 - engineering/models/composite_chassis.py: - WARNING: weighted thermal conductivity is a crude screening approximation and does not represent true anisotropic heat spreading
 - engineering/models/composite_chassis.py: primary_blocker: real feasibility requires CAD geometry, thermal contacts, anisotropic spreading, antenna layout, manufacturing process data, and CFD/FEA validation
-- engineering/component_models/thermal_resistance_network.py: warnings:
-- engineering/component_models/thermal_resistance_network.py: - skin heat flux exceeds 0.05 W/cm2 comfort screening threshold
-- engineering/component_models/thermal_resistance_network.py: primary blocker: sustained high-power hotspot rejection while keeping exterior skin touch-safe
-- engineering/component_models/zone_stackup.py: warnings:
-- engineering/component_models/zone_stackup.py: primary blocker: camera_zone has the tightest z-height margin
 - engineering/component_models/run_all_component_models.py: warnings:
 - engineering/component_models/run_all_component_models.py: pack thickness estimate exceeds common thin-phone battery allowances
 - engineering/component_models/run_all_component_models.py: primary blocker: fitting high energy and high charge heat into safe cell thickness and thermal limits
@@ -1683,9 +1946,16 @@ Warning/risk lines:
 - engineering/interconnect_models/run_all_interconnect_models.py: primary blocker: memory escape routing and high-speed signal-integrity margin in limited board area
 - engineering/interconnect_models/run_all_interconnect_models.py: primary blocker: keeping high-bandwidth memory physically close enough while leaving room for routing escape
 - engineering/interconnect_models/run_all_interconnect_models.py: primary blocker: transient current delivery with limited decoupling and VRM area in a thin device
-- engineering/runtime_models/runtime_memory_budget.py: pass_fail: pass
-- engineering/runtime_models/runtime_memory_budget.py: warnings:
-- engineering/runtime_models/runtime_memory_budget.py: primary blocker: KV cache dominates resident model weights
+- engineering/runtime_models/run_all_runtime_models.py: pass_fail: pass
+- engineering/runtime_models/run_all_runtime_models.py: warnings:
+- engineering/runtime_models/run_all_runtime_models.py: primary blocker: none flagged by weight residency arithmetic
+- engineering/runtime_models/run_all_runtime_models.py: primary blocker: none flagged by KV cache arithmetic
+- engineering/runtime_models/run_all_runtime_models.py: 65536 tokens exceeds 32768 and consumes 33.6% of available memory
+- engineering/runtime_models/run_all_runtime_models.py: 131072 tokens exceeds 32768 and consumes 67.1% of available memory
+- engineering/runtime_models/run_all_runtime_models.py: primary blocker: long-context KV cache memory growth
+- engineering/runtime_models/run_all_runtime_models.py: primary blocker: none flagged by load-time arithmetic
+- engineering/runtime_models/run_all_runtime_models.py: primary blocker: none flagged by multimodal residency arithmetic
+- engineering/runtime_models/run_all_runtime_models.py: primary blocker: KV cache dominates resident model weights
 - engineering/manufacturing_models/run_all_manufacturing_models.py: - screening_result: fail
 - engineering/manufacturing_models/run_all_manufacturing_models.py: warnings:
 - engineering/manufacturing_models/run_all_manufacturing_models.py: - worst-case tolerance exceeds target clearance
@@ -1705,9 +1975,22 @@ Warning/risk lines:
 - engineering/provenance/provenance_report.py: - unresolved_research_blocker: 1
 - engineering/provenance/provenance_report.py: Unresolved research blockers:
 - engineering/provenance/provenance_report.py: - slate_100tops_npu_target [unresolved_research_blocker, low]
+- engineering/component_models/thermal_resistance_network.py: warnings:
+- engineering/component_models/thermal_resistance_network.py: - skin heat flux exceeds 0.05 W/cm2 comfort screening threshold
+- engineering/component_models/thermal_resistance_network.py: primary blocker: sustained high-power hotspot rejection while keeping exterior skin touch-safe
+- engineering/component_models/zone_stackup.py: warnings:
+- engineering/component_models/zone_stackup.py: primary blocker: camera_zone has the tightest z-height margin
+- engineering/models/component_packaging.py: warnings:
+- engineering/models/component_packaging.py: - rear_camera_module nominal thickness 4.50 mm exceeds 2.5 mm rigid-component screening threshold
+- engineering/models/component_packaging.py: - usb_c_port nominal thickness 2.80 mm exceeds 2.5 mm rigid-component screening threshold
+- engineering/models/component_packaging.py: - Total active component power exceeds 25 W placeholder handheld thermal screening level
+- engineering/models/component_packaging.py: primary_blocker: vendor package data, ECAD placement, CAD stackups, thermal validation, and measured power
+- engineering/runtime_models/runtime_memory_budget.py: pass_fail: pass
+- engineering/runtime_models/runtime_memory_budget.py: warnings:
+- engineering/runtime_models/runtime_memory_budget.py: primary blocker: KV cache dominates resident model weights
 
 Skipped Checks
-- SKIP: engineering/component_models/component_packaging.py not found
+No configured checks were skipped.
 
 Conclusion
-Required validations and available checks completed, but warning/risk lines require engineering review before feasibility claims are strengthened.
+Required validations and core model checks completed, but warning/risk lines require engineering review before feasibility claims are strengthened.

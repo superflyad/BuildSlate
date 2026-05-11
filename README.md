@@ -139,7 +139,14 @@ Generate a unified Slate Pocket v1 first-pass engineering feasibility report wit
 python engineering/generate_feasibility_report.py
 ```
 
-The command runs required validations and available engineering model checks, summarizes warning/risk lines as top engineering blockers, and writes the snapshot to `reports/slate-pocket-v1-feasibility-report.txt`. The report is an engineering screening artifact, not production validation or certification.
+The command runs required validations and engineering model checks, summarizes warning/risk lines as top engineering blockers, and writes the snapshot to `reports/slate-pocket-v1-feasibility-report.txt`. The report is an engineering screening artifact, not production validation or certification.
+
+Feasibility report checks are intentionally separated by failure behavior:
+
+- Required validation checks fail the report's final exit status when they are missing or return a non-zero exit code.
+- Core model checks all run to completion; any missing path or non-zero model result is reported clearly and causes the report command to exit non-zero after remaining checks complete.
+- Optional checks may be absent during early development; missing optional checks are listed under `Skipped Checks` and do not fail the report.
+- `python validation/validate_model_paths.py` verifies that every required and core model path referenced by the report generator exists.
 
 ## Repository areas
 

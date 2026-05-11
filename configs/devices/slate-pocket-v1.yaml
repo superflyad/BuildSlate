@@ -1,0 +1,95 @@
+identity:
+  name: Slate Pocket v1
+  profile_id: slate-pocket-v1
+  source_spec: specs/slate-pocket-v1.yaml
+  intent: canonical concept profile
+  label: canonical
+
+geometry:
+  length_mm: 180
+  width_mm: 95
+  thickness_mm: 8.8
+  display_diagonal_in: 7.5
+
+mass_targets:
+  aspirational_target_g: 250
+  engineering_estimate_g: 320
+  acceptable_range_g:
+    min: 290
+    max: 350
+
+battery:
+  capacity_mah: 6000
+  nominal_voltage_v: 3.85
+  charging_wired_w: 100
+  charging_wireless_w: 50
+
+display:
+  diagonal_in: 7.5
+  aspect_width: 16
+  aspect_height: 10
+  display_power_w: 3.5
+
+compute:
+  sustained_power_w: 28
+  peak_power_w: 45
+  npu_tops: 100
+
+memory:
+  capacity_gb: 512
+  gb_per_package: 32
+  bandwidth_gbps: 2048
+
+storage:
+  capacity_tb: 4
+  tb_per_package: 2
+  active_power_w: 5
+
+thermal:
+  sustained_w: 28
+  max_skin_c: 43
+  ambient_c: 25
+
+materials:
+  frame_material: aluminum_alloy
+  rear_window_material: glass
+  thermal_path_materials:
+    - graphite_sheet
+    - copper
+    - aluminum_alloy
+
+chassis_composite:
+  preset: aluminum_heat_frame_glass_windows
+
+component_assumptions:
+  packaging_class: pocket_ai_device
+  battery_pack_type: high_density_lithium_polymer
+  display_stack: thin_oled_or_microled_candidate
+  cooling_strategy: passive_spreading
+
+interconnect:
+  memory_topology: high_bandwidth_on_package_or_near_package
+  board_class: high_density_multilayer
+  power_delivery_note: first-pass current and transient screening required
+
+runtime:
+  model_params_billions: 70
+  quantization_bits: 4
+  context_tokens: 32768
+  available_memory_gb: 512
+
+manufacturing:
+  maturity: concept_screening
+  assembly_note: bonded thin-device architecture with high integration risk
+  validation_required:
+    - CAD volume study
+    - supplier package data
+    - thermal prototype
+
+environment:
+  condition: open_air
+  brightness_mode: normal
+
+notes:
+  - Canonical Slate Pocket v1 profile for repeatable first-pass engineering screening.
+  - Warnings are expected and should be treated as design information.

@@ -1,6 +1,6 @@
 BuildSlate Engineering Feasibility Report
 Report Metadata:
-  generated timestamp: 2026-05-11T12:25:28+00:00
+  generated timestamp: 2026-05-11T13:01:27+00:00
   Python version: 3.14.4
   platform: Linux-6.12.47-x86_64-with-glibc2.39
   repo root: /workspace/BuildSlate
@@ -9,6 +9,9 @@ Scope:
   device: Slate Pocket v1
   purpose: first-pass engineering screening
   status: not production validation
+Device Profile Reporting:
+  configurable profile reports are available alongside this general report
+  example: python engineering/run_device_profile.py --profile configs/devices/slate-pocket-v1.yaml
 
 Validation Summary
 ### python validation/validate_specs.py

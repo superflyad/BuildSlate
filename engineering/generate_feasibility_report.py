@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import platform
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -11,13 +12,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REPORT_PATH = REPO_ROOT / "reports" / "slate-pocket-v1-feasibility-report.txt"
-
-REQUIRED_VALIDATIONS = {
-    "validation/validate_specs.py",
-    "validation/dimensional_constraints.py",
-    "validation/validate_source_registry.py",
-    "validation/validate_provenance.py",
-}
+REPORT_GENERATOR_VERSION = "v0.1"
 
 WARNING_MARKERS = (
     "WARNING",
@@ -37,6 +32,7 @@ class Check:
     section: str
     path: str
     args: tuple[str, ...] = ()
+    required: bool = True
 
 
 @dataclass
@@ -48,11 +44,14 @@ class CheckResult:
     output: str = ""
 
 
-CHECKS = (
+REQUIRED_CHECKS = (
     Check("Validation Summary", "validation/validate_specs.py"),
     Check("Validation Summary", "validation/dimensional_constraints.py"),
     Check("Validation Summary", "validation/validate_source_registry.py"),
     Check("Validation Summary", "validation/validate_provenance.py"),
+)
+
+CORE_MODEL_CHECKS = (
     Check("Battery and Runtime", "engineering/models/battery_energy.py"),
     Check("Thermal Risk", "engineering/models/thermal_limits.py"),
     Check("Mass and Volume", "engineering/models/mass_budget.py"),
@@ -61,16 +60,22 @@ CHECKS = (
         "engineering/models/composite_chassis.py",
         ("--preset", "aluminum_heat_frame_glass_windows"),
     ),
-    Check("Thermal Risk", "engineering/component_models/thermal_resistance_network.py"),
-    Check("Local Stackup", "engineering/component_models/zone_stackup.py"),
-    Check("Component Packaging", "engineering/component_models/component_packaging.py"),
     Check("Component Packaging", "engineering/component_models/run_all_component_models.py"),
     Check("Interconnect and Power Delivery", "engineering/interconnect_models/run_all_interconnect_models.py"),
-    Check("AI Runtime Memory", "engineering/runtime_models/runtime_memory_budget.py"),
+    Check("AI Runtime Memory", "engineering/runtime_models/run_all_runtime_models.py"),
     Check("Manufacturing and Reliability", "engineering/manufacturing_models/run_all_manufacturing_models.py"),
     Check("Environmental Conditions", "engineering/environment_models/run_all_environment_models.py"),
     Check("Provenance and Assumption Confidence", "engineering/provenance/provenance_report.py"),
 )
+
+OPTIONAL_CHECKS = (
+    Check("Thermal Risk", "engineering/component_models/thermal_resistance_network.py", required=False),
+    Check("Local Stackup", "engineering/component_models/zone_stackup.py", required=False),
+    Check("Component Packaging", "engineering/models/component_packaging.py", required=False),
+    Check("AI Runtime Memory", "engineering/runtime_models/runtime_memory_budget.py", required=False),
+)
+
+CHECKS = (*REQUIRED_CHECKS, *CORE_MODEL_CHECKS, *OPTIONAL_CHECKS)
 
 REPORT_SECTIONS = (
     "Validation Summary",
@@ -95,7 +100,11 @@ def run_check(check: Check) -> CheckResult:
     script_path = REPO_ROOT / check.path
     command = command_text(check)
     if not script_path.exists():
-        message = f"SKIP: {check.path} not found"
+        if check.required:
+            message = f"FAIL: required path missing for {command}"
+            print(message)
+            return CheckResult(check=check, status="failed", command=command, returncode=1, output=message)
+        message = f"SKIP: optional path missing for {command}"
         print(message)
         return CheckResult(check=check, status="skipped", command=command, output=message)
 
@@ -107,9 +116,15 @@ def run_check(check: Check) -> CheckResult:
         check=False,
     )
     output = "\n".join(part.rstrip() for part in (completed.stdout, completed.stderr) if part.strip())
+    if completed.returncode == 0:
+        print(f"PASS: {command}")
+        status = "passed"
+    else:
+        print(f"FAIL: {command} (exit code {completed.returncode})")
+        status = "failed"
     return CheckResult(
         check=check,
-        status="passed" if completed.returncode == 0 else "failed",
+        status=status,
         command=command,
         returncode=completed.returncode,
         output=output,
@@ -155,7 +170,12 @@ def render_report(results: list[CheckResult]) -> str:
 
     report: list[str] = [
         "BuildSlate Engineering Feasibility Report",
-        f"Generated: {generated}",
+        "Report Metadata:",
+        f"  generated timestamp: {generated}",
+        f"  Python version: {platform.python_version()}",
+        f"  platform: {platform.platform()}",
+        f"  repo root: {REPO_ROOT}",
+        f"  report generator version: {REPORT_GENERATOR_VERSION}",
         "Scope:",
         "  device: Slate Pocket v1",
         "  purpose: first-pass engineering screening",
@@ -194,31 +214,22 @@ def render_report(results: list[CheckResult]) -> str:
     report.append("Conclusion")
     if failed:
         report.append(
-            "One or more available feasibility checks failed. Treat this report as incomplete until failed checks are resolved."
+            "One or more feasibility checks failed. Treat this report as incomplete until failed checks are resolved."
         )
     elif warning_lines:
         report.append(
-            "Required validations and available checks completed, but warning/risk lines require engineering review before feasibility claims are strengthened."
+            "Required validations and core model checks completed, but warning/risk lines require engineering review before feasibility claims are strengthened."
         )
     else:
         report.append(
-            "Required validations and available checks completed without detected blocker keywords. This remains first-pass screening, not production validation."
+            "Required validations and core model checks completed without detected blocker keywords. This remains first-pass screening, not production validation."
         )
 
     return "\n".join(report) + "\n"
 
 
 def should_exit_with_failure(results: list[CheckResult]) -> bool:
-    for result in results:
-        if result.status != "failed":
-            continue
-        if result.check.path in REQUIRED_VALIDATIONS:
-            return True
-        return True
-    missing_required = [
-        result for result in results if result.status == "skipped" and result.check.path in REQUIRED_VALIDATIONS
-    ]
-    return bool(missing_required)
+    return any(result.status == "failed" for result in results)
 
 
 def main() -> int:

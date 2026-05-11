@@ -94,6 +94,27 @@ python engineering/component_models/run_all_component_models.py
 These models are used before device profiles or optimization. They make assumptions, equations, warnings, confidence, basis, and primary blockers explicit so future CAD, BOM, datasheet, and validation work can replace placeholders with measured or supplier-backed values.
 
 
+## Environmental Operating Models
+
+BuildSlate includes first-pass environmental operating condition models in `engineering/environment_models/`. These scripts show how external conditions change thermal risk, skin-temperature margin, display load, charging risk, and throttling pressure before device profiles or optimization are introduced.
+
+Run the grouped default and stress-case report with:
+
+```bash
+python engineering/environment_models/run_all_environment_models.py
+```
+
+The environmental models cover:
+
+- ambient temperature and shrinking skin-temperature margin in hot environments;
+- hand contact reducing useful heat-spreading area;
+- pocket, bag, handheld, open-air, and car-console-sun operating conditions;
+- sunlight display load and high-brightness power pressure;
+- charging overlap with sustained AI workload, including wireless charging risk;
+- first-pass throttle policy recommendations for skin, battery, and SoC temperature thresholds.
+
+These scripts are screening tools, not compliance tests. Pocket/bag sustained AI and charging plus AI thermal overlap are treated as constraints that must be throttled, disallowed, or validated with measured hardware data. See `docs/engineering/environmental_conditions.md` for interpretation guidance.
+
 ## Thermal and Stackup Screening
 
 - `engineering/component_models/thermal_resistance_network.py` estimates first-pass heat path risk from a hotspot through TIM, spreaders, frame material, and exterior skin.

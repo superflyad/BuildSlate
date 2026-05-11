@@ -687,3 +687,118 @@ entries:
       citation_status: needs external citation
       notes:
         - Screening estimate; should be superseded by a part-level mass budget.
+
+  - id: ambient_temperature_assumption
+    name: Ambient temperature skin-margin assumption
+    value_or_range: 25-35
+    units: C
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - environment_models
+      - ambient_temperature
+      - thermal_feasibility
+    rationale: First-pass environmental screening needs explicit ambient temperatures to show how skin-temperature margin changes outside ideal room-temperature operation.
+    limitations: Does not include airflow, solar load, enclosure state, user grip, humidity, local hotspots, or dynamic throttling.
+    future_validation: Replace with thermal chamber measurements across representative workloads, ambient temperatures, orientations, and airflow states.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: citation recommended
+      notes:
+        - Screening assumption intended to expose hot-environment risk before calibrated thermal modeling.
+
+  - id: hand_contact_area_assumption
+    name: Hand contact area derating assumption
+    value_or_range: 35
+    units: percent exterior area contacted
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - environment_models
+      - hand_contact
+      - handheld_thermal_screening
+    rationale: Handheld operation can block useful exterior heat-spreading area and increase perceived temperature, so first-pass models need an explicit contact-area derating.
+    limitations: Real contact area depends on grip, hand size, case material, posture, texture, local hotspots, and user behavior.
+    future_validation: Replace with grip studies, thermal imaging, user-comfort testing, and prototype skin-temperature maps.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: citation recommended
+      notes:
+        - Default is a conservative placeholder until ergonomic and thermal measurements exist.
+
+  - id: enclosure_heat_escape_factor
+    name: Enclosure heat escape factor
+    value_or_range: 0.20-1.00
+    units: fraction
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - environment_models
+      - enclosure_condition
+      - thermal_feasibility
+    rationale: Pocket, bag, handheld, open-air, and car-console conditions need explicit heat-escape derating to prevent open-air assumptions from being applied to enclosed use.
+    limitations: Factors are not calibrated to fabric type, bag geometry, device orientation, solar loading, airflow, or active workload history.
+    future_validation: Replace with enclosure tests across textiles, bags, pockets, car-console sunlight, orientations, and workloads.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: citation recommended
+      notes:
+        - Pocket and bag factors are screening constraints, not validated temperature predictions.
+
+  - id: sunlight_display_multiplier
+    name: Sunlight display power multiplier
+    value_or_range: 0.5-2.2
+    units: multiplier
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - environment_models
+      - sunlight_display_load
+      - runtime_targets
+    rationale: Outdoor readability and high brightness can materially increase display power, reducing runtime and adding thermal load during sustained AI operation.
+    limitations: Does not model panel technology, luminance, APL, refresh rate, reflectance, ambient light sensor behavior, or solar heating of the enclosure.
+    future_validation: Replace with display supplier power curves, brightness measurements, sunlight readability tests, and outdoor thermal measurements.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: citation recommended
+      notes:
+        - Multiplier range is a placeholder for early runtime and thermal screening.
+
+  - id: charging_efficiency_assumption
+    name: Charging efficiency and heat overlap assumption
+    value_or_range: 0.78-0.88
+    units: fraction
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - environment_models
+      - charging_overlap
+      - battery_runtime
+      - thermal_feasibility
+    rationale: AI workload and active charging can overlap thermally through conversion losses and battery charge heat, so charging efficiency must be explicit in heat-budget screening.
+    limitations: Efficiency depends on charger protocol, adapter, cable, PMIC, wireless coil alignment, charge state, battery temperature, and charge taper.
+    future_validation: Replace with measured wired and wireless charging efficiency, PMIC thermal data, battery charge heat, and workload-overlap tests.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: citation recommended
+      notes:
+        - Wireless charging receives a lower screening efficiency unless an explicit value is supplied.
+
+  - id: thermal_throttle_thresholds
+    name: Thermal throttle threshold assumptions
+    value_or_range: skin caution 40 C, skin limit 43 C, skin critical 45 C; battery caution 40 C, battery limit 45 C; SoC caution 80 C, SoC limit 90 C
+    units: C
+    category: modeled_estimate
+    confidence: low
+    used_by:
+      - environment_models
+      - thermal_throttle_policy
+      - firmware_policy_screening
+    rationale: First-pass environmental models need explicit placeholder thresholds to translate thermal state into workload and charging policy recommendations.
+    limitations: Thresholds are not certified safety limits, product firmware requirements, or validated comfort limits; sensor placement and calibration are not modeled.
+    future_validation: Replace with safety review, regulatory guidance, component datasheets, sensor calibration, firmware validation, and user-comfort testing.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: citation recommended
+      notes:
+        - Thresholds are intended for screening only and must not be treated as compliance evidence.

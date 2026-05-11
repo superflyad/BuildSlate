@@ -177,6 +177,19 @@ python engineering/sweeps/sweep_runner.py --profile configs/devices/slate-pocket
 
 Use `engineering/sweeps/sweep_runner.py` for individual parameter sweeps and `engineering/sweeps/sensitivity_summary.py` for the default sensitivity set covering thickness, sustained power, battery capacity, memory capacity, and ambient temperature. These tools are screening aids, not optimizers or automatic constraint solvers.
 
+
+## Constraint Boundary Analysis
+
+BuildSlate can run explicit feasibility boundary scans that sweep one numeric profile parameter, evaluate a named pass/fail constraint, and report the first passing scan point without modifying source profiles or automatically redesigning Slate.
+
+Run a stackup boundary scan with:
+
+```bash
+python engineering/constraints/feasibility_boundary.py --profile configs/devices/slate-pocket-v1.yaml --vary geometry.thickness_mm --min 8.0 --max 14.0 --step 0.25 --constraint zone_stackup_pass
+```
+
+Use `engineering/constraints/feasibility_boundary.py` for individual boundary scans, `engineering/constraints/constraint_runner.py` for the default Slate Pocket v1 boundary set, and `engineering/constraints/constraint_summary.py` for a plain-language summary. Generated reports are written under `reports/constraints/`. Boundary results are screening classifications, not optimization, production validation, or certification.
+
 ## Feasibility Report
 
 Generate a unified Slate Pocket v1 first-pass engineering feasibility report with:

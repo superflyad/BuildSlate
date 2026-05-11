@@ -41,6 +41,19 @@ BuildSlate's engineering foundation keeps future specs, CAD, simulations, SlateO
 - `engineering/models/component_mass_budget.py` estimates mass drivers.
 - `engineering/models/component_power_budget.py` estimates power and runtime pressure.
 
+
+## Component Physics Models
+
+BuildSlate includes first-pass component physics screening models in `engineering/component_models/`. These scripts cover the battery pack, display, PCB, SoC/NPU, memory, storage, thermal module, camera system, antennas/RF, wireless charging, and structural stackup.
+
+Run the grouped default report with:
+
+```bash
+python engineering/component_models/run_all_component_models.py
+```
+
+These models are used before device profiles or optimization. They make assumptions, equations, warnings, confidence, basis, and primary blockers explicit so future CAD, BOM, datasheet, and validation work can replace placeholders with measured or supplier-backed values.
+
 ## Hardware Ontology
 
 BuildSlate now separates hardware vocabulary, constants, formulas, and interpretation so future design changes remain traceable.

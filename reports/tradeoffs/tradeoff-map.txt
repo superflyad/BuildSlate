@@ -1,0 +1,53 @@
+Tradeoff Map
+generated: 2026-05-12T01:34:36+00:00
+profile: slate-pocket-v1
+profile_path: configs/devices/slate-pocket-v1.yaml
+constraint: mass_within_engineering_range
+x: battery.capacity_mah
+y: geometry.thickness_mm
+x_range: 4000 to 10000 step 1000
+y_range: 8 to 14 step 0.5
+screening_classification: first-pass engineering pressure regions, not exact engineering standards
+optimization: none; this tool maps interactions and does not auto-solve designs
+source_profiles_modified: no
+
+                         8mm  8.5mm    9mm  9.5mm   10mm 10.5mm   11mm 11.5mm   12mm 12.5mm   13mm 13.5mm   14mm
+4000mAh                    M      M      M      M      M      M      M      M      M      M      M      M      M
+5000mAh                    M      M      M      M      M      M      M      M      M      M      M      M      M
+6000mAh                    H      H      H      H      H      H      H      H      H      H      H      H      H
+7000mAh                    H      H      H      H      H      H      H      H      H      H      H      H      H
+8000mAh                    F      F      F      F      F      F      F      F      F      F      F      F      F
+9000mAh                    F      F      F      F      F      F      F      F      F      F      F      F      F
+10000mAh                   F      F      F      F      F      F      F      F      F      F      F      F      F
+
+Legend:
+P = PASS
+M = MODERATE
+H = HIGH
+E = EXTREME
+F = FAIL
+
+Region counts:
+- PASS: 0
+- MODERATE: 26
+- HIGH: 26
+- EXTREME: 0
+- FAIL: 39
+
+Classification heuristics:
+- FAIL means the selected explicit constraint returned failure.
+- PASS means the constraint passed with no active warnings or comfortable screening margin.
+- MODERATE means warnings are active or margin is modest.
+- HIGH means severe warnings, multiple warnings, or low margin are present.
+- EXTREME means the point is near a modeled threshold but has not necessarily failed.
+- Heuristics are intentionally transparent screening labels, not certification or manufacturability claims.
+
+Representative classified points:
+- MODERATE: x=4000mAh, y=8mm; mass passes but uses at least 80% of the engineering maximum or warnings are active; constraint_reason=estimated mass 287.9 g <= max 350.0 g; warnings=runtime_low,high_thermal_risk,stackup_fail
+- HIGH: x=6000mAh, y=8mm; estimated mass uses at least 90% of the engineering maximum; constraint_reason=estimated mass 320.0 g <= max 350.0 g; warnings=runtime_low,high_thermal_risk,stackup_fail
+- FAIL: x=8000mAh, y=8mm; explicit constraint failure from selected constraint check; constraint_reason=estimated mass 352.1 g <= max 350.0 g; warnings=runtime_low,mass_pressure,high_thermal_risk,stackup_fail
+
+Notes:
+- Each grid point loads the source profile into an in-memory copy, mutates the x and y parameters, evaluates the selected constraint, and records warnings.
+- Interactions are model-dependent and may be nonlinear; review equations and assumptions before using results for engineering decisions.
+- PASS does not mean manufacturable. FAIL does not mean impossible forever.

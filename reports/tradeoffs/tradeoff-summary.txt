@@ -1,0 +1,30 @@
+Tradeoff Summary
+generated: 2026-05-12T01:34:37+00:00
+profile_path: configs/devices/slate-pocket-v1.yaml
+screening_classification: qualitative first-pass engineering interaction summary
+
+Qualitative engineering findings:
+- Thin chassis strongly amplifies thermal pressure at sustained AI loads because the same heat load occupies less modeled volume and surface area.
+- Increasing battery capacity can create mass pressure even when runtime improves, so energy storage cannot be interpreted as a free margin increase.
+- Increasing memory capacity creates stackup and package-count pressure faster than it resolves every runtime-memory scenario.
+- Ambient temperature meaningfully reduces skin-temperature operating margin; hot environments can dominate otherwise acceptable sustained-load assumptions.
+- Runtime memory pressure escalates rapidly with large context windows because KV-cache demand grows with context length.
+
+Generated-map observations:
+- A. Thickness vs sustained power: 47/70 grid points are HIGH, EXTREME, or FAIL; first pressure point: x=8mm, y=12W (HIGH).
+  Counts: PASS=15, MODERATE=8, HIGH=23, EXTREME=21, FAIL=3.
+- B. Battery capacity vs mass estimate: 1/35 grid points are HIGH, EXTREME, or FAIL; first pressure point: x=10000mAh, y=260g (HIGH).
+  Counts: PASS=0, MODERATE=34, HIGH=1, EXTREME=0, FAIL=0.
+- C. Memory capacity vs thickness: 16/56 grid points are HIGH, EXTREME, or FAIL; first pressure point: x=64GB, y=8mm (FAIL).
+  Counts: PASS=0, MODERATE=40, HIGH=0, EXTREME=8, FAIL=8.
+- D. Ambient temperature vs sustained power: 60/70 grid points are HIGH, EXTREME, or FAIL; first pressure point: x=25C, y=4W (EXTREME).
+  Counts: PASS=0, MODERATE=10, HIGH=0, EXTREME=10, FAIL=50.
+- E. Memory capacity vs context length: 38/64 grid points are HIGH, EXTREME, or FAIL; first pressure point: x=64GB, y=4096tok (FAIL).
+  Counts: PASS=2, MODERATE=24, HIGH=4, EXTREME=2, FAIL=32.
+
+Limitations and interpretation warnings:
+- These are first-pass screening summaries, not validation, certification, optimization, or automated design recommendations.
+- Interactions are model-dependent; changing thermal, mass, memory, battery, or stackup equations can change the pressure regions.
+- PASS does not mean manufacturable or supplier-ready; it means the selected model and constraint did not show pressure beyond the configured heuristic bands.
+- FAIL does not mean impossible forever; it means this screening model violates the selected explicit constraint for that grid point.
+- Use the map outputs to focus review, not to replace CAD, thermal simulation, prototyping, safety testing, or manufacturing analysis.

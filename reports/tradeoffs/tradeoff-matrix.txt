@@ -1,0 +1,291 @@
+Default Tradeoff Matrix
+generated: 2026-05-12T01:34:37+00:00
+profile_path: configs/devices/slate-pocket-v1.yaml
+screening_classification: first-pass engineering pressure regions, not exact engineering standards
+optimization: none; these maps do not auto-solve or rank designs
+
+## A. Thickness vs sustained power
+Tradeoff Map
+generated: 2026-05-12T01:34:37+00:00
+profile: slate-pocket-v1
+profile_path: configs/devices/slate-pocket-v1.yaml
+constraint: thermal_risk_not_extreme
+x: geometry.thickness_mm
+y: compute.sustained_power_w
+x_range: 8 to 14 step 1
+y_range: 4 to 40 step 4
+screening_classification: first-pass engineering pressure regions, not exact engineering standards
+optimization: none; this tool maps interactions and does not auto-solve designs
+source_profiles_modified: no
+
+                        4W  8W 12W 16W 20W 24W 28W 32W 36W 40W
+8mm                      M   M   H   H   H   E   E   E   F   F
+9mm                      M   M   M   H   H   E   E   E   E   F
+10mm                     M   M   M   H   H   H   E   E   E   E
+11mm                     P   P   P   H   H   H   H   E   E   E
+12mm                     P   P   P   P   H   H   H   E   E   E
+13mm                     P   P   P   P   H   H   H   H   E   E
+14mm                     P   P   P   P   H   H   H   H   E   E
+
+Legend:
+P = PASS
+M = MODERATE
+H = HIGH
+E = EXTREME
+F = FAIL
+
+Region counts:
+- PASS: 15
+- MODERATE: 8
+- HIGH: 23
+- EXTREME: 21
+- FAIL: 3
+
+Classification heuristics:
+- FAIL means the selected explicit constraint returned failure.
+- PASS means the constraint passed with no active warnings or comfortable screening margin.
+- MODERATE means warnings are active or margin is modest.
+- HIGH means severe warnings, multiple warnings, or low margin are present.
+- EXTREME means the point is near a modeled threshold but has not necessarily failed.
+- Heuristics are intentionally transparent screening labels, not certification or manufacturability claims.
+
+Representative classified points:
+- PASS: x=11mm, y=4W; constraint passes with no active warnings; constraint_reason=thermal risk low; warnings=none
+- MODERATE: x=8mm, y=4W; constraint passes but warnings are active; constraint_reason=thermal risk low; warnings=high_thermal_risk,stackup_fail
+- HIGH: x=8mm, y=12W; thermal margin is low under the screening heat-density bands; constraint_reason=thermal risk moderate; warnings=high_thermal_risk,stackup_fail
+- EXTREME: x=8mm, y=24W; thermal risk is high or heat density is near the extreme threshold; constraint_reason=thermal risk high; warnings=high_thermal_risk,runtime_low,stackup_fail
+- FAIL: x=8mm, y=36W; explicit constraint failure from selected constraint check; constraint_reason=thermal risk extreme; warnings=high_thermal_risk,runtime_low,stackup_fail
+
+Notes:
+- Each grid point loads the source profile into an in-memory copy, mutates the x and y parameters, evaluates the selected constraint, and records warnings.
+- Interactions are model-dependent and may be nonlinear; review equations and assumptions before using results for engineering decisions.
+- PASS does not mean manufacturable. FAIL does not mean impossible forever.
+
+## B. Battery capacity vs mass estimate
+Tradeoff Map
+generated: 2026-05-12T01:34:37+00:00
+profile: slate-pocket-v1
+profile_path: configs/devices/slate-pocket-v1.yaml
+constraint: mass_within_engineering_range
+x: battery.capacity_mah
+y: mass_targets.engineering_estimate_g
+x_range: 4000 to 10000 step 1000
+y_range: 180 to 260 step 20
+screening_classification: first-pass engineering pressure regions, not exact engineering standards
+optimization: none; this tool maps interactions and does not auto-solve designs
+source_profiles_modified: no
+
+                      180g 200g 220g 240g 260g
+4000mAh                  M    M    M    M    M
+5000mAh                  M    M    M    M    M
+6000mAh                  M    M    M    M    M
+7000mAh                  M    M    M    M    M
+8000mAh                  M    M    M    M    M
+9000mAh                  M    M    M    M    M
+10000mAh                 M    M    M    M    H
+
+Legend:
+P = PASS
+M = MODERATE
+H = HIGH
+E = EXTREME
+F = FAIL
+
+Region counts:
+- PASS: 0
+- MODERATE: 34
+- HIGH: 1
+- EXTREME: 0
+- FAIL: 0
+
+Classification heuristics:
+- FAIL means the selected explicit constraint returned failure.
+- PASS means the constraint passed with no active warnings or comfortable screening margin.
+- MODERATE means warnings are active or margin is modest.
+- HIGH means severe warnings, multiple warnings, or low margin are present.
+- EXTREME means the point is near a modeled threshold but has not necessarily failed.
+- Heuristics are intentionally transparent screening labels, not certification or manufacturability claims.
+
+Representative classified points:
+- MODERATE: x=4000mAh, y=180g; mass passes but uses at least 80% of the engineering maximum or warnings are active; constraint_reason=estimated mass 147.9 g <= max 350.0 g; warnings=runtime_low
+- HIGH: x=10000mAh, y=260g; estimated mass uses at least 90% of the engineering maximum; constraint_reason=estimated mass 324.2 g <= max 350.0 g; warnings=mass_pressure
+
+Notes:
+- Each grid point loads the source profile into an in-memory copy, mutates the x and y parameters, evaluates the selected constraint, and records warnings.
+- Interactions are model-dependent and may be nonlinear; review equations and assumptions before using results for engineering decisions.
+- PASS does not mean manufacturable. FAIL does not mean impossible forever.
+
+## C. Memory capacity vs thickness
+Tradeoff Map
+generated: 2026-05-12T01:34:37+00:00
+profile: slate-pocket-v1
+profile_path: configs/devices/slate-pocket-v1.yaml
+constraint: zone_stackup_pass
+x: memory.capacity_gb
+y: geometry.thickness_mm
+x_range: 64 to 512 step 64
+y_range: 8 to 14 step 1
+screening_classification: first-pass engineering pressure regions, not exact engineering standards
+optimization: none; this tool maps interactions and does not auto-solve designs
+source_profiles_modified: no
+
+                     8mm  9mm 10mm 11mm 12mm 13mm 14mm
+64GB                   F    E    M    M    M    M    M
+128GB                  F    E    M    M    M    M    M
+192GB                  F    E    M    M    M    M    M
+256GB                  F    E    M    M    M    M    M
+320GB                  F    E    M    M    M    M    M
+384GB                  F    E    M    M    M    M    M
+448GB                  F    E    M    M    M    M    M
+512GB                  F    E    M    M    M    M    M
+
+Legend:
+P = PASS
+M = MODERATE
+H = HIGH
+E = EXTREME
+F = FAIL
+
+Region counts:
+- PASS: 0
+- MODERATE: 40
+- HIGH: 0
+- EXTREME: 8
+- FAIL: 8
+
+Classification heuristics:
+- FAIL means the selected explicit constraint returned failure.
+- PASS means the constraint passed with no active warnings or comfortable screening margin.
+- MODERATE means warnings are active or margin is modest.
+- HIGH means severe warnings, multiple warnings, or low margin are present.
+- EXTREME means the point is near a modeled threshold but has not necessarily failed.
+- Heuristics are intentionally transparent screening labels, not certification or manufacturability claims.
+
+Representative classified points:
+- MODERATE: x=64GB, y=10mm; stackup passes but margin is modest or warnings are active; constraint_reason=worst zone margin 1.20 mm; warnings=memory_pressure,high_thermal_risk,runtime_low
+- EXTREME: x=64GB, y=9mm; stackup margin is below 0.25 mm; constraint_reason=worst zone margin 0.20 mm; warnings=memory_pressure,high_thermal_risk,runtime_low
+- FAIL: x=64GB, y=8mm; explicit constraint failure from selected constraint check; constraint_reason=worst zone margin -0.80 mm; warnings=memory_pressure,high_thermal_risk,runtime_low,stackup_fail
+
+Notes:
+- Each grid point loads the source profile into an in-memory copy, mutates the x and y parameters, evaluates the selected constraint, and records warnings.
+- Interactions are model-dependent and may be nonlinear; review equations and assumptions before using results for engineering decisions.
+- PASS does not mean manufacturable. FAIL does not mean impossible forever.
+
+## D. Ambient temperature vs sustained power
+Tradeoff Map
+generated: 2026-05-12T01:34:37+00:00
+profile: slate-pocket-v1
+profile_path: configs/devices/slate-pocket-v1.yaml
+constraint: skin_temp_pass
+x: thermal.ambient_c
+y: compute.sustained_power_w
+x_range: 20 to 50 step 5
+y_range: 4 to 40 step 4
+screening_classification: first-pass engineering pressure regions, not exact engineering standards
+optimization: none; this tool maps interactions and does not auto-solve designs
+source_profiles_modified: no
+
+                    4W  8W 12W 16W 20W 24W 28W 32W 36W 40W
+20C                  M   M   M   M   M   M   M   M   M   M
+25C                  E   E   E   E   E   E   E   E   E   E
+30C                  F   F   F   F   F   F   F   F   F   F
+35C                  F   F   F   F   F   F   F   F   F   F
+40C                  F   F   F   F   F   F   F   F   F   F
+45C                  F   F   F   F   F   F   F   F   F   F
+50C                  F   F   F   F   F   F   F   F   F   F
+
+Legend:
+P = PASS
+M = MODERATE
+H = HIGH
+E = EXTREME
+F = FAIL
+
+Region counts:
+- PASS: 0
+- MODERATE: 10
+- HIGH: 0
+- EXTREME: 10
+- FAIL: 50
+
+Classification heuristics:
+- FAIL means the selected explicit constraint returned failure.
+- PASS means the constraint passed with no active warnings or comfortable screening margin.
+- MODERATE means warnings are active or margin is modest.
+- HIGH means severe warnings, multiple warnings, or low margin are present.
+- EXTREME means the point is near a modeled threshold but has not necessarily failed.
+- Heuristics are intentionally transparent screening labels, not certification or manufacturability claims.
+
+Representative classified points:
+- MODERATE: x=20C, y=4W; skin-temperature margin is modest or warnings are active; constraint_reason=skin 38.0 C <= max 43.0 C; warnings=none
+- EXTREME: x=25C, y=4W; skin-temperature margin is within 1 C or throttle pressure is severe; constraint_reason=skin 43.0 C <= max 43.0 C; warnings=throttle_pressure
+- FAIL: x=30C, y=4W; explicit constraint failure from selected constraint check; constraint_reason=skin 48.0 C <= max 43.0 C; warnings=throttle_pressure
+
+Notes:
+- Each grid point loads the source profile into an in-memory copy, mutates the x and y parameters, evaluates the selected constraint, and records warnings.
+- Interactions are model-dependent and may be nonlinear; review equations and assumptions before using results for engineering decisions.
+- PASS does not mean manufacturable. FAIL does not mean impossible forever.
+
+## E. Memory capacity vs context length
+Tradeoff Map
+generated: 2026-05-12T01:34:37+00:00
+profile: slate-pocket-v1
+profile_path: configs/devices/slate-pocket-v1.yaml
+constraint: memory_runtime_pass
+x: memory.capacity_gb
+y: runtime.context_tokens
+x_range: 64 to 512 step 64
+y_range: 4096 to 131072 step 16384
+screening_classification: first-pass engineering pressure regions, not exact engineering standards
+optimization: none; this tool maps interactions and does not auto-solve designs
+source_profiles_modified: no
+
+                      4096tok  20480tok  36864tok  53248tok  69632tok  86016tok 102400tok 118784tok
+64GB                        F         F         F         F         F         F         F         F
+128GB                       F         F         F         F         F         F         F         F
+192GB                       M         H         F         F         F         F         F         F
+256GB                       P         P         H         F         F         F         F         F
+320GB                       M         M         M         M         E         F         F         F
+384GB                       M         M         M         M         M         H         F         F
+448GB                       M         M         M         M         M         M         H         E
+512GB                       M         M         M         M         M         M         M         M
+
+Legend:
+P = PASS
+M = MODERATE
+H = HIGH
+E = EXTREME
+F = FAIL
+
+Region counts:
+- PASS: 2
+- MODERATE: 24
+- HIGH: 4
+- EXTREME: 2
+- FAIL: 32
+
+Classification heuristics:
+- FAIL means the selected explicit constraint returned failure.
+- PASS means the constraint passed with no active warnings or comfortable screening margin.
+- MODERATE means warnings are active or margin is modest.
+- HIGH means severe warnings, multiple warnings, or low margin are present.
+- EXTREME means the point is near a modeled threshold but has not necessarily failed.
+- Heuristics are intentionally transparent screening labels, not certification or manufacturability claims.
+
+Representative classified points:
+- PASS: x=256GB, y=4096tok; memory runtime passes with comfortable headroom; constraint_reason=runtime memory 132.5 GB <= available 256.0 GB; warnings=none
+- MODERATE: x=192GB, y=4096tok; runtime memory passes but remaining headroom is limited or warnings are active; constraint_reason=runtime memory 132.5 GB <= available 192.0 GB; warnings=memory_pressure
+- HIGH: x=192GB, y=20480tok; runtime memory remaining is 15% or less of installed memory; constraint_reason=runtime memory 175.4 GB <= available 192.0 GB; warnings=memory_pressure
+- EXTREME: x=320GB, y=69632tok; runtime memory remaining is 5% or less of installed memory; constraint_reason=runtime memory 304.3 GB <= available 320.0 GB; warnings=memory_pressure
+- FAIL: x=64GB, y=4096tok; explicit constraint failure from selected constraint check; constraint_reason=runtime memory 132.5 GB <= available 64.0 GB; warnings=memory_pressure
+
+Notes:
+- Each grid point loads the source profile into an in-memory copy, mutates the x and y parameters, evaluates the selected constraint, and records warnings.
+- Interactions are model-dependent and may be nonlinear; review equations and assumptions before using results for engineering decisions.
+- PASS does not mean manufacturable. FAIL does not mean impossible forever.
+
+Global Notes:
+- Tradeoff maps are screening tools for interaction review.
+- PASS regions still require CAD, supplier, thermal, reliability, and manufacturing validation.
+- FAIL regions show where this model violates an explicit constraint; they are not permanent impossibility claims.
+- Source YAML profiles are loaded read-only and mutated only in memory.

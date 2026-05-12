@@ -165,6 +165,23 @@ python engineering/comparison/compare_profiles.py \
 
 Use `python engineering/comparison/profile_matrix.py` for a compact matrix of targets, warnings, blockers, and qualitative confidence/pressure levels. Use `python engineering/comparison/tradeoff_summary.py` for qualitative engineering tradeoff summaries. Generated comparison reports are written under `reports/profile-comparisons/`.
 
+
+## Tradeoff Mapping
+
+BuildSlate can map two-parameter engineering interactions without optimizing or auto-solving designs. Tradeoff maps mutate two profile values in memory, evaluate an explicit constraint at every grid point, and classify pressure regions as first-pass screening labels.
+
+Generate a single tradeoff map with:
+
+```bash
+python engineering/tradeoffs/tradeoff_map.py \
+  --profile configs/devices/slate-pocket-v1.yaml \
+  --x geometry.thickness_mm 8 14 0.5 \
+  --y compute.sustained_power_w 4 40 2 \
+  --constraint thermal_risk_not_extreme
+```
+
+Use `engineering/tradeoffs/tradeoff_matrix.py` for the default interaction set and `engineering/tradeoffs/tradeoff_summary.py` for qualitative engineering summaries. Generated tradeoff reports are written under `reports/tradeoffs/`. These maps show regions, not optimal solutions: `PASS` does not mean manufacturable, and `FAIL` does not mean impossible forever.
+
 ## Scenario Sweeps and Sensitivity Analysis
 
 BuildSlate can run controlled one-parameter sweeps for first-pass sensitivity analysis. Sweeps mutate one profile value in memory, run lightweight engineering checks, and write readable reports under `reports/sweeps/` without modifying source profile YAML files.

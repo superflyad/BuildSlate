@@ -94,6 +94,12 @@
   normalized_symbol: W/cm3
   description: Volumetric heat-density screening unit.
 
+- id: W/cm2
+  name: watts per square centimeter
+  dimension: heat_flux
+  normalized_symbol: W/cm2
+  description: Surface heat-flux screening unit.
+
 - id: GB/s
   name: gigabytes per second
   dimension: bandwidth

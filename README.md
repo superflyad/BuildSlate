@@ -160,7 +160,14 @@ Explain a registered calculation with:
 python engineering/core/explanation_engine.py --compute battery.energy_wh
 ```
 
-The centralized engine is intentionally simple and additive: existing model scripts, sweeps, constraints, tradeoff maps, audits, and validation checks continue to coexist while shared formulas and dependencies are introduced. `engineering/models/battery_energy.py` uses the core for shared battery energy arithmetic; geometry calculations have been migrated in `engineering/models/surface_area.py`; thermal heat-density and heat-flux calculations have been migrated in `engineering/models/thermal_limits.py`; and runtime memory calculations have been migrated in `engineering/models/model_memory.py` and `engineering/runtime_models/runtime_memory_budget.py`. `validation/validate_calculation_core_integration.py` checks the original battery integration, and `validation/validate_core_formula_migration.py` checks the migrated geometry, thermal, runtime-memory, calculator, and dependency-graph coverage. See `docs/engineering/calculation_core.md` for details.
+The centralized engine is intentionally simple and additive: existing model scripts, sweeps, constraints, tradeoff maps, audits, and validation checks continue to coexist while shared formulas and dependencies are introduced. `engineering/models/battery_energy.py` uses the core for shared battery energy arithmetic; geometry calculations have been migrated in `engineering/models/surface_area.py`; thermal heat-density and heat-flux calculations have been migrated in `engineering/models/thermal_limits.py`; and runtime memory calculations have been migrated in `engineering/models/model_memory.py` and `engineering/runtime_models/runtime_memory_budget.py`. `validation/validate_calculation_core_integration.py` checks the original battery integration, `validation/validate_calculation_registry.py` checks registry completeness and formula safety, `validation/validate_core_formula_outputs.py` pins deterministic formula outputs, and `validation/validate_core_formula_migration.py` checks the migrated geometry, thermal, runtime-memory, calculator, and dependency-graph coverage. See `docs/engineering/calculation_core.md` and `docs/engineering/calculation_registry_validation.md` for details.
+
+Validate the calculation registries and deterministic formula outputs with:
+
+```bash
+python validation/validate_calculation_registry.py
+python validation/validate_core_formula_outputs.py
+```
 
 ## Configurable Device Profiles
 
@@ -285,6 +292,8 @@ Run the normalized validation and derived-metric scripts from the repository roo
 
 ```bash
 python validation/validate_specs.py
+python validation/validate_calculation_registry.py
+python validation/validate_core_formula_outputs.py
 python validation/dimensional_constraints.py
 python simulations/derived_metrics/model_memory.py
 python simulations/derived_metrics/model_memory.py --params-billions 70 --quant-bits 4

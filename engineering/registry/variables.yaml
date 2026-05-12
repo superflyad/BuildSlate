@@ -1,0 +1,410 @@
+- id: battery.capacity_mah
+  name: Battery Capacity
+  units: mAh
+  category: battery
+  description: Nominal battery pack capacity.
+  source_type: profile_input
+  default_value: 6000
+  confidence: medium
+  depends_on: []
+  used_by:
+    - battery.energy_wh
+    - battery.runtime_h
+
+- id: battery.nominal_voltage_v
+  name: Battery Nominal Voltage
+  units: V
+  category: battery
+  description: Nominal lithium-ion pack voltage used for first-pass energy arithmetic.
+  source_type: assumption
+  default_value: 3.85
+  confidence: medium
+  depends_on: []
+  used_by:
+    - battery.energy_wh
+
+- id: battery.energy_wh
+  name: Battery Energy
+  units: Wh
+  category: battery
+  description: Total nominal pack energy before reserve and usable-capacity factors.
+  source_type: derived
+  default_value: null
+  confidence: medium
+  depends_on:
+    - battery.capacity_mah
+    - battery.nominal_voltage_v
+  used_by:
+    - battery.usable_wh
+    - battery.mass_g
+
+- id: battery.usable_factor
+  name: Battery Usable Capacity Factor
+  units: ratio
+  category: battery
+  description: Fraction of nominal energy assumed usable after reserve margin and discharge policy.
+  source_type: assumption
+  default_value: 0.85
+  confidence: low
+  depends_on: []
+  used_by:
+    - battery.usable_wh
+
+- id: battery.usable_wh
+  name: Battery Usable Energy
+  units: Wh
+  category: battery
+  description: Estimated energy available to workloads after reserve and usable-capacity factors.
+  source_type: derived
+  default_value: null
+  confidence: low
+  depends_on:
+    - battery.energy_wh
+    - battery.usable_factor
+  used_by:
+    - battery.runtime_h
+
+- id: battery.runtime_h
+  name: Battery Runtime
+  units: h
+  category: battery
+  description: First-pass runtime estimate at sustained compute power.
+  source_type: derived
+  default_value: null
+  confidence: low
+  depends_on:
+    - battery.usable_wh
+    - compute.sustained_power_w
+  used_by: []
+
+- id: battery.gravimetric_energy_density_wh_per_kg
+  name: Battery Gravimetric Energy Density
+  units: Wh/kg
+  category: battery
+  description: Pack-level gravimetric energy density assumption used for battery mass screening.
+  source_type: assumption
+  default_value: 260
+  confidence: low
+  depends_on: []
+  used_by:
+    - battery.mass_g
+
+- id: battery.mass_g
+  name: Battery Mass
+  units: g
+  category: battery
+  description: Estimated battery mass from nominal energy and gravimetric energy density.
+  source_type: derived
+  default_value: null
+  confidence: low
+  depends_on:
+    - battery.energy_wh
+    - battery.gravimetric_energy_density_wh_per_kg
+  used_by:
+    - mass.estimated_g
+
+- id: geometry.length_mm
+  name: Device Length
+  units: mm
+  category: geometry
+  description: Device body length.
+  source_type: profile_input
+  default_value: 180
+  confidence: medium
+  depends_on: []
+  used_by:
+    - geometry.volume_cm3
+    - geometry.surface_area_cm2
+
+- id: geometry.width_mm
+  name: Device Width
+  units: mm
+  category: geometry
+  description: Device body width.
+  source_type: profile_input
+  default_value: 95
+  confidence: medium
+  depends_on: []
+  used_by:
+    - geometry.volume_cm3
+    - geometry.surface_area_cm2
+
+- id: geometry.thickness_mm
+  name: Device Thickness
+  units: mm
+  category: geometry
+  description: Device body thickness.
+  source_type: profile_input
+  default_value: 8.8
+  confidence: medium
+  depends_on: []
+  used_by:
+    - geometry.volume_cm3
+    - geometry.surface_area_cm2
+
+- id: geometry.volume_cm3
+  name: Device Volume
+  units: cm3
+  category: geometry
+  description: Rectangular-envelope volume converted from cubic millimeters to cubic centimeters.
+  source_type: derived
+  default_value: null
+  confidence: medium
+  depends_on:
+    - geometry.length_mm
+    - geometry.width_mm
+    - geometry.thickness_mm
+  used_by:
+    - thermal.heat_density_w_cm3
+
+- id: geometry.surface_area_cm2
+  name: Device Surface Area
+  units: cm2
+  category: geometry
+  description: Rectangular-envelope external surface area converted from square millimeters to square centimeters.
+  source_type: derived
+  default_value: null
+  confidence: medium
+  depends_on:
+    - geometry.length_mm
+    - geometry.width_mm
+    - geometry.thickness_mm
+  used_by: []
+
+- id: thermal.sustained_w
+  name: Sustained Thermal Load
+  units: W
+  category: thermal
+  description: Sustained heat load used for heat-density screening.
+  source_type: profile_input
+  default_value: 12
+  confidence: low
+  depends_on: []
+  used_by:
+    - thermal.heat_density_w_cm3
+
+- id: thermal.heat_density_w_cm3
+  name: Heat Density
+  units: W/cm3
+  category: thermal
+  description: Sustained heat load divided by device volume.
+  source_type: derived
+  default_value: null
+  confidence: low
+  depends_on:
+    - thermal.sustained_w
+    - geometry.volume_cm3
+  used_by: []
+
+- id: thermal.skin_temp_c
+  name: Skin Temperature
+  units: C
+  category: thermal
+  description: Exterior skin temperature estimate or measured value.
+  source_type: measured_or_model_output
+  default_value: null
+  confidence: low
+  depends_on: []
+  used_by: []
+
+- id: compute.sustained_power_w
+  name: Sustained Compute Power
+  units: W
+  category: compute
+  description: Sustained compute power draw used for runtime screening.
+  source_type: profile_input
+  default_value: 28
+  confidence: low
+  depends_on: []
+  used_by:
+    - battery.runtime_h
+
+- id: compute.peak_power_w
+  name: Peak Compute Power
+  units: W
+  category: compute
+  description: Short-duration peak compute power draw.
+  source_type: profile_input
+  default_value: 45
+  confidence: low
+  depends_on: []
+  used_by: []
+
+- id: compute.npu_tops
+  name: NPU Throughput
+  units: TOPS
+  category: compute
+  description: Nominal neural processing throughput.
+  source_type: profile_input
+  default_value: null
+  confidence: low
+  depends_on: []
+  used_by: []
+
+- id: memory.capacity_gb
+  name: Memory Capacity
+  units: GB
+  category: memory
+  description: Total system memory capacity.
+  source_type: profile_input
+  default_value: 64
+  confidence: medium
+  depends_on: []
+  used_by: []
+
+- id: memory.bandwidth_gbps
+  name: Memory Bandwidth
+  units: GB/s
+  category: memory
+  description: Aggregate memory bandwidth.
+  source_type: profile_input
+  default_value: null
+  confidence: low
+  depends_on: []
+  used_by: []
+
+- id: memory.package_count
+  name: Memory Package Count
+  units: count
+  category: memory
+  description: Number of discrete memory packages.
+  source_type: profile_input
+  default_value: null
+  confidence: low
+  depends_on: []
+  used_by: []
+
+- id: runtime.model_params_b
+  name: Model Parameters
+  units: B parameters
+  category: runtime
+  description: Model parameter count in billions of parameters.
+  source_type: profile_input
+  default_value: 7
+  confidence: medium
+  depends_on: []
+  used_by:
+    - runtime.model_memory_gb
+
+- id: runtime.quantization_bits
+  name: Quantization Bits
+  units: bits
+  category: runtime
+  description: Bits per parameter for model-weight residency estimates.
+  source_type: profile_input
+  default_value: 4
+  confidence: medium
+  depends_on: []
+  used_by:
+    - runtime.model_memory_gb
+
+- id: runtime.model_memory_gb
+  name: Model Memory
+  units: GB
+  category: runtime
+  description: Estimated model-weight memory footprint.
+  source_type: derived
+  default_value: null
+  confidence: medium
+  depends_on:
+    - runtime.model_params_b
+    - runtime.quantization_bits
+  used_by: []
+
+- id: runtime.layers
+  name: Runtime Layer Count
+  units: count
+  category: runtime
+  description: Transformer layer count for first-pass KV cache sizing.
+  source_type: profile_input
+  default_value: 32
+  confidence: low
+  depends_on: []
+  used_by:
+    - runtime.kv_cache_gb
+
+- id: runtime.hidden_size
+  name: Runtime Hidden Size
+  units: count
+  category: runtime
+  description: Transformer hidden size for first-pass KV cache sizing.
+  source_type: profile_input
+  default_value: 4096
+  confidence: low
+  depends_on: []
+  used_by:
+    - runtime.kv_cache_gb
+
+- id: runtime.context_tokens
+  name: Context Tokens
+  units: tokens
+  category: runtime
+  description: Active context length in tokens for KV cache sizing.
+  source_type: profile_input
+  default_value: 8192
+  confidence: low
+  depends_on: []
+  used_by:
+    - runtime.kv_cache_gb
+
+- id: runtime.batch_size
+  name: Runtime Batch Size
+  units: count
+  category: runtime
+  description: Batch size for KV cache sizing.
+  source_type: profile_input
+  default_value: 1
+  confidence: low
+  depends_on: []
+  used_by:
+    - runtime.kv_cache_gb
+
+- id: runtime.kv_bytes_per_element
+  name: KV Bytes per Element
+  units: bytes
+  category: runtime
+  description: Bytes per key/value cache element.
+  source_type: profile_input
+  default_value: 2
+  confidence: low
+  depends_on: []
+  used_by:
+    - runtime.kv_cache_gb
+
+- id: runtime.kv_cache_gb
+  name: KV Cache Memory
+  units: GB
+  category: runtime
+  description: First-pass key/value cache memory footprint.
+  source_type: derived
+  default_value: null
+  confidence: medium
+  depends_on:
+    - runtime.layers
+    - runtime.hidden_size
+    - runtime.context_tokens
+    - runtime.batch_size
+    - runtime.kv_bytes_per_element
+  used_by: []
+
+- id: mass.target_g
+  name: Target Mass
+  units: g
+  category: mass
+  description: Target finished-device mass.
+  source_type: profile_input
+  default_value: 220
+  confidence: low
+  depends_on: []
+  used_by: []
+
+- id: mass.estimated_g
+  name: Estimated Mass
+  units: g
+  category: mass
+  description: Placeholder aggregate mass estimate for future component rollups.
+  source_type: derived_or_profile_input
+  default_value: null
+  confidence: low
+  depends_on: []
+  used_by: []

@@ -60,6 +60,40 @@ battery.energy_wh
 
 Existing scripts are being migrated gradually. Model behavior should remain stable during migration, with arithmetic moving toward centralized formulas, variable ids, units, and explanation output where that provides clearer reuse and auditability.
 
+
+## Migrated Stable Physics Calculations
+
+The calculation core now carries the stable arithmetic used by several legacy engineering scripts:
+
+- geometry volume and rectangular-envelope surface area for `engineering/models/surface_area.py`;
+- heat density and surface heat flux for `engineering/models/thermal_limits.py` and derived thermal-density simulations;
+- resident model memory, KV cache memory, total runtime memory, and remaining memory margin for `engineering/models/model_memory.py` and `engineering/runtime_models/runtime_memory_budget.py`;
+- battery energy, usable energy, runtime, and battery mass from the prior battery migration.
+
+These scripts keep their existing command-line flags, default values, report sections, assumptions, warnings, and confidence text. The migration only changes where reusable arithmetic and formula dependencies are resolved. Each migrated model exposes `--explain` so reviewers can inspect the registered formula, substituted values, and computed result without changing the normal report output.
+
+## What Should Be Centralized
+
+Centralize stable arithmetic when it is shared, reused, or important for auditability:
+
+- unit-conversion arithmetic such as cubic millimeters to cubic centimeters;
+- reusable geometry dependencies such as length, width, thickness, volume, and surface area;
+- thermal screening formulas such as heat load divided by volume or surface area;
+- runtime memory arithmetic such as quantized model residency, KV cache sizing, additive reserves, and available memory margin;
+- formulas whose inputs and outputs benefit from consistent ids, units, and dependency graph coverage.
+
+## What Should Remain Local
+
+Keep engineering interpretation close to the model that owns the context:
+
+- qualitative warnings and report wording;
+- thermal risk classifications and pass/fail labels;
+- maturity, confidence, and feasibility labels;
+- profile-specific or scenario-specific heuristics;
+- assumptions that are explanatory rather than reusable arithmetic.
+
+The calculation core is not an optimizer, not a unified CLI, and not a replacement for model-specific engineering judgment. It provides shared formula execution and traceability while the scripts continue to own interpretation.
+
 ## Future extensibility
 
 The calculation core is structured so future work can add:

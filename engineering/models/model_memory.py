@@ -4,12 +4,19 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 from typing import Any
 
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from engineering.core.calculator import Calculator
+from engineering.core.explanation_engine import ExplanationEngine
+
 COMPUTE_CONSTANTS_PATH = REPO_ROOT / "engineering" / "constants" / "compute.yaml"
 
 
@@ -39,6 +46,7 @@ def parse_args() -> argparse.Namespace:
         default="nominal",
     )
     parser.add_argument("--available-memory-gb", type=positive_float, default=512.0)
+    parser.add_argument("--explain", action="store_true", help="Print centralized model memory calculation explanation")
     return parser.parse_args()
 
 
@@ -48,8 +56,15 @@ def main() -> int:
 
     bytes_per_parameter = constants["bytes_per_parameter"][args.quantization]
     overhead_factor = constants["quantization_overhead_factor"][args.overhead_profile]
-    raw_gb = args.params_billions * 1e9 * bytes_per_parameter / 1e9
-    estimated_gb = raw_gb * overhead_factor
+    calculator = Calculator()
+    raw_inputs = {
+        "runtime.model_params_b": args.params_billions,
+        "runtime.quantization_bits": bytes_per_parameter * 8,
+        "runtime.model_overhead_factor": 1.0,
+    }
+    estimated_inputs = {**raw_inputs, "runtime.model_overhead_factor": overhead_factor}
+    raw_gb = calculator.compute("runtime.model_memory_gb", raw_inputs)
+    estimated_gb = calculator.compute("runtime.model_memory_gb", estimated_inputs)
     passes = estimated_gb <= args.available_memory_gb
 
     print("Model memory estimate")
@@ -72,6 +87,9 @@ def main() -> int:
     print(f"  estimated_memory_gb: {estimated_gb:.1f}")
     print(f"  available_memory_gb: {args.available_memory_gb:.1f}")
     print(f"  pass_fail: {'pass' if passes else 'fail'}")
+    if args.explain:
+        print("explanation:")
+        print(ExplanationEngine().explain("runtime.model_memory_gb", estimated_inputs))
     print("confidence: medium for parameter storage arithmetic; low for full runtime feasibility")
     print("basis: estimated")
     print("primary blocker: package availability, bandwidth, KV cache, NPU throughput, software stack, and thermals")

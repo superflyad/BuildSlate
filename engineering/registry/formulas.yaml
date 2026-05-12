@@ -94,14 +94,15 @@
 
 - id: runtime_model_memory_formula
   output: runtime.model_memory_gb
-  formula: "runtime.model_params_b * runtime.quantization_bits / 8"
+  formula: "runtime.model_params_b * runtime.quantization_bits / 8 * runtime.model_overhead_factor"
   inputs:
     - runtime.model_params_b
     - runtime.quantization_bits
+    - runtime.model_overhead_factor
   units: GB
-  description: Estimates model-weight memory from billions of parameters and bits per parameter.
+  description: Estimates resident model-weight memory from billions of parameters, bits per parameter, and runtime overhead.
   limitations:
-    - ignores metadata, alignment, tokenizer, runtime overhead, and adapters
+    - overhead factor is a coarse runtime residency allowance
     - assumes decimal gigabytes and one byte equals eight bits
   confidence: medium
 
@@ -119,4 +120,46 @@
   limitations:
     - architecture-specific attention variants can reduce KV cache size
     - implementation details and allocation overhead are not modeled
+  confidence: medium
+
+- id: thermal_heat_flux_formula
+  output: thermal.heat_flux_w_cm2
+  formula: "thermal.sustained_w / geometry.surface_area_cm2"
+  inputs:
+    - thermal.sustained_w
+    - geometry.surface_area_cm2
+  units: W/cm2
+  description: Divides sustained thermal load by rectangular-envelope external surface area.
+  limitations:
+    - surface area is not the same as effective heat-spreading or radiating area
+    - does not model hand contact, hotspots, airflow, or skin-temperature limits
+  confidence: low
+
+- id: runtime_total_memory_formula
+  output: runtime.total_runtime_memory_gb
+  formula: "runtime.model_memory_gb + runtime.kv_cache_gb + runtime.multimodal_overhead_gb + runtime.os_reserve_gb + runtime.safety_reserve_gb"
+  inputs:
+    - runtime.model_memory_gb
+    - runtime.kv_cache_gb
+    - runtime.multimodal_overhead_gb
+    - runtime.os_reserve_gb
+    - runtime.safety_reserve_gb
+  units: GB
+  description: Adds resident model memory, KV cache, multimodal overhead, OS reserve, and safety reserve.
+  limitations:
+    - additive screening estimate only
+    - allocator behavior and implementation-specific memory pools are not modeled
+  confidence: medium
+
+- id: runtime_available_memory_margin_formula
+  output: runtime.available_memory_margin_gb
+  formula: "runtime.available_memory_gb - runtime.total_runtime_memory_gb"
+  inputs:
+    - runtime.available_memory_gb
+    - runtime.total_runtime_memory_gb
+  units: GB
+  description: Calculates remaining memory margin after the modeled runtime memory budget.
+  limitations:
+    - does not prove bandwidth, latency, or sustained runtime feasibility
+    - depends on coarse reserve assumptions
   confidence: medium

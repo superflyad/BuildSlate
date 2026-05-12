@@ -36,6 +36,19 @@ BuildSlate's engineering foundation keeps future specs, CAD, simulations, SlateO
 
 
 
+
+## Engineering Coverage Audit
+
+BuildSlate includes a formal coverage and maturity audit before higher-level automation or unified CLI work treats model output as mature engineering evidence.
+
+- `engineering/audit/coverage_registry.yaml` maps engineering domains to coverage status, maturity level, assumptions, known gaps, next evidence, risk, and review priority.
+- `engineering/audit/model_maturity_audit.py` summarizes total domains, status counts, maturity counts, critical/high priorities, weak or missing domains, screening domains, and top evidence needs.
+- `engineering/audit/coverage_gap_report.py` generates `reports/audit/coverage-gap-report.md` with a conservative backend readiness verdict.
+- `validation/validate_coverage_registry.py` checks that the registry has required fields, valid enums, and list-valued evidence fields.
+
+The audit is intentionally conservative: screening and first-order models are useful for finding contradictions and priorities, but they are not proof of buildability, certification, production readiness, or external validation.
+
+
 ## Local AI Runtime Models
 
 BuildSlate includes first-pass local AI runtime screening models in `engineering/runtime_models/`. These scripts estimate model residency, KV cache memory, context scaling, model load time, multimodal overhead, and a combined runtime memory budget.

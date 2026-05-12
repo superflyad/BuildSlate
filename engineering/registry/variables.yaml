@@ -169,7 +169,8 @@
     - geometry.length_mm
     - geometry.width_mm
     - geometry.thickness_mm
-  used_by: []
+  used_by:
+    - thermal.heat_flux_w_cm2
 
 - id: thermal.sustained_w
   name: Sustained Thermal Load
@@ -309,7 +310,9 @@
   depends_on:
     - runtime.model_params_b
     - runtime.quantization_bits
-  used_by: []
+    - runtime.model_overhead_factor
+  used_by:
+    - runtime.total_runtime_memory_gb
 
 - id: runtime.layers
   name: Runtime Layer Count
@@ -385,7 +388,8 @@
     - runtime.context_tokens
     - runtime.batch_size
     - runtime.kv_bytes_per_element
-  used_by: []
+  used_by:
+    - runtime.total_runtime_memory_gb
 
 - id: mass.target_g
   name: Target Mass
@@ -407,4 +411,107 @@
   default_value: null
   confidence: low
   depends_on: []
+  used_by: []
+
+- id: thermal.heat_flux_w_cm2
+  name: Heat Flux
+  units: W/cm2
+  category: thermal
+  description: Sustained heat load divided by rectangular-envelope external surface area.
+  source_type: derived
+  default_value: null
+  confidence: low
+  depends_on:
+    - thermal.sustained_w
+    - geometry.surface_area_cm2
+  used_by: []
+
+- id: runtime.model_overhead_factor
+  name: Model Overhead Factor
+  units: ratio
+  category: runtime
+  description: Runtime overhead multiplier applied to raw quantized model-weight storage.
+  source_type: assumption
+  default_value: 1
+  confidence: low
+  depends_on: []
+  used_by:
+    - runtime.model_memory_gb
+
+- id: runtime.available_memory_gb
+  name: Available Runtime Memory
+  units: GB
+  category: runtime
+  description: Memory available for modeled runtime residency, cache, and reserves.
+  source_type: profile_input
+  default_value: 512
+  confidence: medium
+  depends_on: []
+  used_by:
+    - runtime.available_memory_margin_gb
+
+- id: runtime.multimodal_overhead_gb
+  name: Multimodal Runtime Overhead
+  units: GB
+  category: runtime
+  description: Additive memory allowance for multimodal runtime components.
+  source_type: assumption
+  default_value: 30
+  confidence: low
+  depends_on: []
+  used_by:
+    - runtime.total_runtime_memory_gb
+
+- id: runtime.os_reserve_gb
+  name: OS Memory Reserve
+  units: GB
+  category: runtime
+  description: Additive memory reserve for operating system and background services.
+  source_type: assumption
+  default_value: 16
+  confidence: low
+  depends_on: []
+  used_by:
+    - runtime.total_runtime_memory_gb
+
+- id: runtime.safety_reserve_gb
+  name: Safety Memory Reserve
+  units: GB
+  category: runtime
+  description: Additive safety margin reserved outside modeled runtime usage.
+  source_type: assumption
+  default_value: 32
+  confidence: low
+  depends_on: []
+  used_by:
+    - runtime.total_runtime_memory_gb
+
+- id: runtime.total_runtime_memory_gb
+  name: Total Runtime Memory
+  units: GB
+  category: runtime
+  description: Combined model residency, KV cache, multimodal overhead, OS reserve, and safety reserve.
+  source_type: derived
+  default_value: null
+  confidence: medium
+  depends_on:
+    - runtime.model_memory_gb
+    - runtime.kv_cache_gb
+    - runtime.multimodal_overhead_gb
+    - runtime.os_reserve_gb
+    - runtime.safety_reserve_gb
+  used_by:
+    - runtime.available_memory_margin_gb
+
+- id: runtime.available_memory_margin_gb
+  name: Available Memory Margin
+  units: GB
+  category: runtime
+  description: Remaining memory after subtracting total runtime memory from available memory.
+  source_type: derived
+  default_value: null
+  confidence: medium
+  depends_on:
+    - runtime.available_memory_gb
+    - runtime.total_runtime_memory_gb
   used_by: []

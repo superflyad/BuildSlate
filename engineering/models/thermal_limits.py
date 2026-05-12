@@ -4,12 +4,19 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 from typing import Any
 
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from engineering.core.calculator import Calculator
+from engineering.core.explanation_engine import ExplanationEngine
+
 THERMAL_CONSTANTS_PATH = REPO_ROOT / "engineering" / "constants" / "thermal.yaml"
 
 
@@ -34,15 +41,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--width-mm", type=positive_float, default=95.0)
     parser.add_argument("--thickness-mm", type=positive_float, default=8.8)
     parser.add_argument("--sustained-w", type=positive_float, default=28.0)
+    parser.add_argument("--explain", action="store_true", help="Print centralized thermal calculation explanations")
     return parser.parse_args()
 
 
-def rectangular_surface_area_cm2(length_mm: float, width_mm: float, thickness_mm: float) -> float:
-    return 2 * (length_mm * width_mm + length_mm * thickness_mm + width_mm * thickness_mm) / 100
-
-
-def rectangular_volume_cm3(length_mm: float, width_mm: float, thickness_mm: float) -> float:
-    return length_mm * width_mm * thickness_mm / 1000
+def core_inputs(args: argparse.Namespace) -> dict[str, float]:
+    return {
+        "geometry.length_mm": args.length_mm,
+        "geometry.width_mm": args.width_mm,
+        "geometry.thickness_mm": args.thickness_mm,
+        "thermal.sustained_w": args.sustained_w,
+    }
 
 
 def classify_risk(heat_density_w_cm3: float, thresholds: dict[str, float]) -> str:
@@ -61,10 +70,12 @@ def main() -> int:
     thresholds = constants["thermal_risk_heat_density_w_cm3"]
     pocket_reference = constants["passive_sustained_power_w"]["pocket_device"]
 
-    volume_cm3 = rectangular_volume_cm3(args.length_mm, args.width_mm, args.thickness_mm)
-    surface_area_cm2 = rectangular_surface_area_cm2(args.length_mm, args.width_mm, args.thickness_mm)
-    heat_density_w_cm3 = args.sustained_w / volume_cm3
-    heat_flux_w_cm2 = args.sustained_w / surface_area_cm2
+    calculator = Calculator()
+    inputs = core_inputs(args)
+    volume_cm3 = calculator.compute("geometry.volume_cm3", inputs)
+    surface_area_cm2 = calculator.compute("geometry.surface_area_cm2", inputs)
+    heat_density_w_cm3 = calculator.compute("thermal.heat_density_w_cm3", inputs)
+    heat_flux_w_cm2 = calculator.compute("thermal.heat_flux_w_cm2", inputs)
     risk = classify_risk(heat_density_w_cm3, thresholds)
 
     print("Thermal limits estimate")
@@ -92,6 +103,11 @@ def main() -> int:
     for profile, watts in pocket_reference.items():
         print(f"    {profile}: {watts}")
     print(f"  risk: {risk}")
+    if args.explain:
+        explanation_engine = ExplanationEngine()
+        print("explanation:")
+        print(explanation_engine.explain("thermal.heat_density_w_cm3", inputs))
+        print(explanation_engine.explain("thermal.heat_flux_w_cm2", inputs))
     print("confidence: low")
     print("basis: estimated")
     print("primary blocker: thermal stack design, contact conditions, ambient temperature, controls, and measured skin temperature")

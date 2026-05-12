@@ -39,3 +39,26 @@ class DependencyGraph:
 
     def get_formula(self, variable: str) -> dict[str, Any] | None:
         return self.formula_by_output.get(variable)
+
+    def resolve_dependencies(self, variable: str) -> list[str]:
+        """Return transitive formula dependencies in dependency-first order."""
+        resolved: list[str] = []
+        visiting: set[str] = set()
+        visited: set[str] = set()
+
+        def visit(current: str) -> None:
+            if current in visiting:
+                cycle = " -> ".join([*visiting, current])
+                raise ValueError(f"dependency cycle detected while resolving {variable}: {cycle}")
+            if current in visited:
+                return
+            visiting.add(current)
+            for input_id in self.get_inputs(current):
+                visit(input_id)
+                if input_id not in resolved:
+                    resolved.append(input_id)
+            visiting.remove(current)
+            visited.add(current)
+
+        visit(variable)
+        return resolved

@@ -4,6 +4,15 @@
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from engineering.core.calculator import Calculator
+from engineering.core.explanation_engine import ExplanationEngine
 
 
 def classify_density(watts_per_cm3: float) -> str:
@@ -22,13 +31,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--width-mm", type=float, default=95.0)
     parser.add_argument("--thickness-mm", type=float, default=8.8)
     parser.add_argument("--sustained-watts", type=float, default=28.0)
+    parser.add_argument("--explain", action="store_true", help="Print centralized thermal density calculation explanation")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    volume_cm3 = args.length_mm * args.width_mm * args.thickness_mm / 1000
-    watts_per_cm3 = args.sustained_watts / volume_cm3
+    inputs = {
+        "geometry.length_mm": args.length_mm,
+        "geometry.width_mm": args.width_mm,
+        "geometry.thickness_mm": args.thickness_mm,
+        "thermal.sustained_w": args.sustained_watts,
+    }
+    calculator = Calculator()
+    volume_cm3 = calculator.compute("geometry.volume_cm3", inputs)
+    watts_per_cm3 = calculator.compute("thermal.heat_density_w_cm3", inputs)
     risk = classify_density(watts_per_cm3)
 
     print("Thermal density estimate")
@@ -37,6 +54,9 @@ def main() -> int:
     print(f"  sustained power: {args.sustained_watts:.2f} W")
     print(f"  heat density: {watts_per_cm3:.3f} W/cm^3")
     print(f"  risk classification: {risk}")
+    if args.explain:
+        print("  explanation:")
+        print(ExplanationEngine().explain("thermal.heat_density_w_cm3", inputs))
     return 0
 
 

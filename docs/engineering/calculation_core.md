@@ -54,6 +54,12 @@ battery.energy_wh
 = 23.1 Wh
 ```
 
+## First Model Integration
+
+`engineering/models/battery_energy.py` is the first legacy engineering model routed through the centralized calculation core. The script keeps its existing CLI inputs, assumptions, conservative/nominal/aggressive output structure, and text-oriented report format while using registered core formulas for shared battery energy arithmetic.
+
+Existing scripts are being migrated gradually. Model behavior should remain stable during migration, with arithmetic moving toward centralized formulas, variable ids, units, and explanation output where that provides clearer reuse and auditability.
+
 ## Future extensibility
 
 The calculation core is structured so future work can add:

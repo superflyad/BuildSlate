@@ -160,7 +160,7 @@ Explain a registered calculation with:
 python engineering/core/explanation_engine.py --compute battery.energy_wh
 ```
 
-The centralized engine is intentionally simple and additive: existing model scripts, sweeps, constraints, tradeoff maps, audits, and validation checks continue to coexist while shared formulas and dependencies are introduced. See `docs/engineering/calculation_core.md` for details.
+The centralized engine is intentionally simple and additive: existing model scripts, sweeps, constraints, tradeoff maps, audits, and validation checks continue to coexist while shared formulas and dependencies are introduced. `engineering/models/battery_energy.py` now uses the core for shared battery energy arithmetic, and `validation/validate_calculation_core_integration.py` checks that model/core integration stays intact. See `docs/engineering/calculation_core.md` for details.
 
 ## Configurable Device Profiles
 

@@ -1,0 +1,122 @@
+- id: battery_energy_formula
+  output: battery.energy_wh
+  formula: "(battery.capacity_mah / 1000) * battery.nominal_voltage_v"
+  inputs:
+    - battery.capacity_mah
+    - battery.nominal_voltage_v
+  units: Wh
+  description: Converts battery capacity and nominal voltage into total nominal energy.
+  limitations:
+    - ignores discharge curve
+    - ignores aging
+    - ignores reserve margins
+  confidence: medium
+
+- id: battery_usable_energy_formula
+  output: battery.usable_wh
+  formula: "battery.energy_wh * battery.usable_factor"
+  inputs:
+    - battery.energy_wh
+    - battery.usable_factor
+  units: Wh
+  description: Applies a usable-capacity factor to nominal battery energy.
+  limitations:
+    - usable factor is a coarse assumption
+    - ignores workload-specific discharge behavior
+  confidence: low
+
+- id: battery_runtime_formula
+  output: battery.runtime_h
+  formula: "battery.usable_wh / compute.sustained_power_w"
+  inputs:
+    - battery.usable_wh
+    - compute.sustained_power_w
+  units: h
+  description: Estimates runtime from usable battery energy and sustained compute power.
+  limitations:
+    - ignores display, radios, sensors, regulators, and background system load
+    - assumes constant sustained power
+  confidence: low
+
+- id: battery_mass_formula
+  output: battery.mass_g
+  formula: "(battery.energy_wh / battery.gravimetric_energy_density_wh_per_kg) * 1000"
+  inputs:
+    - battery.energy_wh
+    - battery.gravimetric_energy_density_wh_per_kg
+  units: g
+  description: Estimates battery pack mass from energy and gravimetric energy density.
+  limitations:
+    - pack-level density varies by cell format and packaging
+    - ignores swelling margin and mechanical supports
+  confidence: low
+
+- id: geometry_volume_formula
+  output: geometry.volume_cm3
+  formula: "(geometry.length_mm * geometry.width_mm * geometry.thickness_mm) / 1000"
+  inputs:
+    - geometry.length_mm
+    - geometry.width_mm
+    - geometry.thickness_mm
+  units: cm3
+  description: Converts rectangular device envelope volume from mm3 to cm3.
+  limitations:
+    - treats the body as a rectangular prism
+    - ignores corner radii, camera islands, and internal keepouts
+  confidence: medium
+
+- id: geometry_surface_area_formula
+  output: geometry.surface_area_cm2
+  formula: "2 * ((geometry.length_mm * geometry.width_mm) + (geometry.length_mm * geometry.thickness_mm) + (geometry.width_mm * geometry.thickness_mm)) / 100"
+  inputs:
+    - geometry.length_mm
+    - geometry.width_mm
+    - geometry.thickness_mm
+  units: cm2
+  description: Estimates rectangular-envelope external surface area from dimensions.
+  limitations:
+    - treats the body as a rectangular prism
+    - does not model hand contact or covered surfaces
+  confidence: medium
+
+- id: thermal_heat_density_formula
+  output: thermal.heat_density_w_cm3
+  formula: "thermal.sustained_w / geometry.volume_cm3"
+  inputs:
+    - thermal.sustained_w
+    - geometry.volume_cm3
+  units: W/cm3
+  description: Divides sustained thermal load by rectangular-envelope volume.
+  limitations:
+    - does not model heat spreading or local hotspots
+    - uses volume as a coarse screening denominator
+  confidence: low
+
+- id: runtime_model_memory_formula
+  output: runtime.model_memory_gb
+  formula: "runtime.model_params_b * runtime.quantization_bits / 8"
+  inputs:
+    - runtime.model_params_b
+    - runtime.quantization_bits
+  units: GB
+  description: Estimates model-weight memory from billions of parameters and bits per parameter.
+  limitations:
+    - ignores metadata, alignment, tokenizer, runtime overhead, and adapters
+    - assumes decimal gigabytes and one byte equals eight bits
+  confidence: medium
+
+- id: runtime_kv_cache_formula
+  output: runtime.kv_cache_gb
+  formula: "(2 * runtime.layers * runtime.hidden_size * runtime.context_tokens * runtime.batch_size * runtime.kv_bytes_per_element) / 1000000000"
+  inputs:
+    - runtime.layers
+    - runtime.hidden_size
+    - runtime.context_tokens
+    - runtime.batch_size
+    - runtime.kv_bytes_per_element
+  units: GB
+  description: Estimates transformer KV cache memory using keys-plus-values dense cache arithmetic.
+  limitations:
+    - architecture-specific attention variants can reduce KV cache size
+    - implementation details and allocation overhead are not modeled
+  confidence: medium

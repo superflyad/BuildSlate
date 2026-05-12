@@ -1,0 +1,131 @@
+- id: mm
+  name: millimeter
+  dimension: length
+  normalized_symbol: mm
+  description: One thousandth of a meter.
+
+- id: cm3
+  name: cubic centimeter
+  dimension: volume
+  normalized_symbol: cm3
+  description: Volume unit used for compact device envelope estimates.
+
+- id: cm2
+  name: square centimeter
+  dimension: area
+  normalized_symbol: cm2
+  description: Area unit used for device surface estimates.
+
+- id: g
+  name: gram
+  dimension: mass
+  normalized_symbol: g
+  description: Mass unit used for component and device estimates.
+
+- id: kg
+  name: kilogram
+  dimension: mass
+  normalized_symbol: kg
+  description: SI base mass unit.
+
+- id: Wh
+  name: watt-hour
+  dimension: energy
+  normalized_symbol: Wh
+  description: Energy unit used for battery capacity.
+
+- id: W
+  name: watt
+  dimension: power
+  normalized_symbol: W
+  description: Power unit used for compute and thermal loads.
+
+- id: h
+  name: hour
+  dimension: time
+  normalized_symbol: h
+  description: Runtime unit for first-pass battery estimates.
+
+- id: GB
+  name: gigabyte
+  dimension: digital_storage
+  normalized_symbol: GB
+  description: Decimal gigabyte used for memory screening.
+
+- id: TOPS
+  name: tera operations per second
+  dimension: compute_throughput
+  normalized_symbol: TOPS
+  description: Nominal neural compute throughput unit.
+
+- id: C
+  name: degrees Celsius
+  dimension: temperature
+  normalized_symbol: C
+  description: Temperature unit for skin and thermal screening.
+
+- id: mAh
+  name: milliamp-hour
+  dimension: electric_charge_capacity
+  normalized_symbol: mAh
+  description: Common battery capacity label used with nominal voltage to estimate Wh.
+
+- id: V
+  name: volt
+  dimension: electric_potential
+  normalized_symbol: V
+  description: Electrical potential unit used in battery energy calculations.
+
+- id: ratio
+  name: ratio
+  dimension: dimensionless
+  normalized_symbol: ratio
+  description: Dimensionless multiplier or fraction.
+
+- id: Wh/kg
+  name: watt-hours per kilogram
+  dimension: specific_energy
+  normalized_symbol: Wh/kg
+  description: Gravimetric battery energy density unit.
+
+- id: W/cm3
+  name: watts per cubic centimeter
+  dimension: power_density
+  normalized_symbol: W/cm3
+  description: Volumetric heat-density screening unit.
+
+- id: GB/s
+  name: gigabytes per second
+  dimension: bandwidth
+  normalized_symbol: GB/s
+  description: Memory bandwidth unit.
+
+- id: count
+  name: count
+  dimension: dimensionless
+  normalized_symbol: count
+  description: Unitless count of packages, layers, or batches.
+
+- id: bits
+  name: bits
+  dimension: digital_storage
+  normalized_symbol: bits
+  description: Bit count used for quantization precision.
+
+- id: bytes
+  name: bytes
+  dimension: digital_storage
+  normalized_symbol: bytes
+  description: Byte count used for cache element sizing.
+
+- id: tokens
+  name: tokens
+  dimension: text_sequence_length
+  normalized_symbol: tokens
+  description: Token count used for context-window sizing.
+
+- id: B parameters
+  name: billion parameters
+  dimension: model_size
+  normalized_symbol: B parameters
+  description: Billions of model parameters for runtime sizing.

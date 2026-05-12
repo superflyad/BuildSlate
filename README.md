@@ -144,6 +144,24 @@ BuildSlate now separates hardware vocabulary, constants, formulas, and interpret
 - `docs/engineering/` explains how to interpret the model outputs and why no material, battery, chassis, or cooling decision should be treated as universally best.
 - Future design changes to thickness, chassis material, battery size, cooling strategy, or packaging must use these definitions before claiming feasibility.
 
+## Centralized Calculation Core
+
+BuildSlate includes an additive centralized calculation core for reusable engineering variables, formulas, dependencies, units, and explanations. The core lives in `engineering/core/`, while normalized variable, formula, and unit registries live in `engineering/registry/`.
+
+Compute a registered variable with:
+
+```bash
+python engineering/core/calculator.py --set battery.capacity_mah=6000 --set battery.nominal_voltage_v=3.85 --compute battery.energy_wh
+```
+
+Explain a registered calculation with:
+
+```bash
+python engineering/core/explanation_engine.py --compute battery.energy_wh
+```
+
+The centralized engine is intentionally simple and additive: existing model scripts, sweeps, constraints, tradeoff maps, audits, and validation checks continue to coexist while shared formulas and dependencies are introduced. See `docs/engineering/calculation_core.md` for details.
+
 ## Configurable Device Profiles
 
 BuildSlate supports profile-specific screening through YAML device profiles in `configs/devices/`. Profiles are structured inputs, not optimized answers: they define Slate hardware assumptions and run those values through the existing engineering validation and model scripts.

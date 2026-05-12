@@ -1,0 +1,415 @@
+# BuildSlate engineering coverage and maturity registry.
+# Status enums: covered, partial, weak, missing.
+# Maturity enums: screening, first_order, calibrated, validated.
+# Review priority enums: low, medium, high, critical.
+entries:
+  - domain: battery_energy
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/models/battery_energy.py, engineering/component_models/battery_pack.py]
+    data_sources: [engineering/constants/battery.yaml, engineering/provenance/constants_provenance.yaml, specs/slate-pocket-v1.yaml]
+    key_assumptions: Battery capacity and usable energy are estimated from declared pack capacity, nominal voltage, discharge reserve, and package efficiency.
+    known_gaps: [No supplier cell curve, no measured discharge profile, no aged-cell derating data]
+    required_next_evidence: [Cell datasheet with nominal and minimum voltage, prototype runtime discharge logs, reserve and safety derating rationale]
+    risk_if_wrong: Runtime and mass targets may be overstated, causing thermal and packaging budgets to look feasible when they are not.
+    review_priority: high
+  - domain: battery_volume
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/component_models/battery_pack.py, engineering/models/component_packaging.py]
+    data_sources: [engineering/constants/battery.yaml, engineering/components/component_library.yaml]
+    key_assumptions: Volumetric energy density is represented by conservative range constants rather than a selected cell and pack construction.
+    known_gaps: [No pouch cell dimensions, no tab and protection-board allowance, no adhesive and enclosure clearance model]
+    required_next_evidence: [Candidate cell mechanical drawings, pack CAD envelope, supplier volumetric energy density at target capacity]
+    risk_if_wrong: Battery may consume more z-height or area than expected and crowd display, PCB, camera, or thermal paths.
+    review_priority: high
+  - domain: battery_mass
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/models/component_mass_budget.py, engineering/component_models/battery_pack.py]
+    data_sources: [engineering/constants/battery.yaml, engineering/components/component_library.yaml]
+    key_assumptions: Gravimetric energy density and packaging overhead are estimated from generic ranges.
+    known_gaps: [No cell mass from selected vendor, no battery management hardware mass, no adhesive and restraint mass]
+    required_next_evidence: [Candidate cell mass, pack assembly mass breakdown, prototype weighed pack]
+    risk_if_wrong: Device weight and center-of-mass estimates may be optimistic.
+    review_priority: medium
+  - domain: battery_swelling
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/manufacturing_models/battery_swelling.py]
+    data_sources: [engineering/constants/battery.yaml]
+    key_assumptions: Swelling allowance is treated as a required mechanical clearance based on screening factors.
+    known_gaps: [No cycle-life swelling curve, no temperature-dependent swelling data, no compression fixture model]
+    required_next_evidence: [Cell swelling specification over cycle life, mechanical clearance CAD review, abuse and thermal storage validation plan]
+    risk_if_wrong: Swelling may load the display, delaminate adhesive, or compromise enclosure safety.
+    review_priority: critical
+  - domain: display_geometry
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/component_models/display_module.py, engineering/models/surface_area.py]
+    data_sources: [specs/slate-pocket-v1.yaml, engineering/components/component_library.yaml]
+    key_assumptions: Display area, aspect ratio, and active module dimensions are derived from target size and geometry.
+    known_gaps: [No panel vendor outline drawing, no bezel stack detail, no connector and driver placement]
+    required_next_evidence: [Panel mechanical drawing, cover-glass and bezel CAD stack, FPC routing constraints]
+    risk_if_wrong: Active display and enclosure dimensions may conflict with usable internal layout.
+    review_priority: medium
+  - domain: display_power
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/component_models/display_module.py, engineering/environment_models/sunlight_display_load.py]
+    data_sources: [engineering/components/component_library.yaml, engineering/constants/thermal.yaml]
+    key_assumptions: Display load is estimated from coarse brightness and environmental pressure assumptions.
+    known_gaps: [No panel power-vs-nits curve, no refresh-rate power curve, no measured sunlight mode behavior]
+    required_next_evidence: [Panel electrical datasheet, display power measurements across brightness and refresh rates, sunlight readability target]
+    risk_if_wrong: Runtime and thermal budgets may understate display-dominated loads.
+    review_priority: high
+  - domain: soc_power_density
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/component_models/soc_package.py, engineering/models/thermal_limits.py]
+    data_sources: [engineering/constants/compute.yaml, engineering/constants/thermal.yaml]
+    key_assumptions: SoC heat flux is estimated from sustained power and package area ranges.
+    known_gaps: [No selected SoC package drawing, no measured sustained power, no die hotspot map]
+    required_next_evidence: [SoC package specification, sustained workload power telemetry, thermal sensor hotspot data]
+    risk_if_wrong: Thermal solution may be undersized or package adjacency may be invalid.
+    review_priority: critical
+  - domain: npu_sustained_performance
+    coverage_status: weak
+    maturity_level: screening
+    models: [engineering/component_models/soc_package.py]
+    data_sources: [engineering/constants/compute.yaml]
+    key_assumptions: Sustained AI capability is inferred from power and package pressure, not benchmarked throughput.
+    known_gaps: [No tokens-per-second model, no NPU compiler/runtime constraints, no thermal throttling curve]
+    required_next_evidence: [Vendor NPU sustained benchmark, runtime kernel support matrix, long-duration inference telemetry]
+    risk_if_wrong: Local AI performance claims may exceed realistic sustained behavior.
+    review_priority: critical
+  - domain: memory_capacity
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/runtime_models/runtime_memory_budget.py, engineering/runtime_models/model_residency.py]
+    data_sources: [specs/slate-pocket-v1.yaml, engineering/constants/compute.yaml]
+    key_assumptions: Memory capacity is screened against model residency, OS reserve, multimodal overhead, and safety reserve.
+    known_gaps: [No real runtime allocator traces, no model-specific fragmentation data, no concurrent app workload profile]
+    required_next_evidence: [Runtime memory traces, target model bill of materials, OS and app memory telemetry]
+    risk_if_wrong: Claimed local model sizes or multitasking targets may not fit in RAM.
+    review_priority: high
+  - domain: memory_package_density
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/component_models/memory_package.py, engineering/interconnect_models/package_interconnect.py]
+    data_sources: [engineering/components/component_library.yaml, engineering/constants/compute.yaml]
+    key_assumptions: Package area and density use generic LPDDR/package assumptions.
+    known_gaps: [No selected memory part, no package-on-package constraints, no thermal coupling to SoC]
+    required_next_evidence: [Memory package datasheet, selected SoC memory topology, board placement study]
+    risk_if_wrong: Board area, stack height, and routing feasibility may be overstated.
+    review_priority: high
+  - domain: memory_bandwidth
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/interconnect_models/memory_bandwidth.py]
+    data_sources: [engineering/constants/compute.yaml]
+    key_assumptions: Bandwidth pressure is estimated from model size and workload class rather than validated kernel traces.
+    known_gaps: [No measured bandwidth utilization, no cache behavior, no model-specific prefill/decode split]
+    required_next_evidence: [Runtime bandwidth profiling, memory subsystem datasheet, model-specific throughput characterization]
+    risk_if_wrong: Performance bottlenecks may be misattributed to compute instead of memory bandwidth.
+    review_priority: high
+  - domain: kv_cache_memory
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/runtime_models/kv_cache.py, engineering/runtime_models/context_scaling.py]
+    data_sources: [engineering/constants/compute.yaml]
+    key_assumptions: KV cache is computed from model dimensions, context length, precision, and batch assumptions.
+    known_gaps: [No vendor-specific attention implementation, no paged-cache overhead, no multimodal token expansion trace]
+    required_next_evidence: [Target runtime KV allocation traces, supported context policy, model architecture metadata]
+    risk_if_wrong: Long-context local AI claims may exceed available memory.
+    review_priority: high
+  - domain: storage_power
+    coverage_status: weak
+    maturity_level: screening
+    models: [engineering/component_models/storage_package.py, engineering/models/component_power_budget.py]
+    data_sources: [engineering/components/component_library.yaml]
+    key_assumptions: Storage power is represented as a coarse component budget rather than workload-specific NAND/UFS behavior.
+    known_gaps: [No selected storage datasheet, no read/write duty cycle, no thermal throttling data]
+    required_next_evidence: [Storage electrical datasheet, model-load read profile, write endurance and thermal profile]
+    risk_if_wrong: Model load time, thermal spikes, and battery drain may be underestimated.
+    review_priority: medium
+  - domain: storage_package_density
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/component_models/storage_package.py, engineering/models/component_packaging.py]
+    data_sources: [engineering/components/component_library.yaml]
+    key_assumptions: Package footprint and capacity density are estimated from generic component classes.
+    known_gaps: [No selected package outline, no board keep-out, no thermal and shielding allowance]
+    required_next_evidence: [Storage package drawing, PCB placement study, supplier capacity-package options]
+    risk_if_wrong: Storage may crowd routing, thermal spreaders, or camera/antenna zones.
+    review_priority: medium
+  - domain: pcb_area_pressure
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/component_models/pcb_stack.py, engineering/models/component_packaging.py]
+    data_sources: [engineering/components/component_library.yaml]
+    key_assumptions: PCB pressure is estimated from component footprints and available board area.
+    known_gaps: [No actual board outline, no keep-outs, no connector/fastener/test-point placement]
+    required_next_evidence: [Preliminary PCB floorplan, connector and keep-out map, DFM feedback]
+    risk_if_wrong: Internal packaging may require thickness, footprint, or feature tradeoffs.
+    review_priority: high
+  - domain: pcb_layer_count
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/component_models/pcb_stack.py]
+    data_sources: [engineering/components/component_library.yaml]
+    key_assumptions: Layer count is inferred from complexity class and high-speed routing pressure.
+    known_gaps: [No stackup from PCB vendor, no impedance control plan, no via structure definition]
+    required_next_evidence: [Board stackup proposal, impedance and HDI design rules, fabricator capability review]
+    risk_if_wrong: Board thickness, cost, yield, and routing feasibility may be misestimated.
+    review_priority: high
+  - domain: routing_density
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/interconnect_models/routing_density.py]
+    data_sources: [engineering/components/component_library.yaml]
+    key_assumptions: Routing demand is estimated from component class, bus complexity, and board area.
+    known_gaps: [No netlist, no pin map, no HDI via strategy, no antenna isolation constraints]
+    required_next_evidence: [Preliminary netlist and pin map, PCB layout feasibility study, SI/PI constraint definition]
+    risk_if_wrong: The design may require more layers or area than budgeted.
+    review_priority: critical
+  - domain: power_delivery
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/interconnect_models/power_delivery.py]
+    data_sources: [engineering/constants/compute.yaml, engineering/components/component_library.yaml]
+    key_assumptions: Current and regulator pressure are estimated from sustained load assumptions.
+    known_gaps: [No PMIC selection, no rail map, no transient workload data, no inductor/capacitor placement]
+    required_next_evidence: [Power tree design, PMIC datasheet, measured load transients, rail efficiency model]
+    risk_if_wrong: Brownouts, efficiency losses, or thermal hotspots may invalidate sustained workload claims.
+    review_priority: critical
+  - domain: power_integrity
+    coverage_status: weak
+    maturity_level: screening
+    models: [engineering/interconnect_models/power_integrity.py]
+    data_sources: [engineering/constants/compute.yaml]
+    key_assumptions: Voltage droop and transient margin are coarse screens without board parasitics.
+    known_gaps: [No PDN impedance model, no decoupling placement, no load-step measurement, no package parasitics]
+    required_next_evidence: [PDN simulation, oscilloscope load-step validation, decoupling BOM and placement review]
+    risk_if_wrong: Sustained and burst AI loads may be unstable even if average power appears acceptable.
+    review_priority: critical
+  - domain: thermal_density
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/models/thermal_limits.py, engineering/component_models/thermal_module.py]
+    data_sources: [engineering/constants/thermal.yaml]
+    key_assumptions: Heat density is screened against device area, sustained power, and generic dissipation ranges.
+    known_gaps: [No CFD/FEA, no measured enclosure temperatures, no workload power distribution]
+    required_next_evidence: [Thermal simulation, prototype thermocouple map, sustained workload power profile]
+    risk_if_wrong: Skin temperature and throttling behavior may be materially worse than predicted.
+    review_priority: critical
+  - domain: thermal_resistance
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/component_models/thermal_resistance_network.py]
+    data_sources: [engineering/constants/thermal.yaml, engineering/constants/materials.yaml]
+    key_assumptions: Heat path resistance is modeled with a lumped first-order resistance network.
+    known_gaps: [No geometry-specific spreading resistance, no measured interface pressure, no 3D boundary conditions]
+    required_next_evidence: [FEA model, measured heat path resistance, material stack test coupon]
+    risk_if_wrong: SoC hotspot and skin temperature margins may be overconfident.
+    review_priority: critical
+  - domain: thermal_contact_resistance
+    coverage_status: weak
+    maturity_level: screening
+    models: [engineering/component_models/thermal_resistance_network.py]
+    data_sources: [engineering/constants/thermal.yaml]
+    key_assumptions: Contact resistance is represented by placeholder interface assumptions.
+    known_gaps: [No TIM selection, no pressure map, no flatness tolerance, no aging behavior]
+    required_next_evidence: [TIM datasheet, compression and flatness study, heat-flow coupon test]
+    risk_if_wrong: Real heat transfer may be much worse than the thermal stack estimate.
+    review_priority: critical
+  - domain: skin_temperature
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/environment_models/ambient_temperature.py, engineering/environment_models/hand_contact.py, engineering/environment_models/thermal_throttle_policy.py]
+    data_sources: [engineering/constants/thermal.yaml]
+    key_assumptions: Skin margin is inferred from ambient, contact condition, and sustained power screening.
+    known_gaps: [No IEC/UL compliance mapping, no measured exterior temperature map, no user-grip variability]
+    required_next_evidence: [Skin temperature measurement protocol, compliance requirement mapping, hot-ambient prototype test]
+    risk_if_wrong: User comfort or safety limits may force lower sustained performance.
+    review_priority: critical
+  - domain: vapor_chamber_behavior
+    coverage_status: weak
+    maturity_level: screening
+    models: [engineering/component_models/thermal_module.py]
+    data_sources: [engineering/constants/thermal.yaml]
+    key_assumptions: Vapor chamber contribution is treated as a generic spreader improvement.
+    known_gaps: [No vendor vapor chamber curve, no orientation and wick limits, no local heat input validation]
+    required_next_evidence: [Vapor chamber vendor datasheet, orientation and load tests, integration thickness study]
+    risk_if_wrong: Thermal spreading may not meet sustained SoC load requirements.
+    review_priority: high
+  - domain: graphite_anisotropy
+    coverage_status: weak
+    maturity_level: screening
+    models: [engineering/component_models/thermal_module.py, engineering/models/material_compare.py]
+    data_sources: [engineering/constants/materials.yaml, engineering/constants/thermal.yaml]
+    key_assumptions: Graphite is modeled with coarse directional conductivity assumptions.
+    known_gaps: [No selected graphite grade, no bend/cut degradation, no adhesive/interface penalty]
+    required_next_evidence: [Graphite datasheet with in-plane and through-plane conductivity, laminated coupon test, CAD routing constraints]
+    risk_if_wrong: Heat may not spread in the intended direction or across interfaces.
+    review_priority: high
+  - domain: chassis_materials
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/models/material_screen.py, engineering/models/material_compare.py]
+    data_sources: [engineering/constants/materials.yaml, engineering/ontology/material_taxonomy.yaml]
+    key_assumptions: Materials are compared by density, stiffness proxy, thermal behavior, and RF tradeoffs.
+    known_gaps: [No exact alloy/polymer grades, no finish/coating stack, no drop and torsion simulation]
+    required_next_evidence: [Candidate material datasheets, mechanical FEA, prototype coupon testing]
+    risk_if_wrong: Mass, stiffness, thermal spreading, and RF behavior may not match design assumptions.
+    review_priority: high
+  - domain: composite_chassis
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/models/composite_chassis.py]
+    data_sources: [engineering/constants/materials.yaml]
+    key_assumptions: Mixed metal/composite construction is approximated by area fractions and simple conduction proxies.
+    known_gaps: [No joint model, no manufacturing process, no RF/mechanical coupon data, no repair impact]
+    required_next_evidence: [Composite-metal joint design, supplier manufacturing review, RF and mechanical test coupons]
+    risk_if_wrong: Hybrid chassis may create durability, thermal, RF, or production risks not visible in scalar estimates.
+    review_priority: high
+  - domain: rf_antenna_windows
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/component_models/antenna_rf.py, engineering/models/composite_chassis.py]
+    data_sources: [engineering/constants/materials.yaml, engineering/components/component_library.yaml]
+    key_assumptions: RF-friendly area is represented by material zones and coarse obstruction rules.
+    known_gaps: [No antenna design, no carrier band targets, no SAR coexistence analysis, no chamber data]
+    required_next_evidence: [Antenna architecture, RF simulation, anechoic chamber plan, SAR and coexistence requirements]
+    risk_if_wrong: Connectivity, regulatory, and industrial design goals may conflict.
+    review_priority: critical
+  - domain: wireless_charging
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/component_models/wireless_charging.py, engineering/environment_models/charging_overlap.py]
+    data_sources: [engineering/components/component_library.yaml, engineering/constants/thermal.yaml]
+    key_assumptions: Coil area, alignment, heat, and charging overlap are screened with generic assumptions.
+    known_gaps: [No coil design, no Qi compliance plan, no ferrite/shield stack, no charge-plus-AI thermal test]
+    required_next_evidence: [Wireless charging coil and shield design, compliance target, measured charging thermal map]
+    risk_if_wrong: Wireless charging may be inefficient, hot, or incompatible with internal stackup.
+    review_priority: high
+  - domain: camera_z_height
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/component_models/camera_system.py, engineering/component_models/zone_stackup.py]
+    data_sources: [engineering/components/component_library.yaml]
+    key_assumptions: Camera height is estimated from generic module z-height and local stack constraints.
+    known_gaps: [No camera module selection, no OIS/focus clearance, no cover-glass and bump design]
+    required_next_evidence: [Camera module drawing, optical stack design, local enclosure CAD section]
+    risk_if_wrong: Camera may force a bump, thicker chassis, or local component relocation.
+    review_priority: high
+  - domain: lateral_camera_path
+    coverage_status: weak
+    maturity_level: screening
+    models: [engineering/component_models/camera_system.py]
+    data_sources: [engineering/components/component_library.yaml]
+    key_assumptions: Lateral keep-out is only approximated from module footprint and placement pressure.
+    known_gaps: [No optical path model, no lens field-of-view clearance, no board/cable route]
+    required_next_evidence: [Camera optical path CAD, FPC route study, mechanical keep-out review]
+    risk_if_wrong: Camera placement may conflict with PCB, battery, antenna, or enclosure features.
+    review_priority: medium
+  - domain: structural_stackup
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/component_models/structural_stackup.py, engineering/component_models/zone_stackup.py]
+    data_sources: [specs/slate-pocket-v1.yaml, engineering/components/component_library.yaml]
+    key_assumptions: Device z-stack is modeled from representative component thicknesses and reserves.
+    known_gaps: [No full CAD, no fasteners/clips, no adhesive tolerances, no local deformation]
+    required_next_evidence: [Cross-section CAD, assembly process stack, tolerance and deformation simulation]
+    risk_if_wrong: Thickness claims may be infeasible in local zones even if global totals fit.
+    review_priority: critical
+  - domain: local_zone_stackup
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/component_models/zone_stackup.py]
+    data_sources: [configs/devices/slate-pocket-v1.yaml, engineering/components/component_library.yaml]
+    key_assumptions: Critical zones are screened independently for local z-height conflicts.
+    known_gaps: [No 3D interference model, no connector and flex allowance, no local structural ribs]
+    required_next_evidence: [Zone-by-zone CAD sections, flex and connector keep-outs, tolerance stack validation]
+    risk_if_wrong: Hidden local conflicts may invalidate a profile that passes average stackup checks.
+    review_priority: critical
+  - domain: manufacturing_tolerance
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/manufacturing_models/tolerance_stackup.py]
+    data_sources: [engineering/components/component_library.yaml]
+    key_assumptions: Tolerance accumulation is approximated from generic component and assembly allowances.
+    known_gaps: [No supplier tolerances, no process capability, no datum scheme, no adhesive thickness variation]
+    required_next_evidence: [Supplier tolerance drawings, datum strategy, process capability assumptions, pilot build measurements]
+    risk_if_wrong: Assemblies may bind, rattle, warp, or fail water/dust/fit requirements.
+    review_priority: high
+  - domain: thermal_expansion
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/manufacturing_models/thermal_expansion.py]
+    data_sources: [engineering/constants/materials.yaml]
+    key_assumptions: CTE mismatch is screened with simple material expansion estimates.
+    known_gaps: [No bonded joint geometry, no adhesive properties, no thermal cycling test data]
+    required_next_evidence: [Material pair CTE data, bonded joint FEA, thermal cycling coupon test]
+    risk_if_wrong: Temperature cycling may cause warping, delamination, or display stress.
+    review_priority: high
+  - domain: repairability
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/manufacturing_models/repairability.py]
+    data_sources: [engineering/components/component_library.yaml]
+    key_assumptions: Repair pressure is inferred from adhesives, battery access, module integration, and assembly complexity.
+    known_gaps: [No service procedure, no fastener/adhesive choices, no parts replacement strategy]
+    required_next_evidence: [Service disassembly plan, adhesive and fastener selection, replacement part modularity review]
+    risk_if_wrong: Field repair cost, safety, and sustainability may be worse than expected.
+    review_priority: medium
+  - domain: yield_risk
+    coverage_status: partial
+    maturity_level: screening
+    models: [engineering/manufacturing_models/yield_risk.py, engineering/manufacturing_models/reliability_hotspots.py]
+    data_sources: [engineering/components/component_library.yaml]
+    key_assumptions: Yield risk is scored from complexity, tolerance, thermal, and integration hotspots.
+    known_gaps: [No process flow, no supplier DFM review, no pilot build defect data]
+    required_next_evidence: [Manufacturing process map, DFM review, pilot build yield and defect pareto]
+    risk_if_wrong: Cost, schedule, and feasibility may be materially underestimated.
+    review_priority: critical
+  - domain: environmental_conditions
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/environment_models/run_all_environment_models.py]
+    data_sources: [engineering/constants/thermal.yaml, docs/engineering/environmental_conditions.md]
+    key_assumptions: Ambient, enclosure, hand-contact, sunlight, and charging overlap are screened as operating conditions.
+    known_gaps: [No climate chamber data, no real user grip distribution, no compliance-specific operating envelope]
+    required_next_evidence: [Environmental test matrix, measured thermal behavior by scenario, explicit operating and throttling policy]
+    risk_if_wrong: The backend may approve profiles that fail in common hot, pocketed, or charging scenarios.
+    review_priority: high
+  - domain: source_provenance
+    coverage_status: partial
+    maturity_level: first_order
+    models: [engineering/provenance/provenance_report.py, validation/validate_provenance.py, validation/validate_source_registry.py]
+    data_sources: [engineering/provenance/constants_provenance.yaml, engineering/assumptions/source_registry.yaml]
+    key_assumptions: Constants and assumptions are visible and classified, but many still need authoritative replacement evidence.
+    known_gaps: [Some constants remain uncited or generic, no automated cross-reference coverage for every model input, no external citation package]
+    required_next_evidence: [Datasheet and reference links for major constants, model-input-to-provenance coverage check, periodic provenance review]
+    risk_if_wrong: Reviewers may find unsupported constants hidden behind apparently precise outputs.
+    review_priority: high
+  - domain: profile_validation
+    coverage_status: covered
+    maturity_level: first_order
+    models: [validation/validate_device_profiles.py, engineering/run_device_profile.py]
+    data_sources: [configs/devices/slate-pocket-v1.yaml]
+    key_assumptions: Profiles are structured inputs checked for schema-like fields and feasibility metadata.
+    known_gaps: [No formal JSON/YAML schema for all profile fields, no unit dimension checker for every numeric input, no optimization feedback loop]
+    required_next_evidence: [Formal profile schema, unit validation expansion, golden profile regression tests]
+    risk_if_wrong: Invalid or inconsistent profiles may pass into downstream model reports.
+    review_priority: medium
+  - domain: feasibility_reporting
+    coverage_status: covered
+    maturity_level: first_order
+    models: [engineering/generate_feasibility_report.py, engineering/run_device_profile.py]
+    data_sources: [reports/slate-pocket-v1-feasibility-report.txt, configs/devices/slate-pocket-v1.yaml]
+    key_assumptions: Reports summarize validations, warnings, and blockers as a screening artifact.
+    known_gaps: [No externally reviewed report template, no evidence attachment workflow, no pass/fail certification boundary]
+    required_next_evidence: [Reviewer-ready report rubric, evidence bundle references, signoff criteria for calibrated or validated claims]
+    risk_if_wrong: Stakeholders may mistake screening output for validation or production readiness.
+    review_priority: high

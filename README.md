@@ -288,13 +288,23 @@ BuildSlate uses conservative feasibility labels to avoid implying that the Slate
 
 ## Current checks
 
-Run the normalized validation and derived-metric scripts from the repository root:
+Run the preferred unified local validation runner from the repository root:
+
+```bash
+python validation/run_all.py
+```
+
+The runner executes the engineering registry, formula, profile, coverage, and dimensional validation checks in one pass. Individual validation and model commands remain available as optional targeted checks when investigating a specific area:
 
 ```bash
 python validation/validate_specs.py
 python validation/validate_calculation_registry.py
 python validation/validate_core_formula_outputs.py
+python validation/validate_calculation_core_integration.py
+python validation/validate_core_formula_migration.py
 python validation/dimensional_constraints.py
+python validation/validate_device_profiles.py
+python validation/validate_coverage_registry.py
 python simulations/derived_metrics/model_memory.py
 python simulations/derived_metrics/model_memory.py --params-billions 70 --quant-bits 4
 python simulations/derived_metrics/battery_runtime.py

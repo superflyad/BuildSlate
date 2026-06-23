@@ -1,0 +1,66 @@
+# First-pass Slate Pocket v1 z-height budget model.
+# Values are screening assumptions in millimeters, not production CAD data.
+device:
+  name: Slate Pocket
+  version: v1
+  thickness_budget_mm: 8.8
+  pass_threshold_percent: 90.0
+  warning_threshold_percent: 100.0
+
+components:
+  - id: display_cover_glass
+    name: Display cover glass
+    thickness_mm: 0.55
+    rationale: Chemically strengthened cover glass allowance for a large pocket display.
+  - id: touch_layer
+    name: Touch layer
+    thickness_mm: 0.15
+    rationale: Touch sensor and optically clear adhesive allowance.
+  - id: oled_stack
+    name: OLED stack
+    thickness_mm: 0.45
+    rationale: Flexible AMOLED emitter, backplane, polarizer, and support film allowance.
+  - id: frame
+    name: Frame
+    thickness_mm: 0.80
+    rationale: Mid-frame, local ribs, keepouts, and structural ledges.
+  - id: battery
+    name: Battery
+    thickness_mm: 3.40
+    rationale: Dual-cell pouch pack allocation including tabs and protection layers.
+  - id: pcb
+    name: PCB
+    thickness_mm: 0.80
+    rationale: HDI logic board and local stiffener allocation.
+  - id: soc_package
+    name: SoC package
+    thickness_mm: 0.60
+    rationale: Mobile application processor package height above board.
+  - id: memory_package
+    name: Memory package
+    thickness_mm: 0.45
+    rationale: Stacked low-power memory package allowance.
+  - id: storage_package
+    name: Storage package
+    thickness_mm: 0.50
+    rationale: High-density storage package allowance.
+  - id: vapor_chamber
+    name: Vapor chamber
+    thickness_mm: 0.35
+    rationale: Thin vapor chamber and graphite interface allowance.
+  - id: wireless_charging_coil
+    name: Wireless charging coil
+    thickness_mm: 0.25
+    rationale: Coil, ferrite, insulation, and adhesive allowance.
+  - id: rear_camera_system
+    name: Rear camera system
+    thickness_mm: 0.70
+    rationale: Folded/lateral optics local z-height contribution within the body target.
+  - id: adhesives
+    name: Adhesives
+    thickness_mm: 0.35
+    rationale: Distributed PSA/OCA/thermal-interface bond line reserve.
+  - id: manufacturing_tolerance_reserve
+    name: Manufacturing tolerance reserve
+    thickness_mm: 0.35
+    rationale: First-pass reserve for part variation, flatness, compression, and assembly stack.

@@ -18,6 +18,7 @@ VALIDATION_CHECKS = (
     "validation/dimensional_constraints.py",
     "validation/validate_device_profiles.py",
     "validation/validate_coverage_registry.py",
+    "validation/validate_cad_envelope_volume_registry.py",
 )
 
 

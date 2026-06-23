@@ -1,0 +1,107 @@
+internal_usable_volume_factor: 0.72
+components:
+  device_envelope:
+    length_mm: 180.0
+    width_mm: 95.0
+    height_mm: 8.8
+    count: 1
+    confidence: estimate
+    notes: External Slate Pocket v1 claimed envelope; used to compute external volume, not allocated component volume.
+  display_stack:
+    length_mm: 170.0
+    width_mm: 85.0
+    height_mm: 1.6
+    count: 1
+    confidence: estimate
+    notes: First-pass cover glass, OLED/touch, polarizer, and display support stack bounding box.
+  battery_pack:
+    length_mm: 135.0
+    width_mm: 72.0
+    height_mm: 4.2
+    count: 1
+    confidence: estimate
+    notes: Thin pouch-cell allowance sized aggressively for a pocket-class AI device.
+  main_pcb:
+    length_mm: 78.0
+    width_mm: 55.0
+    height_mm: 1.2
+    count: 1
+    confidence: estimate
+    notes: Main logic board bounding box before detailed placement, flexes, shields, or connectors.
+  soc_package:
+    length_mm: 18.0
+    width_mm: 18.0
+    height_mm: 1.2
+    count: 1
+    confidence: placeholder
+    notes: Placeholder application processor or AI SoC package envelope.
+  memory_package:
+    length_mm: 14.0
+    width_mm: 14.0
+    height_mm: 1.0
+    count: 2
+    confidence: placeholder
+    notes: Placeholder stacked memory package allowances near compute package.
+  storage_package:
+    length_mm: 13.0
+    width_mm: 11.5
+    height_mm: 1.0
+    count: 1
+    confidence: placeholder
+    notes: Placeholder UFS or NVMe-class storage package volume.
+  thermal_module:
+    length_mm: 95.0
+    width_mm: 48.0
+    height_mm: 1.0
+    count: 1
+    confidence: estimate
+    notes: First-pass graphite/vapor-spreader/TIM envelope; not a thermal-performance claim.
+  rear_lateral_camera_system:
+    length_mm: 38.0
+    width_mm: 13.0
+    height_mm: 5.0
+    count: 1
+    confidence: placeholder
+    notes: Lateral rear camera island bounding box including module keepout.
+  front_camera:
+    length_mm: 8.0
+    width_mm: 8.0
+    height_mm: 3.2
+    count: 1
+    confidence: placeholder
+    notes: Front camera module placeholder and local keepout.
+  speaker_modules:
+    length_mm: 22.0
+    width_mm: 10.0
+    height_mm: 3.0
+    count: 2
+    confidence: estimate
+    notes: Stereo speaker module bounding boxes including acoustic cavity allowance.
+  antenna_windows:
+    length_mm: 42.0
+    width_mm: 6.0
+    height_mm: 2.0
+    count: 4
+    confidence: placeholder
+    notes: RF window and antenna keepout volumes; placement remains unresolved.
+  wireless_charging_coil:
+    length_mm: 58.0
+    width_mm: 58.0
+    height_mm: 0.8
+    count: 1
+    confidence: estimate
+    notes: Coil and ferrite stack bounding box for first-pass packaging pressure only.
+  structural_frame_allowance:
+    length_mm: 180.0
+    width_mm: 95.0
+    height_mm: 1.0
+    count: 1
+    confidence: estimate
+    notes: Lumped frame, ribs, bosses, edge rails, and local reinforcement volume allowance.
+  adhesive_gasket_fastener_allowance:
+    length_mm: 180.0
+    width_mm: 95.0
+    height_mm: 0.35
+    count: 1
+    confidence: estimate
+    notes: Lumped adhesive, gasket, fastener, seal, and assembly-process volume allowance.

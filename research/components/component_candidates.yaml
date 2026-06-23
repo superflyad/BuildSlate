@@ -1,0 +1,197 @@
+# Component candidate research registry.
+# This file tracks possible real-world hardware families for research only.
+# Entries are not final selections, commitments, approvals, or procurement data.
+metadata:
+  purpose: candidate_component_research_tracking
+  selection_claim: none
+  status_vocabulary:
+    - speculative
+    - under_review
+    - shortlisted
+    - selected
+    - rejected
+  confidence_vocabulary:
+    - low
+    - medium
+    - high
+  notes: >-
+    Candidates are included to support feasibility research and comparison.
+    Any candidate marked under_review or shortlisted still requires vendor
+    confirmation, integration analysis, electrical validation, thermal review,
+    supply-chain review, and mechanical fit checks before any selection decision.
+
+categories:
+  soc:
+    - name: Snapdragon 8 Gen 3 Mobile Platform
+      vendor: Qualcomm
+      source: https://www.qualcomm.com/smartphones/products/8-series/snapdragon-8-gen-3-mobile-platform
+      status: under_review
+      confidence: medium
+      notes: >-
+        Phone-class SoC candidate with on-device AI positioning. Track as a
+        reference compute platform only; package, power, thermals, memory
+        pairing, software access, and commercial availability are unresolved.
+    - name: Dimensity 9300+
+      vendor: MediaTek
+      source: https://www.mediatek.com/products/smartphones-2/mediatek-dimensity-9300plus
+      status: speculative
+      confidence: low
+      notes: >-
+        Alternative premium mobile SoC family for comparative research. Needs
+        direct vendor documentation, modem/RF integration review, and sustained
+        workload power characterization before shortlisting.
+
+  memory:
+    - name: LPDDR5T mobile DRAM
+      vendor: SK hynix
+      source: https://news.skhynix.com/sk-hynix-develops-worlds-fastest-mobile-dram-lpddr5t/
+      status: under_review
+      confidence: medium
+      notes: >-
+        High-bandwidth mobile DRAM candidate for local AI memory bandwidth
+        research. Capacity stacking, package height, thermal behavior, and SoC
+        compatibility remain open.
+    - name: LPDDR5X mobile DRAM
+      vendor: Samsung Semiconductor
+      source: https://semiconductor.samsung.com/dram/lpddr/lpddr5x/
+      status: speculative
+      confidence: medium
+      notes: >-
+        Broad mobile memory family useful as a comparison baseline. Exact density,
+        package, procurement channel, and supported speed grade must be verified.
+
+  storage:
+    - name: UFS 4.0 / UFS 4.1 embedded flash memory
+      vendor: KIOXIA
+      source: https://americas.kioxia.com/en-us/business/memory/mlc-nand/ufs4.html
+      status: under_review
+      confidence: medium
+      notes: >-
+        Modern mobile storage candidate. Requires validation of capacity options,
+        package footprint, sustained write thermals, host compatibility, and supply
+        availability.
+    - name: UFS 4.0 embedded flash storage
+      vendor: Samsung Semiconductor
+      source: https://semiconductor.samsung.com/estorage/ufs/ufs-4-0/
+      status: speculative
+      confidence: medium
+      notes: >-
+        Alternative UFS storage family for performance and packaging comparison.
+        No final storage vendor or density is implied.
+
+  battery:
+    - name: Custom lithium-ion polymer pouch cell
+      vendor: ATL
+      source: https://www.atlbattery.com/en/index.html
+      status: speculative
+      confidence: low
+      notes: >-
+        Placeholder candidate for custom pouch-cell supplier research. Requires
+        NDA-level cell sizing, safety approvals, swelling allowance, protection
+        circuit design, cycle-life data, and procurement feasibility.
+    - name: Custom lithium-ion polymer pouch cell
+      vendor: Amprius Technologies
+      source: https://amprius.com/products/
+      status: speculative
+      confidence: low
+      notes: >-
+        Candidate chemistry/vendor family for high-energy research. Device fit,
+        charge limits, qualification, cost, and availability are unknown.
+
+  display:
+    - name: Flexible OLED smartphone display module
+      vendor: Samsung Display
+      source: https://www.samsungdisplay.com/eng/tech/oled-display.jsp
+      status: under_review
+      confidence: medium
+      notes: >-
+        Research candidate for phone-class OLED stack assumptions. Exact panel,
+        driver IC, flex geometry, brightness curve, cover integration, and sourcing
+        path are unresolved.
+    - name: POLED smartphone display module
+      vendor: LG Display
+      source: https://www.lgdisplay.com/eng/technology/oled
+      status: speculative
+      confidence: low
+      notes: >-
+        Alternative OLED supplier family for comparative research. Needs module
+        dimensions, electrical interface, optical stack, and commercial access
+        validation.
+
+  camera:
+    - name: IMX mobile image sensor family
+      vendor: Sony Semiconductor Solutions
+      source: https://www.sony-semicon.com/en/products/is/mobile/index.html
+      status: under_review
+      confidence: medium
+      notes: >-
+        Mobile image-sensor family for camera subsystem research. Exact sensor,
+        lens stack, OIS requirements, module height, ISP support, and sourcing are
+        unresolved.
+    - name: ISOCELL mobile image sensor family
+      vendor: Samsung Semiconductor
+      source: https://semiconductor.samsung.com/image-sensor/mobile-image-sensor/
+      status: speculative
+      confidence: medium
+      notes: >-
+        Alternative mobile sensor family for benchmarking. No module, optics, or
+        sensor size has been selected.
+
+  pmic:
+    - name: Multi-channel processor PMIC portfolio
+      vendor: Texas Instruments
+      source: https://www.ti.com/product-category/power-management/multi-channel-ics-pmic/overview.html
+      status: speculative
+      confidence: low
+      notes: >-
+        General PMIC family for rail-planning research. Candidate is not tied to a
+        final SoC and needs rail map, sequencing, current limits, efficiency, and
+        package validation.
+    - name: Smartphone power-management IC family
+      vendor: Qualcomm
+      source: https://www.qualcomm.com/products/technology/power-management
+      status: speculative
+      confidence: low
+      notes: >-
+        Potential companion power-management family if a Qualcomm platform is
+        pursued. Requires platform-specific documentation and vendor engagement.
+
+  wireless_charging:
+    - name: WLC1115 15 W wireless charging transmitter IC
+      vendor: Infineon Technologies
+      source: https://www.infineon.com/products/power/wireless-charging-ics
+      status: under_review
+      confidence: medium
+      notes: >-
+        Wireless charging controller candidate for Qi-related research. Coil
+        geometry, shielding, thermal rise, receiver/transmitter role, and system
+        power path remain unresolved.
+    - name: Wireless power portfolio
+      vendor: STMicroelectronics
+      source: https://www.st.com/en/power-management/wireless-power.html
+      status: speculative
+      confidence: low
+      notes: >-
+        Alternative wireless-power family for architecture comparison. Needs part
+        down-selection, coil ecosystem review, certification path, and thermal
+        validation.
+
+  thermal_materials:
+    - name: Pyrolytic Graphite Sheet (PGS)
+      vendor: Panasonic Industry
+      source: https://industrial.panasonic.com/ww/products/pt/pgs
+      status: under_review
+      confidence: medium
+      notes: >-
+        Heat-spreading material candidate for thin-device thermal paths. Requires
+        stackup fit, anisotropic conductivity modeling, die-cut feasibility,
+        adhesive selection, and grounding/EMI review.
+    - name: Graphite thermal sheet family
+      vendor: Laird Performance Materials
+      source: https://www.laird.com/products/thermal-management/thermal-interface-materials/graphite
+      status: speculative
+      confidence: low
+      notes: >-
+        Alternative graphite-family candidate. Needs exact product selection,
+        thickness, compression behavior, dielectric/grounding implications, and
+        supply-chain review.

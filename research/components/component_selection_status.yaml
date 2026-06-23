@@ -1,0 +1,90 @@
+# Component selection status tracker.
+# Research only: no category has a final selected component.
+metadata:
+  purpose: component_candidate_selection_status_tracking
+  selection_claim: none
+  allowed_statuses:
+    speculative: Early lead; insufficient evidence for integration planning.
+    under_review: Actively being compared against feasibility requirements.
+    shortlisted: Promising candidate pending validation and stakeholder review.
+    selected: Final selection approved after validation and sourcing review.
+    rejected: Removed from consideration with documented reason.
+  default_status: speculative
+  selection_policy: >-
+    A component may not be marked selected until vendor documentation,
+    electrical integration, thermal modeling, mechanical fit, sourcing, and risk
+    review are complete.
+
+categories:
+  soc:
+    current_status: under_review
+    selected_candidate: null
+    rationale: Compute platform research has started, but no SoC is selected.
+    next_actions:
+      - Confirm software access and development-board availability.
+      - Compare sustained AI workload power and thermal limits.
+      - Validate memory and PMIC pairing constraints.
+  memory:
+    current_status: under_review
+    selected_candidate: null
+    rationale: Mobile DRAM families are being compared for bandwidth and package fit.
+    next_actions:
+      - Validate capacity and package-height options.
+      - Check SoC memory-controller compatibility.
+      - Estimate memory thermals under local AI workloads.
+  storage:
+    current_status: under_review
+    selected_candidate: null
+    rationale: UFS-class storage appears relevant, but no vendor or density is selected.
+    next_actions:
+      - Compare UFS generations, package sizes, and capacity options.
+      - Model sustained write thermals.
+      - Confirm host interface requirements.
+  battery:
+    current_status: speculative
+    selected_candidate: null
+    rationale: Battery entries identify supplier families only; custom cell work is unresolved.
+    next_actions:
+      - Define target energy, dimensions, swelling allowance, and safety stack.
+      - Request supplier-level cell options and certification data.
+      - Validate charging profile and thermal constraints.
+  display:
+    current_status: under_review
+    selected_candidate: null
+    rationale: OLED module families are candidates, but no panel stack is selected.
+    next_actions:
+      - Identify available panel sizes and driver interfaces.
+      - Gather luminance and power curves.
+      - Validate flex routing and cover-glass integration.
+  camera:
+    current_status: under_review
+    selected_candidate: null
+    rationale: Mobile image-sensor families are under comparison without module selection.
+    next_actions:
+      - Define sensor size, resolution, lens, OIS, and module-height targets.
+      - Confirm ISP and driver support for candidate SoCs.
+      - Compare thermal and mechanical keep-out implications.
+  pmic:
+    current_status: speculative
+    selected_candidate: null
+    rationale: PMIC choice depends on SoC, rail map, sequencing, and power architecture.
+    next_actions:
+      - Build preliminary rail requirements from SoC and subsystem candidates.
+      - Compare regulator efficiency and package constraints.
+      - Validate sequencing, sleep states, and battery charger integration.
+  wireless_charging:
+    current_status: under_review
+    selected_candidate: null
+    rationale: Wireless charging controller families are being tracked, but architecture is open.
+    next_actions:
+      - Decide receiver/transmitter requirements and target power level.
+      - Model coil, ferrite, shield, and thermal stackup.
+      - Identify Qi certification implications.
+  thermal_materials:
+    current_status: under_review
+    selected_candidate: null
+    rationale: Graphite materials are plausible heat spreaders, but the stack is not selected.
+    next_actions:
+      - Compare graphite sheet thicknesses, adhesives, and die-cut options.
+      - Validate electrical isolation or grounding strategy.
+      - Integrate candidate material data into thermal resistance models.

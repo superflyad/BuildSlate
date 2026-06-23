@@ -86,6 +86,19 @@ python engineering/interconnect_models/run_all_interconnect_models.py
 
 The models are conservative engineering screens. They do not predict real inference performance, fabricate PCB traces, or replace supplier-backed package, memory, PMIC, battery, thermal, and signal-integrity data.
 
+
+## CAD Envelope Volume Budget Screening
+
+BuildSlate includes a first-pass Slate Pocket v1 physical-envelope budget in `engineering/cad_envelope/`. This workflow uses simple component bounding boxes and a conservative internal usable volume factor to screen whether the target component set can plausibly fit inside the claimed external envelope before making stronger engineering claims.
+
+Generate the current volume-budget report with:
+
+```bash
+python engineering/cad_envelope/generate_volume_report.py
+```
+
+The generator writes `reports/slate-pocket-volume-budget.txt`, including the external envelope, estimated usable internal volume, component allocations, remaining volume, allocation percentage, and PASS / WARNING / FAIL status. This is the preferred first physical-envelope screening step before thermal, PCB routing, RF, or manufacturability claims. It is not CAD validation, supplier packaging evidence, thermal proof, RF validation, CFD, FEA, or manufacturability proof.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

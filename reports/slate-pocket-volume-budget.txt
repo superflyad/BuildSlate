@@ -1,0 +1,38 @@
+Slate Pocket v1 First-Pass Volume Budget
+==========================================
+
+CAVEAT: This is a first-pass bounding-box screening model, not CAD validation,
+manufacturability proof, thermal validation, RF validation, CFD, FEA, or supplier-backed packaging evidence.
+
+Device envelope:
+  Length: 180.00 mm
+  Width: 95.00 mm
+  Thickness: 8.80 mm
+  External volume: 150,480.0 mm^3 (150.48 cm^3)
+  Internal usable volume factor: 0.72
+  Estimated internal usable volume: 108,345.6 mm^3 (108.35 cm^3)
+
+Component allocation table:
+component                               length   width  height count     volume_mm3 confidence  notes
+-------------------------------------- ------- ------- ------- ----- -------------- ----------- ----------------------------------------
+display_stack                           170.00   85.00    1.60     1       23,120.0 estimate    First-pass cover glass, OLED/touch, polarizer, and display support stack bounding box.
+battery_pack                            135.00   72.00    4.20     1       40,824.0 estimate    Thin pouch-cell allowance sized aggressively for a pocket-class AI device.
+main_pcb                                 78.00   55.00    1.20     1        5,148.0 estimate    Main logic board bounding box before detailed placement, flexes, shields, or connectors.
+soc_package                              18.00   18.00    1.20     1          388.8 placeholder Placeholder application processor or AI SoC package envelope.
+memory_package                           14.00   14.00    1.00     2          392.0 placeholder Placeholder stacked memory package allowances near compute package.
+storage_package                          13.00   11.50    1.00     1          149.5 placeholder Placeholder UFS or NVMe-class storage package volume.
+thermal_module                           95.00   48.00    1.00     1        4,560.0 estimate    First-pass graphite/vapor-spreader/TIM envelope; not a thermal-performance claim.
+rear_lateral_camera_system               38.00   13.00    5.00     1        2,470.0 placeholder Lateral rear camera island bounding box including module keepout.
+front_camera                              8.00    8.00    3.20     1          204.8 placeholder Front camera module placeholder and local keepout.
+speaker_modules                          22.00   10.00    3.00     2        1,320.0 estimate    Stereo speaker module bounding boxes including acoustic cavity allowance.
+antenna_windows                          42.00    6.00    2.00     4        2,016.0 placeholder RF window and antenna keepout volumes; placement remains unresolved.
+wireless_charging_coil                   58.00   58.00    0.80     1        2,691.2 estimate    Coil and ferrite stack bounding box for first-pass packaging pressure only.
+structural_frame_allowance              180.00   95.00    1.00     1       17,100.0 estimate    Lumped frame, ribs, bosses, edge rails, and local reinforcement volume allowance.
+adhesive_gasket_fastener_allowance      180.00   95.00    0.35     1        5,985.0 estimate    Lumped adhesive, gasket, fastener, seal, and assembly-process volume allowance.
+
+Total allocated component volume: 106,369.3 mm^3 (106.37 cm^3)
+Remaining usable volume: 1,976.3 mm^3 (1.98 cm^3)
+Allocation percentage: 98.2%
+Result: FAIL
+
+Status thresholds: PASS < 70%; WARNING 70% to 85%; FAIL > 85% of estimated internal usable volume.

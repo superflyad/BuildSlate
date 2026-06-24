@@ -1,0 +1,51 @@
+BuildSlate Component Candidate Summary
+======================================
+
+Purpose
+-------
+This report summarizes the candidate component research registry in
+research/components/component_candidates.yaml and the category status tracker in
+research/components/component_selection_status.yaml.
+
+Important boundary
+------------------
+This is a research-tracking system only. It does not claim or imply final
+component selection, procurement approval, vendor qualification, certification,
+or production readiness. No category currently has a selected component.
+
+Tracked categories
+------------------
+- soc: under_review; candidate families include Qualcomm Snapdragon and MediaTek Dimensity.
+- memory: under_review; candidate families include SK hynix LPDDR5T and Samsung LPDDR5X.
+- storage: under_review; candidate families include KIOXIA UFS and Samsung UFS.
+- battery: speculative; candidate suppliers/chemistries require custom-cell validation.
+- display: under_review; candidate OLED module families require exact panel research.
+- camera: under_review; candidate mobile image-sensor families require module definition.
+- pmic: speculative; PMIC research depends on final rail map and SoC architecture.
+- wireless_charging: under_review; wireless-power architecture and certification path are open.
+- thermal_materials: under_review; graphite heat-spreader materials need stackup validation.
+
+Status vocabulary
+-----------------
+- speculative: Early lead; insufficient evidence for integration planning.
+- under_review: Actively being compared against feasibility requirements.
+- shortlisted: Promising candidate pending validation and stakeholder review.
+- selected: Final selection approved after validation and sourcing review.
+- rejected: Removed from consideration with documented reason.
+
+Current selection state
+-----------------------
+No candidate is marked selected. The registry intentionally keeps all entries in
+speculative or under_review states until vendor documentation, electrical
+integration, thermal modeling, mechanical fit, sourcing, and risk review are
+complete.
+
+Recommended next steps
+----------------------
+1. Add evidence links for datasheets, product briefs, developer kits, and vendor
+   contacts as they become available.
+2. Convert candidate notes into comparable requirements: package size, power,
+   thermal limits, interface compatibility, cost, lead time, and sourcing risk.
+3. Only promote candidates to shortlisted after measurable fit against BuildSlate
+   constraints is documented.
+4. Do not mark any component selected until cross-disciplinary review is complete.

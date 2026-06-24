@@ -1,0 +1,53 @@
+Slate Pocket v1 thickness budget
+================================================
+
+Status thresholds:
+  PASS: <= 90% of budget
+  WARNING: >90% and <=100% of budget
+  FAIL: >100% of budget
+
+Summary:
+  budget_mm: 8.80
+  total_thickness_mm: 9.70
+  remaining_margin_mm: -0.90
+  percent_consumed: 110.2%
+  status: FAIL
+
+Component stack:
+  - Display cover glass: 0.55 mm (display_cover_glass)
+    basis: Chemically strengthened cover glass allowance for a large pocket display.
+  - Touch layer: 0.15 mm (touch_layer)
+    basis: Touch sensor and optically clear adhesive allowance.
+  - OLED stack: 0.45 mm (oled_stack)
+    basis: Flexible AMOLED emitter, backplane, polarizer, and support film allowance.
+  - Frame: 0.80 mm (frame)
+    basis: Mid-frame, local ribs, keepouts, and structural ledges.
+  - Battery: 3.40 mm (battery)
+    basis: Dual-cell pouch pack allocation including tabs and protection layers.
+  - PCB: 0.80 mm (pcb)
+    basis: HDI logic board and local stiffener allocation.
+  - SoC package: 0.60 mm (soc_package)
+    basis: Mobile application processor package height above board.
+  - Memory package: 0.45 mm (memory_package)
+    basis: Stacked low-power memory package allowance.
+  - Storage package: 0.50 mm (storage_package)
+    basis: High-density storage package allowance.
+  - Vapor chamber: 0.35 mm (vapor_chamber)
+    basis: Thin vapor chamber and graphite interface allowance.
+  - Wireless charging coil: 0.25 mm (wireless_charging_coil)
+    basis: Coil, ferrite, insulation, and adhesive allowance.
+  - Rear camera system: 0.70 mm (rear_camera_system)
+    basis: Folded/lateral optics local z-height contribution within the body target.
+  - Adhesives: 0.35 mm (adhesives)
+    basis: Distributed PSA/OCA/thermal-interface bond line reserve.
+  - Manufacturing tolerance reserve: 0.35 mm (manufacturing_tolerance_reserve)
+    basis: First-pass reserve for part variation, flatness, compression, and assembly stack.
+
+Validation:
+  registry_schema: PASS
+  required_component_coverage: PASS
+  positive_thickness_values: PASS
+
+Notes:
+  This is a first-pass arithmetic screen, not a CAD packaging signoff.
+  Local overlaps, shielding cans, connector keepouts, compression, and camera bumps require follow-up mechanical CAD.

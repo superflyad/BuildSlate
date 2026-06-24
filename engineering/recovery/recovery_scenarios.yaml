@@ -1,0 +1,131 @@
+scenarios:
+  reduce_battery_volume:
+    description: Reduce pouch-cell planform or capacity allocation to recover internal volume while preserving the 8.8 mm envelope.
+    affected_components:
+      - battery_pack
+    estimated_volume_delta_mm3: -12000.0
+    estimated_thickness_delta_mm: -0.35
+    engineering_cost: medium
+    product_impact: high
+    maturity: estimate
+    notes: Screening estimate; likely reduces battery runtime or requires higher-density supplier cells.
+  reduce_battery_thickness:
+    description: Move to a thinner battery allocation with revised tabs, protection layers, and swelling allowance.
+    affected_components:
+      - battery_pack
+      - battery
+    estimated_volume_delta_mm3: -4000.0
+    estimated_thickness_delta_mm: -0.60
+    engineering_cost: high
+    product_impact: high
+    maturity: estimate
+    notes: Recovers z-height but carries runtime, safety, supplier, and cycle-life risk.
+  reduce_memory_package:
+    description: Replace placeholder memory packages with a smaller or lower-stack package assumption.
+    affected_components:
+      - memory_package
+    estimated_volume_delta_mm3: -180.0
+    estimated_thickness_delta_mm: -0.10
+    engineering_cost: medium
+    product_impact: high
+    maturity: placeholder
+    notes: Depends on SoC memory-controller support and availability of suitable high-density LPDDR packages.
+  reduce_storage_package:
+    description: Replace the current storage package assumption with a smaller package or reduced package count.
+    affected_components:
+      - storage_package
+    estimated_volume_delta_mm3: -80.0
+    estimated_thickness_delta_mm: -0.08
+    engineering_cost: medium
+    product_impact: medium
+    maturity: placeholder
+    notes: Small physical recovery unless paired with a capacity reduction or supplier-backed package choice.
+  reduce_thermal_module:
+    description: Reduce vapor chamber, graphite, or thermal-interface allocation.
+    affected_components:
+      - thermal_module
+      - vapor_chamber
+    estimated_volume_delta_mm3: -1400.0
+    estimated_thickness_delta_mm: -0.20
+    engineering_cost: high
+    product_impact: high
+    maturity: estimate
+    notes: Packaging relief may worsen sustained AI thermal performance and skin-temperature margin.
+  increase_thickness_to_9_5mm:
+    description: Increase the external body thickness target from 8.8 mm to 9.5 mm.
+    affected_components:
+      - device_envelope
+      - thickness_budget
+    estimated_volume_delta_mm3: 11970.0
+    estimated_thickness_delta_mm: 0.70
+    engineering_cost: medium
+    product_impact: medium
+    maturity: estimate
+    notes: Positive volume delta represents added usable-volume capacity from the larger envelope, not component shrink.
+  increase_thickness_to_10_2mm:
+    description: Increase the external body thickness target from 8.8 mm to 10.2 mm.
+    affected_components:
+      - device_envelope
+      - thickness_budget
+    estimated_volume_delta_mm3: 23940.0
+    estimated_thickness_delta_mm: 1.40
+    engineering_cost: medium
+    product_impact: extreme
+    maturity: estimate
+    notes: This is a major industrial-design change, but it screens as the cleanest direct physical recovery lever.
+  reduce_wireless_charging_hardware:
+    description: Reduce wireless charging coil, ferrite, insulation, and adhesive allowance without removing the feature.
+    affected_components:
+      - wireless_charging_coil
+    estimated_volume_delta_mm3: -900.0
+    estimated_thickness_delta_mm: -0.10
+    engineering_cost: medium
+    product_impact: medium
+    maturity: estimate
+    notes: May reduce charging efficiency, alignment tolerance, thermal margin, or certification confidence.
+  remove_wireless_charging:
+    description: Remove wireless charging hardware from Slate Pocket v1.
+    affected_components:
+      - wireless_charging_coil
+    estimated_volume_delta_mm3: -2691.2
+    estimated_thickness_delta_mm: -0.25
+    engineering_cost: low
+    product_impact: medium
+    maturity: estimate
+    notes: Recovers the full first-pass coil volume and z-height but removes a convenience feature.
+  reduce_target_memory_to_256gb:
+    description: Reduce the target memory capacity from 512 GB to 256 GB and reselect memory packages accordingly.
+    affected_components:
+      - memory_package
+      - target_memory
+    estimated_volume_delta_mm3: -196.0
+    estimated_thickness_delta_mm: -0.18
+    engineering_cost: medium
+    product_impact: high
+    maturity: placeholder
+    notes: Improves package pressure modestly but materially changes local AI model-residency ambitions.
+  reduce_target_storage_to_2tb:
+    description: Reduce the target storage capacity from 4 TB to 2 TB and reselect storage packaging accordingly.
+    affected_components:
+      - storage_package
+      - target_storage
+    estimated_volume_delta_mm3: -74.8
+    estimated_thickness_delta_mm: -0.15
+    engineering_cost: low
+    product_impact: medium
+    maturity: placeholder
+    notes: Helps z-height slightly but barely changes the total volume budget.
+  split_compute_to_dock_assist:
+    description: Move part of the target compute and thermal load to a dock-assisted architecture.
+    affected_components:
+      - soc_package
+      - memory_package
+      - storage_package
+      - thermal_module
+      - battery_pack
+    estimated_volume_delta_mm3: -10500.0
+    estimated_thickness_delta_mm: -0.55
+    engineering_cost: extreme
+    product_impact: extreme
+    maturity: placeholder
+    notes: Architecture-level change, not a simple packaging trade; included to show the scale of recovery possible.

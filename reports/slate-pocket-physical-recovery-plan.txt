@@ -1,0 +1,326 @@
+Slate Pocket v1 Physical Recovery Planner v1
+=============================================
+
+Current blocked state:
+  GATE_DECISION: BLOCKED_BY_MULTIPLE_CONSTRAINTS
+  volume status: FAIL
+  thickness status: FAIL
+
+Current physical budget:
+  usable internal volume: 108,345.6 mm^3 (108.35 cm^3)
+  allocated component volume: 106,369.3 mm^3 (106.37 cm^3)
+  current volume margin: 1,976.3 mm^3 (1.98 cm^3)
+  current volume recovery gap to 85% allocation: 14,275.5 mm^3 (14.28 cm^3)
+  current volume allocation: 98.2%
+  thickness budget: 8.80 mm
+  thickness stackup: 9.70 mm
+  current thickness margin: -0.90 mm
+  current thickness recovery gap to 100% budget: 0.90 mm
+  current thickness consumption: 110.2%
+
+Input sources:
+  volume budget data: engineering/cad_envelope/component_volume_registry.yaml
+  thickness stackup data: engineering/stackup/thickness_stack_registry.yaml
+  physical feasibility gate result: engineering/physical_feasibility/physical_feasibility_gate.py
+  recovery scenarios: engineering/recovery/recovery_scenarios.yaml
+
+Single-scenario results:
+  - reduce_battery_volume
+    description: Reduce pouch-cell planform or capacity allocation to recover internal volume while preserving the 8.8 mm envelope.
+    affected components: battery_pack
+    estimated volume delta: -12,000.0 mm^3 (-12.00 cm^3)
+    estimated thickness delta: -0.35 mm
+    engineering cost: medium
+    product impact: high
+    maturity: estimate
+    notes: Screening estimate; likely reduces battery runtime or requires higher-density supplier cells.
+    projected allocated volume: 94,369.3 mm^3 (94.37 cm^3)
+    projected usable volume: 108,345.6 mm^3 (108.35 cm^3)
+    projected volume allocation: 87.1% (FAIL); margin: 13,976.3 mm^3 (13.98 cm^3)
+    projected thickness stackup: 9.35 mm
+    projected thickness budget: 8.80 mm
+    projected thickness consumption: 106.2% (FAIL); margin: -0.55 mm
+    fixes: neither
+  - reduce_battery_thickness
+    description: Move to a thinner battery allocation with revised tabs, protection layers, and swelling allowance.
+    affected components: battery_pack, battery
+    estimated volume delta: -4,000.0 mm^3 (-4.00 cm^3)
+    estimated thickness delta: -0.60 mm
+    engineering cost: high
+    product impact: high
+    maturity: estimate
+    notes: Recovers z-height but carries runtime, safety, supplier, and cycle-life risk.
+    projected allocated volume: 102,369.3 mm^3 (102.37 cm^3)
+    projected usable volume: 108,345.6 mm^3 (108.35 cm^3)
+    projected volume allocation: 94.5% (FAIL); margin: 5,976.3 mm^3 (5.98 cm^3)
+    projected thickness stackup: 9.10 mm
+    projected thickness budget: 8.80 mm
+    projected thickness consumption: 103.4% (FAIL); margin: -0.30 mm
+    fixes: neither
+  - reduce_memory_package
+    description: Replace placeholder memory packages with a smaller or lower-stack package assumption.
+    affected components: memory_package
+    estimated volume delta: -180.0 mm^3 (-0.18 cm^3)
+    estimated thickness delta: -0.10 mm
+    engineering cost: medium
+    product impact: high
+    maturity: placeholder
+    notes: Depends on SoC memory-controller support and availability of suitable high-density LPDDR packages.
+    projected allocated volume: 106,189.3 mm^3 (106.19 cm^3)
+    projected usable volume: 108,345.6 mm^3 (108.35 cm^3)
+    projected volume allocation: 98.0% (FAIL); margin: 2,156.3 mm^3 (2.16 cm^3)
+    projected thickness stackup: 9.60 mm
+    projected thickness budget: 8.80 mm
+    projected thickness consumption: 109.1% (FAIL); margin: -0.80 mm
+    fixes: neither
+  - reduce_storage_package
+    description: Replace the current storage package assumption with a smaller package or reduced package count.
+    affected components: storage_package
+    estimated volume delta: -80.0 mm^3 (-0.08 cm^3)
+    estimated thickness delta: -0.08 mm
+    engineering cost: medium
+    product impact: medium
+    maturity: placeholder
+    notes: Small physical recovery unless paired with a capacity reduction or supplier-backed package choice.
+    projected allocated volume: 106,289.3 mm^3 (106.29 cm^3)
+    projected usable volume: 108,345.6 mm^3 (108.35 cm^3)
+    projected volume allocation: 98.1% (FAIL); margin: 2,056.3 mm^3 (2.06 cm^3)
+    projected thickness stackup: 9.62 mm
+    projected thickness budget: 8.80 mm
+    projected thickness consumption: 109.3% (FAIL); margin: -0.82 mm
+    fixes: neither
+  - reduce_thermal_module
+    description: Reduce vapor chamber, graphite, or thermal-interface allocation.
+    affected components: thermal_module, vapor_chamber
+    estimated volume delta: -1,400.0 mm^3 (-1.40 cm^3)
+    estimated thickness delta: -0.20 mm
+    engineering cost: high
+    product impact: high
+    maturity: estimate
+    notes: Packaging relief may worsen sustained AI thermal performance and skin-temperature margin.
+    projected allocated volume: 104,969.3 mm^3 (104.97 cm^3)
+    projected usable volume: 108,345.6 mm^3 (108.35 cm^3)
+    projected volume allocation: 96.9% (FAIL); margin: 3,376.3 mm^3 (3.38 cm^3)
+    projected thickness stackup: 9.50 mm
+    projected thickness budget: 8.80 mm
+    projected thickness consumption: 108.0% (FAIL); margin: -0.70 mm
+    fixes: neither
+  - increase_thickness_to_9_5mm
+    description: Increase the external body thickness target from 8.8 mm to 9.5 mm.
+    affected components: device_envelope, thickness_budget
+    estimated volume delta: 11,970.0 mm^3 (11.97 cm^3)
+    estimated thickness delta: 0.70 mm
+    engineering cost: medium
+    product impact: medium
+    maturity: estimate
+    notes: Positive volume delta represents added usable-volume capacity from the larger envelope, not component shrink.
+    projected allocated volume: 106,369.3 mm^3 (106.37 cm^3)
+    projected usable volume: 120,315.6 mm^3 (120.32 cm^3)
+    projected volume allocation: 88.4% (FAIL); margin: 13,946.3 mm^3 (13.95 cm^3)
+    projected thickness stackup: 9.70 mm
+    projected thickness budget: 9.50 mm
+    projected thickness consumption: 102.1% (FAIL); margin: -0.20 mm
+    fixes: neither
+  - increase_thickness_to_10_2mm
+    description: Increase the external body thickness target from 8.8 mm to 10.2 mm.
+    affected components: device_envelope, thickness_budget
+    estimated volume delta: 23,940.0 mm^3 (23.94 cm^3)
+    estimated thickness delta: 1.40 mm
+    engineering cost: medium
+    product impact: extreme
+    maturity: estimate
+    notes: This is a major industrial-design change, but it screens as the cleanest direct physical recovery lever.
+    projected allocated volume: 106,369.3 mm^3 (106.37 cm^3)
+    projected usable volume: 132,285.6 mm^3 (132.29 cm^3)
+    projected volume allocation: 80.4% (WARNING); margin: 25,916.3 mm^3 (25.92 cm^3)
+    projected thickness stackup: 9.70 mm
+    projected thickness budget: 10.20 mm
+    projected thickness consumption: 95.1% (WARNING); margin: 0.50 mm
+    fixes: both
+  - reduce_wireless_charging_hardware
+    description: Reduce wireless charging coil, ferrite, insulation, and adhesive allowance without removing the feature.
+    affected components: wireless_charging_coil
+    estimated volume delta: -900.0 mm^3 (-0.90 cm^3)
+    estimated thickness delta: -0.10 mm
+    engineering cost: medium
+    product impact: medium
+    maturity: estimate
+    notes: May reduce charging efficiency, alignment tolerance, thermal margin, or certification confidence.
+    projected allocated volume: 105,469.3 mm^3 (105.47 cm^3)
+    projected usable volume: 108,345.6 mm^3 (108.35 cm^3)
+    projected volume allocation: 97.3% (FAIL); margin: 2,876.3 mm^3 (2.88 cm^3)
+    projected thickness stackup: 9.60 mm
+    projected thickness budget: 8.80 mm
+    projected thickness consumption: 109.1% (FAIL); margin: -0.80 mm
+    fixes: neither
+  - remove_wireless_charging
+    description: Remove wireless charging hardware from Slate Pocket v1.
+    affected components: wireless_charging_coil
+    estimated volume delta: -2,691.2 mm^3 (-2.69 cm^3)
+    estimated thickness delta: -0.25 mm
+    engineering cost: low
+    product impact: medium
+    maturity: estimate
+    notes: Recovers the full first-pass coil volume and z-height but removes a convenience feature.
+    projected allocated volume: 103,678.1 mm^3 (103.68 cm^3)
+    projected usable volume: 108,345.6 mm^3 (108.35 cm^3)
+    projected volume allocation: 95.7% (FAIL); margin: 4,667.5 mm^3 (4.67 cm^3)
+    projected thickness stackup: 9.45 mm
+    projected thickness budget: 8.80 mm
+    projected thickness consumption: 107.4% (FAIL); margin: -0.65 mm
+    fixes: neither
+  - reduce_target_memory_to_256gb
+    description: Reduce the target memory capacity from 512 GB to 256 GB and reselect memory packages accordingly.
+    affected components: memory_package, target_memory
+    estimated volume delta: -196.0 mm^3 (-0.20 cm^3)
+    estimated thickness delta: -0.18 mm
+    engineering cost: medium
+    product impact: high
+    maturity: placeholder
+    notes: Improves package pressure modestly but materially changes local AI model-residency ambitions.
+    projected allocated volume: 106,173.3 mm^3 (106.17 cm^3)
+    projected usable volume: 108,345.6 mm^3 (108.35 cm^3)
+    projected volume allocation: 98.0% (FAIL); margin: 2,172.3 mm^3 (2.17 cm^3)
+    projected thickness stackup: 9.52 mm
+    projected thickness budget: 8.80 mm
+    projected thickness consumption: 108.2% (FAIL); margin: -0.72 mm
+    fixes: neither
+  - reduce_target_storage_to_2tb
+    description: Reduce the target storage capacity from 4 TB to 2 TB and reselect storage packaging accordingly.
+    affected components: storage_package, target_storage
+    estimated volume delta: -74.8 mm^3 (-0.07 cm^3)
+    estimated thickness delta: -0.15 mm
+    engineering cost: low
+    product impact: medium
+    maturity: placeholder
+    notes: Helps z-height slightly but barely changes the total volume budget.
+    projected allocated volume: 106,294.5 mm^3 (106.29 cm^3)
+    projected usable volume: 108,345.6 mm^3 (108.35 cm^3)
+    projected volume allocation: 98.1% (FAIL); margin: 2,051.1 mm^3 (2.05 cm^3)
+    projected thickness stackup: 9.55 mm
+    projected thickness budget: 8.80 mm
+    projected thickness consumption: 108.5% (FAIL); margin: -0.75 mm
+    fixes: neither
+  - split_compute_to_dock_assist
+    description: Move part of the target compute and thermal load to a dock-assisted architecture.
+    affected components: soc_package, memory_package, storage_package, thermal_module, battery_pack
+    estimated volume delta: -10,500.0 mm^3 (-10.50 cm^3)
+    estimated thickness delta: -0.55 mm
+    engineering cost: extreme
+    product impact: extreme
+    maturity: placeholder
+    notes: Architecture-level change, not a simple packaging trade; included to show the scale of recovery possible.
+    projected allocated volume: 95,869.3 mm^3 (95.87 cm^3)
+    projected usable volume: 108,345.6 mm^3 (108.35 cm^3)
+    projected volume allocation: 88.5% (FAIL); margin: 12,476.3 mm^3 (12.48 cm^3)
+    projected thickness stackup: 9.15 mm
+    projected thickness budget: 8.80 mm
+    projected thickness consumption: 104.0% (FAIL); margin: -0.35 mm
+    fixes: neither
+
+Top 10 combined recovery paths:
+  1. reduce_battery_volume + increase_thickness_to_9_5mm
+    projected allocated volume: 94,369.3 mm^3 (94.37 cm^3)
+    projected usable volume: 120,315.6 mm^3 (120.32 cm^3)
+    projected volume allocation: 78.4% (WARNING); margin: 25,946.3 mm^3 (25.95 cm^3)
+    projected thickness stackup: 9.35 mm
+    projected thickness budget: 9.50 mm
+    projected thickness consumption: 98.4% (WARNING); margin: 0.15 mm
+    fixes: both
+    ranking inputs: product impact score 3, engineering cost score 2, maturity score 2
+  2. increase_thickness_to_10_2mm + remove_wireless_charging
+    projected allocated volume: 103,678.1 mm^3 (103.68 cm^3)
+    projected usable volume: 132,285.6 mm^3 (132.29 cm^3)
+    projected volume allocation: 78.4% (WARNING); margin: 28,607.5 mm^3 (28.61 cm^3)
+    projected thickness stackup: 9.45 mm
+    projected thickness budget: 10.20 mm
+    projected thickness consumption: 92.6% (WARNING); margin: 0.75 mm
+    fixes: both
+    ranking inputs: product impact score 4, engineering cost score 1, maturity score 2
+  3. increase_thickness_to_10_2mm + reduce_target_storage_to_2tb
+    projected allocated volume: 106,294.5 mm^3 (106.29 cm^3)
+    projected usable volume: 132,285.6 mm^3 (132.29 cm^3)
+    projected volume allocation: 80.4% (WARNING); margin: 25,991.1 mm^3 (25.99 cm^3)
+    projected thickness stackup: 9.55 mm
+    projected thickness budget: 10.20 mm
+    projected thickness consumption: 93.6% (WARNING); margin: 0.65 mm
+    fixes: both
+    ranking inputs: product impact score 4, engineering cost score 1, maturity score 1
+  4. reduce_battery_volume + increase_thickness_to_9_5mm + remove_wireless_charging
+    projected allocated volume: 91,678.1 mm^3 (91.68 cm^3)
+    projected usable volume: 120,315.6 mm^3 (120.32 cm^3)
+    projected volume allocation: 76.2% (WARNING); margin: 28,637.5 mm^3 (28.64 cm^3)
+    projected thickness stackup: 9.10 mm
+    projected thickness budget: 9.50 mm
+    projected thickness consumption: 95.8% (WARNING); margin: 0.40 mm
+    fixes: both
+    ranking inputs: product impact score 4, engineering cost score 2, maturity score 3
+  5. increase_thickness_to_10_2mm + reduce_wireless_charging_hardware
+    projected allocated volume: 105,469.3 mm^3 (105.47 cm^3)
+    projected usable volume: 132,285.6 mm^3 (132.29 cm^3)
+    projected volume allocation: 79.7% (WARNING); margin: 26,816.3 mm^3 (26.82 cm^3)
+    projected thickness stackup: 9.60 mm
+    projected thickness budget: 10.20 mm
+    projected thickness consumption: 94.1% (WARNING); margin: 0.60 mm
+    fixes: both
+    ranking inputs: product impact score 4, engineering cost score 2, maturity score 2
+  6. reduce_battery_volume + increase_thickness_to_9_5mm + reduce_target_storage_to_2tb
+    projected allocated volume: 94,294.5 mm^3 (94.29 cm^3)
+    projected usable volume: 120,315.6 mm^3 (120.32 cm^3)
+    projected volume allocation: 78.4% (WARNING); margin: 26,021.1 mm^3 (26.02 cm^3)
+    projected thickness stackup: 9.20 mm
+    projected thickness budget: 9.50 mm
+    projected thickness consumption: 96.8% (WARNING); margin: 0.30 mm
+    fixes: both
+    ranking inputs: product impact score 4, engineering cost score 2, maturity score 2
+  7. reduce_storage_package + increase_thickness_to_10_2mm
+    projected allocated volume: 106,289.3 mm^3 (106.29 cm^3)
+    projected usable volume: 132,285.6 mm^3 (132.29 cm^3)
+    projected volume allocation: 80.3% (WARNING); margin: 25,996.3 mm^3 (26.00 cm^3)
+    projected thickness stackup: 9.62 mm
+    projected thickness budget: 10.20 mm
+    projected thickness consumption: 94.3% (WARNING); margin: 0.58 mm
+    fixes: both
+    ranking inputs: product impact score 4, engineering cost score 2, maturity score 1
+  8. reduce_battery_volume + increase_thickness_to_9_5mm + reduce_wireless_charging_hardware
+    projected allocated volume: 93,469.3 mm^3 (93.47 cm^3)
+    projected usable volume: 120,315.6 mm^3 (120.32 cm^3)
+    projected volume allocation: 77.7% (WARNING); margin: 26,846.3 mm^3 (26.85 cm^3)
+    projected thickness stackup: 9.25 mm
+    projected thickness budget: 9.50 mm
+    projected thickness consumption: 97.4% (WARNING); margin: 0.25 mm
+    fixes: both
+    ranking inputs: product impact score 4, engineering cost score 3, maturity score 3
+  9. reduce_battery_thickness + increase_thickness_to_9_5mm + remove_wireless_charging
+    projected allocated volume: 99,678.1 mm^3 (99.68 cm^3)
+    projected usable volume: 120,315.6 mm^3 (120.32 cm^3)
+    projected volume allocation: 82.8% (WARNING); margin: 20,637.5 mm^3 (20.64 cm^3)
+    projected thickness stackup: 8.85 mm
+    projected thickness budget: 9.50 mm
+    projected thickness consumption: 93.2% (WARNING); margin: 0.65 mm
+    fixes: both
+    ranking inputs: product impact score 4, engineering cost score 3, maturity score 3
+  10. reduce_battery_volume + reduce_battery_thickness
+    projected allocated volume: 90,369.3 mm^3 (90.37 cm^3)
+    projected usable volume: 108,345.6 mm^3 (108.35 cm^3)
+    projected volume allocation: 83.4% (WARNING); margin: 17,976.3 mm^3 (17.98 cm^3)
+    projected thickness stackup: 8.75 mm
+    projected thickness budget: 8.80 mm
+    projected thickness consumption: 99.4% (WARNING); margin: 0.05 mm
+    fixes: both
+    ranking inputs: product impact score 4, engineering cost score 3, maturity score 2
+
+Recommended recovery path:
+  status: SUFFICIENT
+  path: reduce_battery_volume + increase_thickness_to_9_5mm
+    projected allocated volume: 94,369.3 mm^3 (94.37 cm^3)
+    projected usable volume: 120,315.6 mm^3 (120.32 cm^3)
+    projected volume allocation: 78.4% (WARNING); margin: 25,946.3 mm^3 (25.95 cm^3)
+    projected thickness stackup: 9.35 mm
+    projected thickness budget: 9.50 mm
+    projected thickness consumption: 98.4% (WARNING); margin: 0.15 mm
+    fixes: both
+  recommendation: Prefer this as the least disruptive ranked combination that fixes both physical constraints.
+
+Caveat:
+  These are screening-level tradeoffs, not validated design changes. They do not replace CAD packaging, supplier drawings, thermal simulation, RF validation, certification work, or prototype measurements.

@@ -111,6 +111,18 @@ python engineering/physical_feasibility/generate_physical_feasibility_report.py
 
 The generator writes `reports/slate-pocket-physical-feasibility-gate.txt` with the volume budget result, thickness stackup result, component candidate maturity summary, major physical blockers, required evidence before the next phase, and final gate decision. This gate is a screening decision only. It does not prove manufacturability, CAD validity, thermal viability, RF compliance, certification readiness, or supplier availability.
 
+## Physical Recovery Planner v1
+
+BuildSlate includes a Slate Pocket v1 recovery-planning tool for use after a failed physical feasibility gate. It starts from the current volume budget, thickness stackup, and gate result, then screens single and combined packaging tradeoffs to identify whether the blocked package can recover to a conditional physical pass.
+
+Generate the recovery report with:
+
+```bash
+python engineering/recovery/generate_physical_recovery_report.py
+```
+
+The generator writes `reports/slate-pocket-physical-recovery-plan.txt` with the current blocked state, current volume allocation, current thickness consumption, single-scenario results, top combined recovery paths, and a recommended recovery path. These are screening-level tradeoffs, not validated design changes.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

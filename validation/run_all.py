@@ -21,6 +21,7 @@ VALIDATION_CHECKS = (
     "validation/validate_no_merge_conflicts.py",
     "engineering/stackup/generate_stackup_report.py",
     "validation/validate_cad_envelope_volume_registry.py",
+    "validation/validate_physical_feasibility_gate.py",
 )
 
 

@@ -1,0 +1,80 @@
+Slate Pocket v1 Physical Feasibility Gate
+==========================================
+
+Scope:
+  device: Slate Pocket v1
+  gate version: physical feasibility v1
+  purpose: decide whether the physical package can continue to thermal/PCB/RF screening
+
+Canonical target inputs:
+  display: 7.5 in
+  battery: 6000 mAh
+  memory: 512 GB RAM
+  storage: 4 TB
+  cooling: dual-zone vapor chamber, graphite spreaders, graphene frame conduction, PCM beneath NPU and RAM
+  NPU: 100 TOPS
+  target mass: 250 g
+  target thickness: 8.8 mm
+
+Input sources:
+  volume budget: engineering/cad_envelope/component_volume_registry.yaml
+  thickness stackup: engineering/stackup/thickness_stack_registry.yaml
+  component candidates: research/components/component_candidates.yaml
+  component selection status: research/components/component_selection_status.yaml
+
+Volume budget result:
+  status: FAIL
+  external volume: 150,480.0 mm^3 (150.48 cm^3)
+  estimated usable internal volume: 108,345.6 mm^3 (108.35 cm^3)
+  allocated component volume: 106,369.3 mm^3 (106.37 cm^3)
+  remaining usable volume: 1,976.3 mm^3 (1.98 cm^3)
+  allocation percentage: 98.2%
+
+Thickness stackup result:
+  status: FAIL
+  budget: 8.80 mm
+  total stackup: 9.70 mm
+  remaining margin: -0.90 mm
+  percent consumed: 110.2%
+
+Component candidate maturity summary:
+  categories tracked: 9
+  candidates tracked: 18
+  candidate statuses: speculative: 11, under_review: 7
+  category statuses: speculative: 2, under_review: 7
+  confidence levels: low: 8, medium: 10
+  supplier-backed research candidates: 18
+  selected categories: 0
+  speculative or low-confidence candidates: 11
+  majority speculative/placeholders: True
+
+Major physical blockers:
+  - Volume allocation consumes 98.2% of estimated usable internal volume.
+  - Thickness stackup consumes 110.2% of the 8.80 mm budget.
+  - Component registry remains immature: 11 of 18 candidates are speculative or low-confidence.
+  - No component category has a selected candidate.
+
+Required evidence before next phase:
+  - CAD-derived internal volume allocation with keepouts, flexes, shields, fasteners, seals, and service allowances.
+  - Mechanical stackup drawing with overlap zones, local camera/connector protrusions, compression, and tolerance ranges.
+  - Supplier package drawings or datasheets for display, battery, SoC/NPU, memory, storage, RF, wireless charging, and thermal materials.
+  - Mass rollup tied to selected or shortlisted parts before manufacturing feasibility claims.
+  - soc: Confirm software access and development-board availability.
+  - soc: Compare sustained AI workload power and thermal limits.
+  - memory: Validate capacity and package-height options.
+  - memory: Check SoC memory-controller compatibility.
+  - storage: Compare UFS generations, package sizes, and capacity options.
+  - storage: Model sustained write thermals.
+  - battery: Define target energy, dimensions, swelling allowance, and safety stack.
+  - battery: Request supplier-level cell options and certification data.
+  - display: Identify available panel sizes and driver interfaces.
+  - display: Gather luminance and power curves.
+
+Final gate decision:
+  GATE_DECISION: BLOCKED_BY_MULTIPLE_CONSTRAINTS
+
+Decision interpretation:
+  The physical package is blocked by both volume and thickness constraints.
+
+Caveat:
+  This gate is a screening decision only. It does not prove manufacturability, CAD validity, thermal viability, RF compliance, certification readiness, or supplier availability.

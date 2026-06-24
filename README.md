@@ -99,6 +99,18 @@ python engineering/cad_envelope/generate_volume_report.py
 
 The generator writes `reports/slate-pocket-volume-budget.txt`, including the external envelope, estimated usable internal volume, component allocations, remaining volume, allocation percentage, and PASS / WARNING / FAIL status. This is the preferred first physical-envelope screening step before thermal, PCB routing, RF, or manufacturability claims. It is not CAD validation, supplier packaging evidence, thermal proof, RF validation, CFD, FEA, or manufacturability proof.
 
+## Physical Feasibility Gate v1
+
+BuildSlate combines the CAD envelope volume budget, thickness stackup budget, and component candidate registry into a single Slate Pocket v1 physical-feasibility gate. This is now the preferred checkpoint before thermal, PCB, RF, or manufacturing work.
+
+Generate the gate report with:
+
+```bash
+python engineering/physical_feasibility/generate_physical_feasibility_report.py
+```
+
+The generator writes `reports/slate-pocket-physical-feasibility-gate.txt` with the volume budget result, thickness stackup result, component candidate maturity summary, major physical blockers, required evidence before the next phase, and final gate decision. This gate is a screening decision only. It does not prove manufacturability, CAD validity, thermal viability, RF compliance, certification readiness, or supplier availability.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

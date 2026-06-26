@@ -1,0 +1,86 @@
+Slate Pocket v1R Engineering Intelligence Demo v1
+===================================================
+
+Scope:
+  compare: slate-pocket-v1 -> slate-pocket-v1r
+  purpose: explain why Slate Pocket v1R exists, what changed from v1, what evidence supports the decision, and what assumptions remain fragile
+  intelligence type: cross-report reasoning over screening artifacts
+
+Source reports referenced:
+  - reports/slate-pocket-physical-feasibility-gate.txt
+  - reports/slate-pocket-v1r-physical-feasibility-gate.txt
+  - reports/slate-pocket-physical-recovery-plan.txt
+  - reports/device-profile-slate-pocket-v1r.txt
+  - reports/slate-pocket-v1r-thermal-consequence.txt
+
+What changed:
+  - slate-pocket-v1r is a recovery profile derived from slate-pocket-v1, not a new validated hardware generation.
+  - Thickness target changed from 8.8 mm to 9.5 mm.
+  - Battery physical volume changed to 28824 mm3 with a -12000 mm3 recovery delta.
+  - Recovery strategy: reduce_battery_volume, increase_thickness_to_9_5mm.
+  - Compute targets remained 28 W sustained and 45 W peak.
+  - Memory and storage targets remained 512 GB and 4 TB.
+
+Why it changed:
+  - slate-pocket-v1 was physically blocked by the feasibility gate: BLOCKED_BY_MULTIPLE_CONSTRAINTS.
+  - The recovery planner searched screening-level packaging tradeoffs for the least disruptive path that recovered both volume and thickness.
+  - The selected recovery path was reduce_battery_volume + increase_thickness_to_9_5mm, with recommendation status SUFFICIENT.
+  - The recovered profile exists to preserve the product intent while making the physical package eligible for conditional downstream screening.
+
+Triggering previous report:
+  - reports/slate-pocket-physical-feasibility-gate.txt triggered the recovery workflow by reporting the v1 physical gate failure.
+  - reports/slate-pocket-physical-recovery-plan.txt identified the recovery path that became the v1R profile assumptions.
+
+What improved:
+  - Physical gate decision changed from BLOCKED_BY_MULTIPLE_CONSTRAINTS to CONDITIONAL_PASS.
+  - Volume allocation changed from 98.2% to 78.4%.
+  - Thickness consumption changed from 110.2% to 98.4%.
+  - Thermal consequence screening reported THERMAL_POSTURE_IMPROVED.
+  - Added z-height and reduced battery package volume improve screening posture for layout and thermal spreading headroom.
+
+What got worse or remains uncertain:
+  - The device becomes thicker, so industrial design, ergonomics, sealing, RF, camera protrusions, and accessories must be rechecked.
+  - Reduced battery volume may require higher validated energy density or force a later capacity/runtime tradeoff.
+  - The 28 W sustained and 45 W peak compute targets remain unmeasured workload assumptions.
+  - The 43°C max skin target remains a screening target until mapped on hardware.
+  - 512 GB memory and 4 TB storage remain package, sourcing, routing, power, cost, and thermal risks.
+
+Decision trace:
+  slate-pocket-v1 failed physical feasibility
+  -> Recovery planner recommended reduce_battery_volume + increase_thickness_to_9_5mm
+  -> slate-pocket-v1r was created
+  -> v1R physical gate produced CONDITIONAL_PASS
+  -> thermal consequence screening reported THERMAL_POSTURE_IMPROVED
+
+Fragile assumptions:
+  - battery energy density
+  - reduced battery volume
+  - 28 W sustained compute
+  - 45 W peak compute
+  - thermal module effectiveness
+  - 43°C max skin target
+  - 512 GB memory packaging
+  - 4 TB storage packaging
+
+Most fragile assumptions:
+  - battery energy density: must support the retained 6000 mAh target in the smaller battery package.
+  - reduced battery volume: may improve package fit while worsening runtime, C-rate, charging heat, swelling, and safety margin.
+  - thermal module effectiveness: current thermal improvement is only a geometry-level posture, not a proven heat path.
+  - 28 W sustained compute and 45 W peak compute: require measured SoC/NPU telemetry and throttle behavior.
+  - 512 GB memory packaging and 4 TB storage packaging: require supplier package data, board area, routing, power, and thermal review.
+
+Evidence required next:
+  - battery cell datasheet
+  - CAD stackup
+  - thermal module CAD
+  - SoC package spec
+  - sustained power telemetry
+  - thermocouple map
+  - supplier DFM review
+
+Decision interpretation:
+  v1R is justified as a screening recovery profile because the prior physical gate blocked v1 and the recovery path produced a conditional physical pass.
+  The decision is not a validation claim; it is a traceable reason to continue evidence gathering around the recovered assumptions.
+
+Caveat:
+  This report demonstrates cross-report reasoning across existing screening artifacts. It is not validated engineering proof and does not claim manufacturability, CAD validity, thermal validation, supplier readiness, certification readiness, prototype readiness, or production readiness.

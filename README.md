@@ -135,6 +135,18 @@ python engineering/thermal_consequence/generate_thermal_consequence_report.py
 
 The generator writes `reports/slate-pocket-v1r-thermal-consequence.txt` with the v1 baseline, v1R recovery summary, side-by-side thermal comparison, battery volume/capacity tradeoff, thermal module implication, thermal posture decision, major unknowns, and required evidence before thermal validation. This is a screening step only; it does not claim skin-temperature validation, CFD/FEA results, thermal module performance, or prototype behavior.
 
+## Engineering Intelligence Demo v1
+
+BuildSlate includes a first-pass engineering intelligence report that explains why `slate-pocket-v1r` exists, what changed from `slate-pocket-v1`, which prior reports triggered the recovery path, what improved, what remains fragile, and what evidence is required next.
+
+Generate the engineering intelligence report with:
+
+```bash
+python engineering/intelligence/generate_engineering_intelligence_report.py
+```
+
+The generator writes `reports/slate-pocket-v1r-engineering-intelligence.txt` and demonstrates cross-report reasoning across the physical feasibility gate reports, physical recovery plan, v1R profile report, and thermal consequence report. It is not validated engineering proof and does not claim manufacturability, thermal validation, supplier readiness, prototype readiness, or production readiness.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

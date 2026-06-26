@@ -210,6 +210,8 @@ python validation/validate_core_formula_outputs.py
 
 BuildSlate supports profile-specific screening through YAML device profiles in `configs/devices/`. Profiles are structured inputs, not optimized answers: they define Slate hardware assumptions and run those values through the existing engineering validation and model scripts.
 
+Slate Pocket v1 remains the preserved canonical target and is currently blocked by the physical feasibility gate. Slate Pocket v1R is tracked as the first recovered engineering profile, derived from v1 rather than a new product generation. Its recovery assumptions come from the physical recovery planner path `reduce_battery_volume` plus `increase_thickness_to_9_5mm`; it is a screening candidate only, not CAD validated, supplier validated, thermally validated, or manufacturable.
+
 Validate profiles with:
 
 ```bash
@@ -223,6 +225,13 @@ python engineering/run_device_profile.py --profile configs/devices/slate-pocket-
 ```
 
 The runner writes a report under `reports/`, scans model output for warning and blocker language, and keeps aggressive or conservative assumptions visible without automatically adjusting targets.
+
+Generate the recovered Slate Pocket v1R profile and physical feasibility reports with:
+
+```bash
+python engineering/run_device_profile.py --profile configs/devices/slate-pocket-v1r.yaml --output reports/device-profile-slate-pocket-v1r.txt
+python engineering/physical_feasibility/generate_physical_feasibility_report.py --profile configs/devices/slate-pocket-v1r.yaml --output reports/slate-pocket-v1r-physical-feasibility-gate.txt
+```
 
 ## Profile Comparison and Tradeoff Analysis
 

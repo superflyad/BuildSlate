@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Generate the Slate Pocket v1 physical-feasibility gate report."""
+"""Generate Slate Pocket physical-feasibility gate reports."""
 
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
 
 from physical_feasibility_gate import REPO_ROOT, SCREENING_CAVEAT, PhysicalFeasibilityResult, evaluate_gate
@@ -26,17 +27,24 @@ def render_report(result: PhysicalFeasibilityResult) -> str:
     thickness = result.thickness_budget
     maturity = result.component_maturity
     targets = result.targets
+    profile = result.profile or {}
+    identity = profile.get("identity", {})
+    profile_id = identity.get("profile_id", "slate-pocket-v1")
+    profile_name = identity.get("name", "Slate Pocket v1")
+    profile_label = identity.get("label", "canonical")
 
     lines = [
-        "Slate Pocket v1 Physical Feasibility Gate",
-        "==========================================",
+        f"{profile_name} Physical Feasibility Gate",
+        "=" * (len(profile_name) + len(" Physical Feasibility Gate")),
         "",
         "Scope:",
-        "  device: Slate Pocket v1",
+        f"  device: {profile_name}",
+        f"  profile_id: {profile_id}",
+        f"  profile_label: {profile_label}",
         "  gate version: physical feasibility v1",
         "  purpose: decide whether the physical package can continue to thermal/PCB/RF screening",
         "",
-        "Canonical target inputs:",
+        "Target inputs:",
         f"  display: {targets['display_size_in']} in",
         f"  battery: {targets['battery_capacity_mah']} mAh",
         f"  memory: {targets['memory_capacity_gb']} GB RAM",
@@ -81,6 +89,27 @@ def render_report(result: PhysicalFeasibilityResult) -> str:
         "Major physical blockers:",
     ]
     lines.extend(f"  - {blocker}" for blocker in result.major_blockers)
+    if profile.get("profile_type") == "recovery":
+        lines.extend(
+            [
+                "",
+                "Recovery profile notes:",
+                f"  base_profile: {profile.get('base_profile', 'not specified')}",
+                f"  recovery_source: {profile.get('recovery_source', 'not specified')}",
+                f"  recovery_strategy: {', '.join(str(item) for item in profile.get('recovery_strategy', []))}",
+                f"  caveat: {profile.get('caveat', 'not specified')}",
+            ]
+        )
+        for note in profile.get("recovery_notes", []):
+            lines.append(f"  - {note}")
+        lines.extend(
+            [
+                "",
+                "Known remaining risks:",
+            ]
+        )
+        for risk in profile.get("known_remaining_risks", []):
+            lines.append(f"  - {risk}")
     lines.extend(
         [
             "",
@@ -125,11 +154,21 @@ def build_report() -> str:
     return render_report(evaluate_gate())
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--profile", help="Optional device profile YAML path for profile-specific gate inputs")
+    parser.add_argument("--output", default=str(REPORT_PATH.relative_to(REPO_ROOT)), help="Report output path")
+    return parser.parse_args()
+
+
 def main() -> int:
-    report = build_report()
-    REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    REPORT_PATH.write_text(report, encoding="utf-8")
-    print(f"Wrote {REPORT_PATH.relative_to(REPO_ROOT)}")
+    args = parse_args()
+    profile_path = REPO_ROOT / args.profile if args.profile else None
+    output_path = REPO_ROOT / args.output
+    report = render_report(evaluate_gate(profile_path=profile_path))
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(report, encoding="utf-8")
+    print(f"Wrote {output_path.relative_to(REPO_ROOT)}")
     print(report)
     return 0
 

@@ -52,8 +52,17 @@ REQUIRED_FIELD_PATHS = (
 
 NUMERIC_FIELD_PATHS = tuple(path for path in REQUIRED_FIELD_PATHS if path not in (("identity", "profile_id"), ("environment", "condition")))
 
-OPTIONAL_PROFILE_CLASSES = {"aggressive", "canonical", "conservative", "experimental"}
+OPTIONAL_PROFILE_CLASSES = {"aggressive", "canonical", "conservative", "experimental", "recovery"}
+OPTIONAL_PROFILE_TYPES = {"recovery"}
 OPTIONAL_FEASIBILITY_STATUSES = {"conceptual", "research_required", "screening_candidate"}
+REQUIRED_RECOVERY_FIELDS = (
+    "profile_type",
+    "base_profile",
+    "recovery_source",
+    "recovery_strategy",
+    "maturity",
+    "caveat",
+)
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
@@ -99,6 +108,25 @@ def validate_optional_metadata(profile: dict[str, Any]) -> None:
         for index, note in enumerate(review_notes, start=1):
             if not isinstance(note, str) or not note.strip():
                 raise ValueError(f"review_notes[{index}] must be a non-empty string")
+
+    profile_type = profile.get("profile_type")
+    if profile_type is not None:
+        if profile_type not in OPTIONAL_PROFILE_TYPES:
+            allowed = ", ".join(sorted(OPTIONAL_PROFILE_TYPES))
+            raise ValueError(f"profile_type must be one of: {allowed}")
+
+    if profile_type == "recovery":
+        missing = [field for field in REQUIRED_RECOVERY_FIELDS if field not in profile]
+        if missing:
+            raise ValueError(f"recovery profile missing required fields: {', '.join(missing)}")
+        if not isinstance(profile["recovery_strategy"], list) or not profile["recovery_strategy"]:
+            raise ValueError("recovery_strategy must be a non-empty list")
+        for index, strategy in enumerate(profile["recovery_strategy"], start=1):
+            if not isinstance(strategy, str) or not strategy.strip():
+                raise ValueError(f"recovery_strategy[{index}] must be a non-empty string")
+        for field in ("base_profile", "recovery_source", "maturity", "caveat"):
+            if not isinstance(profile[field], str) or not profile[field].strip():
+                raise ValueError(f"{field} must be a non-empty string for recovery profiles")
 
 
 def validate_profile(path: Path) -> str:

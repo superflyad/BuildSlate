@@ -1,10 +1,10 @@
-Slate Pocket v1 Physical Feasibility Gate
-=========================================
+Slate Pocket v1R Physical Feasibility Gate
+==========================================
 
 Scope:
-  device: Slate Pocket v1
-  profile_id: slate-pocket-v1
-  profile_label: canonical
+  device: Slate Pocket v1R
+  profile_id: slate-pocket-v1r
+  profile_label: recovery
   gate version: physical feasibility v1
   purpose: decide whether the physical package can continue to thermal/PCB/RF screening
 
@@ -16,7 +16,7 @@ Target inputs:
   cooling: dual-zone vapor chamber, graphite spreaders, graphene frame conduction, PCM beneath NPU and RAM
   NPU: 100 TOPS
   target mass: 250 g
-  target thickness: 8.8 mm
+  target thickness: 9.5 mm
 
 Input sources:
   volume budget: engineering/cad_envelope/component_volume_registry.yaml
@@ -25,19 +25,19 @@ Input sources:
   component selection status: research/components/component_selection_status.yaml
 
 Volume budget result:
-  status: FAIL
-  external volume: 150,480.0 mm^3 (150.48 cm^3)
-  estimated usable internal volume: 108,345.6 mm^3 (108.35 cm^3)
-  allocated component volume: 106,369.3 mm^3 (106.37 cm^3)
-  remaining usable volume: 1,976.3 mm^3 (1.98 cm^3)
-  allocation percentage: 98.2%
+  status: WARNING
+  external volume: 162,450.0 mm^3 (162.45 cm^3)
+  estimated usable internal volume: 120,315.6 mm^3 (120.32 cm^3)
+  allocated component volume: 94,369.3 mm^3 (94.37 cm^3)
+  remaining usable volume: 25,946.3 mm^3 (25.95 cm^3)
+  allocation percentage: 78.4%
 
 Thickness stackup result:
-  status: FAIL
-  budget: 8.80 mm
-  total stackup: 9.70 mm
-  remaining margin: -0.90 mm
-  percent consumed: 110.2%
+  status: WARNING
+  budget: 9.50 mm
+  total stackup: 9.35 mm
+  remaining margin: 0.15 mm
+  percent consumed: 98.4%
 
 Component candidate maturity summary:
   categories tracked: 9
@@ -51,10 +51,27 @@ Component candidate maturity summary:
   majority speculative/placeholders: True
 
 Major physical blockers:
-  - Volume allocation consumes 98.2% of estimated usable internal volume.
-  - Thickness stackup consumes 110.2% of the 8.80 mm budget.
+  - Volume allocation has limited margin at 78.4% of estimated usable internal volume.
+  - Thickness stackup has limited margin at 98.4% of the 9.50 mm budget.
   - Component registry remains immature: 11 of 18 candidates are speculative or low-confidence.
   - No component category has a selected candidate.
+
+Recovery profile notes:
+  base_profile: slate-pocket-v1
+  recovery_source: slate-pocket-physical-recovery-plan
+  recovery_strategy: reduce_battery_volume, increase_thickness_to_9_5mm
+  caveat: not CAD validated, not supplier validated, not thermally validated
+  - Derived from Slate Pocket v1 with only recovery assumptions changed.
+  - Battery physical volume is reduced by 12000 mm3 from the v1 first-pass registry assumption.
+  - Added usable internal volume is increased by 11970 mm3 per the recovery planner's 9.5 mm thickness scenario.
+  - Thickness target increases from 8.8 mm to 9.5 mm.
+  - The 6000 mAh capacity target is retained only as an unvalidated high-density battery assumption.
+
+Known remaining risks:
+  - Reduced battery volume may require unavailable cell energy density or a later runtime/capacity tradeoff.
+  - Added thickness has not been CAD validated against industrial design, camera, RF, sealing, or ergonomics.
+  - Passive thermal target remains unproven at 28 W sustained compute.
+  - Supplier package drawings and selected components are still required before manufacturability claims.
 
 Required evidence before next phase:
   - CAD-derived internal volume allocation with keepouts, flexes, shields, fasteners, seals, and service allowances.
@@ -73,10 +90,10 @@ Required evidence before next phase:
   - display: Gather luminance and power curves.
 
 Final gate decision:
-  GATE_DECISION: BLOCKED_BY_MULTIPLE_CONSTRAINTS
+  GATE_DECISION: CONDITIONAL_PASS
 
 Decision interpretation:
-  The physical package is blocked by both volume and thickness constraints.
+  Physical budgets are not failed, but warnings must be resolved or explicitly accepted before stronger claims.
 
 Caveat:
   This gate is a screening decision only. It does not prove manufacturability, CAD validity, thermal viability, RF compliance, certification readiness, or supplier availability.

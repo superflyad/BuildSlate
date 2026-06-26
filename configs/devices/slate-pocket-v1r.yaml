@@ -1,0 +1,131 @@
+profile_class: recovery
+profile_type: recovery
+base_profile: slate-pocket-v1
+recovery_source: slate-pocket-physical-recovery-plan
+recovery_strategy:
+  - reduce_battery_volume
+  - increase_thickness_to_9_5mm
+maturity: screening
+caveat: not CAD validated, not supplier validated, not thermally validated
+feasibility_status: screening_candidate
+physical_feasibility_overrides:
+  added_usable_volume_mm3: 11970
+  source_scenario: increase_thickness_to_9_5mm
+  note: Uses the recovery planner's estimated added usable-volume capacity to reproduce the recommended recovery projection.
+review_notes:
+  - First recovered engineering profile derived from Slate Pocket v1.
+  - Recovery assumptions mirror the sufficient physical recovery planner path.
+  - This is not a new product generation and does not replace canonical Slate Pocket v1.
+
+identity:
+  name: Slate Pocket v1R
+  profile_id: slate-pocket-v1r
+  source_spec: specs/slate-pocket-v1.yaml
+  intent: recovered engineering profile
+  label: recovery
+
+geometry:
+  length_mm: 180
+  width_mm: 95
+  thickness_mm: 9.5
+  display_diagonal_in: 7.5
+
+mass_targets:
+  aspirational_target_g: 250
+  engineering_estimate_g: 320
+  acceptable_range_g:
+    min: 290
+    max: 350
+
+battery:
+  capacity_mah: 6000
+  nominal_voltage_v: 3.85
+  charging_wired_w: 100
+  charging_wireless_w: 50
+  physical_volume_mm3: 28824
+  recovery_volume_delta_mm3: -12000
+  recovery_thickness_delta_mm: -0.35
+  assumption_note: Capacity remains 6000 mAh as a screening target only; reduced physical volume requires supplier validation or a future capacity/runtime tradeoff.
+
+display:
+  diagonal_in: 7.5
+  aspect_width: 16
+  aspect_height: 10
+  display_power_w: 3.5
+
+compute:
+  sustained_power_w: 28
+  peak_power_w: 45
+  npu_tops: 100
+
+memory:
+  capacity_gb: 512
+  gb_per_package: 32
+  bandwidth_gbps: 2048
+
+storage:
+  capacity_tb: 4
+  tb_per_package: 2
+  active_power_w: 5
+
+thermal:
+  sustained_w: 28
+  max_skin_c: 43
+  ambient_c: 25
+
+materials:
+  frame_material: aluminum_alloy
+  rear_window_material: glass
+  thermal_path_materials:
+    - graphite_sheet
+    - copper
+    - aluminum_alloy
+
+chassis_composite:
+  preset: aluminum_heat_frame_glass_windows
+
+component_assumptions:
+  packaging_class: pocket_ai_device
+  battery_pack_type: high_density_lithium_polymer
+  display_stack: thin_oled_or_microled_candidate
+  cooling_strategy: passive_spreading
+
+interconnect:
+  memory_topology: high_bandwidth_on_package_or_near_package
+  board_class: high_density_multilayer
+  power_delivery_note: first-pass current and transient screening required
+
+runtime:
+  model_params_billions: 70
+  quantization_bits: 4
+  context_tokens: 32768
+  available_memory_gb: 512
+
+manufacturing:
+  maturity: concept_screening
+  assembly_note: bonded thin-device architecture with high integration risk
+  validation_required:
+    - CAD volume study
+    - supplier package data
+    - thermal prototype
+
+environment:
+  condition: open_air
+  brightness_mode: normal
+
+recovery_notes:
+  - Derived from Slate Pocket v1 with only recovery assumptions changed.
+  - Battery physical volume is reduced by 12000 mm3 from the v1 first-pass registry assumption.
+  - Added usable internal volume is increased by 11970 mm3 per the recovery planner's 9.5 mm thickness scenario.
+  - Thickness target increases from 8.8 mm to 9.5 mm.
+  - The 6000 mAh capacity target is retained only as an unvalidated high-density battery assumption.
+
+known_remaining_risks:
+  - Reduced battery volume may require unavailable cell energy density or a later runtime/capacity tradeoff.
+  - Added thickness has not been CAD validated against industrial design, camera, RF, sealing, or ergonomics.
+  - Passive thermal target remains unproven at 28 W sustained compute.
+  - Supplier package drawings and selected components are still required before manufacturability claims.
+
+notes:
+  - Slate Pocket v1R is the first recovered engineering profile candidate.
+  - Screening results must not be interpreted as validation or manufacturability evidence.

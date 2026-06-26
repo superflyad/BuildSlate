@@ -65,6 +65,11 @@ SUMMARY_SECTIONS = (
     "environment",
 )
 
+RECOVERY_SUMMARY_SECTIONS = (
+    "recovery_notes",
+    "known_remaining_risks",
+)
+
 REPORT_SECTIONS = (
     "validation",
     "battery",
@@ -443,6 +448,15 @@ def render_report(profile: dict[str, Any], profile_path: Path, results: list[Mod
         f"  label: {identity.get('label', 'not specified')}",
         f"Profile source file: {repo_relative(profile_path)}",
         "",
+        "Profile Metadata:",
+        f"  profile_class: {profile.get('profile_class', 'not specified')}",
+        f"  profile_type: {profile.get('profile_type', 'not specified')}",
+        f"  base_profile: {profile.get('base_profile', 'not specified')}",
+        f"  recovery_source: {profile.get('recovery_source', 'not specified')}",
+        f"  recovery_strategy: {', '.join(str(item) for item in profile.get('recovery_strategy', [])) or 'not specified'}",
+        f"  maturity: {profile.get('maturity', 'not specified')}",
+        f"  caveat: {profile.get('caveat', 'not specified')}",
+        "",
         "Profile Summary:",
     ]
 
@@ -450,6 +464,17 @@ def render_report(profile: dict[str, Any], profile_path: Path, results: list[Mod
         report.append(f"- {section_name}:")
         report.extend(render_scalar_mapping(require_mapping(profile, section_name), indent="    "))
     report.append("")
+
+    if profile.get("profile_type") == "recovery":
+        report.append("Recovery Notes:")
+        for section_name in RECOVERY_SUMMARY_SECTIONS:
+            entries = profile.get(section_name, [])
+            report.append(f"- {section_name}:")
+            if isinstance(entries, list) and entries:
+                report.extend(f"    - {entry}" for entry in entries)
+            else:
+                report.append("    not specified")
+        report.append("")
 
     report.append("Model Results:")
     for section_name in REPORT_SECTIONS:

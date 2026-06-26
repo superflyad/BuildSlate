@@ -15,7 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from engineering.cad_envelope.slate_pocket_volume_budget import calculate_from_registry as calculate_volume_budget  # noqa: E402
+from engineering.cad_envelope.slate_pocket_volume_budget import calculate_volume_budget  # noqa: E402
 from engineering.stackup.thickness_budget import calculate_thickness_budget, load_registry as load_stackup_registry  # noqa: E402
 
 VOLUME_REGISTRY_PATH = REPO_ROOT / "engineering" / "cad_envelope" / "component_volume_registry.yaml"
@@ -23,6 +23,7 @@ STACKUP_REGISTRY_PATH = REPO_ROOT / "engineering" / "stackup" / "thickness_stack
 COMPONENT_CANDIDATES_PATH = REPO_ROOT / "research" / "components" / "component_candidates.yaml"
 COMPONENT_SELECTION_STATUS_PATH = REPO_ROOT / "research" / "components" / "component_selection_status.yaml"
 SPEC_PATH = REPO_ROOT / "specs" / "slate-pocket-v1.yaml"
+DEFAULT_PROFILE_PATH = REPO_ROOT / "configs" / "devices" / "slate-pocket-v1.yaml"
 
 SCREENING_CAVEAT = (
     "This gate is a screening decision only. It does not prove manufacturability, "
@@ -68,6 +69,8 @@ class PhysicalFeasibilityResult:
     major_blockers: tuple[str, ...]
     required_evidence: tuple[str, ...]
     targets: dict[str, Any]
+    profile: dict[str, Any] | None = None
+    profile_path: Path | None = None
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -82,10 +85,10 @@ def _increment(counter: dict[str, int], key: str) -> None:
     counter[key] = counter.get(key, 0) + 1
 
 
-def load_targets(path: Path = SPEC_PATH) -> dict[str, Any]:
+def load_targets(path: Path = SPEC_PATH, profile: dict[str, Any] | None = None) -> dict[str, Any]:
     """Load the canonical Slate Pocket v1 physical target subset."""
     spec = _load_yaml(path)
-    return {
+    targets = {
         "display_size_in": spec["display"]["size_in"],
         "battery_capacity_mah": spec["battery"]["capacity_mah"],
         "memory_capacity_gb": spec["memory"]["capacity_gb"],
@@ -95,6 +98,86 @@ def load_targets(path: Path = SPEC_PATH) -> dict[str, Any]:
         "target_mass_g": spec["weight"]["target_g"],
         "thickness_mm": spec["dimensions"]["thickness_mm"],
     }
+    if profile:
+        targets["display_size_in"] = profile["display"]["diagonal_in"]
+        targets["battery_capacity_mah"] = profile["battery"]["capacity_mah"]
+        targets["memory_capacity_gb"] = profile["memory"]["capacity_gb"]
+        targets["storage_capacity_tb"] = profile["storage"]["capacity_tb"]
+        targets["npu_tops"] = profile["compute"]["npu_tops"]
+        targets["target_mass_g"] = profile["mass_targets"]["aspirational_target_g"]
+        targets["thickness_mm"] = profile["geometry"]["thickness_mm"]
+    return targets
+
+
+def load_profile(path: Path = DEFAULT_PROFILE_PATH) -> dict[str, Any]:
+    """Load a device profile for profile-specific physical screening overrides."""
+    return _load_yaml(path)
+
+
+def _battery_height_for_volume(entry: dict[str, Any], target_volume_mm3: float) -> float:
+    length_mm = float(entry["length_mm"])
+    width_mm = float(entry["width_mm"])
+    count = int(entry["count"])
+    return target_volume_mm3 / (length_mm * width_mm * count)
+
+
+def apply_profile_overrides_to_volume_registry(
+    registry: dict[str, Any],
+    profile: dict[str, Any],
+) -> dict[str, Any]:
+    """Apply profile geometry and battery physical-volume assumptions to a volume registry copy."""
+    updated = yaml.safe_load(yaml.safe_dump(registry))
+    components = updated["components"]
+    base_device = components["device_envelope"]
+    base_usable_volume_mm3 = (
+        float(base_device["length_mm"])
+        * float(base_device["width_mm"])
+        * float(base_device["height_mm"])
+        * int(base_device["count"])
+        * float(updated["internal_usable_volume_factor"])
+    )
+    components["device_envelope"]["length_mm"] = float(profile["geometry"]["length_mm"])
+    components["device_envelope"]["width_mm"] = float(profile["geometry"]["width_mm"])
+    components["device_envelope"]["height_mm"] = float(profile["geometry"]["thickness_mm"])
+
+    battery = profile.get("battery", {})
+    if "physical_volume_mm3" in battery:
+        components["battery_pack"]["height_mm"] = _battery_height_for_volume(
+            components["battery_pack"],
+            float(battery["physical_volume_mm3"]),
+        )
+
+    feasibility_overrides = profile.get("physical_feasibility_overrides", {})
+    added_usable_volume_mm3 = feasibility_overrides.get("added_usable_volume_mm3")
+    if added_usable_volume_mm3 is not None:
+        device = components["device_envelope"]
+        external_volume_mm3 = (
+            float(device["length_mm"]) * float(device["width_mm"]) * float(device["height_mm"]) * int(device["count"])
+        )
+        projected_usable_volume_mm3 = base_usable_volume_mm3 + float(added_usable_volume_mm3)
+        updated["internal_usable_volume_factor"] = projected_usable_volume_mm3 / external_volume_mm3
+
+    return updated
+
+
+def apply_profile_overrides_to_stackup_registry(
+    registry: dict[str, Any],
+    profile: dict[str, Any],
+) -> dict[str, Any]:
+    """Apply profile thickness and battery z-height recovery assumptions to a stackup registry copy."""
+    updated = yaml.safe_load(yaml.safe_dump(registry))
+    updated["device"]["thickness_budget_mm"] = float(profile["geometry"]["thickness_mm"])
+    updated["device"]["version"] = str(profile["identity"]["profile_id"])
+
+    battery = profile.get("battery", {})
+    recovery_thickness_delta_mm = battery.get("recovery_thickness_delta_mm")
+    if recovery_thickness_delta_mm is not None:
+        for component in updated["components"]:
+            if component["id"] == "battery":
+                component["thickness_mm"] = float(component["thickness_mm"]) + float(recovery_thickness_delta_mm)
+                break
+
+    return updated
 
 
 def summarize_component_maturity(
@@ -231,10 +314,17 @@ def _required_evidence(maturity: ComponentMaturitySummary) -> tuple[str, ...]:
     return tuple(evidence)
 
 
-def evaluate_gate() -> PhysicalFeasibilityResult:
+def evaluate_gate(profile_path: Path | None = None) -> PhysicalFeasibilityResult:
     """Evaluate the physical-feasibility gate from current source registries."""
-    volume_budget = calculate_volume_budget(VOLUME_REGISTRY_PATH)
+    profile = load_profile(profile_path) if profile_path else None
+
+    volume_registry = _load_yaml(VOLUME_REGISTRY_PATH)
     stackup_registry = load_stackup_registry(STACKUP_REGISTRY_PATH)
+    if profile:
+        volume_registry = apply_profile_overrides_to_volume_registry(volume_registry, profile)
+        stackup_registry = apply_profile_overrides_to_stackup_registry(stackup_registry, profile)
+
+    volume_budget = calculate_volume_budget(volume_registry)
     thickness_budget = calculate_thickness_budget(stackup_registry)
     component_maturity = summarize_component_maturity()
     decision = make_gate_decision(volume_budget["status"], thickness_budget.status, component_maturity)
@@ -246,7 +336,9 @@ def evaluate_gate() -> PhysicalFeasibilityResult:
         decision=decision,
         major_blockers=_major_blockers(volume_budget, thickness_budget, component_maturity),
         required_evidence=_required_evidence(component_maturity),
-        targets=load_targets(),
+        targets=load_targets(profile=profile),
+        profile=profile,
+        profile_path=profile_path,
     )
 
 

@@ -1,0 +1,424 @@
+Slate Pocket Assumption Impact Engine v1
+=========================================
+
+Scope:
+  device profiles: slate-pocket-v1 and slate-pocket-v1r
+  purpose: explain which reports, gates, risks, and downstream decisions are affected when a tracked assumption changes
+  method: static traceability over assumption metadata; no dynamic model recomputation is performed
+
+Caveat:
+  This is a static traceability layer, not validated engineering proof. It does not validate assumptions, recompute CAD, prove manufacturability, verify thermal behavior, or certify prototype readiness.
+
+Top fragile assumptions (top risks):
+  1. battery_volume_mm3 - CRITICAL
+     value: 28824 mm3
+     affected gate decisions: physical feasibility gate decision, recovery planner recommendation
+     affected reports: 5
+     evidence items: 4
+  2. device_thickness_mm - CRITICAL
+     value: 9.5 mm
+     affected gate decisions: physical feasibility gate decision, thermal consequence screening decision
+     affected reports: 5
+     evidence items: 4
+  3. thermal_module_thickness_mm - CRITICAL
+     value: 1.0 mm
+     affected gate decisions: physical feasibility gate decision, thermal consequence screening decision
+     affected reports: 4
+     evidence items: 3
+  4. internal_usable_volume_factor - CRITICAL
+     value: 0.72 ratio
+     affected gate decisions: physical feasibility gate decision, recovery planner recommendation
+     affected reports: 4
+     evidence items: 3
+  5. sustained_compute_w - CRITICAL
+     value: 28 W
+     affected gate decisions: thermal consequence screening decision
+     affected reports: 5
+     evidence items: 4
+  6. battery_capacity_mah - CRITICAL
+     value: 6000 mAh
+     affected gate decisions: thermal consequence screening decision
+     affected reports: 4
+     evidence items: 4
+  7. max_skin_temp_c - CRITICAL
+     value: 43 C
+     affected gate decisions: thermal consequence screening decision
+     affected reports: 4
+     evidence items: 3
+  8. memory_capacity_gb - CRITICAL
+     value: 512 GB
+     affected gate decisions: none
+     affected reports: 5
+     evidence items: 4
+  9. peak_compute_w - CRITICAL
+     value: 45 W
+     affected gate decisions: none
+     affected reports: 4
+     evidence items: 3
+  10. storage_capacity_tb - CRITICAL
+     value: 4 TB
+     affected gate decisions: none
+     affected reports: 4
+     evidence items: 3
+
+What breaks first:
+  - If sustained_compute_w increases, thermal consequence and skin temperature risk are affected first.
+  - If device_thickness_mm decreases, thickness stackup and physical feasibility gate are affected first.
+  - If battery_volume_mm3 decreases, volume improves but runtime, C-rate, charging heat, swelling, and safety risk may worsen.
+  - If internal_usable_volume_factor decreases, the CAD envelope report and physical feasibility gate can fail before component targets change.
+  - If memory_capacity_gb increases, package count, routing, power, thermal load, and runtime memory reports are affected first.
+  - If max_skin_temp_c decreases, thermal consequence, throttle policy, and operating-condition decisions become tighter first.
+  - If wireless_charging_enabled remains true, z-height, rear-material, RF, and charging heat constraints stay coupled to the package.
+
+Assumption impacts:
+  - battery_volume_mm3
+    value: 28824 mm3
+    profile_scope: v1r
+    confidence: placeholder
+    maturity: screening
+    fragility rating: CRITICAL
+    affected engineering domains:
+    - physical packaging
+    - battery energy density
+    - runtime
+    - thermal
+    - safety
+    affected generated reports:
+    - reports/slate-pocket-volume-budget.txt
+    - reports/slate-pocket-physical-recovery-plan.txt
+    - reports/slate-pocket-v1r-physical-feasibility-gate.txt
+    - reports/slate-pocket-v1r-thermal-consequence.txt
+    - reports/slate-pocket-v1r-engineering-intelligence.txt
+    affected gate decisions:
+    - physical feasibility gate decision
+    - recovery planner recommendation
+    downstream decisions:
+    - physical feasibility gate decision
+    - recovery planner recommendation
+    - v1R profile decision
+    - battery runtime tradeoff
+    Evidence required:
+    - battery cell datasheet
+    - pack CAD
+    - swelling allowance
+    - safety certification plan
+    notes:
+      Smaller battery volume helps the physical package but may worsen energy density, C-rate, charging heat, and safety margin.
+  - device_thickness_mm
+    value: 9.5 mm
+    profile_scope: both
+    confidence: estimate
+    maturity: screening
+    fragility rating: CRITICAL
+    affected engineering domains:
+    - physical packaging
+    - thickness stackup
+    - thermal spreading
+    - industrial design
+    affected generated reports:
+    - reports/slate-pocket-thickness-budget.txt
+    - reports/slate-pocket-physical-feasibility-gate.txt
+    - reports/slate-pocket-v1r-physical-feasibility-gate.txt
+    - reports/slate-pocket-v1r-thermal-consequence.txt
+    - reports/slate-pocket-v1r-engineering-intelligence.txt
+    affected gate decisions:
+    - physical feasibility gate decision
+    - thermal consequence screening decision
+    downstream decisions:
+    - physical feasibility gate decision
+    - v1R recovery acceptance
+    - thermal consequence screening decision
+    Evidence required:
+    - CAD stackup
+    - mechanical envelope drawing
+    - tolerance stack review
+    - industrial design review
+    notes:
+      v1 uses 8.8 mm while v1R uses 9.5 mm; this entry tracks the recovered assumption and its cross-report sensitivity.
+  - thermal_module_thickness_mm
+    value: 1.0 mm
+    profile_scope: both
+    confidence: estimate
+    maturity: screening
+    fragility rating: CRITICAL
+    affected engineering domains:
+    - thermal module
+    - thickness stackup
+    - physical packaging
+    - skin temperature
+    affected generated reports:
+    - reports/slate-pocket-thickness-budget.txt
+    - reports/slate-pocket-physical-feasibility-gate.txt
+    - reports/slate-pocket-v1r-thermal-consequence.txt
+    - reports/slate-pocket-v1r-engineering-intelligence.txt
+    affected gate decisions:
+    - physical feasibility gate decision
+    - thermal consequence screening decision
+    downstream decisions:
+    - physical feasibility gate decision
+    - thermal consequence screening decision
+    - thermal module architecture review
+    Evidence required:
+    - thermal module CAD
+    - TIM stack drawing
+    - supplier thermal module datasheet
+    notes:
+      Thickness is package allocation only; it does not prove thermal spreading, contact quality, or skin-temperature compliance.
+  - internal_usable_volume_factor
+    value: 0.72 ratio
+    profile_scope: both
+    confidence: estimate
+    maturity: screening
+    fragility rating: CRITICAL
+    affected engineering domains:
+    - CAD envelope
+    - physical packaging
+    - component allocation
+    affected generated reports:
+    - reports/slate-pocket-volume-budget.txt
+    - reports/slate-pocket-physical-feasibility-gate.txt
+    - reports/slate-pocket-v1r-physical-feasibility-gate.txt
+    - reports/slate-pocket-physical-recovery-plan.txt
+    affected gate decisions:
+    - physical feasibility gate decision
+    - recovery planner recommendation
+    downstream decisions:
+    - physical feasibility gate decision
+    - recovery planner recommendation
+    Evidence required:
+    - CAD stackup
+    - keepout map
+    - supplier package drawings
+    notes:
+      The usable-volume factor stands in for real CAD keepouts, fasteners, shields, flexes, and service allowances.
+  - sustained_compute_w
+    value: 28 W
+    profile_scope: both
+    confidence: placeholder
+    maturity: concept
+    fragility rating: CRITICAL
+    affected engineering domains:
+    - thermal
+    - power delivery
+    - runtime
+    - SoC packaging
+    - skin temperature
+    affected generated reports:
+    - reports/device-profile-slate-pocket-v1.txt
+    - reports/device-profile-slate-pocket-v1r.txt
+    - reports/slate-pocket-v1r-thermal-consequence.txt
+    - reports/slate-pocket-v1r-engineering-intelligence.txt
+    - reports/audit/coverage-gap-report.md
+    affected gate decisions:
+    - thermal consequence screening decision
+    downstream decisions:
+    - thermal consequence screening decision
+    - skin temperature risk decision
+    - power delivery review
+    - runtime feasibility screening
+    Evidence required:
+    - sustained power telemetry
+    - workload definition
+    - thermal chamber data
+    - throttle policy validation
+    notes:
+      Sustained compute power is treated as heat in thermal screening and drives multiple first-order risk models.
+  - battery_capacity_mah
+    value: 6000 mAh
+    profile_scope: both
+    confidence: estimate
+    maturity: screening
+    fragility rating: CRITICAL
+    affected engineering domains:
+    - battery energy
+    - runtime
+    - mass
+    - thermal
+    affected generated reports:
+    - reports/device-profile-slate-pocket-v1.txt
+    - reports/device-profile-slate-pocket-v1r.txt
+    - reports/slate-pocket-v1r-thermal-consequence.txt
+    - reports/slate-pocket-v1r-engineering-intelligence.txt
+    affected gate decisions:
+    - thermal consequence screening decision
+    downstream decisions:
+    - runtime feasibility screening
+    - battery packaging tradeoff
+    - thermal consequence screening decision
+    Evidence required:
+    - battery cell datasheet
+    - pack construction drawing
+    - discharge curve
+    - cycle-life data
+    notes:
+      Capacity is retained in v1R even though battery volume is reduced, making density and runtime evidence critical.
+  - max_skin_temp_c
+    value: 43 C
+    profile_scope: both
+    confidence: estimate
+    maturity: screening
+    fragility rating: CRITICAL
+    affected engineering domains:
+    - skin temperature
+    - thermal controls
+    - environment
+    - user comfort
+    affected generated reports:
+    - reports/device-profile-slate-pocket-v1.txt
+    - reports/device-profile-slate-pocket-v1r.txt
+    - reports/slate-pocket-v1r-thermal-consequence.txt
+    - reports/slate-pocket-v1r-engineering-intelligence.txt
+    affected gate decisions:
+    - thermal consequence screening decision
+    downstream decisions:
+    - thermal consequence screening decision
+    - throttle policy decision
+    - operating condition policy
+    Evidence required:
+    - thermocouple map
+    - thermal chamber data
+    - workload profile
+    notes:
+      The 43 C target is a screening comfort limit, not compliance evidence.
+  - memory_capacity_gb
+    value: 512 GB
+    profile_scope: both
+    confidence: placeholder
+    maturity: concept
+    fragility rating: CRITICAL
+    affected engineering domains:
+    - memory packaging
+    - runtime memory
+    - routing
+    - power
+    - thermal
+    affected generated reports:
+    - reports/device-profile-slate-pocket-v1.txt
+    - reports/device-profile-slate-pocket-v1r.txt
+    - reports/profile-comparisons/comparison-report.txt
+    - reports/slate-pocket-v1r-engineering-intelligence.txt
+    - reports/audit/coverage-gap-report.md
+    affected gate decisions:
+    - none
+    downstream decisions:
+    - runtime memory feasibility screening
+    - PCB routing review
+    - component sourcing decision
+    Evidence required:
+    - memory supplier package data
+    - routing escape study
+    - memory power telemetry
+    - thermal placement review
+    notes:
+      The capacity target may dominate package count, routing pressure, power, thermal behavior, and sourcing risk.
+  - peak_compute_w
+    value: 45 W
+    profile_scope: both
+    confidence: placeholder
+    maturity: concept
+    fragility rating: CRITICAL
+    affected engineering domains:
+    - thermal transient
+    - power delivery
+    - SoC package
+    - battery current
+    affected generated reports:
+    - reports/device-profile-slate-pocket-v1.txt
+    - reports/device-profile-slate-pocket-v1r.txt
+    - reports/slate-pocket-v1r-thermal-consequence.txt
+    - reports/slate-pocket-v1r-engineering-intelligence.txt
+    affected gate decisions:
+    - none
+    downstream decisions:
+    - power delivery review
+    - thermal hotspot screening decision
+    - battery current margin
+    Evidence required:
+    - SoC package spec
+    - peak workload telemetry
+    - regulator transient test
+    notes:
+      Peak compute stress can break power delivery and hotspot assumptions before average thermal density changes.
+  - storage_capacity_tb
+    value: 4 TB
+    profile_scope: both
+    confidence: placeholder
+    maturity: concept
+    fragility rating: CRITICAL
+    affected engineering domains:
+    - storage packaging
+    - thermal
+    - power
+    - sourcing
+    affected generated reports:
+    - reports/device-profile-slate-pocket-v1.txt
+    - reports/device-profile-slate-pocket-v1r.txt
+    - reports/profile-comparisons/comparison-report.txt
+    - reports/slate-pocket-v1r-engineering-intelligence.txt
+    affected gate decisions:
+    - none
+    downstream decisions:
+    - storage package sourcing decision
+    - PCB placement review
+    - thermal hotspot screening decision
+    Evidence required:
+    - storage package spec
+    - sustained write telemetry
+    - package height drawing
+    notes:
+      Multi-TB storage is package-height, heat, cost, and availability constrained in the target form factor.
+  - wireless_charging_enabled
+    value: true
+    profile_scope: both
+    confidence: estimate
+    maturity: screening
+    fragility rating: CRITICAL
+    affected engineering domains:
+    - wireless charging
+    - thermal
+    - thickness stackup
+    - RF
+    affected generated reports:
+    - reports/device-profile-slate-pocket-v1.txt
+    - reports/device-profile-slate-pocket-v1r.txt
+    - reports/slate-pocket-thickness-budget.txt
+    - reports/audit/coverage-gap-report.md
+    affected gate decisions:
+    - none
+    downstream decisions:
+    - charging overlap policy
+    - thermal throttling policy
+    - RF/material stack review
+    Evidence required:
+    - charging coil drawing
+    - ferrite shield spec
+    - charging heat telemetry
+    notes:
+      Wireless charging adds z-height, heat, shielding, alignment, and rear-material constraints.
+  - npu_tops
+    value: 100 TOPS
+    profile_scope: both
+    confidence: placeholder
+    maturity: concept
+    fragility rating: CRITICAL
+    affected engineering domains:
+    - compute capability
+    - SoC sourcing
+    - memory bandwidth
+    - power
+    affected generated reports:
+    - reports/device-profile-slate-pocket-v1.txt
+    - reports/device-profile-slate-pocket-v1r.txt
+    - reports/audit/coverage-gap-report.md
+    affected gate decisions:
+    - none
+    downstream decisions:
+    - compute architecture screening
+    - SoC supplier shortlist
+    - local AI capability claim
+    Evidence required:
+    - SoC package spec
+    - benchmark disclosure
+    - sustained TOPS telemetry
+    notes:
+      TOPS is capability context, not proof of sustained local AI performance in the pocket envelope.

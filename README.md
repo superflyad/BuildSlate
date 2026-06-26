@@ -147,6 +147,18 @@ python engineering/intelligence/generate_engineering_intelligence_report.py
 
 The generator writes `reports/slate-pocket-v1r-engineering-intelligence.txt` and demonstrates cross-report reasoning across the physical feasibility gate reports, physical recovery plan, v1R profile report, and thermal consequence report. It is not validated engineering proof and does not claim manufacturability, thermal validation, supplier readiness, prototype readiness, or production readiness.
 
+## Assumption Impact Engine v1
+
+BuildSlate includes a static assumption impact engine that tracks key Slate Pocket assumptions and explains which reports, gates, risks, and downstream decisions are affected when an assumption changes.
+
+Generate the assumption impact report with:
+
+```bash
+python engineering/assumptions/generate_assumption_impact_report.py
+```
+
+The generator writes `reports/slate-pocket-assumption-impact-report.txt` with ranked fragile assumptions, affected engineering domains, affected generated reports, affected gate decisions, evidence required, and plain-language "what breaks first" chains. This is a static traceability layer, not dynamic recomputation yet; it does not validate assumptions, recompute models, prove manufacturability, or replace CAD, supplier, thermal, or prototype evidence.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

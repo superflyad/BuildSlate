@@ -1,0 +1,97 @@
+Slate Pocket v1R Thermal Consequence Screening
+================================================
+
+Scope:
+  compare: slate-pocket-v1 -> slate-pocket-v1r
+  purpose: evaluate whether the v1R physical recovery changes thermal risk posture before detailed thermal modeling
+  input basis: device profiles, physical feasibility gate outputs, and centralized geometry/thermal formulas
+
+v1 baseline summary:
+  profile_id: slate-pocket-v1
+  label: canonical
+  physical gate: BLOCKED_BY_MULTIPLE_CONSTRAINTS
+  external surface area: 390.4 cm^2
+  external envelope volume: 150.5 cm^3
+  usable internal volume: 108,345.6 mm^3 (108.35 cm^3)
+  volume allocation: 98.2%
+  thickness: 8.80 mm
+  thickness consumption: 110.2%
+  thickness margin: -0.90 mm
+  sustained compute target: 28.0 W
+  peak compute target: 45.0 W
+  estimated heat density: 0.186 W/cm^3
+  estimated heat flux: 0.072 W/cm^2
+  battery target: 6000 mAh at 3.85 V
+  battery physical volume: 40,824.0 mm^3 (40.82 cm^3)
+  implied battery density: 566 Wh/L
+  cooling strategy: passive_spreading
+
+v1R recovery summary:
+  profile_id: slate-pocket-v1r
+  label: recovery
+  physical gate: CONDITIONAL_PASS
+  external surface area: 394.2 cm^2
+  external envelope volume: 162.4 cm^3
+  usable internal volume: 120,315.6 mm^3 (120.32 cm^3)
+  volume allocation: 78.4%
+  thickness: 9.50 mm
+  thickness consumption: 98.4%
+  thickness margin: 0.15 mm
+  sustained compute target: 28.0 W
+  peak compute target: 45.0 W
+  estimated heat density: 0.172 W/cm^3
+  estimated heat flux: 0.071 W/cm^2
+  battery target: 6000 mAh at 3.85 V
+  battery physical volume: 28,824.0 mm^3 (28.82 cm^3)
+  implied battery density: 801 Wh/L
+  cooling strategy: passive_spreading
+
+Comparison table:
+| Metric | slate-pocket-v1 | slate-pocket-v1r | Change |
+| --- | ---: | ---: | ---: |
+| external surface area | 390.4 cm^2 | 394.2 cm^2 | +3.85 cm^2 |
+| usable internal volume | 108.35 cm^3 | 120.32 cm^3 | +11.97 cm^3 (+11.05%) |
+| thickness | 8.80 mm | 9.50 mm | +0.70 mm |
+| estimated heat density | 0.186 W/cm^3 | 0.172 W/cm^3 | -0.01 W/cm^3 (-7.37%) |
+| estimated heat flux | 0.072 W/cm^2 | 0.071 W/cm^2 | -0.00 W/cm^2 (-0.98%) |
+| sustained compute target | 28.0 W | 28.0 W | unchanged |
+| peak compute target | 45.0 W | 45.0 W | unchanged |
+| battery physical volume | 40.82 cm^3 | 28.82 cm^3 | -12.00 cm^3 (-29.39%) |
+
+Battery volume/capacity tradeoff:
+  battery volume change: -12,000.0 mm^3 (-12.00 cm^3) (-29.39%)
+  same-density capacity estimate: 4236 mAh
+  interpretation: v1R keeps the 6000 mAh target while reducing first-pass battery physical volume; that either requires higher validated cell energy density or implies a lower capacity/runtime target if density is unchanged.
+
+Thermal module implication:
+  v1R has more z-height and internal layout headroom for spreader/TIM routing, but the thermal module cannot be credited without CAD geometry, material stack, interfaces, and measured power data.
+
+Skin temperature risk direction:
+  improved
+
+Thermal consequence decision:
+  THERMAL_DECISION: THERMAL_POSTURE_IMPROVED
+  decision confidence: screening-level only
+  basis:
+    - Increased thickness with unchanged compute target can improve spreading volume, but does not prove lower skin temperature.
+    - Reduced battery volume creates possible layout freedom, but may reduce runtime or require higher C-rate if capacity is not retained.
+    - Heat density decreases and thickness margin improves, so the screening-level posture is improved before validation.
+    - Estimated heat flux also decreases slightly because external surface area increases.
+    - Battery-volume reduction remains a major unresolved tradeoff rather than a validated thermal benefit.
+
+Major unknowns:
+  - Effective heat-spreading area is unknown; rectangular external area is not the same as useful thermal area.
+  - Thermal module geometry, vapor chamber behavior, TIM stack, and contact pressure are not defined.
+  - SoC/NPU sustained and peak power telemetry are targets, not measured workload heat.
+  - Battery-volume reduction may affect cell impedance, C-rate, charging heat, runtime, and safety margins.
+  - Hand contact, orientation, enclosure materials, controls, and ambient conditions are not validated.
+
+Required evidence before thermal validation:
+  - thermal module CAD
+  - TIM selection
+  - SoC power telemetry
+  - skin thermocouple map
+  - CFD or FEA model
+
+Caveat:
+  This is thermal consequence screening only. It does not claim thermal validation, skin-temperature compliance, thermal module performance, CFD/FEA correlation, supplier readiness, or prototype behavior.

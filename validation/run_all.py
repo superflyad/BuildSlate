@@ -23,6 +23,7 @@ VALIDATION_CHECKS = (
     "validation/validate_cad_envelope_volume_registry.py",
     "validation/validate_physical_feasibility_gate.py",
     "validation/validate_physical_recovery_planner.py",
+    "validation/validate_thermal_consequence_screening.py",
 )
 
 

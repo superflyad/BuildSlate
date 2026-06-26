@@ -123,6 +123,18 @@ python engineering/recovery/generate_physical_recovery_report.py
 
 The generator writes `reports/slate-pocket-physical-recovery-plan.txt` with the current blocked state, current volume allocation, current thickness consumption, single-scenario results, top combined recovery paths, and a recommended recovery path. These are screening-level tradeoffs, not validated design changes.
 
+## Thermal Consequence Screening
+
+BuildSlate includes a Slate Pocket v1R thermal consequence screen for use after physical recovery and before detailed thermal modeling. It compares the original `slate-pocket-v1` profile with the recovered `slate-pocket-v1r` profile using available profile geometry, physical gate outputs, and first-pass heat density / heat flux formulas.
+
+Generate the thermal consequence report with:
+
+```bash
+python engineering/thermal_consequence/generate_thermal_consequence_report.py
+```
+
+The generator writes `reports/slate-pocket-v1r-thermal-consequence.txt` with the v1 baseline, v1R recovery summary, side-by-side thermal comparison, battery volume/capacity tradeoff, thermal module implication, thermal posture decision, major unknowns, and required evidence before thermal validation. This is a screening step only; it does not claim skin-temperature validation, CFD/FEA results, thermal module performance, or prototype behavior.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

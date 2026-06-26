@@ -1,0 +1,461 @@
+Slate Pocket Engineering Risk Register v1
+==========================================
+
+Executive risk summary:
+  scope: Slate Pocket v1 and v1R
+  purpose: rank fragile assumptions, physical gate failures, recovery tradeoffs, and thermal consequence findings as engineering risks
+  total risks: 13
+  severity counts: CRITICAL=6, HIGH=5, MEDIUM=2, LOW=0
+  status counts: blocked=6, open=6, monitoring=1, mitigated=0, accepted=0
+  highest ranked risk: memory_packaging_512gb - CRITICAL - score=14 (likelihood 4 x impact 3 + maturity penalty 2)
+  register source: engineering\risks\risk_register.yaml
+
+Caveat:
+  This is a screening-level risk register, not formal FMEA, validation evidence, supplier approval, or production readiness evidence.
+
+Scoring method:
+  low=1, medium=2, high=3, critical=4
+  maturity penalty: concept=+2, screening=+1, first_order=+0.5, calibrated=+0, validated=-1
+  total score = likelihood_score * impact_score + maturity_penalty
+  severity: CRITICAL >= 13, HIGH >= 8, MEDIUM >= 4, LOW < 4
+
+Top 10 risks:
+  1. memory_packaging_512gb - CRITICAL - score=14 (likelihood 4 x impact 3 + maturity penalty 2)
+     title: 512 GB memory packaging
+     subsystem: memory
+     status: blocked
+     profile_scope: both
+  2. npu_100_tops_sustained - CRITICAL - score=14 (likelihood 4 x impact 3 + maturity penalty 2)
+     title: 100 TOPS sustained NPU claim
+     subsystem: compute
+     status: blocked
+     profile_scope: both
+  3. sustained_compute_power - CRITICAL - score=14 (likelihood 3 x impact 4 + maturity penalty 2)
+     title: Sustained compute power envelope
+     subsystem: compute
+     status: blocked
+     profile_scope: both
+  4. battery_volume_capacity_tradeoff - CRITICAL - score=13 (likelihood 3 x impact 4 + maturity penalty 1)
+     title: Battery volume and capacity tradeoff
+     subsystem: battery
+     status: blocked
+     profile_scope: both
+  5. manufacturability_yield_risk - CRITICAL - score=13 (likelihood 3 x impact 4 + maturity penalty 1)
+     title: Manufacturability and yield risk
+     subsystem: manufacturing
+     status: blocked
+     profile_scope: both
+  6. thickness_stackup_margin - CRITICAL - score=13 (likelihood 3 x impact 4 + maturity penalty 1)
+     title: Thickness stackup margin
+     subsystem: mechanical
+     status: blocked
+     profile_scope: both
+  7. storage_packaging_4tb - HIGH - score=11 (likelihood 3 x impact 3 + maturity penalty 2)
+     title: 4 TB storage packaging
+     subsystem: storage
+     status: open
+     profile_scope: both
+  8. skin_temperature_target_43c - HIGH - score=10 (likelihood 3 x impact 3 + maturity penalty 1)
+     title: 43 C skin-temperature target
+     subsystem: thermal
+     status: open
+     profile_scope: both
+  9. thermal_module_effectiveness - HIGH - score=10 (likelihood 3 x impact 3 + maturity penalty 1)
+     title: Thermal module effectiveness
+     subsystem: thermal
+     status: open
+     profile_scope: both
+  10. pcb_routing_density - HIGH - score=9.5 (likelihood 3 x impact 3 + maturity penalty 0.5)
+     title: PCB routing density
+     subsystem: pcb
+     status: open
+     profile_scope: both
+
+Blocked/critical risks:
+  - memory_packaging_512gb - CRITICAL - blocked - score=14 (likelihood 4 x impact 3 + maturity penalty 2)
+    why it matters: The memory target can drive package area, routing layers, heat, power, sourcing, and local AI runtime claims.
+  - npu_100_tops_sustained - CRITICAL - blocked - score=14 (likelihood 4 x impact 3 + maturity penalty 2)
+    why it matters: TOPS alone does not prove sustained inference performance, memory fit, bandwidth, or thermal viability in the pocket form factor.
+  - sustained_compute_power - CRITICAL - blocked - score=14 (likelihood 3 x impact 4 + maturity penalty 2)
+    why it matters: Sustained compute power is still a concept-level heat input and can dominate thermal, power delivery, runtime, and skin-temperature feasibility.
+  - battery_volume_capacity_tradeoff - CRITICAL - blocked - score=13 (likelihood 3 x impact 4 + maturity penalty 1)
+    why it matters: v1R recovers physical volume partly by reducing battery volume while preserving the capacity target, so the risk shifts into density, C-rate, heat, swelling, and safety evidence.
+  - manufacturability_yield_risk - CRITICAL - blocked - score=13 (likelihood 3 x impact 4 + maturity penalty 1)
+    why it matters: Physical recovery can improve screening margins without proving assembly yield, serviceability, or production repeatability.
+  - thickness_stackup_margin - CRITICAL - blocked - score=13 (likelihood 3 x impact 4 + maturity penalty 1)
+    why it matters: v1 was blocked by thickness consumption, and v1R adds thickness as a recovery lever rather than proving local z-height clearance.
+
+All risk entries grouped by subsystem:
+  battery:
+    - battery_volume_capacity_tradeoff: Battery volume and capacity tradeoff
+      severity: CRITICAL
+      status: blocked
+      profile_scope: both
+      likelihood: high (3)
+      impact: critical (4)
+      maturity: screening (penalty 1)
+      total risk score: 13
+      affected reports:
+      - reports/slate-pocket-volume-budget.txt
+      - reports/slate-pocket-physical-recovery-plan.txt
+      - reports/slate-pocket-v1r-thermal-consequence.txt
+      - reports/slate-pocket-v1r-engineering-intelligence.txt
+      - reports/slate-pocket-assumption-impact-report.txt
+      related assumptions:
+      - battery_capacity_mah
+      - battery_volume_mm3
+      - internal_usable_volume_factor
+      notes:
+        v1R recovers physical volume partly by reducing battery volume while preserving the capacity target, so the risk shifts into density, C-rate, heat, swelling, and safety evidence.
+  charging:
+    - wireless_charging_packaging: Wireless charging packaging
+      severity: MEDIUM
+      status: monitoring
+      profile_scope: both
+      likelihood: high (3)
+      impact: medium (2)
+      maturity: screening (penalty 1)
+      total risk score: 7
+      affected reports:
+      - reports/device-profile-slate-pocket-v1.txt
+      - reports/device-profile-slate-pocket-v1r.txt
+      - reports/slate-pocket-thickness-budget.txt
+      - reports/slate-pocket-assumption-impact-report.txt
+      - reports/audit/coverage-gap-report.md
+      related assumptions:
+      - wireless_charging_enabled
+      - device_thickness_mm
+      notes:
+        Wireless charging adds z-height, heat, shielding, and RF/material coupling that can conflict with thin-package recovery.
+  compute:
+    - npu_100_tops_sustained: 100 TOPS sustained NPU claim
+      severity: CRITICAL
+      status: blocked
+      profile_scope: both
+      likelihood: critical (4)
+      impact: high (3)
+      maturity: concept (penalty 2)
+      total risk score: 14
+      affected reports:
+      - reports/device-profile-slate-pocket-v1.txt
+      - reports/device-profile-slate-pocket-v1r.txt
+      - reports/slate-pocket-v1r-engineering-intelligence.txt
+      - reports/slate-pocket-assumption-impact-report.txt
+      - reports/audit/coverage-gap-report.md
+      related assumptions:
+      - npu_tops
+      - sustained_compute_w
+      - memory_capacity_gb
+      notes:
+        TOPS alone does not prove sustained inference performance, memory fit, bandwidth, or thermal viability in the pocket form factor.
+    - sustained_compute_power: Sustained compute power envelope
+      severity: CRITICAL
+      status: blocked
+      profile_scope: both
+      likelihood: high (3)
+      impact: critical (4)
+      maturity: concept (penalty 2)
+      total risk score: 14
+      affected reports:
+      - reports/device-profile-slate-pocket-v1.txt
+      - reports/device-profile-slate-pocket-v1r.txt
+      - reports/slate-pocket-v1r-thermal-consequence.txt
+      - reports/slate-pocket-v1r-engineering-intelligence.txt
+      - reports/slate-pocket-assumption-impact-report.txt
+      related assumptions:
+      - sustained_compute_w
+      - peak_compute_w
+      - npu_tops
+      notes:
+        Sustained compute power is still a concept-level heat input and can dominate thermal, power delivery, runtime, and skin-temperature feasibility.
+  manufacturing:
+    - manufacturability_yield_risk: Manufacturability and yield risk
+      severity: CRITICAL
+      status: blocked
+      profile_scope: both
+      likelihood: high (3)
+      impact: critical (4)
+      maturity: screening (penalty 1)
+      total risk score: 13
+      affected reports:
+      - reports/slate-pocket-physical-feasibility-gate.txt
+      - reports/slate-pocket-v1r-physical-feasibility-gate.txt
+      - reports/slate-pocket-physical-recovery-plan.txt
+      - reports/slate-pocket-v1r-engineering-intelligence.txt
+      - reports/audit/coverage-gap-report.md
+      related assumptions:
+      - device_thickness_mm
+      - internal_usable_volume_factor
+      - battery_volume_mm3
+      - wireless_charging_enabled
+      notes:
+        Physical recovery can improve screening margins without proving assembly yield, serviceability, or production repeatability.
+  mechanical:
+    - thickness_stackup_margin: Thickness stackup margin
+      severity: CRITICAL
+      status: blocked
+      profile_scope: both
+      likelihood: high (3)
+      impact: critical (4)
+      maturity: screening (penalty 1)
+      total risk score: 13
+      affected reports:
+      - reports/slate-pocket-thickness-budget.txt
+      - reports/slate-pocket-physical-feasibility-gate.txt
+      - reports/slate-pocket-v1r-physical-feasibility-gate.txt
+      - reports/slate-pocket-physical-recovery-plan.txt
+      - reports/slate-pocket-assumption-impact-report.txt
+      related assumptions:
+      - device_thickness_mm
+      - thermal_module_thickness_mm
+      - wireless_charging_enabled
+      notes:
+        v1 was blocked by thickness consumption, and v1R adds thickness as a recovery lever rather than proving local z-height clearance.
+  memory:
+    - memory_packaging_512gb: 512 GB memory packaging
+      severity: CRITICAL
+      status: blocked
+      profile_scope: both
+      likelihood: critical (4)
+      impact: high (3)
+      maturity: concept (penalty 2)
+      total risk score: 14
+      affected reports:
+      - reports/device-profile-slate-pocket-v1.txt
+      - reports/device-profile-slate-pocket-v1r.txt
+      - reports/profile-comparisons/comparison-report.txt
+      - reports/slate-pocket-v1r-engineering-intelligence.txt
+      - reports/slate-pocket-assumption-impact-report.txt
+      - reports/audit/coverage-gap-report.md
+      related assumptions:
+      - memory_capacity_gb
+      - sustained_compute_w
+      notes:
+        The memory target can drive package area, routing layers, heat, power, sourcing, and local AI runtime claims.
+  pcb:
+    - pcb_routing_density: PCB routing density
+      severity: HIGH
+      status: open
+      profile_scope: both
+      likelihood: high (3)
+      impact: high (3)
+      maturity: first_order (penalty 0.5)
+      total risk score: 9.5
+      affected reports:
+      - reports/device-profile-slate-pocket-v1.txt
+      - reports/device-profile-slate-pocket-v1r.txt
+      - reports/slate-pocket-v1r-engineering-intelligence.txt
+      - reports/audit/coverage-gap-report.md
+      related assumptions:
+      - memory_capacity_gb
+      - storage_capacity_tb
+      - npu_tops
+      notes:
+        Current interconnect screening can flag density pressure, but it is not a routed board or supplier package plan.
+  power:
+    - power_delivery_transients: Power delivery transients
+      severity: HIGH
+      status: open
+      profile_scope: both
+      likelihood: high (3)
+      impact: high (3)
+      maturity: first_order (penalty 0.5)
+      total risk score: 9.5
+      affected reports:
+      - reports/device-profile-slate-pocket-v1.txt
+      - reports/device-profile-slate-pocket-v1r.txt
+      - reports/slate-pocket-v1r-engineering-intelligence.txt
+      - reports/slate-pocket-assumption-impact-report.txt
+      related assumptions:
+      - peak_compute_w
+      - sustained_compute_w
+      - battery_volume_mm3
+      notes:
+        Peak compute stress can break voltage margin and thermal assumptions before average power budgets appear infeasible.
+  rf:
+    - rf_antenna_window_constraints: RF antenna window constraints
+      severity: MEDIUM
+      status: open
+      profile_scope: both
+      likelihood: medium (2)
+      impact: high (3)
+      maturity: screening (penalty 1)
+      total risk score: 7
+      affected reports:
+      - reports/device-profile-slate-pocket-v1.txt
+      - reports/device-profile-slate-pocket-v1r.txt
+      - reports/slate-pocket-v1r-engineering-intelligence.txt
+      - reports/audit/coverage-gap-report.md
+      related assumptions:
+      - wireless_charging_enabled
+      - device_thickness_mm
+      notes:
+        The mechanical recovery path can close physical gaps while still leaving RF window and coexistence constraints unresolved.
+  storage:
+    - storage_packaging_4tb: 4 TB storage packaging
+      severity: HIGH
+      status: open
+      profile_scope: both
+      likelihood: high (3)
+      impact: high (3)
+      maturity: concept (penalty 2)
+      total risk score: 11
+      affected reports:
+      - reports/device-profile-slate-pocket-v1.txt
+      - reports/device-profile-slate-pocket-v1r.txt
+      - reports/profile-comparisons/comparison-report.txt
+      - reports/slate-pocket-v1r-engineering-intelligence.txt
+      - reports/slate-pocket-assumption-impact-report.txt
+      related assumptions:
+      - storage_capacity_tb
+      notes:
+        Multi-TB storage creates package-height, thermal, cost, and sourcing risk inside the recovered envelope.
+  thermal:
+    - skin_temperature_target_43c: 43 C skin-temperature target
+      severity: HIGH
+      status: open
+      profile_scope: both
+      likelihood: high (3)
+      impact: high (3)
+      maturity: screening (penalty 1)
+      total risk score: 10
+      affected reports:
+      - reports/slate-pocket-v1r-thermal-consequence.txt
+      - reports/slate-pocket-v1r-engineering-intelligence.txt
+      - reports/slate-pocket-assumption-impact-report.txt
+      related assumptions:
+      - max_skin_temp_c
+      - sustained_compute_w
+      - thermal_module_thickness_mm
+      notes:
+        The target is a screening comfort limit; it is not compliance evidence or proof of sustained compute usability.
+    - thermal_module_effectiveness: Thermal module effectiveness
+      severity: HIGH
+      status: open
+      profile_scope: both
+      likelihood: high (3)
+      impact: high (3)
+      maturity: screening (penalty 1)
+      total risk score: 10
+      affected reports:
+      - reports/slate-pocket-v1r-thermal-consequence.txt
+      - reports/slate-pocket-v1r-engineering-intelligence.txt
+      - reports/slate-pocket-assumption-impact-report.txt
+      - reports/audit/coverage-gap-report.md
+      related assumptions:
+      - thermal_module_thickness_mm
+      - sustained_compute_w
+      - max_skin_temp_c
+      notes:
+        Current package allocation does not prove contact quality, spreading resistance, hotspot control, or exterior skin behavior.
+
+Evidence required:
+  - memory_packaging_512gb:
+    - Memory supplier package data
+    - Routing escape study
+    - Memory power telemetry
+    - Thermal placement review
+  - npu_100_tops_sustained:
+    - SoC package spec
+    - Benchmark disclosure
+    - Sustained TOPS telemetry
+    - Memory bandwidth and thermal throttle characterization
+  - sustained_compute_power:
+    - Sustained power telemetry
+    - Target workload definition
+    - SoC package and power mode disclosure
+    - Thermal chamber run with throttling enabled
+  - battery_volume_capacity_tradeoff:
+    - Battery cell datasheet
+    - Pack construction drawing
+    - Swelling allowance and safety spacing review
+    - Runtime and discharge telemetry for target workloads
+  - manufacturability_yield_risk:
+    - DFM review
+    - Tolerance stack and assembly plan
+    - Supplier package drawings
+    - Prototype build and yield data
+  - thickness_stackup_margin:
+    - Mechanical CAD stackup
+    - Tolerance stack review
+    - Supplier package height drawings
+    - Industrial design envelope approval
+  - storage_packaging_4tb:
+    - Storage package spec
+    - Sustained write telemetry
+    - Package height drawing
+    - Sourcing and availability review
+  - skin_temperature_target_43c:
+    - Skin thermocouple map
+    - Thermal chamber data
+    - Workload and ambient profiles
+    - User-contact operating policy
+  - thermal_module_effectiveness:
+    - Thermal module CAD
+    - TIM stack drawing
+    - Supplier thermal module datasheet
+    - CFD or FEA model correlated to test coupons
+  - pcb_routing_density:
+    - Board floorplan
+    - Routing escape study
+    - Stackup and layer-count proposal
+    - SI/PI review plan
+  - power_delivery_transients:
+    - Regulator transient test
+    - PMIC and battery current specs
+    - Decoupling plan
+    - Peak workload telemetry
+  - rf_antenna_window_constraints:
+    - Antenna keepout map
+    - Chassis material stack review
+    - RF simulation or chamber plan
+    - Wireless charging coexistence review
+  - wireless_charging_packaging:
+    - Charging coil drawing
+    - Ferrite shield spec
+    - Charging heat telemetry
+    - Rear material and alignment study
+
+Mitigation summary:
+  - memory_packaging_512gb:
+    - Replace capacity target with supplier-backed package count, height, bandwidth, and power options.
+    - Evaluate smaller memory configurations before coupling feasibility to 512 GB.
+  - npu_100_tops_sustained:
+    - Separate peak marketing TOPS from sustained local workload performance in reports.
+    - Require supplier disclosure and measured workloads before using the target as engineering evidence.
+  - sustained_compute_power:
+    - Define sustained workload classes and throttle policy before preserving headline compute targets.
+    - Re-score runtime and thermal reports after supplier-backed SoC power data is available.
+  - battery_volume_capacity_tradeoff:
+    - Re-baseline battery capacity against actual pack CAD, swelling allowance, and runtime targets.
+    - Evaluate lower-capacity and higher-thickness recovery variants before treating v1R as stable.
+  - manufacturability_yield_risk:
+    - Keep manufacturability status blocked until tolerance, assembly, serviceability, yield, and supplier package evidence exist.
+    - Convert high-pressure package assumptions into prototype build risks before committing to industrial design.
+  - thickness_stackup_margin:
+    - Replace placeholder z-height allocations with CAD stackup and supplier package drawings.
+    - Hold v1R thickness as provisional until tolerance stack and local zone conflicts are resolved.
+  - storage_packaging_4tb:
+    - Check package height, sustained write heat, availability, and cost against the pocket board area.
+    - Keep lower-capacity storage variants available during recovery screening.
+  - skin_temperature_target_43c:
+    - Treat 43 C as a throttle-policy boundary until prototype thermal maps exist.
+    - Screen hot ambient, hand contact, charging overlap, and pocket/bag operating states as separate limits.
+  - thermal_module_effectiveness:
+    - Screen vapor chamber, graphite, frame-coupled spreader, and TIM options against available z-height.
+    - Define a thermal test plan before claiming module adequacy.
+  - pcb_routing_density:
+    - Perform a placement and escape-route study for SoC, memory, storage, RF, PMIC, and flex interconnects.
+    - Reassess memory/storage targets if layer count or keepout pressure becomes excessive.
+  - power_delivery_transients:
+    - Size regulator, battery, and decoupling assumptions from peak transient workloads, not only average compute power.
+    - Require PI simulation or bench transients before accepting the compute envelope.
+  - rf_antenna_window_constraints:
+    - Reserve antenna keepouts and RF-transparent windows before finalizing chassis material or charging layout.
+    - Validate coexistence between rear material, wireless charging, frame conduction, and antenna zones.
+  - wireless_charging_packaging:
+    - Validate coil, ferrite, rear material, alignment, and charging heat as a coupled package.
+    - Consider making wireless charging optional if thickness or thermal margin remains blocked.
+
+Register caveat:
+  This is a screening-level risk register, not formal FMEA, validation evidence, supplier approval, or production readiness evidence.

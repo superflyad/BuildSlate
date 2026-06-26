@@ -159,6 +159,18 @@ python engineering/assumptions/generate_assumption_impact_report.py
 
 The generator writes `reports/slate-pocket-assumption-impact-report.txt` with ranked fragile assumptions, affected engineering domains, affected generated reports, affected gate decisions, evidence required, and plain-language "what breaks first" chains. This is a static traceability layer, not dynamic recomputation yet; it does not validate assumptions, recompute models, prove manufacturability, or replace CAD, supplier, thermal, or prototype evidence.
 
+## Engineering Risk Register v1
+
+BuildSlate includes a centralized engineering risk register for Slate Pocket v1 and v1R. It converts fragile assumptions, physical-feasibility gate failures, recovery-planning tradeoffs, and thermal consequence findings into ranked engineering risks with required evidence and mitigation notes.
+
+Generate the risk register report with:
+
+```bash
+python engineering/risks/generate_risk_report.py
+```
+
+The generator writes `reports/slate-pocket-risk-register.txt` with an executive risk summary, top ranked risks, subsystem grouping, blocked/critical risks, evidence requirements, and mitigation summary. This is the central risk view after physical and thermal screening. It is a screening-level risk register, not formal FMEA, validation evidence, supplier approval, manufacturability proof, or production readiness evidence.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

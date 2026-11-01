@@ -1,0 +1,120 @@
+metadata:
+  evidence_type: public_primary_source_screen
+  reviewed_on: 2026-10-31
+  status: available_not_verified
+  selection_metric: measured_workload_performance_per_watt
+
+slate_targets:
+  sustained_power_w: 28
+  peak_power_w: 45
+  npu_tops_aspirational: 100
+  memory_gb_aspirational: 512
+  memory_fallback_tiers_gb: [256, 128]
+
+candidates:
+  qualcomm_snapdragon_8_elite_gen_5:
+    platform_class: flagship_mobile
+    part_numbers: [SM8850-AC, SM8850-1-AD]
+    process_nm: 3
+    memory_type: LPDDR5X
+    maximum_memory_gb: 24
+    memory_speed_mhz: 5300
+    storage_interface: UFS_4_1
+    public_npu_tops: null
+    public_sustained_power_w: null
+    strengths:
+      - Mobile integration, cellular, Wi-Fi 7, Bluetooth 6.0, UWB, camera ISP, display, security, and UFS are integrated.
+      - Public brief supports INT2, INT4, INT8, INT16, FP8, and FP16 AI precisions.
+    blockers:
+      - Public maximum memory is 24 GB, below every locked Slate memory tier.
+      - Public brief does not provide sustained workload power, tokens per second, package drawing, or NPU TOPS.
+    disposition: mobile_architecture_reference_not_memory_fit
+    source:
+      url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Gen-5-product-brief.pdf
+      source_type: manufacturer_product_brief
+      accessed: 2026-10-31
+
+  qualcomm_snapdragon_x2_elite_extreme:
+    platform_class: client_pc
+    representative_part: X2E-96-100
+    process_nm: 3
+    npu_tops_int8: 80
+    memory_type: LPDDR5X
+    maximum_memory_gb: 128_plus
+    configured_capacity_gb_in_brief: 48
+    memory_bandwidth_gb_s: 228
+    storage_interfaces: [dual_pcie_5_0, UFS_4_0, SDUC_SD_Express]
+    on_device_display: eDP_1_5
+    public_sustained_power_w: null
+    strengths:
+      - Closest reviewed public platform to the locked 128 GB memory fallback.
+      - High documented memory bandwidth and dual PCIe storage paths.
+      - NPU is near, but below, the aspirational 100 TOPS headline.
+    blockers:
+      - Client-PC platform; public package, PMIC, board-area, and pocket thermal data are absent.
+      - Public documentation does not establish a 28 W sustained Slate workload.
+      - Detailed resources require verified-company access.
+    disposition: preferred_product_rfq_subject_to_package_and_power_evidence
+    source:
+      url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf
+      source_type: manufacturer_product_brief
+      accessed: 2026-10-31
+
+  amd_ryzen_ai_max_plus_395:
+    platform_class: high_power_client_pc
+    npu_tops: 50
+    maximum_unified_memory_gb: 128
+    tdp_range_w: [45, 120]
+    strengths:
+      - Public 128 GB systems and developer platform provide a software experimentation path.
+    blockers:
+      - Minimum published TDP exceeds Slate's 28 W sustained target.
+      - Client-PC package and cooling requirements are not pocket-compatible evidence.
+    disposition: external_prototype_reference_only
+    source:
+      url: https://www.amd.com/content/dam/amd/en/documents/partner-hub/ryzen/ryzen-consumer-master-quick-reference-competitive.pdf
+      source_type: manufacturer_product_guide
+      accessed: 2026-10-31
+
+  nvidia_jetson_agx_thor:
+    platform_class: robotics_edge_developer_platform
+    memory_gb: 128
+    power_range_w: [40, 130]
+    developer_kit_dimensions_mm: [243.19, 112.40, 56.88]
+    ai_compute_fp4_tflops: 2070
+    strengths:
+      - Available developer platform and software stack for model/workload characterization at 128 GB.
+    blockers:
+      - Minimum power and physical dimensions exceed Slate's envelope.
+      - FP4 TFLOPS cannot be compared directly with Qualcomm INT8 NPU TOPS.
+    disposition: bench_workload_reference_only
+    source:
+      url: https://developer.nvidia.com/blog/introducing-nvidia-jetson-thor-the-ultimate-platform-for-physical-ai
+      source_type: manufacturer_developer_documentation
+      accessed: 2026-10-31
+
+memory_supplier_context:
+  micron_mobile_lpddr5x:
+    public_capacity_range_gb: [8, 32]
+    public_status: 2026_flagship_offering_range
+    implication: Four 32 GB packages would be required for 128 GB before considering controller topology, routing, power, or thermals.
+    source:
+      url: https://investors.micron.com/news/press-release/2025/Micron-Ships-Worlds-First-1-1-Gamma-Based-LPDDR5X-Enabling-Rich-Mobile-AI-Experiences-06-03-2025/default.aspx
+      accessed: 2026-10-31
+  samsung_lpddr5x:
+    public_package_capacity_gb: 32
+    implication: Public package capacity supports a 128 GB four-package hypothesis, not a 512 GB pocket topology.
+    source:
+      url: https://semiconductor.samsung.com/dram/lpddr/lpddr5x/
+      accessed: 2026-10-31
+
+screening_conclusion:
+  selected_platform: null
+  preferred_product_rfq: qualcomm_snapdragon_x2_elite_extreme
+  preferred_memory_tier_for_rfq_gb: 128
+  external_bench_options: [amd_ryzen_ai_max_plus_395, nvidia_jetson_agx_thor]
+  unsupported_by_reviewed_candidates:
+    - 512 GB pocket memory topology
+    - 100 TOPS sustained NPU claim
+    - 28 W sustained workload with the X2 Elite platform
+  next_gate: NDA_package_power_software_and_supply_review

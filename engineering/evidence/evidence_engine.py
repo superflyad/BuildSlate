@@ -153,6 +153,30 @@ def validate_registry(registry: dict[str, Any]) -> None:
 
     _validate_dependency_graph(packages)
 
+    for package_id, entry in packages.items():
+        if entry["status"] not in {"in_progress", "available", "verified"}:
+            continue
+        incomplete_dependencies = [
+            dependency
+            for dependency in entry["depends_on"]
+            if packages[dependency]["status"] != "verified"
+        ]
+        if incomplete_dependencies:
+            raise ValueError(
+                f"{package_id} may not be {entry['status']} until dependencies are verified: "
+                f"{', '.join(incomplete_dependencies)}"
+            )
+        if entry["status"] in {"available", "verified"}:
+            expected_artifacts = _require_string_list(entry, "expected_artifacts", package_id)
+            missing_artifacts = [
+                artifact for artifact in expected_artifacts if not (REPO_ROOT / artifact).exists()
+            ]
+            if missing_artifacts:
+                raise ValueError(
+                    f"{package_id} is {entry['status']} but expected artifacts are missing: "
+                    f"{', '.join(missing_artifacts)}"
+                )
+
 
 def build_packages(registry: dict[str, Any] | None = None) -> tuple[EvidencePackage, ...]:
     """Build ordered evidence-package rows."""

@@ -1,0 +1,64 @@
+Slate Pocket Phase 1 Public Candidate Screen
+============================================
+
+Scope:
+  baseline: slate-pocket-v1r
+  evidence basis: public manufacturer product pages, briefs, catalogs, and technical specifications
+  review date: 2026-10-31
+  purpose: narrow supplier conversations without claiming component selection
+
+Executive decisions:
+  battery: retain 6000 mAh conditionally; pursue a custom Enovix AI-1-class RFQ; do not select a pack
+  charging: replace 100 W as a hard requirement with the highest supplier-validated level
+  compute: advance Snapdragon X2 Elite Extreme to supplier/NDA review at the 128 GB fallback
+  memory: do not carry 512 GB into CAD as a credible first-build topology
+  display: issue RFQs; no exact public 7.5-inch 16:10 LTPO AMOLED module match was found
+  storage: use 1 TB as the reviewed single-package unit; 2 TB requires multi-device or NVMe architecture
+
+Battery screen:
+  target energy: 23.1 Wh
+  complete pack allocation: 28,824 mm^3
+  required complete-pack density: 801.4 Wh/L
+  100 W implied charge rate: 4.33C
+  - enovix_ai1_m01: capacity=exceeds_target, raw_volume=exceeds_target_pack_allocation_by_221_mm3, thickness=plausible_only_with_full_stackup_review, wired_100w_charge=unsupported_by_public_2c_rating
+  - enovix_ai1_platform: qualification_and_system_deployment_stage
+  - amprius_sa117: capacity=meets_6000_mah, energy=below_23_1_wh_target, thickness=reject_21_65_mm_diameter, wired_100w_charge=reject_public_max_is_0_7c
+  - panasonic_ncr2270b: capacity=meets_6000_mah, energy=below_23_1_wh_target, thickness=reject_21_8_mm_diameter
+  pack decision: capacity=retain_as_conditional; charge=fallback_to_highest_supplier_validated_level
+
+Compute and memory screen:
+  - qualcomm_snapdragon_8_elite_gen_5: memory=24 GB; AI metric=not_public; disposition=mobile_architecture_reference_not_memory_fit
+  - qualcomm_snapdragon_x2_elite_extreme: memory=128_plus GB; AI metric=80; disposition=preferred_product_rfq_subject_to_package_and_power_evidence
+  - amd_ryzen_ai_max_plus_395: memory=128 GB; AI metric=50; disposition=external_prototype_reference_only
+  - nvidia_jetson_agx_thor: memory=128 GB; AI metric=2070; disposition=bench_workload_reference_only
+  preferred product RFQ: qualcomm_snapdragon_x2_elite_extreme
+  preferred RFQ memory tier: 128 GB
+  unsupported by reviewed candidates:
+    - 512 GB pocket memory topology
+    - 100 TOPS sustained NPU claim
+    - 28 W sustained workload with the X2 Elite platform
+
+Display screen:
+  - samsung_foldable_oled_7_6: size_reference_not_flat_16_10_candidate
+  - tianma_foldable_ltpo_7_92: supplier_rfq_reference
+  - boe_tablet_portfolio: flat_panel_rfq_and_evt_reference
+  exact public match found: False
+  RFQ suppliers: BOE, Tianma, Samsung_Display
+
+Storage screen:
+  - samsung_ufs_5_0_1tb: 1 TB; leading_single_package_candidate_pending_samples_and_host_support
+  - kioxia_ufs_4_1_1tb: 1 TB; current_embedded_candidate
+  - micron_2650_1tb_2230: 1 TB; removable_or_separate_controller_fallback
+  maximum reviewed single-package capacity: 1 TB
+  4 TB target: unsupported_by_reviewed_mobile_packages
+
+Required supplier evidence before verification:
+  - Battery: custom cell and complete pack drawing, swelling, safety, charge curve, lifecycle, price, and supply commitment.
+  - Compute/memory: package and reference design, supported memory topology, PMIC/power telemetry, software access, and supply terms.
+  - Display: exact module outline, flex/interface, power curves, optical stack, availability, and lifecycle.
+  - Storage: host topology, sustained-write power/temperature, package availability, lifecycle, and multi-device support.
+
+PHASE1_DECISION: SUPPLIER_RFQ_REQUIRED
+
+Caveat:
+  Public product evidence narrows the search but does not constitute a supplier quote, component selection, package validation, benchmark, or supply commitment.

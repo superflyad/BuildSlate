@@ -1,0 +1,112 @@
+metadata:
+  evidence_type: public_primary_source_screen
+  reviewed_on: 2026-10-31
+  status: available_not_verified
+
+display_target:
+  diagonal_in: 7.5
+  aspect_ratio: "16:10"
+  technology: AMOLED_LTPO
+  resolution: 3200x1800
+  refresh_hz: 120
+
+display_candidates:
+  samsung_foldable_oled_7_6:
+    supplier: Samsung Display
+    diagonal_in: 7.6
+    resolution: 2208x1768
+    technology: foldable_OLED
+    commercial_reference: Galaxy_Z_Fold2_and_later_foldables
+    disposition: size_reference_not_flat_16_10_candidate
+    gaps: [module_outline, thickness, flex, interface, power_curve, procurement]
+    source:
+      url: https://global.samsungdisplay.com/25871
+      source_type: manufacturer_release
+      accessed: 2026-10-31
+
+  tianma_foldable_ltpo_7_92:
+    supplier: Tianma
+    diagonal_in: 7.92
+    technology: foldable_OLED_LTPO
+    pixels_per_inch: 402
+    disposition: supplier_rfq_reference
+    gaps: [resolution, module_outline, thickness, flex, interface, power_curve, production_status, procurement]
+    source:
+      url: https://usa.tianma.com/wp-content/uploads/2024/12/Tianma-Smart-Phone-Technology-at-Display-Week-2024-1.pdf
+      source_type: manufacturer_exhibition_brief
+      accessed: 2026-10-31
+
+  boe_tablet_portfolio:
+    supplier: BOE
+    public_size_range_in: [7.0, 18.5]
+    reference_product: 8.4_inch_WUXGA_TDDI
+    technologies: [tablet_display, TDDI, narrow_border, low_power]
+    disposition: flat_panel_rfq_and_evt_reference
+    gaps: [exact_7_5_part, AMOLED_LTPO_confirmation, 16_10_resolution, module_outline, power_curve]
+    source:
+      url: https://www.boe.com/en/Enterprise/TabletDisplay
+      source_type: manufacturer_product_portfolio
+      accessed: 2026-10-31
+
+display_conclusion:
+  selected_candidate: null
+  exact_public_match_found: false
+  rfq_suppliers: [BOE, Tianma, Samsung_Display]
+  evt_fallback: supplier_available_7_to_8_4_inch_panel_even_if_resolution_or_technology_differs
+
+storage_target:
+  capacity_tb: 4
+  fallback_tb: 2
+  preferred_class: embedded_mobile_storage
+
+storage_candidates:
+  samsung_ufs_5_0_1tb:
+    supplier: Samsung Semiconductor
+    capacity_tb: 1
+    interface: UFS_5_0_G6_2Lane
+    package_mm: [7.5, 13.0, 0.9]
+    sequential_read_gb_s: 10.8
+    sequential_write_gb_s: 9.5
+    public_production_timing: Q4_2026
+    disposition: leading_single_package_candidate_pending_samples_and_host_support
+    sources:
+      - url: https://semiconductor.samsung.com/estorage/ufs/
+        accessed: 2026-10-31
+      - url: https://news.samsung.com/global/samsung-unveils-industrys-fastest-ufs-5-0-solution-for-next-gen-on-device-ai-applications
+        accessed: 2026-10-31
+
+  kioxia_ufs_4_1_1tb:
+    supplier: KIOXIA
+    part_number: THGJFRT3E88BATW
+    capacity_tb: 1
+    interface: UFS_4_1
+    max_data_rate_mb_s: 4640
+    package_mm: [9.0, 13.0, 0.85]
+    operating_temperature_c: [-25, 85]
+    disposition: current_embedded_candidate
+    source:
+      url: https://apac.kioxia.com/en-apac/business/memory/mlc-nand/ufs4.html
+      source_type: manufacturer_product_table
+      accessed: 2026-10-31
+
+  micron_2650_1tb_2230:
+    supplier: Micron
+    series: 2650_NVMe
+    capacity_tb: 1
+    interface: PCIe_Gen4_NVMe
+    form_factor: M_2_2230
+    dimensions_mm: [22.0, 30.0, 1.5]
+    mass_g_max: 10
+    disposition: removable_or_separate_controller_fallback
+    source:
+      url: https://assets.micron.com/adobe/assets/urn:aaid:aem:25c43d17-622f-4be5-a33f-8e599da55043/renditions/original/as/2650-nvme-ssd-tech-prod-spec.pdf
+      source_type: manufacturer_technical_specification
+      accessed: 2026-10-31
+
+storage_conclusion:
+  selected_candidate: null
+  maximum_reviewed_single_package_capacity_tb: 1
+  two_tb_fallback_requires: multiple_storage_devices_or_larger_nvme_candidate_and_host_architecture_review
+  four_tb_target_status: unsupported_by_reviewed_mobile_packages
+  preferred_rfq_order: [Samsung_UFS_5_0, KIOXIA_UFS_4_1, compact_NVMe]
+  unresolved: [host_multi_device_support, sustained_write_power, thermal_throttling, board_area, lifecycle, availability, cost]

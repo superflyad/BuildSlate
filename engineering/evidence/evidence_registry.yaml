@@ -41,8 +41,8 @@ packages:
     title: Obtain a supplier-backed battery package
     phase: 1
     priority: critical
-    status: missing
-    owner: unassigned
+    status: available
+    owner: BuildSlate engineering
     depends_on:
       - requirements_baseline
     linked_risks:
@@ -55,7 +55,7 @@ packages:
       - Volumetric energy density is calculated from the complete pack envelope rather than bare-cell volume.
       - Discharge, charge-rate, cycle-life, temperature, and certification constraints are recorded.
     expected_artifacts:
-      - research/evidence/battery/cell-datasheet.pdf
+      - research/evidence/battery/supplier-source-index.yaml
       - research/evidence/battery/pack-envelope.yaml
       - research/evidence/battery/evidence-review.md
     notes: This package tests whether the retained 6000 mAh target can coexist with the v1R battery volume.
@@ -64,8 +64,8 @@ packages:
     title: Select a credible SoC, NPU, and memory topology
     phase: 1
     priority: critical
-    status: missing
-    owner: unassigned
+    status: available
+    owner: BuildSlate engineering
     depends_on:
       - requirements_baseline
     linked_risks:
@@ -90,8 +90,8 @@ packages:
     title: Confirm display and storage package candidates
     phase: 1
     priority: high
-    status: missing
-    owner: unassigned
+    status: available
+    owner: BuildSlate engineering
     depends_on:
       - requirements_baseline
     linked_risks:

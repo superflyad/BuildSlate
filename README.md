@@ -183,6 +183,16 @@ python engineering/evidence/generate_evidence_readiness_report.py
 
 The generator writes `reports/slate-pocket-evidence-readiness.txt` with the current program decision, status counts, unblocked work that can be attacked now, phase-by-phase packages, and explicit gate rules. The execution sequence and phase exits are documented in `docs/engineering/execution_roadmap.md`. An artifact only satisfies the gate after it meets every acceptance criterion and is marked `verified`; the existence of a file alone is not engineering proof.
 
+Phase 1 public-source candidate evidence lives under `research/evidence/`. It records manufacturer sources, candidate specifications, calculated target pressure, dispositions, and unresolved supplier questions for battery, compute/memory, display, and storage. These packages may be marked `available` when the review artifacts exist, but they remain unverified until supplier access, package drawings, power/thermal evidence, availability, and integration constraints satisfy every acceptance criterion.
+
+Generate the consolidated Phase 1 candidate screen with:
+
+```bash
+python engineering/evidence/generate_phase1_candidate_report.py
+```
+
+The report is written to `reports/slate-pocket-phase1-candidate-screen.txt` and preserves the current conservative decision boundary: public evidence is sufficient to initiate supplier RFQs, not to select components.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

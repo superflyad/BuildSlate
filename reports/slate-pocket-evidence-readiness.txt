@@ -5,17 +5,17 @@ Executive summary:
   baseline profile: slate-pocket-v1r
   evidence packages: 10
   verified packages: 1/10
-  status counts: missing=9, planned=0, in_progress=0, available=0, verified=1
+  status counts: missing=6, planned=0, in_progress=0, available=3, verified=1
   open critical packages: 8
   EVIDENCE_DECISION: BLOCKED_ON_FOUNDATIONAL_EVIDENCE
   registry source: engineering\evidence\evidence_registry.yaml
 
 Attack now:
-  - battery_supplier_package (critical, missing)
+  - battery_supplier_package (critical, available)
     Obtain a supplier-backed battery package
-  - compute_memory_platform_package (critical, missing)
+  - compute_memory_platform_package (critical, available)
     Select a credible SoC, NPU, and memory topology
-  - display_storage_package (high, missing)
+  - display_storage_package (high, available)
     Confirm display and storage package candidates
 
 Phase 0 evidence packages:
@@ -37,8 +37,8 @@ Phase 0 evidence packages:
 Phase 1 evidence packages:
   - battery_supplier_package: Obtain a supplier-backed battery package
     priority: critical
-    status: missing
-    owner: unassigned
+    status: available
+    owner: BuildSlate engineering
     depends_on: requirements_baseline
     linked_risks: battery_volume_capacity_tradeoff, thickness_stackup_margin, manufacturability_yield_risk
     acceptance criteria:
@@ -47,14 +47,14 @@ Phase 1 evidence packages:
       - Volumetric energy density is calculated from the complete pack envelope rather than bare-cell volume.
       - Discharge, charge-rate, cycle-life, temperature, and certification constraints are recorded.
     expected artifacts:
-      - research/evidence/battery/cell-datasheet.pdf
+      - research/evidence/battery/supplier-source-index.yaml
       - research/evidence/battery/pack-envelope.yaml
       - research/evidence/battery/evidence-review.md
     notes: This package tests whether the retained 6000 mAh target can coexist with the v1R battery volume.
   - compute_memory_platform_package: Select a credible SoC, NPU, and memory topology
     priority: critical
-    status: missing
-    owner: unassigned
+    status: available
+    owner: BuildSlate engineering
     depends_on: requirements_baseline
     linked_risks: memory_packaging_512gb, npu_100_tops_sustained, sustained_compute_power, power_delivery_transients, pcb_routing_density
     acceptance criteria:
@@ -70,8 +70,8 @@ Phase 1 evidence packages:
     notes: This package is the primary reality check for the 512 GB memory and 100 TOPS targets.
   - display_storage_package: Confirm display and storage package candidates
     priority: high
-    status: missing
-    owner: unassigned
+    status: available
+    owner: BuildSlate engineering
     depends_on: requirements_baseline
     linked_risks: storage_packaging_4tb, thickness_stackup_margin, pcb_routing_density
     acceptance criteria:

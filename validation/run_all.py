@@ -28,6 +28,7 @@ VALIDATION_CHECKS = (
     "validation/validate_assumption_impact_engine.py",
     "validation/validate_risk_register.py",
     "validation/validate_evidence_readiness.py",
+    "validation/validate_phase1_candidate_evidence.py",
 )
 
 

@@ -1,0 +1,122 @@
+metadata:
+  evidence_type: public_primary_source_screen
+  reviewed_on: 2026-10-31
+  status: available_not_verified
+  scope: Public manufacturer evidence only; no NDA data, sample inspection, supplier quotation, or custom-cell commitment.
+
+slate_target:
+  capacity_mah: 6000
+  nominal_voltage_v: 3.85
+  energy_wh: 23.1
+  complete_pack_volume_mm3: 28824
+  required_complete_pack_density_wh_l: 801.4
+  wired_charge_target_w: 100
+  implied_charge_rate_c: 4.33
+
+candidates:
+  enovix_ai1_m01:
+    supplier: Enovix
+    product: AI1-M01
+    public_status: product_preview_contact_required
+    capacity_ah: 7.35
+    volumetric_energy_density_wh_l: 921
+    gravimetric_energy_density_wh_kg: 320
+    cycle_band: 501_to_800
+    charge_rate: up_to_2c
+    dimensions_mm:
+      length: 80.0
+      width: 66.74
+      thickness: 5.44
+    calculated_cell_volume_mm3: 29045
+    target_fit:
+      capacity: exceeds_target
+      raw_volume: exceeds_target_pack_allocation_by_221_mm3
+      thickness: plausible_only_with_full_stackup_review
+      wired_100w_charge: unsupported_by_public_2c_rating
+    source:
+      url: https://www.enovix.com/product-category/ai-platform
+      source_type: manufacturer_product_page
+      accessed: 2026-10-31
+    caveat: Public preview data is not a complete cell datasheet or a commitment to supply Slate-specific geometry.
+
+  enovix_ai1_platform:
+    supplier: Enovix
+    product: AI-1 smartphone platform
+    public_status: qualification_and_system_deployment_stage
+    independently_reported_density_wh_l: 935
+    public_claims:
+      - Smartphone cell platform uses a 100 percent active silicon anode.
+      - Third-party test reported 935 Wh/L for the tested AI-1 cell.
+      - Product qualification and customer-specific form factors remain part of commercialization.
+    sources:
+      - url: https://ir.enovix.com/news-releases/news-release-details/independent-testing-confirms-enovix-ai-1tm-achieves-935-whl/
+        source_type: manufacturer_investor_release
+        accessed: 2026-10-31
+      - url: https://ir.enovix.com/news-releases/news-release-details/enovix-reports-first-quarter-2026-results
+        source_type: manufacturer_financial_release
+        accessed: 2026-10-31
+    caveat: Energy-density evidence does not establish Slate-specific dimensions, swelling, safety, price, yield, lifecycle, or supply availability.
+
+  amprius_sa117:
+    supplier: Amprius Technologies
+    product: SA117 SiCore 6Ah Energy + Mid Power 21700 cell
+    public_status: catalog_entry_q2_2026
+    capacity_mah_typical: 6000
+    capacity_mah_minimum: 5900
+    nominal_voltage_v: 3.52
+    energy_wh_typical: 21.12
+    volumetric_energy_density_wh_l: 805
+    gravimetric_energy_density_wh_kg: 290
+    weight_g: 72
+    max_continuous_discharge_c: 2
+    max_charge_c: 0.7
+    cycle_life_to_80_percent_soh: 500
+    form_factor: cylindrical_21700
+    dimensions_mm:
+      height: 70.95
+      diameter: 21.65
+    certifications: [UN38.3, IEC62133, PSE, CE, BIS]
+    target_fit:
+      capacity: meets_6000_mah
+      energy: below_23_1_wh_target
+      thickness: reject_21_65_mm_diameter
+      wired_100w_charge: reject_public_max_is_0_7c
+    source:
+      url: https://amprius.com/documents/Amprius_Product_Catalog.pdf
+      document_id: AMP-TDS-SA117-R3
+      source_type: manufacturer_product_catalog
+      accessed: 2026-10-31
+    caveat: Useful density and capacity benchmark, but its cylindrical geometry cannot fit the v1R thickness envelope.
+
+  panasonic_ncr2270b:
+    supplier: Panasonic Energy
+    product: NCR2270B
+    public_status: manufacturer_catalog_entry
+    capacity_mah_typical: 6000
+    capacity_mah_minimum: 5750
+    nominal_voltage_v: 3.6
+    weight_g_max: 75
+    form_factor: cylindrical_2270
+    dimensions_mm:
+      height: 70.9
+      diameter: 21.8
+    target_fit:
+      capacity: meets_6000_mah
+      energy: below_23_1_wh_target
+      thickness: reject_21_8_mm_diameter
+    source:
+      url: https://energy.panasonic.com/na/business/products/lithium-ion/cylindrical-mid-rate/models/NCR2270B
+      source_type: manufacturer_product_page
+      accessed: 2026-10-31
+    caveat: Establishes a conventional 6Ah cylindrical reference, not a Slate packaging candidate.
+
+screening_conclusion:
+  selected_candidate: null
+  preferred_supplier_conversation: enovix_custom_ai1
+  rejected_as_geometry_candidates: [amprius_sa117, panasonic_ncr2270b]
+  retained_as_density_benchmarks: [enovix_ai1_m01, enovix_ai1_platform, amprius_sa117]
+  unresolved:
+    - Supplier commitment for a roughly 23.1 Wh custom flat cell and complete pack.
+    - Tabs, protection electronics, restraint, adhesive, tolerance, and swelling volume.
+    - Validated maximum charge power, cycle-life tradeoff, and temperature limits.
+    - Production pricing, minimum order quantity, lifecycle, yield, and certification path.

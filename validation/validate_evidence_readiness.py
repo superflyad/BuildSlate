@@ -43,7 +43,7 @@ def main() -> int:
             registry = load_registry(REGISTRY_PATH)
             validate_registry(registry)
             packages = build_packages(registry)
-            print("PASS: evidence registry shape, dependencies, risk links, and ownership rules are valid")
+            print("PASS: evidence registry shape, dependencies, risk links, ownership rules, and artifact states are valid")
         except ValueError as exc:
             failures.append(str(exc))
 

@@ -1,0 +1,51 @@
+metadata:
+  model: slate_pocket_v1r_battery_pack_screen
+  calculated_on: 2026-10-31
+  maturity: screening_from_public_supplier_data
+
+target:
+  capacity_mah: 6000
+  nominal_voltage_v: 3.85
+  energy_wh: 23.1
+  complete_pack_volume_mm3: 28824
+  complete_pack_volume_cm3: 28.824
+
+density_pressure:
+  required_complete_pack_density_wh_l: 801.4
+  required_cell_density_by_non_cell_volume_allowance:
+    zero_percent_wh_l: 801.4
+    five_percent_wh_l: 843.6
+    ten_percent_wh_l: 890.5
+    fifteen_percent_wh_l: 942.8
+  interpretation: The current 801 Wh/L figure is a complete-pack requirement. A real cell must exceed it because tabs, protection, swelling, restraint, adhesive, tolerances, and enclosure clearance consume volume.
+
+enovix_921_wh_l_custom_cell_hypothesis:
+  source_density_wh_l: 921
+  energy_wh: 23.1
+  calculated_cell_volume_cm3: 25.08
+  remaining_non_cell_volume_cm3: 3.74
+  maximum_non_cell_volume_fraction_percent: 13.0
+  status: plausible_hypothesis_requires_supplier_quote_and_pack_cad
+
+charge_pressure:
+  wired_target_w: 100
+  nominal_pack_energy_wh: 23.1
+  approximate_charge_rate_c: 4.33
+  public_candidate_limits:
+    enovix_ai1_m01: 2c
+    amprius_sa117: 0.7c
+  decision: Do not preserve 100 W as an engineering requirement without a supplier-approved cell, charge curve, thermal map, and cycle-life case.
+
+required_pack_cad_inputs:
+  - Cell body and active-material dimensions at beginning and end of life.
+  - Tab geometry and bend radius.
+  - Protection circuit, fusing, sensing, and connector or weld zones.
+  - Swelling allowance across cycle life and temperature.
+  - Adhesive, restraint, puncture protection, insulation, and enclosure clearance.
+  - Charge and discharge thermal paths.
+
+decision:
+  capacity_target: retain_as_conditional
+  charge_target: fallback_to_highest_supplier_validated_level
+  selected_pack: null
+  next_gate: supplier_rfq_and_custom_pack_envelope

@@ -17,6 +17,46 @@ review_notes:
   - Recovery assumptions mirror the sufficient physical recovery planner path.
   - This is not a new product generation and does not replace canonical Slate Pocket v1.
 
+decision_baseline:
+  status: approved
+  approved_date: 2026-10-31
+  decision_owner: BuildSlate product owner
+  source: docs/engineering/slate-pocket-v1r-decision-baseline.md
+  stable_product_outcomes:
+    - pocket_ai_workstation
+    - 7_5_inch_16_10_workspace
+    - offline_local_inference_and_security
+    - measured_sustained_workloads
+    - evidence_backed_integrated_design
+  locked_trade_rules:
+    thickness:
+      target_mm: 9.5
+      first_fallback_mm: 10.2
+    battery:
+      target_mah: 6000
+      fallback: best_supplier_validated_complete_pack_capacity
+      same_density_reference_mah: 4236
+    memory:
+      aspirational_target_gb: 512
+      fallback_tiers_gb: [256, 128]
+    storage:
+      target_tb: 4
+      fallback_tb: 2
+      fallback_strategy: modular_or_external_storage
+    compute:
+      platform_metric: measured_workload_performance_per_watt
+      sustained_tops_required: false
+    mass:
+      aspirational_target_g: 250
+      working_range_g: [290, 350]
+    wireless_charging:
+      target_w: 50
+      negotiable: true
+      removal_allowed_if_blocking: true
+  safety_boundaries:
+    max_skin_c: 43
+    rule: throttle_before_relaxing_without_safety_and_human_factors_review
+
 identity:
   name: Slate Pocket v1R
   profile_id: slate-pocket-v1r
@@ -128,4 +168,5 @@ known_remaining_risks:
 
 notes:
   - Slate Pocket v1R is the first recovered engineering profile candidate.
+  - The Phase 0 decision baseline is approved; headline targets use the locked fallback rules when supplier or integration evidence fails.
   - Screening results must not be interpreted as validation or manufacturability evidence.

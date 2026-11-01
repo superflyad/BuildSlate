@@ -171,6 +171,18 @@ python engineering/risks/generate_risk_report.py
 
 The generator writes `reports/slate-pocket-risk-register.txt` with an executive risk summary, top ranked risks, subsystem grouping, blocked/critical risks, evidence requirements, and mitigation summary. This is the central risk view after physical and thermal screening. It is a screening-level risk register, not formal FMEA, validation evidence, supplier approval, manufacturability proof, or production readiness evidence.
 
+## Evidence Readiness Gate v1
+
+BuildSlate turns the current engineering risks into a phased, machine-checkable evidence acquisition program under `engineering/evidence/`. The registry defines package ownership, dependencies, linked risks, acceptance criteria, expected artifacts, and verification status from requirements baseline through supplier research, coupled integration, EVT-0, and manufacturing review.
+
+Generate the current evidence gate report with:
+
+```bash
+python engineering/evidence/generate_evidence_readiness_report.py
+```
+
+The generator writes `reports/slate-pocket-evidence-readiness.txt` with the current program decision, status counts, unblocked work that can be attacked now, phase-by-phase packages, and explicit gate rules. The execution sequence and phase exits are documented in `docs/engineering/execution_roadmap.md`. An artifact only satisfies the gate after it meets every acceptance criterion and is marked `verified`; the existence of a file alone is not engineering proof.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

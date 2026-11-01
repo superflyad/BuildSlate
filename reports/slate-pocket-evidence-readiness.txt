@@ -1,0 +1,198 @@
+Slate Pocket Evidence Readiness Gate v1
+========================================
+
+Executive summary:
+  baseline profile: slate-pocket-v1r
+  evidence packages: 10
+  verified packages: 1/10
+  status counts: missing=9, planned=0, in_progress=0, available=0, verified=1
+  open critical packages: 8
+  EVIDENCE_DECISION: BLOCKED_ON_FOUNDATIONAL_EVIDENCE
+  registry source: engineering\evidence\evidence_registry.yaml
+
+Attack now:
+  - battery_supplier_package (critical, missing)
+    Obtain a supplier-backed battery package
+  - compute_memory_platform_package (critical, missing)
+    Select a credible SoC, NPU, and memory topology
+  - display_storage_package (high, missing)
+    Confirm display and storage package candidates
+
+Phase 0 evidence packages:
+  - requirements_baseline: Freeze the v1R decision baseline
+    priority: critical
+    status: verified
+    owner: BuildSlate product owner
+    depends_on: none
+    linked_risks: battery_volume_capacity_tradeoff, thickness_stackup_margin, sustained_compute_power, memory_packaging_512gb, storage_packaging_4tb, npu_100_tops_sustained
+    acceptance criteria:
+      - Must-have, target, and negotiable requirements are separated.
+      - The 9.5 mm v1R envelope is explicitly accepted or replaced.
+      - Battery, memory, storage, compute, charging, mass, and skin-temperature targets each have an approved fallback.
+      - Every retained target has a named verification method and decision owner.
+    expected artifacts:
+      - docs/engineering/slate-pocket-v1r-decision-baseline.md
+    notes: This prevents supplier and CAD work from optimizing against an unstable set of headline targets.
+
+Phase 1 evidence packages:
+  - battery_supplier_package: Obtain a supplier-backed battery package
+    priority: critical
+    status: missing
+    owner: unassigned
+    depends_on: requirements_baseline
+    linked_risks: battery_volume_capacity_tradeoff, thickness_stackup_margin, manufacturability_yield_risk
+    acceptance criteria:
+      - Candidate cell dimensions, mass, nominal energy, and minimum capacity come from supplier documentation.
+      - Pack CAD includes tabs, protection electronics, restraint, adhesive, tolerances, and swelling allowance.
+      - Volumetric energy density is calculated from the complete pack envelope rather than bare-cell volume.
+      - Discharge, charge-rate, cycle-life, temperature, and certification constraints are recorded.
+    expected artifacts:
+      - research/evidence/battery/cell-datasheet.pdf
+      - research/evidence/battery/pack-envelope.yaml
+      - research/evidence/battery/evidence-review.md
+    notes: This package tests whether the retained 6000 mAh target can coexist with the v1R battery volume.
+  - compute_memory_platform_package: Select a credible SoC, NPU, and memory topology
+    priority: critical
+    status: missing
+    owner: unassigned
+    depends_on: requirements_baseline
+    linked_risks: memory_packaging_512gb, npu_100_tops_sustained, sustained_compute_power, power_delivery_transients, pcb_routing_density
+    acceptance criteria:
+      - SoC package, memory-controller limits, supported memory topology, and package drawings are documented.
+      - Peak TOPS is separated from measured or vendor-supported sustained workload performance.
+      - Sustained and peak power assumptions have workload definitions and evidence.
+      - Memory capacity, bandwidth, package count, board area, power, and thermal implications are quantified.
+      - Development-board and software-runtime access are confirmed.
+    expected artifacts:
+      - research/evidence/compute/platform-comparison.yaml
+      - research/evidence/compute/package-and-memory-topology.md
+      - research/evidence/compute/evidence-review.md
+    notes: This package is the primary reality check for the 512 GB memory and 100 TOPS targets.
+  - display_storage_package: Confirm display and storage package candidates
+    priority: high
+    status: missing
+    owner: unassigned
+    depends_on: requirements_baseline
+    linked_risks: storage_packaging_4tb, thickness_stackup_margin, pcb_routing_density
+    acceptance criteria:
+      - Display outline, active area, thickness, flex location, interface, luminance, and power curves are documented.
+      - Storage package dimensions, capacity options, interface, power, and sustained-write thermal behavior are documented.
+      - Candidate availability and lifecycle status are recorded.
+    expected artifacts:
+      - research/evidence/display-storage/candidate-comparison.yaml
+      - research/evidence/display-storage/evidence-review.md
+    notes: These candidates are needed before local z-height and PCB placement can be trusted.
+
+Phase 2 evidence packages:
+  - mechanical_cad_stackup: Produce the first evidence-backed mechanical CAD stackup
+    priority: critical
+    status: missing
+    owner: unassigned
+    depends_on: battery_supplier_package, compute_memory_platform_package, display_storage_package
+    linked_risks: thickness_stackup_margin, battery_volume_capacity_tradeoff, thermal_module_effectiveness, rf_antenna_window_constraints, manufacturability_yield_risk
+    acceptance criteria:
+      - CAD uses supplier package geometry for all critical components.
+      - Keepouts include flexes, connectors, fasteners, seals, shields, antennas, service access, and assembly clearance.
+      - Zone-by-zone z-height and tolerance stacks have positive margin.
+      - Mass rollup and center-of-mass estimates are tied to the modeled parts.
+      - Interference and serviceability reviews are recorded.
+    expected artifacts:
+      - cad/slate-pocket-v1r/envelope-model
+      - cad/slate-pocket-v1r/stackup-review.md
+      - reports/slate-pocket-v1r-cad-budget.txt
+    notes: A verified CAD stackup replaces the current usable-volume factor and bounding-box assumptions.
+  - pcb_power_architecture: Prove PCB placement, routing, and power architecture
+    priority: critical
+    status: missing
+    owner: unassigned
+    depends_on: compute_memory_platform_package, display_storage_package, mechanical_cad_stackup
+    linked_risks: pcb_routing_density, power_delivery_transients, sustained_compute_power, memory_packaging_512gb, storage_packaging_4tb
+    acceptance criteria:
+      - Board outline and placement include package, connector, antenna, shield, fastener, and test-point keepouts.
+      - Preliminary netlist, pin map, escape study, layer stack, and HDI strategy are reviewed.
+      - Power tree includes rail loads, efficiency, sequencing, charger, battery current, and thermal loss.
+      - PDN targets, decoupling strategy, and transient validation plan are defined.
+    expected artifacts:
+      - engineering/pcb/slate-pocket-v1r-floorplan
+      - engineering/pcb/power-tree.yaml
+      - engineering/pcb/placement-routing-review.md
+    notes: This package must exist before average power calculations can be treated as an integration plan.
+  - rf_wireless_architecture: Reserve and validate RF and wireless-charging architecture
+    priority: critical
+    status: missing
+    owner: unassigned
+    depends_on: mechanical_cad_stackup, pcb_power_architecture
+    linked_risks: rf_antenna_window_constraints, wireless_charging_packaging, thickness_stackup_margin
+    acceptance criteria:
+      - Target radios, bands, antenna topology, keepouts, grounding, and RF-transparent material zones are defined.
+      - Wireless-charging coil, ferrite, shield, alignment, and rear-material stack are modeled.
+      - Antenna and charging coexistence risks have a simulation and chamber-test plan.
+      - SAR, EMC, and applicable charging-certification targets are identified.
+    expected artifacts:
+      - engineering/rf/architecture.md
+      - engineering/rf/keepout-map
+      - engineering/rf/validation-plan.md
+    notes: RF space must be reserved before the enclosure and thermal spreader are frozen.
+  - thermal_model_and_test_plan: Build a geometry-specific thermal model and correlation plan
+    priority: critical
+    status: missing
+    owner: unassigned
+    depends_on: battery_supplier_package, compute_memory_platform_package, mechanical_cad_stackup, pcb_power_architecture
+    linked_risks: thermal_module_effectiveness, sustained_compute_power, skin_temperature_target_43c, battery_volume_capacity_tradeoff
+    acceptance criteria:
+      - Thermal model uses actual source locations, materials, interfaces, contact pressure, and boundary conditions.
+      - Sustained, peak, charging-overlap, hot-ambient, handheld, pocket, and bag cases are defined.
+      - Thermal module and TIM candidates have supplier-backed properties.
+      - Skin-temperature sensor locations, chamber procedure, and model-correlation thresholds are defined.
+      - Throttle policy and pass/fail limits are explicit.
+    expected artifacts:
+      - simulations/thermal/slate-pocket-v1r/model
+      - simulations/thermal/slate-pocket-v1r/test-matrix.yaml
+      - simulations/thermal/slate-pocket-v1r/correlation-plan.md
+    notes: The current thermal improvement is a geometry-level indication only; this package turns it into a testable hypothesis.
+
+Phase 3 evidence packages:
+  - evt0_prototype_evidence: Build and characterize an EVT-0 integration prototype
+    priority: critical
+    status: missing
+    owner: unassigned
+    depends_on: mechanical_cad_stackup, pcb_power_architecture, thermal_model_and_test_plan, rf_wireless_architecture
+    linked_risks: sustained_compute_power, npu_100_tops_sustained, skin_temperature_target_43c, power_delivery_transients, thermal_module_effectiveness, battery_volume_capacity_tradeoff
+    acceptance criteria:
+      - Prototype reproduces the intended geometry, major heat paths, power rails, and component topology.
+      - Sustained workload performance, power, clocks, throttling, memory use, and temperatures are logged.
+      - Battery runtime, charging overlap, load transients, and exterior temperature maps are measured.
+      - Model-to-measurement differences are documented and models are recalibrated.
+      - Failed targets trigger an explicit requirement trade rather than an untracked assumption change.
+    expected artifacts:
+      - validation/evt0/test-results
+      - validation/evt0/model-correlation.md
+      - reports/slate-pocket-v1r-evt0-gate.txt
+    notes: EVT-0 is an engineering mule; it is not a cosmetic or production-representative build.
+
+Phase 4 evidence packages:
+  - manufacturing_review_package: Complete supplier DFM and pilot-build readiness review
+    priority: critical
+    status: missing
+    owner: unassigned
+    depends_on: evt0_prototype_evidence
+    linked_risks: manufacturability_yield_risk, thickness_stackup_margin, battery_volume_capacity_tradeoff
+    acceptance criteria:
+      - Assembly sequence, datum scheme, tolerance ownership, adhesives, fixtures, and rework paths are documented.
+      - Critical suppliers have reviewed package, process, tolerance, and availability assumptions.
+      - Pilot build plan defines sample size, inspection points, defect taxonomy, and yield thresholds.
+      - Serviceability, reliability, and compliance-pretest plans are approved.
+    expected artifacts:
+      - manufacturing/dfm-review.md
+      - manufacturing/pilot-build-plan.yaml
+      - manufacturing/quality-gate.md
+    notes: This package is required before BuildSlate can make manufacturing-readiness claims.
+
+Gate rules:
+  - An artifact must be reviewed against every acceptance criterion before status can become verified.
+  - Foundational critical packages in phases 0-2 must be verified before the prototype gate opens.
+  - An owner is required before a package can move to in_progress, available, or verified.
+  - Requirement changes must update linked specs, assumptions, risks, and dependent evidence packages.
+
+Caveat:
+  This registry tracks required evidence and review state. It does not create supplier approval, validate hardware, certify compliance, or prove manufacturability merely because an artifact exists.

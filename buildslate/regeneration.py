@@ -11,6 +11,38 @@ from typing import Any, Iterable
 from .io import dump_yaml, load_yaml
 
 
+TEXT_SUFFIXES = {
+    ".cfg",
+    ".csv",
+    ".css",
+    ".html",
+    ".ini",
+    ".js",
+    ".json",
+    ".md",
+    ".ps1",
+    ".py",
+    ".sh",
+    ".toml",
+    ".tsv",
+    ".txt",
+    ".yaml",
+    ".yml",
+}
+
+
+def deterministic_file_digest(path: Path) -> str:
+    """Hash text with canonical LF endings and preserve binary bytes exactly."""
+    content = path.read_bytes()
+    if path.suffix.lower() in TEXT_SUFFIXES:
+        try:
+            text = content.decode("utf-8")
+        except UnicodeDecodeError as exc:
+            raise ValueError(f"declared text input is not UTF-8: {path}") from exc
+        content = text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
+    return hashlib.sha256(content).hexdigest()
+
+
 class RegenerationEngine:
     def __init__(self, repo_root: Path, manifest_path: str = "engineering/program/regeneration.yaml") -> None:
         self.repo_root = repo_root.resolve()
@@ -85,7 +117,7 @@ class RegenerationEngine:
         )
 
     def _digest(self, relative_path: str) -> str:
-        return hashlib.sha256(self._repo_path(relative_path).read_bytes()).hexdigest()
+        return deterministic_file_digest(self._repo_path(relative_path))
 
     def _digests(self, patterns: Iterable[str]) -> dict[str, str]:
         files = {path for pattern in patterns for path in self._relative_files(pattern)}
@@ -93,8 +125,9 @@ class RegenerationEngine:
 
     def build_state(self) -> dict[str, Any]:
         return {
-            "state_version": 1,
-            "manifest_sha256": hashlib.sha256(self.manifest_path.read_bytes()).hexdigest(),
+            "state_version": 2,
+            "hash_policy": "utf8_text_lf_binary_exact_sha256_v1",
+            "manifest_sha256": deterministic_file_digest(self.manifest_path),
             "nodes": {
                 node_id: {
                     "inputs": self._digests(self.nodes[node_id]["inputs"]),
@@ -102,7 +135,7 @@ class RegenerationEngine:
                 }
                 for node_id in self.topological_order()
             },
-            "caveat": "Hashes establish deterministic staleness only; they do not verify engineering evidence or physical results.",
+            "caveat": "Text hashes canonicalize line endings for cross-platform staleness; binary hashes preserve exact bytes. Neither verifies engineering evidence or physical results.",
         }
 
     def load_state(self) -> dict[str, Any] | None:
@@ -112,7 +145,12 @@ class RegenerationEngine:
     def stale_nodes(self) -> tuple[str, ...]:
         saved = self.load_state()
         current = self.build_state()
-        if not saved or saved.get("manifest_sha256") != current["manifest_sha256"]:
+        if (
+            not saved
+            or saved.get("state_version") != current["state_version"]
+            or saved.get("hash_policy") != current["hash_policy"]
+            or saved.get("manifest_sha256") != current["manifest_sha256"]
+        ):
             return self.topological_order()
         stale: set[str] = set()
         for node_id in self.topological_order():

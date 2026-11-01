@@ -43,6 +43,7 @@ An ingested contradiction does not mutate configuration. A separate approved dec
 - Cross-domain contradictions stop regeneration before downstream reports refresh.
 - A fallback approval, supplier hash, value, target, or downstream generation failure rolls the entire configuration transaction back.
 - Missing or changed generator inputs/outputs become hash-stale.
+- Regeneration hashes canonicalize UTF-8 text line endings to LF so Windows and Linux evaluate the same content identically; binary evidence remains byte-exact.
 - Critical pilot defects trigger stop/quarantine regardless of average yield.
 - Dashboard currency never implies physical or commercial readiness.
 

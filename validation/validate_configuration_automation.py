@@ -17,7 +17,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from buildslate.configuration import ConfigurationChangeController, ConfigurationResolver
 from buildslate.io import dump_yaml, load_yaml
-from buildslate.regeneration import RegenerationEngine
+from buildslate.regeneration import RegenerationEngine, deterministic_file_digest
 from buildslate.suppliers import SupplierResponseRepository
 
 
@@ -50,6 +50,24 @@ def main() -> int:
     )
     for artifact in artifacts:
         require((REPO_ROOT / artifact).is_file(), f"configuration automation artifact exists: {artifact}")
+
+    with tempfile.TemporaryDirectory() as temp_directory:
+        line_endings = Path(temp_directory) / "line-endings.yaml"
+        line_endings.write_bytes(b"alpha: 1\nbeta: 2\n")
+        lf_digest = deterministic_file_digest(line_endings)
+        line_endings.write_bytes(b"alpha: 1\r\nbeta: 2\r\n")
+        crlf_digest = deterministic_file_digest(line_endings)
+        line_endings.write_bytes(b"alpha: 1\r\nbeta: 2\nbeta2: 3\r")
+        mixed_digest = deterministic_file_digest(line_endings)
+        canonical_mixed = Path(temp_directory) / "canonical-mixed.yaml"
+        canonical_mixed.write_bytes(b"alpha: 1\nbeta: 2\nbeta2: 3\n")
+        require(lf_digest == crlf_digest, "regeneration text hashes are stable across LF and CRLF checkouts")
+        require(mixed_digest == deterministic_file_digest(canonical_mixed), "regeneration text hashes canonicalize mixed line endings")
+        binary = Path(temp_directory) / "evidence.bin"
+        binary.write_bytes(b"raw\r\nbytes")
+        binary_digest = deterministic_file_digest(binary)
+        binary.write_bytes(b"raw\nbytes")
+        require(binary_digest != deterministic_file_digest(binary), "regeneration binary hashes preserve exact evidence bytes")
 
     resolver = ConfigurationResolver(REPO_ROOT)
     resolution = resolver.resolve()
@@ -195,6 +213,7 @@ def main() -> int:
         )
 
     engine = RegenerationEngine(REPO_ROOT)
+    require(engine.build_state()["state_version"] == 2, "regeneration state records the portable hash policy version")
     require(engine.stale_nodes() == (), "all generated nodes match committed input and output hashes")
     profile_impact = engine.impacted_nodes(["configs/devices/slate-pocket-v1r.yaml"])
     require("configuration_resolution" in profile_impact and "program_snapshot" in profile_impact, "profile change propagates through configuration and program snapshot")

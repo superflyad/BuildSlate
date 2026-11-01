@@ -1,0 +1,43 @@
+metadata:
+  status: proposed
+  caveat: Codes organize evidence; they do not replace failure analysis or regulatory reporting.
+
+severity:
+  critical: Potential safety, regulatory, security, battery, fire, shock, uncontrolled thermal, or hazardous mechanical condition; stop and quarantine.
+  major: Loss of required function, specification, reliability, sealing, service, or traceability; unit cannot pass without approved disposition.
+  minor: Non-critical workmanship/cosmetic deviation outside specification with no demonstrated functional or reliability impact.
+
+origins: [supplier, incoming, pcba_fabrication, pcba_assembly, mechanical, thermal, battery, bond_and_seal, firmware_configuration, test_fixture, handling, unknown]
+dispositions: [use_as_is_approved, rework, repair, return_to_supplier, scrap, quarantine, engineering_evaluation]
+
+codes:
+  BAT: battery_identity_damage_swelling_protection_interconnect_clearance_or_thermal
+  PWR: power_charge_protection_grounding_isolation_transient_or_connector
+  PCBA: fabrication_solder_placement_via_warpage_contamination_or_component
+  MECH: dimension_datum_flatness_interference_fastener_frame_or_structure
+  THM: TIM_spreader_bondline_contact_pressure_sensor_or_thermal_performance
+  DSP: display_touch_flex_bond_optical_or_cosmetic
+  CAM: camera_alignment_focus_module_flex_or_contamination
+  RF: module_antenna_feed_matching_ground_coexistence_or_region_configuration
+  AUD: speaker_microphone_port_seal_or_acoustic
+  SEAL: adhesive_gasket_leak_surface_prep_cure_or_contamination
+  SW: firmware_driver_provisioning_security_calibration_or_configuration
+  TEST: fixture_instrument_calibration_coverage_false_failure_or_data_loss
+  COS: scratch_dent_gap_flush_color_finish_or_foreign_material
+  TRACE: missing_wrong_or_inconsistent_unit_part_lot_process_or_test_identity
+
+required_record_fields:
+  - defect_id
+  - unit_id
+  - build_and_station
+  - timestamp
+  - code_and_severity
+  - requirement_or_specification
+  - detection_method
+  - description_and_evidence_links
+  - suspected_origin
+  - containment
+  - root_cause_status
+  - corrective_action
+  - disposition_and_approver
+  - reinspection_or_retest

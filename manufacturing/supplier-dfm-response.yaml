@@ -1,0 +1,34 @@
+review:
+  status: template_not_completed
+  supplier_legal_name: null
+  supplier_site: null
+  reviewer_names_and_roles: []
+  confidentiality: public_or_executed_nda
+  review_date: null
+  buildslate_documents_and_revisions_reviewed: []
+scope:
+  supplied_parts_or_processes: []
+  excluded_scope: []
+  assumptions: []
+comments: []
+# Each comment must include: id, document/revision/location, category, severity,
+# issue, evidence/basis, required change, process/tooling/cost/lead-time impact,
+# validation method, supplier owner, BuildSlate owner, and disposition.
+capability:
+  proposed_process_flow: null
+  critical_characteristics: []
+  measurement_systems: []
+  capability_evidence: []
+  tooling_and_fixtures: []
+  rework_and_repair_limits: []
+supply:
+  material_and_part_lifecycle: []
+  moq: null
+  lead_time_weeks: null
+  capacity_basis: null
+  change_notification_policy: null
+attestation:
+  response_is_supplier_authored: null
+  values_are_not_buildslate_estimates: null
+  authorized_for_public_disclosure: null
+  signature_or_approval_reference: null

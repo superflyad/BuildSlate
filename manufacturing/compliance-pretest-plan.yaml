@@ -1,0 +1,37 @@
+metadata:
+  status: planned_scope_pending_markets_and_configuration
+  caveat: Pre-compliance results are development evidence and cannot be represented as certification or legal approval.
+
+scope_inputs_required:
+  - Shipping countries, SKU/radio matrix, intended users/use positions, accessories, chargers/cables, and claims.
+  - Final radio modules/antennas, battery/charger, enclosure/materials, ports, clocks, firmware, and operating modes.
+  - Accredited lab and regulatory-counsel confirmation of current rules, standards editions, limits, samples, and filings.
+
+pretest_families:
+  rf_and_emc:
+    work: [conducted_and_radiated_emissions, immunity, ESD, radio_spurious_and_coexistence, final_configuration_RF_exposure_or_SAR_scoping]
+    source_plan: engineering/rf/validation-plan.md
+  wireless_power:
+    applicability: feature_removed_from_EVT0
+    work_if_reintroduced: [WPC_profile_and_certification_scope, interoperability, foreign_object_detection, emissions, immunity, thermal_and_misalignment]
+  product_electrical_safety:
+    work: [energy_and_temperature_hazards, insulation_and_grounding, abnormal_operation, connector_and_cable_heating, charger_and_battery_faults, flammability_and_material_documentation]
+  battery_and_transport:
+    work: [supplier_cell_and_pack_safety_evidence, protection_review, shipping_class_and_test_documents, charge_discharge_abuse_scope, traceability]
+  environmental_and_materials:
+    work: [restricted_substances_and_supplier_declarations, recycling_and_labeling_scope, material_flammability, market_specific_environmental_obligations]
+  ingress:
+    applicability: only_if_rating_is_retained
+    work: [design_pretest, leak_localization, preconditioning, final_lab_scope]
+  accessibility_human_factors_and_acoustics:
+    work: [surface_temperature, indicators_and_labels, sharp_edges_and_mechanical_hazards, acoustic_output_if_applicable]
+  security_and_software:
+    work: [radio_kill, secure_update, credential_and_key_handling, vulnerability_process, market_specific_connected_product_scope]
+
+configuration_control:
+  worst_case_selection: documented_by_engineering_and_lab_not_assumed
+  firmware_modes: production_intent_with_test_modes_separately_identified
+  failures: retained_with_raw_data_configuration_and_corrective_action
+  retest: required_after_material_hardware_layout_firmware_or_accessory_change_affecting_scope
+
+exit_rule: Accredited-lab certification and required declarations/filings—not this pretest plan—determine compliance status.

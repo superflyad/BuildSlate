@@ -261,6 +261,18 @@ python validation/evt0/generate_evt0_gate_report.py
 
 The package is `planned_not_authorized`. It contains no selected parts, physical build, measurement results, or permission to purchase, assemble, or energize hardware.
 
+## Slate Pocket v1R Manufacturing and Pilot Handoff
+
+The manufacturing package under `manufacturing/` prepares supplier DFM, assembly/rework, reliability, compliance-pretest, serviceability, defect tracking, a proposed 100-unit pilot, and quantitative quality gates. It includes a supplier-response template and preserves the absence of supplier reviews, builds, yield data, capability data, and approvals.
+
+Generate the manufacturing gate with:
+
+```bash
+python manufacturing/generate_manufacturing_readiness_report.py
+```
+
+The pilot remains proposed and unauthorized. The package does not claim manufacturability, supplier approval, yield, reliability, compliance, serviceability, or production readiness.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

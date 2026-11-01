@@ -5,7 +5,7 @@ Executive summary:
   baseline profile: slate-pocket-v1r
   evidence packages: 10
   verified packages: 1/10
-  status counts: missing=1, planned=5, in_progress=0, available=3, verified=1
+  status counts: missing=0, planned=6, in_progress=0, available=3, verified=1
   open critical packages: 8
   EVIDENCE_DECISION: BLOCKED_ON_FOUNDATIONAL_EVIDENCE
   registry source: engineering\evidence\evidence_registry.yaml
@@ -181,8 +181,8 @@ Phase 3 evidence packages:
 Phase 4 evidence packages:
   - manufacturing_review_package: Complete supplier DFM and pilot-build readiness review
     priority: critical
-    status: missing
-    owner: unassigned
+    status: planned
+    owner: BuildSlate manufacturing engineering and authorized supplier quality owner
     depends_on: evt0_prototype_evidence
     linked_risks: manufacturability_yield_risk, thickness_stackup_margin, battery_volume_capacity_tradeoff
     acceptance criteria:

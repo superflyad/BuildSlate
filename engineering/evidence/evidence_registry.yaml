@@ -256,8 +256,8 @@ packages:
     title: Complete supplier DFM and pilot-build readiness review
     phase: 4
     priority: critical
-    status: missing
-    owner: unassigned
+    status: planned
+    owner: BuildSlate manufacturing engineering and authorized supplier quality owner
     depends_on:
       - evt0_prototype_evidence
     linked_risks:

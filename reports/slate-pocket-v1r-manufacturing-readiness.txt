@@ -1,0 +1,50 @@
+Slate Pocket v1R Manufacturing Readiness Gate
+================================================
+
+Package coverage:
+  planned artifacts present: 9/9
+  supplier DFM response status: template_not_completed
+  EVT0 evidence status: planned
+  pilot plan status: proposed_not_authorized
+  pilot authorized: no
+
+Pilot proposal:
+  input units: 100
+  first-pass yield gate: >= 90.0%
+  final yield gate: >= 95.0%
+  rework gate: <= 10.0%
+  unknown/no-trouble-found gate: <= 2.0%
+  critical safety/regulatory defects: 0 allowed
+  critical-characteristic Cpk planning target: 1.33 after prerequisites
+
+Quality infrastructure:
+  defect code families: 14
+  severity levels: 3
+  inspection points: 7
+  stop rules: 5
+  assembly/rework concept: available
+  reliability plan: available
+  compliance-pretest plan: available
+  serviceability plan: available
+
+Manufacturing evidence:
+  completed supplier DFM responses: 0
+  pilot result files excluding instructions: 0
+  units built: no evidence
+  measured yield: no evidence
+  process capability: no evidence
+  reliability/compliance/service validation: no evidence
+
+Unmet prerequisites:
+  - EVT0 must be verified; current status is planned.
+  - supplier_dfm_comments_closed
+  - released_design_and_bom
+  - approved_process_and_work_instructions
+  - approved_control_plan_and_measurement_systems
+  - battery_safety_and_compliance_pretest_ready
+  - pilot_authorized
+
+MANUFACTURING_GATE: BLOCKED_ON_VERIFIED_EVT0_SUPPLIER_DFM_RELEASED_PROCESS_AND_PILOT_EVIDENCE
+
+Caveat:
+  This package prepares supplier and pilot work; it does not prove manufacturability, process capability, yield, reliability, compliance, serviceability, supplier approval, or production readiness.

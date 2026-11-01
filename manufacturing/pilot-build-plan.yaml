@@ -1,0 +1,67 @@
+metadata:
+  device: slate-pocket-v1r
+  status: proposed_not_authorized
+  purpose: Validate process repeatability, inspection coverage, defect containment, and data systems after EVT0 architecture evidence exists.
+  caveat: Lot size and thresholds are provisional planning gates subject to supplier capacity, risk, cost, and quality review.
+
+prerequisites:
+  evt0_prototype_evidence_status: verified
+  supplier_dfm_comments_closed: false
+  released_design_and_bom: false
+  approved_process_and_work_instructions: false
+  approved_control_plan_and_measurement_systems: false
+  battery_safety_and_compliance_pretest_ready: false
+  pilot_authorized: false
+
+lot:
+  proposed_input_units: 100
+  yield_denominator_rule: All units entering released pilot station 1 count; exclusions require quality-approved documented cause before results are known.
+  planned_shifts: 2
+  planned_operators: multiple_qualified_operators
+  material_lots: at_least_two_for_critical_supplied_items_where_available
+  traceability: unit_serial_part_lot_station_fixture_operator_timestamp_rework_and_test_data
+
+phases:
+  line_readiness:
+    product_units: 0
+    activities: [fixture_gage_and_software_dry_run, golden_sample_or_simulator_check, safety_interlock_check, data_pipeline_check, operator_training]
+  pilot:
+    product_units: 100
+    activities: [controlled_build, in_process_inspection, end_of_line_test, failure_analysis, rework_tracking, reliability_and_compliance_sample_allocation]
+
+inspection_points:
+  - {id: IQC, focus: identity_lot_condition_dimensions_and_supplier_documents, owner: quality}
+  - {id: PCBA, focus: fabrication_assembly_programming_electrical_safety_and_test, owner: electrical_and_quality}
+  - {id: MECH, focus: datums_flatness_clearances_fasteners_flexes_and_battery_cavity, owner: mechanical_and_quality}
+  - {id: THERMAL, focus: TIM_spreader_identity_application_bondline_compression_and_sensor_access, owner: thermal_and_quality}
+  - {id: BOND, focus: surface_prep_adhesive_dispense_cure_seal_and_cosmetics, owner: manufacturing_and_quality}
+  - {id: EOL, focus: configuration_security_power_charge_display_camera_audio_radio_sensors_and_fault_log, owner: test_and_quality}
+  - {id: OBA, focus: outgoing_audit_dimensions_mass_cosmetics_function_traceability_and_packout, owner: quality}
+
+provisional_yield_gates:
+  critical_safety_or_regulatory_defects: {maximum_count: 0, action: stop_quarantine_and_review}
+  first_pass_yield_percent: {minimum: 90.0, denominator: all_pilot_units}
+  final_yield_percent: {minimum: 95.0, denominator: all_pilot_units}
+  rework_rate_percent: {maximum: 10.0, denominator: all_pilot_units}
+  unknown_or_no_trouble_found_rate_percent: {maximum: 2.0, denominator: all_pilot_units}
+  traceability_completeness_percent: {minimum: 100.0}
+  required_test_data_completeness_percent: {minimum: 100.0}
+  critical_characteristic_capability:
+    target_cpk: 1.33
+    applicability: Only after specification, stable process, distribution review, and acceptable measurement system are demonstrated.
+  statistical_caveat: A 100-unit pilot cannot prove long-term field quality or rare-defect rates; confidence intervals and defect opportunity definitions must accompany yield.
+
+stop_rules:
+  - Any critical safety, battery, electrical, thermal, structural, security, or regulatory defect.
+  - Repeated defect indicating loss of process control or ineffective containment.
+  - Wrong/untraceable part, material, firmware, calibration, or configuration.
+  - Measurement system, fixture, interlock, data collection, or emergency-control failure.
+  - Supplier/process deviation without approved disposition.
+
+outputs:
+  - Unit-level genealogy and station/test records.
+  - Defect, failure-analysis, containment, rework, scrap, and deviation records.
+  - FPY/final yield/rework/defect Pareto with confidence intervals and denominator definitions.
+  - Critical-characteristic measurement-system and capability studies where statistically valid.
+  - Reliability/compliance sample history and result links.
+  - Lessons learned, design/process changes, open risks, and signed gate disposition.

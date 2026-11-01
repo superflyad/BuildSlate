@@ -1,0 +1,74 @@
+metadata:
+  device: slate-pocket-v1r
+  revision: EVT0-plan-1
+  status: planned_not_authorized
+  evidence_class: execution_specification_not_test_evidence
+  baseline: docs/engineering/slate-pocket-v1r-decision-baseline.md
+  caveat: No prototype has been built or tested.
+
+objective:
+  - Reproduce the 180 x 95 x 9.5 mm target envelope or invoke the approved 10.2 mm fallback through change control.
+  - Reproduce major heat-source locations, thermal paths, power paths, battery region, board region, and RF reservations.
+  - Measure workload performance per watt, power transients, memory/storage behavior, temperatures, runtime, throttling, and faults.
+  - Correlate mechanical, electrical, thermal, and runtime models without silently changing requirements.
+
+prerequisite_gates:
+  supplier_evidence:
+    required_status: verified
+    packages: [battery_supplier_package, compute_memory_platform_package, display_storage_package]
+  phase2_integration:
+    required_status: verified
+    packages: [mechanical_cad_stackup, pcb_power_architecture, thermal_model_and_test_plan, rf_wireless_architecture]
+  authorization:
+    purchase_authorized: false
+    build_authorized: false
+    energized_test_authorized: false
+    authorized_by: null
+  safety:
+    approved_battery_and_charge_limits: false
+    approved_lab_procedure: false
+    calibrated_instrumentation_available: false
+    emergency_response_reviewed: false
+
+configuration_rules:
+  memory_tier_gb: 128
+  memory_note: Only the locked 128 GB fallback is carried into EVT0; 512 GB is unsupported.
+  storage_tier_tb: 1
+  storage_note: One public 1 TB UFS geometry is the planning baseline; higher capacity requires verified architecture evidence.
+  wireless_charging: removed
+  cellular: deferred
+  wifi_bluetooth: modular_development_path
+  battery_capacity: selected_supplier_validated_complete_pack_only
+  wired_charge_input_w: min_of_30w_evt_cap_and_supplier_system_limits
+  full_power_charge_ai_overlap: prohibited
+  pocket_or_bag_sustained_ai: prohibited
+
+build_variants:
+  workload_bench:
+    purpose: Characterize candidate software and workload scaling on available 128 GB developer hardware.
+    geometry_representative: false
+    evidence_use: software_and_workload_reference_only
+  thermal_power_mule:
+    purpose: Correlate source placement, thermal path, power conversion, sensors, and controls in the v1R envelope.
+    geometry_representative: true
+    evidence_use: primary_EVT0_integration_evidence_after_prerequisites
+  radio_mule:
+    purpose: Evaluate modular radios, antenna reservations, coexistence, and chassis effects.
+    geometry_representative: true
+    evidence_use: RF_development_only_not_certification
+
+hard_stop_conditions:
+  - Any battery, supplier, laboratory, equipment, protection, smoke, odor, swelling, leakage, arcing, or abnormal-voltage limit.
+  - Exterior skin reaches 43 C or the approved lower use-case limit.
+  - Battery reaches the supplier limit or the conservative pre-supplier 40 C test-abort gate, whichever is lower.
+  - Instrumentation loses required safety channels or time synchronization.
+  - Unexpected reset, protection fault, sensor fault, or uncontrolled charging state.
+
+change_control:
+  rule: Failed targets produce a deviation and requirement trade; they may not be hidden by changing setup, limits, workload, or configuration.
+  required_fields: [requirement, measured_evidence, root_cause_status, proposed_trade, affected_artifacts, approver, disposition]
+
+gate_decisions:
+  ready_to_build: All prerequisite and authorization fields are satisfied and reviewed.
+  ready_to_test: Build traveler, inspection, calibration, safety review, and configuration checksum pass.
+  evidence_complete: Required tests have schema-valid raw data, reviewed results, deviations, and model correlation.

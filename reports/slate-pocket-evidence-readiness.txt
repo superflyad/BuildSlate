@@ -5,7 +5,7 @@ Executive summary:
   baseline profile: slate-pocket-v1r
   evidence packages: 10
   verified packages: 1/10
-  status counts: missing=2, planned=4, in_progress=0, available=3, verified=1
+  status counts: missing=1, planned=5, in_progress=0, available=3, verified=1
   open critical packages: 8
   EVIDENCE_DECISION: BLOCKED_ON_FOUNDATIONAL_EVIDENCE
   registry source: engineering\evidence\evidence_registry.yaml
@@ -162,8 +162,8 @@ Phase 2 evidence packages:
 Phase 3 evidence packages:
   - evt0_prototype_evidence: Build and characterize an EVT-0 integration prototype
     priority: critical
-    status: missing
-    owner: unassigned
+    status: planned
+    owner: BuildSlate engineering and authorized test owner
     depends_on: mechanical_cad_stackup, pcb_power_architecture, thermal_model_and_test_plan, rf_wireless_architecture
     linked_risks: sustained_compute_power, npu_100_tops_sustained, skin_temperature_target_43c, power_delivery_transients, thermal_module_effectiveness, battery_volume_capacity_tradeoff
     acceptance criteria:

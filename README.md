@@ -249,6 +249,18 @@ python engineering/rf/generate_rf_architecture_report.py
 
 The report reserves integration space and compliance work. It is not an antenna design, chamber result, certification, or regulatory approval.
 
+## Slate Pocket v1R EVT0 Execution Package
+
+The controlled EVT0 package under `validation/evt0/` defines the integration-mule configuration, BOM strategy, build traveler, synchronized instrumentation, version-locked workloads, sequenced tests, result schemas, hard stops, and model-correlation workflow. It carries the 128 GB memory and 1 TB storage planning fallbacks, with wireless charging removed and cellular deferred.
+
+Generate the evidence gate with:
+
+```bash
+python validation/evt0/generate_evt0_gate_report.py
+```
+
+The package is `planned_not_authorized`. It contains no selected parts, physical build, measurement results, or permission to purchase, assemble, or energize hardware.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

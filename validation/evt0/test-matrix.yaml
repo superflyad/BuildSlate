@@ -1,0 +1,42 @@
+metadata:
+  status: planned_not_executed
+  result_schema: validation/evt0/schemas/test-result.schema.yaml
+  manifest_schema: validation/evt0/schemas/run-manifest.schema.yaml
+
+global_pass_fail:
+  hard_stops:
+    maximum_skin_c: 43.0
+    battery_limit: lower_of_supplier_limit_and_40c_pre_supplier_abort
+    unexpected_resets: 0
+    unhandled_protection_faults: 0
+    sensor_faults_affecting_safety: 0
+  evidence_quality:
+    required_channels_present: true
+    calibration_current: true
+    raw_data_linked: true
+    configuration_hash_match: true
+    workload_hash_match: true
+  decision_rule: Any hard-stop or evidence-quality failure blocks the test and EVT0 gate; performance misses create a requirement-trade record.
+
+sequence:
+  - {id: B00, test: incoming_inspection_and_mass, state: blocked_on_selected_components, workload: none, purpose: identity_dimensions_mass_damage_and_traceability}
+  - {id: B01, test: build_traveler_and_electrical_safety_review, state: blocked_on_build, workload: none, purpose: assembly_inspection_isolation_ground_and_protection_checks}
+  - {id: F00, test: boot_telemetry_and_radio_kill, state: blocked_on_build, workload: W00_idle_baseline, purpose: functional_baseline_security_and_fault_logging}
+  - {id: P00, test: idle_power_and_thermal_stabilization, state: blocked_on_build, workload: W00_idle_baseline, purpose: establish_baseline_and_sensor_sanity}
+  - {id: P10, test: controlled_compute_power_ramp, state: blocked_on_build, workload: W10_ai_reference_70b_4bit, purpose: find_safe_sustained_envelope_without_assuming_28w}
+  - {id: P11, test: peak_burst_and_rail_transient, state: blocked_on_P10, workload: W11_ai_peak_burst, purpose: measure_droop_response_and_recovery_within_approved_peak_duration}
+  - {id: M20, test: memory_capacity_bandwidth_and_stability, state: blocked_on_build, workload: W20_memory_capacity_and_bandwidth, purpose: prove_128gb_fallback_behavior}
+  - {id: S30, test: storage_sustained_io_and_thermal, state: blocked_on_selected_storage, workload: W30_storage_sustained_io, purpose: characterize_one_tb_baseline_and_host_behavior}
+  - {id: C40, test: combined_system_sustained, state: blocked_on_component_tests, workload: W40_combined_ai_storage_display, purpose: measure_coupled_performance_per_watt_and_throttling}
+  - {id: T10, test: open_air_25c_thermal_map, state: blocked_on_thermal_mule, workload: W10_ai_reference_70b_4bit, purpose: correlate_primary_sustained_case}
+  - {id: T20, test: hot_ambient_35c_control_ramp, state: blocked_on_T10, workload: W10_ai_reference_70b_4bit, purpose: verify_throttle_before_skin_or_battery_limit}
+  - {id: T30, test: handheld_fixture, state: blocked_on_T10, workload: W10_ai_reference_70b_4bit, purpose: map_grip_temperature_and_control_response}
+  - {id: T40, test: pocket_bag_fault_containment, state: prohibited_until_controls_validated, workload: none, purpose: verify_high_power_and_charging_inhibition_only}
+  - {id: B40, test: battery_runtime_at_validated_sustained_load, state: blocked_on_selected_pack_and_P10, workload: W10_ai_reference_70b_4bit, purpose: measure_runtime_discharge_temperature_and_energy}
+  - {id: B50, test: wired_charge_at_EVT_cap, state: blocked_on_selected_pack_charger_and_charge_plan, workload: W00_idle_baseline, purpose: measure_charge_curve_losses_temperatures_and_protection}
+  - {id: B51, test: charging_overlap_guard, state: prohibited_until_controls_validated, workload: control_verification_only, purpose: prove_full_power_charge_and_sustained_AI_cannot_coexist}
+  - {id: R50, test: modular_radio_coexistence, state: blocked_on_radio_mule, workload: W50_radio_coexistence_traffic, purpose: detect_desense_EMC_and_performance_coupling}
+  - {id: MC0, test: model_correlation_and_residual_review, state: blocked_on_required_measurements, workload: none, purpose: compare_mechanical_power_thermal_and_runtime_models_to_data}
+
+required_for_evt0_evidence_gate: [B00, B01, F00, P00, P10, P11, M20, S30, C40, T10, T20, T30, B40, B50, R50, MC0]
+explicitly_not_required_because_removed_or_deferred: [wireless_charging, cellular, 512gb_memory, 4tb_storage]

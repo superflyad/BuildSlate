@@ -1,0 +1,58 @@
+Slate Pocket v1R EVT0 Gate
+============================
+
+Program state:
+  specification status: planned_not_authorized
+  physical prototype exists: no evidence
+  physical work authorized: no
+  purchases authorized: no
+  energized testing authorized: no
+
+Prerequisite evidence:
+  required packages: 7
+  verified packages: 0
+  unverified packages: 7
+  - battery_supplier_package: available
+  - compute_memory_platform_package: available
+  - display_storage_package: available
+  - mechanical_cad_stackup: planned
+  - pcb_power_architecture: planned
+  - thermal_model_and_test_plan: planned
+  - rf_wireless_architecture: planned
+
+Build readiness:
+  BOM roles: 12
+  selected roles: 0
+  intentionally removed/deferred roles: wireless_charging, cellular
+  unmet authorization gates: purchase_authorized, build_authorized, energized_test_authorized
+  unmet safety gates: approved_battery_and_charge_limits, approved_lab_procedure, calibrated_instrumentation_available, emergency_response_reviewed
+  EVT0 memory configuration: 128 GB fallback
+  EVT0 storage configuration: 1 TB planning baseline
+  wireless charging: REMOVED
+  cellular: DEFERRED
+
+Executable test package:
+  planned tests: 18
+  tests required for evidence gate: 16
+  workload definitions: 7
+  workload definitions awaiting content hashes: 4
+  run manifest schema: available
+  test result schema: available
+  build traveler: available
+  model-correlation workflow: available
+
+Measured evidence:
+  result files excluding instructions: 0
+  schema-valid completed required tests: 0
+  model correlation completed: no
+
+Gate blockers:
+  - Supplier packages and Phase 2 integration packages are not verified.
+  - No selected BOM, released hardware design, approved battery/charge limits, or calibrated setup exists.
+  - Purchase, build, and energized-test authorization have not been granted.
+  - No physical unit, raw measurement campaign, reviewed result, or correlation evidence exists.
+
+EVT0_GATE: BLOCKED_ON_SUPPLIER_PHASE2_VERIFICATION_BUILD_AUTHORIZATION_AND_RESULTS
+
+Caveat:
+  The EVT0 package is executable planning evidence only. It does not claim a component selection, prototype build, measurement, correlated model, safety validation, certification, or prototype readiness.

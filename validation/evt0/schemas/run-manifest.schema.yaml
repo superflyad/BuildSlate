@@ -1,0 +1,67 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: buildslate://validation/evt0/run-manifest.schema.yaml
+title: BuildSlate EVT0 Run Manifest
+type: object
+additionalProperties: false
+required:
+  - schema_version
+  - campaign_id
+  - unit_id
+  - build_id
+  - run_id
+  - test_id
+  - start_time_utc
+  - configuration
+  - workload
+  - instrumentation
+  - environment
+properties:
+  schema_version: {const: 1}
+  campaign_id: {type: string, minLength: 1}
+  unit_id: {type: string, minLength: 1}
+  build_id: {type: string, minLength: 1}
+  run_id: {type: string, minLength: 1}
+  test_id: {type: string, minLength: 1}
+  start_time_utc: {type: string, format: date-time}
+  operator_ids: {type: array, items: {type: string}, minItems: 1}
+  configuration:
+    type: object
+    additionalProperties: false
+    required: [bom_revision, board_revision, enclosure_revision, thermal_stack_revision, firmware_hash]
+    properties:
+      bom_revision: {type: string}
+      board_revision: {type: string}
+      enclosure_revision: {type: string}
+      thermal_stack_revision: {type: string}
+      firmware_hash: {type: string, minLength: 16}
+      configuration_hash: {type: string, minLength: 16}
+  workload:
+    type: object
+    additionalProperties: false
+    required: [workload_id, definition_revision, artifact_hashes, command_line]
+    properties:
+      workload_id: {type: string}
+      definition_revision: {type: string}
+      artifact_hashes: {type: array, items: {type: string, minLength: 16}, minItems: 1}
+      command_line: {type: string, minLength: 1}
+      random_seeds: {type: array, items: {type: integer}}
+  instrumentation:
+    type: object
+    additionalProperties: false
+    required: [channel_map_revision, calibration_ids, synchronization_method]
+    properties:
+      channel_map_revision: {type: string}
+      calibration_ids: {type: array, items: {type: string}, minItems: 1}
+      synchronization_method: {type: string, minLength: 1}
+  environment:
+    type: object
+    additionalProperties: false
+    required: [ambient_c, condition, orientation]
+    properties:
+      ambient_c: {type: number}
+      humidity_percent: {type: [number, 'null']}
+      condition: {type: string}
+      orientation: {type: string}
+      fixture_id: {type: [string, 'null']}
+  approved_limits_revision: {type: string}
+  notes: {type: string}

@@ -226,8 +226,8 @@ packages:
     title: Build and characterize an EVT-0 integration prototype
     phase: 3
     priority: critical
-    status: missing
-    owner: unassigned
+    status: planned
+    owner: BuildSlate engineering and authorized test owner
     depends_on:
       - mechanical_cad_stackup
       - pcb_power_architecture

@@ -34,6 +34,7 @@ VALIDATION_CHECKS = (
     "validation/validate_v1r_pcb_power_architecture.py",
     "validation/validate_v1r_thermal_model_plan.py",
     "validation/validate_v1r_rf_wireless_architecture.py",
+    "validation/validate_evt0_execution_package.py",
 )
 
 

@@ -1,0 +1,40 @@
+metadata:
+  status: planned
+  timebase_requirement: common_monotonic_time_or_measured_cross_trigger
+  caveat: Final instrument selection must satisfy range, accuracy, bandwidth, isolation, probe loading, calibration, and safety review.
+
+channel_groups:
+  configuration:
+    required: [unit_id, build_id, bom_revision, board_revision, enclosure_revision, thermal_stack_revision, firmware_hash, workload_hash, calibration_ids]
+  electrical_slow:
+    minimum_rate_hz: 10
+    required: [battery_voltage_v, battery_current_a, battery_temperature_c, input_voltage_v, input_current_a, system_power_w, state_of_charge_percent]
+  electrical_transient:
+    minimum_bandwidth_hz: null
+    bandwidth_basis: selected_rail_load_step_and_regulator_response_required
+    required: [compute_rail_voltage_v, compute_rail_current_a, trigger, protection_flags]
+  thermal:
+    minimum_rate_hz: 1
+    required: [TC_REAR_SOC, TC_FRONT_SOC, TC_REAR_BATTERY, TC_FRONT_CENTER, TC_REAR_CHARGER, TC_EDGE_LEFT, TC_EDGE_RIGHT, T_AMBIENT]
+    optional_when_wireless_removed: [TC_REAR_COIL]
+  platform:
+    minimum_rate_hz: 1
+    required: [soc_temperature_c, memory_temperature_c_if_available, storage_temperature_c_if_available, clocks, rail_telemetry, throttle_state, reset_reason, faults]
+  workload:
+    minimum_rate_hz: 1
+    required: [work_units_completed, latency, throughput, errors, memory_allocated_bytes, memory_bandwidth_counter_if_available, storage_bytes, process_exit_status]
+
+calibration_and_setup:
+  - Record in-calibration evidence and uncertainty for every instrument/channel.
+  - Verify thermocouple attachment, polarity, location, insulation, and strain relief against the sensor map.
+  - Measure current-sense and voltage-probe offsets before each campaign.
+  - Verify isolation and common-mode ratings before energized connection.
+  - Run a synchronization pulse and preserve raw timestamps before the first workload.
+  - Photograph the instrumented unit and fixture with identifiers visible.
+
+invalid_run_conditions:
+  - Missing required channel or calibration reference.
+  - Timestamp discontinuity or unsynchronized data that prevents event alignment.
+  - Probe saturation, range error, detached temperature sensor, or material probe loading.
+  - Configuration or workload hash differs from the run manifest.
+  - Manual intervention not captured in the event log.

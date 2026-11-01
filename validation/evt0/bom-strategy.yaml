@@ -1,0 +1,71 @@
+metadata:
+  status: sourcing_strategy_only
+  selected_parts: 0
+  caveat: A role entry is not a selected or available component.
+
+selection_policy:
+  - Supplier part number, lifecycle, availability, package drawing, electrical/thermal limits, and applicable compliance evidence are mandatory.
+  - Supplier lower limits override BuildSlate targets and EVT0 screening limits.
+  - Substitute parts require a recorded deviation and re-review of affected CAD, power, thermal, RF, firmware, and tests.
+  - Engineering samples and development boards are labeled and cannot silently become product BOM evidence.
+
+roles:
+  compute_platform:
+    quantity_per_unit: 1
+    status: selection_required
+    preferred_rfq: Qualcomm Snapdragon X2 Elite Extreme at 128 GB fallback
+    required_evidence: [package_drawing, reference_design, rail_map, sustained_workload_telemetry, software_support, sample_terms]
+  memory:
+    quantity_per_unit: topology_dependent
+    status: selection_required
+    planning_topology: four_32gb_sites_for_128gb
+    required_evidence: [qualified_part_numbers, package_drawings, controller_support, routing_rules, power, thermal_limits]
+  storage:
+    quantity_per_unit: 1
+    status: selection_required
+    planning_baseline: one_1tb_embedded_package
+    required_evidence: [host_support, package_drawing, pin_map, power_states, sustained_write_thermal_data, lifecycle]
+  battery_pack:
+    quantity_per_unit: 1
+    status: selection_required
+    capacity_rule: best_supplier_validated_complete_pack_that_fits
+    required_evidence: [cell_and_pack_drawing, protection, swelling, charge_discharge_limits, impedance, cycle_life, safety_and_shipping]
+  display_module:
+    quantity_per_unit: 1
+    status: selection_required
+    fallback: supplier_available_7_to_8_4_inch_panel_preserving_workspace_intent
+    required_evidence: [outline, stack_height, flex, interface, power_curve, optical_limits, samples, lifecycle]
+  main_board_and_power:
+    quantity_per_unit: 1
+    status: design_required
+    required_evidence: [released_schematic, netlist, layout, stackup, SI_PI_review, protection_review, bringup_plan]
+  thermal_module:
+    quantity_per_unit: 1
+    status: design_required
+    required_evidence: [geometry, materials, performance_map, TIM, contact_pressure, tolerance, assembly_process]
+  enclosure_and_fixtures:
+    quantity_per_unit: 1
+    status: design_required
+    required_evidence: [released_CAD, tolerances, materials, fasteners, sensor_access, safety_guards]
+  radios_and_antennas:
+    quantity_per_unit: configuration_dependent
+    status: modular_development_selection_required
+    required_evidence: [module_grants_and_conditions, reference_design, bands, antennas, drivers, lab_plan]
+  wireless_charging:
+    quantity_per_unit: 0
+    status: removed_from_EVT0
+    reason: z_height_conflict_and_unestablished_50w_certification_path
+  cellular:
+    quantity_per_unit: 0
+    status: deferred_from_EVT0
+    reason: target_market_band_operator_and_certification_scope_unset
+  instrumentation_and_safety:
+    quantity_per_unit: lab_shared
+    status: selection_and_calibration_required
+    required_evidence: [ranges, accuracy, bandwidth, isolation, calibration, fixture_rating, emergency_controls]
+
+procurement_control:
+  purchase_status: not_authorized
+  supplier_contact_status: RFQs_prepared_not_sent
+  nda_status: not_accepted
+  rule: No quote request, NDA acceptance, sample request, purchase, or disclosure occurs without explicit authorization.

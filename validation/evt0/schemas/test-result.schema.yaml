@@ -1,0 +1,77 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: buildslate://validation/evt0/test-result.schema.yaml
+title: BuildSlate EVT0 Test Result
+type: object
+additionalProperties: false
+required:
+  - schema_version
+  - manifest_path
+  - raw_data
+  - time_range_utc
+  - required_channel_status
+  - metrics
+  - hard_stop_events
+  - validity
+  - disposition
+properties:
+  schema_version: {const: 1}
+  manifest_path: {type: string, minLength: 1}
+  raw_data:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required: [path, sha256, format, source]
+      properties:
+        path: {type: string, minLength: 1}
+        sha256: {type: string, pattern: '^[a-fA-F0-9]{64}$'}
+        format: {type: string}
+        source: {type: string}
+  time_range_utc:
+    type: object
+    additionalProperties: false
+    required: [start, end]
+    properties:
+      start: {type: string, format: date-time}
+      end: {type: string, format: date-time}
+  required_channel_status:
+    type: object
+    additionalProperties: {type: boolean}
+    minProperties: 1
+  metrics:
+    type: object
+    additionalProperties:
+      type: object
+      additionalProperties: false
+      required: [value, unit, method, confidence]
+      properties:
+        value: {type: [number, integer, string, boolean, 'null']}
+        unit: {type: string}
+        method: {type: string}
+        confidence: {enum: [measured, derived, unavailable]}
+  hard_stop_events:
+    type: array
+    items:
+      type: object
+      required: [timestamp_utc, type, action]
+      properties:
+        timestamp_utc: {type: string, format: date-time}
+        type: {type: string}
+        action: {type: string}
+  validity:
+    enum: [valid, invalid, aborted]
+  invalidation_reasons: {type: array, items: {type: string}}
+  disposition:
+    enum: [pass, fail, blocked, review_required]
+  requirement_trades: {type: array, items: {type: string}}
+  analysis_artifacts:
+    type: array
+    items:
+      type: object
+      required: [path, sha256]
+      properties:
+        path: {type: string}
+        sha256: {type: string, pattern: '^[a-fA-F0-9]{64}$'}
+  reviewers: {type: array, items: {type: string}}
+  notes: {type: string}

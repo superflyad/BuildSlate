@@ -1,0 +1,55 @@
+metadata:
+  status: definitions_pending_implementation_hashes
+  selection_metric: measured_workload_performance_per_watt
+  caveat: Workload names define intent; a run is invalid until executable, model/data, parameters, and environment are content-addressed.
+
+common_controls:
+  - Pin executable/container, model/data, runtime, compiler, drivers, firmware, parameters, and command line by cryptographic hash.
+  - Disable network dependencies after artifacts are staged; record Airgap Mode state and verification result.
+  - Record warmup, sample duration, repetition count, random seeds, cache state, ambient, power mode, and operator interventions.
+  - Preserve raw logs and errors; failed runs cannot be deleted from the campaign record.
+
+workloads:
+  W00_idle_baseline:
+    purpose: Establish stabilized idle power, temperatures, clocks, and background activity.
+    duration_min: 30
+    output_metrics: [system_power_w, battery_current_a, temperatures, background_processes, clocks]
+  W10_ai_reference_70b_4bit:
+    purpose: Test the locked 70B/4-bit local runtime scenario on the 128 GB fallback tier.
+    model_artifact: null
+    prompt_dataset: null
+    runtime: null
+    duration_min: 60
+    output_metrics: [tokens_per_second_or_task_rate, latency, energy_per_work_unit, memory_peak_bytes, clocks, throttle_time, errors]
+    pass_posture: No numeric throughput claim is set; compare repeatable performance per watt while respecting thermal and safety gates.
+  W11_ai_peak_burst:
+    purpose: Exercise the selected platform's approved short-duration peak mode.
+    source_workload: W10_ai_reference_70b_4bit
+    duration_s: 60
+    output_metrics: [peak_power_w, peak_current_a, rail_droop, clocks, throughput, temperatures, throttle_transition]
+  W20_memory_capacity_and_bandwidth:
+    purpose: Validate usable capacity, allocation stability, error behavior, and bandwidth pressure at the 128 GB tier.
+    tool_artifact: null
+    allocation_rule: Increase in controlled steps without invoking unsafe or unsupported overcommit.
+    output_metrics: [installed_bytes, usable_bytes, allocated_bytes, bandwidth, errors, corrections_if_exposed, power, temperatures]
+  W30_storage_sustained_io:
+    purpose: Characterize selected storage under traceable read/write patterns without assuming headline performance.
+    tool_artifact: null
+    data_safety: Dedicated disposable test volume only.
+    output_metrics: [bytes_read, bytes_written, throughput, latency_percentiles, power, temperature, throttle_state, errors]
+  W40_combined_ai_storage_display:
+    purpose: Exercise coupled compute, memory, storage, and display load below validated power/thermal limits.
+    composition: [W10_ai_reference_70b_4bit, W30_storage_sustained_io, controlled_display_pattern]
+    output_metrics: [performance_per_watt, subsystem_power, temperatures, throttle_time, errors]
+  W50_radio_coexistence_traffic:
+    purpose: Generate controlled modular-radio traffic during compute and high-speed board activity.
+    traffic_artifact: null
+    cellular_included: false
+    wireless_charging_included: false
+    output_metrics: [throughput, packet_error_or_retry_metrics, latency, compute_impact, power, temperatures, emissions_observations]
+
+invalidation_rules:
+  - Missing artifact hash, command line, environment, raw log, configuration, or calibration link.
+  - Workload changes between comparison runs without a new workload revision.
+  - Thermal or power limit override, hidden cooldown, undocumented cache priming, or discarded failed repetition.
+  - Network/model/data substitution after the manifest is signed.

@@ -75,7 +75,7 @@ def render_report(risks: tuple[RiskEntry, ...] | None = None) -> str:
             f"accepted={status_counts['accepted']}"
         ),
         f"  highest ranked risk: {ranked[0].risk_id} - {ranked[0].severity.value} - {_score_line(ranked[0])}",
-        f"  register source: {REGISTRY_PATH.relative_to(REPO_ROOT)}",
+        f"  register source: {REGISTRY_PATH.relative_to(REPO_ROOT).as_posix()}",
         "",
         "Caveat:",
         f"  {SCREENING_CAVEAT}",

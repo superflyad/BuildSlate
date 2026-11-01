@@ -159,12 +159,12 @@ nodes:
       reports/slate-pocket-v1r-rf-wireless-architecture.txt: 75a5906aaedaa9f7562b090547da98c62e0eaafa8d01ec9a41d35b8e789f8e5c
   risk_report:
     inputs:
-      engineering/risks/generate_risk_report.py: 36304e37670a5ad24bfbe099d514cc92072ef6205eb39b33477c5afeb96ee538
+      engineering/risks/generate_risk_report.py: b2eeeb0a773815a21a859ba10a34e379bf9681a42e8e6d20acf3244b27d5b30a
       engineering/risks/risk_engine.py: 6d748683a8da37461eb1a760bd43ef3dbd8b85bd6412eb5d216aa4c1fe75a884
       engineering/risks/risk_register.yaml: eae86e2b4c61d57e0a09e4310a3d7873c10d2af8945a7f84e493ac31a70751e9
       reports/program/configuration-resolution.yaml: c59e257abba32ad8317027a4d02ca123689ce3e614c2fed3903d2236ed5cf598
     outputs:
-      reports/slate-pocket-risk-register.txt: c861295fc4441ffcb4e1f0c0008016b65901b894354a7f0dfd065a6e3944892b
+      reports/slate-pocket-risk-register.txt: 725eab1c2a46bb4ff82c1270f18c377fa65afb39272d1a7df3a03f28487522c6
   program_handoff:
     inputs:
       engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
@@ -192,7 +192,7 @@ nodes:
       reports/program/integration-contracts.yaml: dbcc1c59c3d24d6e1b6cdf1ba76e2cf2ebfd440ae9634317decccedae5f8210f
       reports/program/manufacturing-pilot-analytics.yaml: 13d981cac98395095638a67a363e44b1be0044dd9ecc50b919c51a033419528b
       reports/program/supplier-response-review.yaml: 343bb9ab70cd09224876c6ce32618b4696e0fc0b2698e5ab0c32d9e61f83eeb7
-      reports/slate-pocket-evidence-readiness.txt: 9da06ae9752028a31b42fdedd53421f8770289fde084ac27cd3f8a4f1892b5c2
+      reports/slate-pocket-evidence-readiness.txt: 187991a06b78822e0c3f21cc131c9bcb237ecf96a9f514ecf20a0f118a189248
       reports/slate-pocket-v1r-evt0-gate.txt: f6c1ba0db3a56b738ca66e5f7b0f059717e6548b630b576f815b0f333414ca3b
       reports/slate-pocket-v1r-manufacturing-readiness.txt: c0f01f33e718e4d97f670d613645ad5e24f99902f7a71d43ba2c5cbe7904d172
       reports/slate-pocket-v1r-program-readiness.txt: 9fda9b41a525622909e44b36dd53e86b05d117d151ec70727e20605271be4242

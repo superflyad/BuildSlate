@@ -65,7 +65,7 @@ def render_report(packages: tuple[EvidencePackage, ...], caveat: str) -> str:
         ),
         f"  open critical packages: {len(critical_open)}",
         f"  EVIDENCE_DECISION: {decision.value}",
-        f"  registry source: {REGISTRY_PATH.relative_to(REPO_ROOT)}",
+        f"  registry source: {REGISTRY_PATH.relative_to(REPO_ROOT).as_posix()}",
         "",
         "Attack now:",
     ]

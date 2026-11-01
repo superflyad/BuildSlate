@@ -8,7 +8,7 @@ Executive risk summary:
   severity counts: CRITICAL=6, HIGH=5, MEDIUM=2, LOW=0
   status counts: blocked=7, open=5, monitoring=0, mitigated=1, accepted=0
   highest ranked risk: memory_packaging_512gb - CRITICAL - score=14 (likelihood 4 x impact 3 + maturity penalty 2)
-  register source: engineering\risks\risk_register.yaml
+  register source: engineering/risks/risk_register.yaml
 
 Caveat:
   This is a screening-level risk register, not formal FMEA, validation evidence, supplier approval, or production readiness evidence.

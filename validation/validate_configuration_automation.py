@@ -78,6 +78,11 @@ def main() -> int:
     require(resolution["classification_counts"].get("selected_component", 0) == 0, "no component selection is invented")
     require(load_yaml(REPO_ROOT / "reports/program/configuration-resolution.yaml") == resolution, "configuration resolution report is deterministic and current")
     require(len(resolution["resolved_propagations"]) == 4, "cross-domain configuration propagation targets are authoritative")
+    for report_path in (
+        "reports/slate-pocket-evidence-readiness.txt",
+        "reports/slate-pocket-risk-register.txt",
+    ):
+        require("\\" not in (REPO_ROOT / report_path).read_text(encoding="utf-8"), f"generated provenance paths are platform-neutral: {report_path}")
 
     with tempfile.TemporaryDirectory() as temp_directory:
         temporary_root = Path(temp_directory)

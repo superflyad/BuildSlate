@@ -48,4 +48,9 @@ contradiction_rules:
     requirement_class: operational_fallback
     fallback: lower the EVT0 input cap to the supplier-validated limit
     basis: configs/devices/slate-pocket-v1r.yaml#integration_configuration.wired_charge_evt0_input_cap_w
+    configuration_effect:
+      authority: evt0_wired_charge_cap
+      value_policy: supplier_value
+      minimum: 0
+      maximum: 30
 

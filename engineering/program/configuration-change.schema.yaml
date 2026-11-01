@@ -1,0 +1,32 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+title: BuildSlate approved operational fallback decision
+type: object
+additionalProperties: false
+required: [schema_version, decision_id, authority, expected_current_value, new_value, evidence, approval]
+properties:
+  schema_version: {const: 1}
+  decision_id:
+    type: string
+    pattern: '^[a-z0-9][a-z0-9_-]{2,63}$'
+  authority: {type: string, minLength: 1}
+  expected_current_value: {}
+  new_value: {}
+  evidence:
+    type: object
+    additionalProperties: false
+    required: [supplier_receipt, contradiction_rule_id]
+    properties:
+      supplier_receipt: {type: string, pattern: '^research/supplier-responses/receipts/.+\.yaml$'}
+      contradiction_rule_id: {type: string, minLength: 1}
+  approval:
+    type: object
+    additionalProperties: false
+    required: [disposition, approved_by, approved_at, rationale]
+    properties:
+      disposition: {const: approved}
+      approved_by: {type: string, minLength: 1}
+      approved_at: {type: string, format: date-time}
+      rationale: {type: string, minLength: 1}
+description: >-
+  This document authorizes only a machine-executable operational fallback backed by an intact supplier receipt.
+  It does not verify supplier claims, select a component, approve physical work, or modify locked targets.

@@ -219,6 +219,41 @@ class ProgramRepository:
             external = decision.get("external_blocker")
             if external and f"blocker:{external}" in {entity.entity_id for entity in entities}:
                 relations.append(ProgramRelation(entity_id, "blocked_by", f"blocker:{external}"))
+        change_root = self._repo_path("engineering/program/configuration-decisions")
+        for receipt_path in sorted(change_root.glob("*.yaml")) if change_root.exists() else ():
+            receipt = load_yaml(receipt_path)
+            decision = receipt["decision"]
+            relative_receipt = receipt_path.relative_to(self.repo_root).as_posix()
+            change_id = f"configuration_change:{decision['decision_id']}"
+            entities.append(
+                self._entity(
+                    change_id,
+                    "configuration_change",
+                    decision["decision_id"].replace("_", " "),
+                    receipt["application"]["status"],
+                    relative_receipt,
+                    authority=decision["authority"],
+                    prior_values=receipt["application"]["prior_values"],
+                    new_value=decision["new_value"],
+                    approval=decision["approval"],
+                    supplier_raw_sha256=receipt["application"]["supplier_raw_sha256"],
+                )
+            )
+            relations.append(ProgramRelation(change_id, "applies_to", f"decision:{decision['authority']}"))
+            supplier_receipt = decision["evidence"]["supplier_receipt"]
+            reference_id = f"provenance_ref:{supplier_receipt}"
+            provenance_references.setdefault(
+                reference_id,
+                self._entity(
+                    reference_id,
+                    "provenance",
+                    supplier_receipt,
+                    "supplier_receipt",
+                    supplier_receipt,
+                    reference=supplier_receipt,
+                ),
+            )
+            relations.append(ProgramRelation(change_id, "supported_by", reference_id))
         entities.extend(provenance_references.values())
 
         provenance_path, provenance_data = self._source("provenance")

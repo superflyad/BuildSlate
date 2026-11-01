@@ -142,6 +142,31 @@ resolved_bindings:
   model_use: status_only
   sources:
   - configs/devices/slate-pocket-v1r.yaml#integration_configuration.cellular
+resolved_propagations:
+- target: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#metadata.modeled_memory_tier_gb
+  authority: memory_operational
+  state: operational_fallback
+  value: 128
+  unit: GB
+  consumption: model_input
+- target: validation/evt0/evt0-spec.yaml#configuration_rules.memory_tier_gb
+  authority: memory_operational
+  state: operational_fallback
+  value: 128
+  unit: GB
+  consumption: model_input
+- target: validation/evt0/evt0-spec.yaml#configuration_rules.storage_tier_tb
+  authority: storage_operational
+  state: operational_fallback
+  value: 1
+  unit: TB
+  consumption: model_input
+- target: engineering/pcb/power-tree.yaml#charging_policy.evt0_wired_input_cap_w
+  authority: evt0_wired_charge_cap
+  state: operational_fallback
+  value: 30
+  unit: W
+  consumption: model_input
 violations: []
 unresolved_decisions:
 - authority: compute_platform_selection

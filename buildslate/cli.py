@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from typing import Any, Sequence
 
-from .configuration import ConfigurationResolver
+from .configuration import ConfigurationChangeController, ConfigurationResolver
 from .contracts import IntegrationContractRepository
 from .dashboard import ProgramDashboard
 from .evt0 import EVT0CampaignRepository
@@ -172,6 +172,29 @@ def command_configuration_generate(args: argparse.Namespace) -> int:
     print(f"Wrote {destination.relative_to(resolver.repo_root)}")
     print(f"gate: {resolution['CONFIGURATION_GATE']}")
     return 2 if resolution["violations"] else 0
+
+
+def command_configuration_fallback_validate(args: argparse.Namespace) -> int:
+    plan = ConfigurationChangeController(Path(args.repo_root)).validate_decision(Path(args.decision))
+    if args.format in {"json", "yaml"}:
+        _emit(plan, args.format)
+    else:
+        print(f"decision: {plan['decision_id']}")
+        print(f"status: {plan['status']}")
+        print(f"authority: {plan['authority']}")
+        print(f"value: {plan['current_value']!r} -> {plan['new_value']!r}")
+        print(f"targets: {len(plan['targets'])}")
+    return 0
+
+
+def command_configuration_fallback_apply(args: argparse.Namespace) -> int:
+    result = ConfigurationChangeController(Path(args.repo_root)).apply(Path(args.decision))
+    print(f"Applied {result['decision_id']}")
+    print(f"Wrote {result['destination']}")
+    print(f"changed_paths: {len(result['changed_paths'])}")
+    print(f"regenerated_nodes: {len(result['regenerated_nodes'])}")
+    print("evidence_effect: operational_fallback_only")
+    return 0
 
 
 def command_impact(args: argparse.Namespace) -> int:
@@ -402,6 +425,16 @@ def build_parser() -> argparse.ArgumentParser:
 
     configuration_generate = configuration_commands.add_parser("generate", help="generate the authoritative resolution report")
     configuration_generate.set_defaults(handler=command_configuration_generate)
+
+    configuration_fallback = configuration_commands.add_parser("fallback", help="validate or apply an approved supplier-backed fallback")
+    fallback_commands = configuration_fallback.add_subparsers(dest="fallback_command", required=True)
+    fallback_validate = fallback_commands.add_parser("validate", help="validate a fallback decision without writing")
+    fallback_validate.add_argument("--decision", required=True)
+    fallback_validate.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    fallback_validate.set_defaults(handler=command_configuration_fallback_validate)
+    fallback_apply = fallback_commands.add_parser("apply", help="atomically apply and regenerate an approved fallback")
+    fallback_apply.add_argument("--decision", required=True)
+    fallback_apply.set_defaults(handler=command_configuration_fallback_apply)
 
     impact_parser = subparsers.add_parser("impact", help="show dependency-aware impact for changed paths")
     impact_parser.add_argument("--changed", nargs="+", required=True)

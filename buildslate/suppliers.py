@@ -154,6 +154,17 @@ class SupplierResponseRepository:
                     f"supplier schema {domain} rule {rule['id']} expected value is stale: "
                     f"{rule['expected']!r} != {authoritative_value!r}"
                 )
+            effect = rule.get("configuration_effect")
+            if effect is not None:
+                if not isinstance(effect, dict) or not {"authority", "value_policy"}.issubset(effect):
+                    raise ValueError(f"supplier schema {domain} rule {rule['id']} has an incomplete configuration effect")
+                if effect["value_policy"] not in {"supplier_value", "fixed_value"}:
+                    raise ValueError(f"supplier schema {domain} rule {rule['id']} has an unsupported value policy")
+                if effect["value_policy"] == "fixed_value" and "value" not in effect:
+                    raise ValueError(f"supplier schema {domain} rule {rule['id']} fixed-value effect requires value")
+                for bound in ("minimum", "maximum"):
+                    if bound in effect and not isinstance(effect[bound], (int, float)):
+                        raise ValueError(f"supplier schema {domain} rule {rule['id']} {bound} must be numeric")
         return schema
 
     def validate_response(self, response_path: Path, domain: str) -> ResponseReview:

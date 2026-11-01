@@ -18,6 +18,8 @@ nodes:
     depends_on: [supplier_review]
     inputs:
       - engineering/program/configuration_registry.yaml
+      - engineering/program/configuration-change.schema.yaml
+      - engineering/program/configuration-decisions/*.yaml
       - buildslate/configuration.py
       - configs/devices/slate-pocket-v1r.yaml
       - engineering/assumptions/assumption_registry.yaml
@@ -176,6 +178,7 @@ nodes:
       - validation/evt0/test-matrix.yaml
       - manufacturing/defect-taxonomy.yaml
       - engineering/program/configuration_registry.yaml
+      - engineering/program/configuration-decisions/*.yaml
       - engineering/provenance/constants_provenance.yaml
       - engineering/program/regeneration.yaml
       - reports/program/configuration-resolution.yaml

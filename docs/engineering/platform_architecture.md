@@ -31,12 +31,17 @@ gates + unified graph + dashboard
 
 No arrow automatically promotes evidence. Supplier claims require engineering review; selected components require a matching review-ready receipt; test/pilot evidence remains subject to deviations, correlations, stop rules, and named approvals.
 
+## Controlled fallback transaction
+
+An ingested contradiction does not mutate configuration. A separate approved decision must reference the intact receipt and an executable contradiction rule. The transaction changes only an `operational_fallback` authority, updates every bound profile and cross-domain propagation target, preserves prior values and hashes in `engineering/program/configuration-decisions`, and regenerates the affected DAG. Locked targets remain unchanged and continue to show the product aspiration. Non-executable fallback language remains a review action, never an automatic edit.
+
 ## Failure behavior
 
 - Malformed or hash-inconsistent evidence is rejected before ingestion.
 - Valid failed/aborted evidence is preserved and blocks or opens review; it is not discarded.
 - Unsupported configuration bound to a model returns a nonzero result.
 - Cross-domain contradictions stop regeneration before downstream reports refresh.
+- A fallback approval, supplier hash, value, target, or downstream generation failure rolls the entire configuration transaction back.
 - Missing or changed generator inputs/outputs become hash-stale.
 - Critical pilot defects trigger stop/quarantine regardless of average yield.
 - Dashboard currency never implies physical or commercial readiness.

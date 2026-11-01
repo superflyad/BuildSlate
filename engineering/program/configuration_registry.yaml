@@ -111,6 +111,12 @@ bindings:
   - {profile_path: integration_configuration.wireless_charging, authority: wireless_charging_evt0, consumption: disabled_input}
   - {profile_path: integration_configuration.cellular, authority: cellular_integration, consumption: status_only}
 
+propagations:
+  - {target: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#metadata.modeled_memory_tier_gb, authority: memory_operational, consumption: model_input}
+  - {target: validation/evt0/evt0-spec.yaml#configuration_rules.memory_tier_gb, authority: memory_operational, consumption: model_input}
+  - {target: validation/evt0/evt0-spec.yaml#configuration_rules.storage_tier_tb, authority: storage_operational, consumption: model_input}
+  - {target: engineering/pcb/power-tree.yaml#charging_policy.evt0_wired_input_cap_w, authority: evt0_wired_charge_cap, consumption: model_input}
+
 outputs:
   resolution_report: reports/program/configuration-resolution.yaml
 

@@ -6,6 +6,7 @@
 - Program state: `python -m buildslate dashboard`
 - External blockers: `python -m buildslate blockers`
 - Configuration authority: `python -m buildslate configuration validate`
+- Approved fallback preflight: `python -m buildslate configuration fallback validate --decision <file>`
 - Phase 2 interfaces: `python -m buildslate contracts validate`
 - Generated currency: `python -m buildslate stale`
 - Migration map: `python -m buildslate migrations audit`
@@ -16,7 +17,7 @@ The baseline remains Slate Pocket v1R with 128 GB operational memory, 1 TB inter
 
 ## Empty evidence stores
 
-Supplier response receipts, EVT0 campaigns, calibration evidence, and pilot campaigns are intentionally empty. README files are not evidence. Do not add sample measurements to these stores.
+Supplier response receipts, configuration-change receipts, EVT0 campaigns, calibration evidence, and pilot campaigns are intentionally empty. README files are not evidence. Do not add sample measurements or approvals to these stores.
 
 ## External boundary
 
@@ -28,7 +29,8 @@ The exact missing evidence, requested action, authorization, and active fallback
 2. Validate staged evidence without ingesting it.
 3. Preserve authorization metadata and source bytes during ingestion.
 4. Resolve configuration/contract violations through their authoritative inputs.
-5. Regenerate affected nodes.
-6. Run `python scripts/ci_validate.py`.
-7. Commit generated outputs and their regeneration state together.
+5. For an executable approved supplier fallback, use the transactional CLI; otherwise resolve the engineering decision without inventing authority.
+6. Regenerate affected nodes.
+7. Run `python scripts/ci_validate.py`.
+8. Commit generated outputs, decision receipts, and their regeneration state together.
 

@@ -201,6 +201,18 @@ python engineering/evidence/generate_supplier_rfq_readiness_report.py
 
 The packets are intentionally marked `prepared_not_sent`. Sending them, accepting an NDA, disclosing confidential information, requesting paid samples, or purchasing parts requires explicit authorization.
 
+## Slate Pocket v1R Provisional CAD Integration Model
+
+The v1R blocking model under `cad/slate-pocket-v1r/envelope-model/` converts the locked envelope and public candidate references into explicit planform placements, keepouts, and local zone stackups. It replaces the misleading assumption that every internal component contributes to one global z-height sum, while preserving the fact that supplier geometry, tolerance, RF, acoustic, service, and assembly evidence is still missing.
+
+Generate the provisional CAD budget with:
+
+```bash
+python engineering/cad_envelope/generate_v1r_cad_budget.py
+```
+
+The resulting report is conflict-finding input for future CAD. It is not proof of fit or manufacturability.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

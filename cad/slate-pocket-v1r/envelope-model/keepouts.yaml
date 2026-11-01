@@ -1,0 +1,45 @@
+metadata:
+  model_status: provisional
+  caveat: Keepouts are planning reserves, not antenna, acoustic, connector, or mechanical designs.
+
+keepouts:
+  top_rf_edge:
+    category: rf
+    rectangle_mm: {x: 3.0, y: 86.0, length: 174.0, width: 6.0}
+    applies_to_layers: [component_planform, thermal_overlay, rear_overlay]
+    evidence_class: placeholder
+  bottom_rf_edge:
+    category: rf
+    rectangle_mm: {x: 3.0, y: 3.0, length: 174.0, width: 6.0}
+    applies_to_layers: [component_planform, thermal_overlay, rear_overlay]
+    evidence_class: placeholder
+  left_rf_edge:
+    category: rf
+    rectangle_mm: {x: 3.0, y: 3.0, length: 6.0, width: 89.0}
+    applies_to_layers: [component_planform, thermal_overlay, rear_overlay]
+    evidence_class: placeholder
+  right_rf_edge:
+    category: rf
+    rectangle_mm: {x: 171.0, y: 3.0, length: 6.0, width: 89.0}
+    applies_to_layers: [component_planform, thermal_overlay, rear_overlay]
+    evidence_class: placeholder
+  camera_service_zone:
+    category: service
+    rectangle_mm: {x: 90.0, y: 68.0, length: 42.0, width: 17.0}
+    applies_to_layers: [component_planform]
+    allowed_placements: [rear_camera_placeholder]
+    evidence_class: inferred
+  bottom_connector_zone:
+    category: connector
+    rectangle_mm: {x: 76.0, y: 3.0, length: 28.0, width: 10.0}
+    applies_to_layers: [component_planform, rear_overlay]
+    evidence_class: placeholder
+
+required_future_keepouts:
+  - Display flex and driver.
+  - Battery tabs, protection, swelling, puncture, and service isolation.
+  - SoC, memory, PMIC, storage, shield cans, decoupling, and test points.
+  - Antenna elements, feeds, matching networks, diversity spacing, and SAR zones.
+  - Camera optics, sensor, actuator, cover glass, calibration, and flex.
+  - Speakers, microphones, ports, buttons, haptics, seals, fasteners, and adhesives.
+  - Wireless charging alignment, ferrite, foreign-object detection, and magnet zones.

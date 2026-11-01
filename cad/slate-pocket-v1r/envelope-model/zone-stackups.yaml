@@ -1,0 +1,54 @@
+metadata:
+  device_thickness_mm: 9.5
+  model_status: provisional_local_zone_screen
+  caveat: Values are not additive across zones and do not replace section CAD or tolerance analysis.
+
+zones:
+  battery_without_wireless_charging:
+    layers:
+      - {id: cover_glass, thickness_mm: 0.55, evidence_class: estimate}
+      - {id: touch_layer, thickness_mm: 0.15, evidence_class: estimate}
+      - {id: oled_stack, thickness_mm: 0.45, evidence_class: estimate}
+      - {id: display_support, thickness_mm: 0.30, evidence_class: placeholder}
+      - {id: display_battery_separation, thickness_mm: 0.25, evidence_class: placeholder}
+      - {id: battery_cell_reference, thickness_mm: 5.44, evidence_class: public_supplier_reference}
+      - {id: pack_noncell_and_swelling, thickness_mm: 0.60, evidence_class: placeholder}
+      - {id: local_structure, thickness_mm: 0.40, evidence_class: placeholder}
+      - {id: rear_cover, thickness_mm: 0.55, evidence_class: estimate}
+      - {id: assembly_tolerance, thickness_mm: 0.35, evidence_class: estimate}
+  battery_with_wireless_charging:
+    inherits: battery_without_wireless_charging
+    additional_layers:
+      - {id: wireless_coil_ferrite_insulation, thickness_mm: 0.80, evidence_class: estimate}
+  compute_hotspot:
+    layers:
+      - {id: cover_glass, thickness_mm: 0.55, evidence_class: estimate}
+      - {id: touch_layer, thickness_mm: 0.15, evidence_class: estimate}
+      - {id: oled_stack, thickness_mm: 0.45, evidence_class: estimate}
+      - {id: display_support, thickness_mm: 0.30, evidence_class: placeholder}
+      - {id: display_board_separation, thickness_mm: 0.20, evidence_class: placeholder}
+      - {id: pcb, thickness_mm: 0.80, evidence_class: estimate}
+      - {id: soc_package, thickness_mm: 1.20, evidence_class: placeholder}
+      - {id: thermal_interface, thickness_mm: 0.15, evidence_class: placeholder}
+      - {id: vapor_chamber, thickness_mm: 0.40, evidence_class: estimate}
+      - {id: local_structure, thickness_mm: 0.40, evidence_class: placeholder}
+      - {id: rear_cover, thickness_mm: 0.55, evidence_class: estimate}
+      - {id: assembly_tolerance, thickness_mm: 0.35, evidence_class: estimate}
+  rear_camera:
+    layers:
+      - {id: cover_glass, thickness_mm: 0.55, evidence_class: estimate}
+      - {id: touch_layer, thickness_mm: 0.15, evidence_class: estimate}
+      - {id: oled_stack, thickness_mm: 0.45, evidence_class: estimate}
+      - {id: display_support, thickness_mm: 0.30, evidence_class: placeholder}
+      - {id: camera_module, thickness_mm: 5.00, evidence_class: placeholder}
+      - {id: local_structure, thickness_mm: 0.40, evidence_class: placeholder}
+      - {id: rear_cover, thickness_mm: 0.55, evidence_class: estimate}
+      - {id: assembly_tolerance, thickness_mm: 0.35, evidence_class: estimate}
+
+decision_rules:
+  pass_margin_mm: 0.5
+  warning_margin_mm: 0.0
+  interpretation:
+    PASS: At least 0.5 mm local margin remains before detailed tolerance allocation.
+    WARNING: Positive margin is less than 0.5 mm.
+    FAIL: Stack exceeds the device thickness.

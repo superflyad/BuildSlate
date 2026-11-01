@@ -5,7 +5,7 @@ Executive summary:
   baseline profile: slate-pocket-v1r
   evidence packages: 10
   verified packages: 1/10
-  status counts: missing=6, planned=0, in_progress=0, available=3, verified=1
+  status counts: missing=5, planned=1, in_progress=0, available=3, verified=1
   open critical packages: 8
   EVIDENCE_DECISION: BLOCKED_ON_FOUNDATIONAL_EVIDENCE
   registry source: engineering\evidence\evidence_registry.yaml
@@ -94,8 +94,8 @@ Phase 1 evidence packages:
 Phase 2 evidence packages:
   - mechanical_cad_stackup: Produce the first evidence-backed mechanical CAD stackup
     priority: critical
-    status: missing
-    owner: unassigned
+    status: planned
+    owner: BuildSlate engineering
     depends_on: battery_supplier_package, compute_memory_platform_package, display_storage_package
     linked_risks: thickness_stackup_margin, battery_volume_capacity_tradeoff, thermal_module_effectiveness, rf_antenna_window_constraints, manufacturability_yield_risk
     acceptance criteria:

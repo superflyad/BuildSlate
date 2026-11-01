@@ -1,0 +1,54 @@
+Slate Pocket v1R Provisional CAD Budget
+========================================
+
+Scope:
+  purpose: prepare a supplier-replaceable blocking model and expose local conflicts
+  device envelope: 180.0 x 95.0 x 9.5 mm
+  internal planform boundary: 174.0 x 89.0 mm
+  model status: provisional_pre_supplier_cad
+
+Planform screen:
+  reference placements: 7
+  component-layer area consumption: 68.2%
+  containment failures: 0
+  same-layer overlaps: 0
+  keepout conflicts: 3
+  - rf keepout conflict: speaker_b_placeholder intersects top_rf_edge
+  - connector keepout conflict: battery_reference intersects bottom_connector_zone
+  - connector keepout conflict: main_pcb_placeholder intersects bottom_connector_zone
+
+Local z-height screen:
+  - battery_without_wireless_charging: WARNING
+    total: 9.04 mm
+    margin: 0.46 mm
+    non-verified layers: cover_glass, touch_layer, oled_stack, display_support, display_battery_separation, battery_cell_reference, pack_noncell_and_swelling, local_structure, rear_cover, assembly_tolerance
+  - battery_with_wireless_charging: FAIL
+    total: 9.84 mm
+    margin: -0.34 mm
+    non-verified layers: cover_glass, touch_layer, oled_stack, display_support, display_battery_separation, battery_cell_reference, pack_noncell_and_swelling, local_structure, rear_cover, assembly_tolerance, wireless_coil_ferrite_insulation
+  - compute_hotspot: PASS
+    total: 5.50 mm
+    margin: 4.00 mm
+    non-verified layers: cover_glass, touch_layer, oled_stack, display_support, display_board_separation, pcb, soc_package, thermal_interface, vapor_chamber, local_structure, rear_cover, assembly_tolerance
+  - rear_camera: PASS
+    total: 7.75 mm
+    margin: 1.75 mm
+    non-verified layers: cover_glass, touch_layer, oled_stack, display_support, camera_module, local_structure, rear_cover, assembly_tolerance
+
+Interpretation:
+  - Local-zone sums replace the prior global additive assumption, but most dimensions remain estimates or placeholders.
+  - The public battery cell is a geometry reference, not a complete pack or selected component.
+  - Wireless charging is screened as a separate overlay because it competes directly with battery-zone z-height.
+  - Keepout conflicts are design work, not validation failures; they must be resolved with RF, acoustic, connector, and supplier inputs.
+
+Required replacements before evidence-backed CAD:
+  - Supplier battery cell and complete-pack drawing with swelling and tolerances.
+  - SoC, memory, storage, PMIC, display, camera, charging, and thermal module drawings.
+  - ECAD placement, connector/flex routing, shields, test points, fasteners, seals, and service access.
+  - Approved RF, acoustic, camera, and industrial-design keepouts.
+  - Zone section drawings, tolerance analysis, interference review, and mass rollup.
+
+PROVISIONAL_CAD_DECISION: BLOCKED_ON_SUPPLIER_GEOMETRY_AND_KEEP_OUT_RESOLUTION
+
+Caveat:
+  This report prepares integration work; it does not prove fit, tolerance margin, structural performance, manufacturability, RF performance, thermal performance, or component availability.

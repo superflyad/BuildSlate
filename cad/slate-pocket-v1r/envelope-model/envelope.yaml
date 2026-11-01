@@ -1,0 +1,68 @@
+metadata:
+  device: slate-pocket-v1r
+  model_status: provisional_pre_supplier_cad
+  coordinate_system: Origin at lower-left of rear view; x follows 180 mm length, y follows 95 mm width, z follows thickness.
+  caveat: Reference placements test integration pressure only and do not select components.
+
+device:
+  external_mm: {length: 180.0, width: 95.0, thickness: 9.5}
+  perimeter_inset_mm: 3.0
+  internal_boundary_mm: {x: 3.0, y: 3.0, length: 174.0, width: 89.0}
+
+placements:
+  battery_reference:
+    layer: component_planform
+    rectangle_mm: {x: 10.0, y: 12.0, length: 80.0, width: 66.74}
+    height_mm: 5.44
+    evidence_class: public_supplier_reference
+    source: research/evidence/battery/supplier-source-index.yaml#enovix_ai1_m01
+    status: reference_only_raw_cell_exceeds_current_complete_pack_allocation
+  main_pcb_placeholder:
+    layer: component_planform
+    rectangle_mm: {x: 92.0, y: 12.0, length: 78.0, width: 55.0}
+    height_mm: 1.2
+    evidence_class: estimate
+    source: engineering/cad_envelope/component_volume_registry.yaml#main_pcb
+    status: replace_with_ecad_floorplan
+  rear_camera_placeholder:
+    layer: component_planform
+    rectangle_mm: {x: 92.0, y: 70.0, length: 38.0, width: 13.0}
+    height_mm: 5.0
+    evidence_class: placeholder
+    source: engineering/cad_envelope/component_volume_registry.yaml#rear_lateral_camera_system
+    status: replace_with_module_drawing
+  speaker_a_placeholder:
+    layer: component_planform
+    rectangle_mm: {x: 140.0, y: 72.0, length: 22.0, width: 10.0}
+    height_mm: 3.0
+    evidence_class: estimate
+    source: engineering/cad_envelope/component_volume_registry.yaml#speaker_modules
+    status: acoustic_and_rf_review_required
+  speaker_b_placeholder:
+    layer: component_planform
+    rectangle_mm: {x: 40.0, y: 80.0, length: 22.0, width: 10.0}
+    height_mm: 3.0
+    evidence_class: estimate
+    source: engineering/cad_envelope/component_volume_registry.yaml#speaker_modules
+    status: acoustic_and_rf_review_required
+  wireless_charging_placeholder:
+    layer: rear_overlay
+    rectangle_mm: {x: 16.0, y: 17.0, length: 58.0, width: 58.0}
+    height_mm: 0.8
+    evidence_class: estimate
+    source: engineering/cad_envelope/component_volume_registry.yaml#wireless_charging_coil
+    status: negotiable_feature_and_z_height_conflict
+  thermal_spreader_placeholder:
+    layer: thermal_overlay
+    rectangle_mm: {x: 92.0, y: 12.0, length: 70.0, width: 48.0}
+    height_mm: 0.4
+    evidence_class: estimate
+    source: engineering/components/component_library.yaml#vapor_chamber
+    status: geometry_and_performance_unverified
+
+placement_rules:
+  - All rectangles must remain inside the internal boundary unless explicitly marked as an edge feature.
+  - Rectangles on the same physical layer must not overlap unless an overlap waiver explains the assembly.
+  - RF, camera, acoustic, connector, fastener, seal, and service keepouts take precedence over reference placements.
+  - Raw cell geometry is not complete-pack geometry.
+  - Overlay compatibility requires independent z-height, RF, thermal, and assembly review.

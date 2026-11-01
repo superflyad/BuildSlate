@@ -32,6 +32,15 @@ sources:
   defects:
     entity_kind: defect_code
     path: manufacturing/defect-taxonomy.yaml
+  configuration_authority:
+    entity_kind: decision
+    path: engineering/program/configuration_registry.yaml
+  provenance:
+    entity_kind: provenance
+    path: engineering/provenance/constants_provenance.yaml
+  dependencies:
+    entity_kind: workflow
+    path: engineering/program/regeneration.yaml
 
 gate_sources:
   evidence_gate:

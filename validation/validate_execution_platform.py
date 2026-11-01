@@ -58,6 +58,10 @@ def main() -> int:
             "test",
             "defect_code",
             "gate",
+            "decision",
+            "provenance",
+            "workflow",
+            "generated_output",
         }
         actual_kinds = {entity.kind for entity in first.entities}
         missing_kinds = expected_kinds - actual_kinds
@@ -73,9 +77,20 @@ def main() -> int:
             if relation.source_id not in entity_ids or relation.target_id not in entity_ids:
                 failures.append(f"program graph contains dangling relation: {relation}")
                 break
+        relation_keys = {(item.source_id, item.relationship, item.target_id) for item in first.relations}
+        required_relations = {
+            ("configuration:slate-pocket-v1r", "governed_by", "decision:memory_operational"),
+            ("decision:memory_operational", "sourced_from", "provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.memory_gb"),
+            ("decision:compute_platform_selection", "blocked_by", "blocker:platform_reference_design"),
+            ("workflow:dashboard", "depends_on", "workflow:program_snapshot"),
+            ("workflow:program_snapshot", "produces", "generated_output:reports/program/buildslate-program-snapshot.yaml"),
+        }
+        missing_relations = required_relations - relation_keys
+        if missing_relations:
+            failures.append(f"program graph missing authority/dependency relations: {sorted(missing_relations)}")
         if not failures:
             print(f"PASS: deterministic program graph has {len(first.entities)} entities and {len(first.relations)} relations")
-            print("PASS: graph covers requirements, evidence, artifacts, assumptions, risks, blockers, suppliers, configuration, components, tests, defects, and gates")
+            print("PASS: graph covers requirements, evidence, artifacts, assumptions, risks, blockers, suppliers, configuration decisions, provenance, workflows, components, tests, defects, and gates")
     except (KeyError, TypeError, ValueError) as exc:
         failures.append(str(exc))
 

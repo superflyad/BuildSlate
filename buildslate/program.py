@@ -21,6 +21,9 @@ REQUIRED_SOURCES = {
     "components",
     "tests",
     "defects",
+    "configuration_authority",
+    "provenance",
+    "dependencies",
 }
 
 
@@ -182,6 +185,91 @@ class ProgramRepository:
             entity_id = f"defect:{defect_id}"
             entities.append(self._entity(entity_id, "defect_code", defect_id, defect_data["metadata"]["status"], defect_path, description=description))
             relations.append(ProgramRelation(entity_id, "classified_by", "evidence:manufacturing_review_package"))
+
+        authority_path, authority_data = self._source("configuration_authority")
+        provenance_references: dict[str, ProgramEntity] = {}
+        for decision_id, decision in authority_data["entries"].items():
+            entity_id = f"decision:{decision_id}"
+            entities.append(
+                self._entity(
+                    entity_id,
+                    "decision",
+                    decision_id.replace("_", " "),
+                    decision["state"],
+                    authority_path,
+                    value=decision["value"],
+                    unit=decision.get("unit"),
+                    model_use=decision["model_use"],
+                    notes=decision.get("notes"),
+                )
+            )
+            relations.append(ProgramRelation(config_id, "governed_by", entity_id))
+            for source_reference in decision["sources"]:
+                source_file = source_reference.split("#", 1)[0]
+                reference_id = f"provenance_ref:{source_reference}"
+                provenance_references[reference_id] = self._entity(
+                    reference_id,
+                    "provenance",
+                    source_reference,
+                    "traceable_reference",
+                    source_file,
+                    reference=source_reference,
+                )
+                relations.append(ProgramRelation(entity_id, "sourced_from", reference_id))
+            external = decision.get("external_blocker")
+            if external and f"blocker:{external}" in {entity.entity_id for entity in entities}:
+                relations.append(ProgramRelation(entity_id, "blocked_by", f"blocker:{external}"))
+        entities.extend(provenance_references.values())
+
+        provenance_path, provenance_data = self._source("provenance")
+        for entry in provenance_data["entries"]:
+            provenance_id = f"provenance:{entry['id']}"
+            entities.append(
+                self._entity(
+                    provenance_id,
+                    "provenance",
+                    entry["name"],
+                    entry["category"],
+                    provenance_path,
+                    value_or_range=entry["value_or_range"],
+                    units=entry["units"],
+                    confidence=entry["confidence"],
+                    used_by=entry["used_by"],
+                    future_validation=entry["future_validation"],
+                    source_notes=entry["source_notes"],
+                )
+            )
+
+        dependency_path, dependency_data = self._source("dependencies")
+        for node_id, node in dependency_data["nodes"].items():
+            workflow_id = f"workflow:{node_id}"
+            entities.append(
+                self._entity(
+                    workflow_id,
+                    "workflow",
+                    node_id.replace("_", " "),
+                    "tracked_generator",
+                    dependency_path,
+                    command=node["command"],
+                    inputs=node["inputs"],
+                    outputs=node["outputs"],
+                )
+            )
+            for dependency in node["depends_on"]:
+                relations.append(ProgramRelation(workflow_id, "depends_on", f"workflow:{dependency}"))
+            for output in node["outputs"]:
+                output_id = f"generated_output:{output}"
+                entities.append(
+                    self._entity(
+                        output_id,
+                        "generated_output",
+                        output,
+                        "present" if self._repo_path(output).is_file() else "missing",
+                        dependency_path,
+                        generator=node_id,
+                    )
+                )
+                relations.append(ProgramRelation(workflow_id, "produces", output_id))
 
         for gate_id, gate in self.manifest["gate_sources"].items():
             report_path = self._repo_path(gate["path"])

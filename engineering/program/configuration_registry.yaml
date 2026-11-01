@@ -72,7 +72,7 @@ entries:
     unit: null
     model_use: prohibited
     sources: [configs/devices/slate-pocket-v1r.yaml#compute.selected_platform]
-    external_blocker: compute_memory_package
+    external_blocker: platform_reference_design
   evt0_wired_charge_cap:
     state: operational_fallback
     value: 30
@@ -92,7 +92,7 @@ entries:
     unit: null
     model_use: status_only
     sources: [configs/devices/slate-pocket-v1r.yaml#integration_configuration.cellular]
-    external_blocker: rf_compliance_package
+    external_blocker: accredited_labs_and_compliance_scope
 
 bindings:
   - {profile_path: geometry.thickness_mm, authority: chassis_thickness_target, consumption: model_input}

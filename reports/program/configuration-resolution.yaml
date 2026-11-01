@@ -146,11 +146,11 @@ violations: []
 unresolved_decisions:
 - authority: compute_platform_selection
   current_value: null
-  external_blocker: compute_memory_package
+  external_blocker: platform_reference_design
   model_use: prohibited
 - authority: cellular_integration
   current_value: deferred
-  external_blocker: rf_compliance_package
+  external_blocker: accredited_labs_and_compliance_scope
   model_use: status_only
 caveat: Resolved values remain targets, fallbacks, references, or dispositions as classified; no supplier component is selected
   or verified.

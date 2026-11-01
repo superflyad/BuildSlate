@@ -2,21 +2,25 @@ schema_version: 1
 program_id: slate-pocket-v1r
 title: Slate Pocket v1R Engineering Execution Program
 summary:
-  entity_count: 158
-  relation_count: 220
+  entity_count: 264
+  relation_count: 307
   entity_kind_counts:
     artifact: 35
     assumption: 12
     blocker: 8
     component_role: 12
     configuration: 1
+    decision: 14
     defect_code: 14
     evidence_package: 10
     gate: 9
+    generated_output: 18
+    provenance: 57
     requirement: 14
     risk: 13
     supplier: 12
     test: 18
+    workflow: 17
   evidence_status_counts:
     available: 3
     planned: 6
@@ -743,6 +747,146 @@ entities:
       width_mm: 95
       thickness_mm: 9.5
       display_diagonal_in: 7.5
+- entity_id: decision:battery_capacity_target
+  kind: decision
+  title: battery capacity target
+  status: locked_target
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: 6000
+    unit: mAh
+    model_use: allowed_with_caveat
+    notes: null
+- entity_id: decision:cellular_integration
+  kind: decision
+  title: cellular integration
+  status: unresolved_decision
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: deferred
+    unit: null
+    model_use: status_only
+    notes: null
+- entity_id: decision:chassis_thickness_target
+  kind: decision
+  title: chassis thickness target
+  status: locked_target
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: 9.5
+    unit: mm
+    model_use: allowed
+    notes: null
+- entity_id: decision:compute_platform_selection
+  kind: decision
+  title: compute platform selection
+  status: unresolved_decision
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: null
+    unit: null
+    model_use: prohibited
+    notes: null
+- entity_id: decision:evt0_wired_charge_cap
+  kind: decision
+  title: evt0 wired charge cap
+  status: operational_fallback
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: 30
+    unit: W
+    model_use: allowed_with_caveat
+    notes: null
+- entity_id: decision:memory_aspiration
+  kind: decision
+  title: memory aspiration
+  status: locked_target
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: 512
+    unit: GB
+    model_use: prohibited
+    notes: null
+- entity_id: decision:memory_first_build_rejection
+  kind: decision
+  title: memory first build rejection
+  status: rejected_option
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: 512
+    unit: GB
+    model_use: prohibited
+    notes: Unsupported as a first-build configuration; the headline target remains traceable.
+- entity_id: decision:memory_operational
+  kind: decision
+  title: memory operational
+  status: operational_fallback
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: 128
+    unit: GB
+    model_use: allowed_with_caveat
+    notes: null
+- entity_id: decision:npu_public_reference
+  kind: decision
+  title: npu public reference
+  status: modeled_reference
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: 80
+    unit: TOPS_INT8
+    model_use: allowed_with_caveat
+    notes: null
+- entity_id: decision:storage_aspiration
+  kind: decision
+  title: storage aspiration
+  status: locked_target
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: 4
+    unit: TB
+    model_use: prohibited
+    notes: null
+- entity_id: decision:storage_first_build_rejection
+  kind: decision
+  title: storage first build rejection
+  status: rejected_option
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: 4
+    unit: TB
+    model_use: prohibited
+    notes: Unsupported as an internal first-build configuration.
+- entity_id: decision:storage_operational
+  kind: decision
+  title: storage operational
+  status: operational_fallback
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: 1
+    unit: TB
+    model_use: allowed_with_caveat
+    notes: null
+- entity_id: decision:storage_product_fallback
+  kind: decision
+  title: storage product fallback
+  status: operational_fallback
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: 2
+    unit: TB
+    model_use: status_only
+    notes: null
+- entity_id: decision:wireless_charging_evt0
+  kind: decision
+  title: wireless charging evt0
+  status: rejected_option
+  source_path: engineering/program/configuration_registry.yaml
+  attributes:
+    value: removed
+    unit: null
+    model_use: allowed_disabled_state
+    notes: Removed from EVT0 after z-height and certification screening.
 - entity_id: defect:AUD
   kind: defect_code
   title: AUD
@@ -1057,6 +1201,1046 @@ entities:
   source_path: reports/program/supplier-response-review.yaml
   attributes:
     marker: 'SUPPLIER_RESPONSE_GATE:'
+- entity_id: generated_output:reports/device-profile-slate-pocket-v1r.txt
+  kind: generated_output
+  title: reports/device-profile-slate-pocket-v1r.txt
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: device_profile
+- entity_id: generated_output:reports/program/buildslate-program-snapshot.yaml
+  kind: generated_output
+  title: reports/program/buildslate-program-snapshot.yaml
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: program_snapshot
+- entity_id: generated_output:reports/program/configuration-resolution.yaml
+  kind: generated_output
+  title: reports/program/configuration-resolution.yaml
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: configuration_resolution
+- entity_id: generated_output:reports/program/dashboard.md
+  kind: generated_output
+  title: reports/program/dashboard.md
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: dashboard
+- entity_id: generated_output:reports/program/dashboard.yaml
+  kind: generated_output
+  title: reports/program/dashboard.yaml
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: dashboard
+- entity_id: generated_output:reports/program/evt0-campaign.yaml
+  kind: generated_output
+  title: reports/program/evt0-campaign.yaml
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: evt0_campaign
+- entity_id: generated_output:reports/program/integration-contracts.yaml
+  kind: generated_output
+  title: reports/program/integration-contracts.yaml
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: integration_contracts
+- entity_id: generated_output:reports/program/manufacturing-pilot-analytics.yaml
+  kind: generated_output
+  title: reports/program/manufacturing-pilot-analytics.yaml
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: manufacturing_analytics
+- entity_id: generated_output:reports/program/migration-audit.yaml
+  kind: generated_output
+  title: reports/program/migration-audit.yaml
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: migration_audit
+- entity_id: generated_output:reports/program/supplier-response-review.yaml
+  kind: generated_output
+  title: reports/program/supplier-response-review.yaml
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: supplier_review
+- entity_id: generated_output:reports/slate-pocket-risk-register.txt
+  kind: generated_output
+  title: reports/slate-pocket-risk-register.txt
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: risk_report
+- entity_id: generated_output:reports/slate-pocket-v1r-cad-budget.txt
+  kind: generated_output
+  title: reports/slate-pocket-v1r-cad-budget.txt
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: cad_budget
+- entity_id: generated_output:reports/slate-pocket-v1r-evt0-gate.txt
+  kind: generated_output
+  title: reports/slate-pocket-v1r-evt0-gate.txt
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: evt0_readiness
+- entity_id: generated_output:reports/slate-pocket-v1r-manufacturing-readiness.txt
+  kind: generated_output
+  title: reports/slate-pocket-v1r-manufacturing-readiness.txt
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: manufacturing_readiness
+- entity_id: generated_output:reports/slate-pocket-v1r-pcb-power-architecture.txt
+  kind: generated_output
+  title: reports/slate-pocket-v1r-pcb-power-architecture.txt
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: pcb_power
+- entity_id: generated_output:reports/slate-pocket-v1r-program-readiness.txt
+  kind: generated_output
+  title: reports/slate-pocket-v1r-program-readiness.txt
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: program_handoff
+- entity_id: generated_output:reports/slate-pocket-v1r-rf-wireless-architecture.txt
+  kind: generated_output
+  title: reports/slate-pocket-v1r-rf-wireless-architecture.txt
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: rf_architecture
+- entity_id: generated_output:reports/slate-pocket-v1r-thermal-model-readiness.txt
+  kind: generated_output
+  title: reports/slate-pocket-v1r-thermal-model-readiness.txt
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: thermal_readiness
+- entity_id: provenance:aluminum_alloy_density_g_cm3
+  kind: provenance
+  title: Aluminum alloy density
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 2.65-2.85
+    units: g/cm3
+    confidence: high
+    used_by:
+    - material_compare
+    - mass_budget
+    - composite_chassis
+    future_validation: Replace with selected alloy material certificate and finished-part mass measurements.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Typical value range varies by alloy and processing route.
+- entity_id: provenance:aluminum_alloy_thermal_conductivity_w_mk
+  kind: provenance
+  title: Aluminum alloy thermal conductivity
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 120-220
+    units: W/mK
+    confidence: medium
+    used_by:
+    - material_compare
+    - thermal_resistance_network
+    - composite_chassis
+    future_validation: Replace with selected alloy datasheet and measured conductivity for the actual process state.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Typical value range varies by alloy, supplier, process, and temperature.
+- entity_id: provenance:ambient_temperature_assumption
+  kind: provenance
+  title: Ambient temperature skin-margin assumption
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 25-35
+    units: C
+    confidence: low
+    used_by:
+    - environment_models
+    - ambient_temperature
+    - thermal_feasibility
+    future_validation: Replace with thermal chamber measurements across representative workloads, ambient temperatures, orientations,
+      and airflow states.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: citation recommended
+      notes:
+      - Screening assumption intended to expose hot-environment risk before calibrated thermal modeling.
+- entity_id: provenance:battery_gravimetric_energy_density_wh_per_kg
+  kind: provenance
+  title: Battery gravimetric energy density
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 220-300
+    units: Wh/kg
+    confidence: medium
+    used_by:
+    - battery_pack
+    - mass_budget
+    - runtime_models
+    future_validation: Replace with selected battery pack bill-of-material mass and measured usable energy.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Initial screening range; replace with vendor cell and finished-pack data.
+- entity_id: provenance:battery_swelling_percent
+  kind: provenance
+  title: Battery swelling allowance
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 8-12
+    units: percent thickness growth
+    confidence: low
+    used_by:
+    - battery_swelling_model
+    - stackup_clearance
+    - manufacturing_models
+    future_validation: Replace with selected cell swelling specifications and accelerated-life test measurements.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+      - Conservative clearance screen only; not a battery safety certification value.
+- entity_id: provenance:battery_volumetric_energy_density_wh_per_l
+  kind: provenance
+  title: Battery volumetric energy density
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 550-750
+    units: Wh/L
+    confidence: medium
+    used_by:
+    - battery_pack
+    - dimensional_constraints
+    - mass_budget
+    future_validation: Replace with pack-level supplier data for the selected cell and protection architecture.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Typical value range varies by supplier, chemistry, packaging overhead, and qualification target.
+- entity_id: provenance:ceramic_density_g_cm3
+  kind: provenance
+  title: Ceramic density
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 3.0-6.0
+    units: g/cm3
+    confidence: medium
+    used_by:
+    - material_compare
+    - mass_budget
+    - rf_window_tradeoffs
+    future_validation: Replace with selected ceramic material datasheet and finished-part mass measurements.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Broad range covers multiple ceramic families; narrow after material selection.
+- entity_id: provenance:charging_efficiency_assumption
+  kind: provenance
+  title: Charging efficiency and heat overlap assumption
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 0.78-0.88
+    units: fraction
+    confidence: low
+    used_by:
+    - environment_models
+    - charging_overlap
+    - battery_runtime
+    - thermal_feasibility
+    future_validation: Replace with measured wired and wireless charging efficiency, PMIC thermal data, battery charge heat,
+      and workload-overlap tests.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: citation recommended
+      notes:
+      - Wireless charging receives a lower screening efficiency unless an explicit value is supplied.
+- entity_id: provenance:coefficient_thermal_expansion_values
+  kind: provenance
+  title: Coefficient of thermal expansion values
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: material-dependent ranges
+    units: ppm/K
+    confidence: medium
+    used_by:
+    - thermal_expansion_mismatch
+    - reliability_models
+    - bonded_materials
+    future_validation: Replace with selected material datasheets and measured dimensional change for bonded assemblies.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Use material-specific CTE values once the stack is selected.
+- entity_id: provenance:contact_resistance_cm2k_w
+  kind: provenance
+  title: Thermal contact resistance
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 0.2-2.0
+    units: cm2*K/W
+    confidence: medium
+    used_by:
+    - thermal_resistance_network
+    - composite_chassis
+    future_validation: Replace with supplier TIM data and measured interface resistance under target preload.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Typical value range varies widely by interface material and compression.
+- entity_id: provenance:copper_density_g_cm3
+  kind: provenance
+  title: Copper density
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 8.9-9.0
+    units: g/cm3
+    confidence: high
+    used_by:
+    - material_compare
+    - thermal_module
+    - mass_budget
+    future_validation: Replace with selected copper alloy or laminate stack data and CAD-derived volumes.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Typical reference value; final mass depends on actual copper volume.
+- entity_id: provenance:enclosure_heat_escape_factor
+  kind: provenance
+  title: Enclosure heat escape factor
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 0.20-1.00
+    units: fraction
+    confidence: low
+    used_by:
+    - environment_models
+    - enclosure_condition
+    - thermal_feasibility
+    future_validation: Replace with enclosure tests across textiles, bags, pockets, car-console sunlight, orientations, and
+      workloads.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: citation recommended
+      notes:
+      - Pocket and bag factors are screening constraints, not validated temperature predictions.
+- entity_id: provenance:glass_density_g_cm3
+  kind: provenance
+  title: Glass density
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 2.4-2.7
+    units: g/cm3
+    confidence: medium
+    used_by:
+    - material_compare
+    - mass_budget
+    - display_stack
+    future_validation: Replace with selected glass supplier datasheet and measured display or cover assembly mass.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Typical value range varies by glass family and coating stack.
+- entity_id: provenance:graphite_in_plane_conductivity_w_mk
+  kind: provenance
+  title: Graphite in-plane thermal conductivity
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 700-1500
+    units: W/mK
+    confidence: medium
+    used_by:
+    - thermal_module
+    - thermal_resistance_network
+    - composite_chassis
+    future_validation: Replace with selected graphite grade datasheet and stack-level thermal measurements.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Typical range varies by graphite grade, thickness, lamination, and temperature.
+- entity_id: provenance:hand_contact_area_assumption
+  kind: provenance
+  title: Hand contact area derating assumption
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 35
+    units: percent exterior area contacted
+    confidence: low
+    used_by:
+    - environment_models
+    - hand_contact
+    - handheld_thermal_screening
+    future_validation: Replace with grip studies, thermal imaging, user-comfort testing, and prototype skin-temperature maps.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: citation recommended
+      notes:
+      - Default is a conservative placeholder until ergonomic and thermal measurements exist.
+- entity_id: provenance:int4_bytes_per_parameter
+  kind: provenance
+  title: INT4 bytes per parameter
+  status: measured_fact
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 0.5
+    units: bytes/parameter
+    confidence: high
+    used_by:
+    - local_ai_runtime_modeling
+    - model_memory
+    future_validation: Confirm against target inference runtime model packaging format and memory profiler output.
+    source_notes:
+      source_type: arithmetic definition
+      citation_status: citation optional
+      notes:
+      - Derived from bit width; runtime overhead is tracked separately.
+- entity_id: provenance:kv_cache_formula
+  kind: provenance
+  title: Transformer KV cache formula
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 2 * layers * hidden_size * context_tokens * batch_size * kv_bytes_per_element
+    units: bytes
+    confidence: medium
+    used_by:
+    - local_ai_runtime_modeling
+    - memory_capacity
+    - runtime_targets
+    future_validation: Replace with target model architecture formula and runtime memory profiler data.
+    source_notes:
+      source_type: engineering model
+      citation_status: citation recommended
+      notes:
+      - Formula is explicitly documented as a baseline model and may overstate or understate optimized runtimes.
+- entity_id: provenance:lithium_ion_nominal_voltage_v
+  kind: provenance
+  title: Lithium-ion nominal cell voltage
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 3.6-3.85
+    units: V
+    confidence: high
+    used_by:
+    - battery_energy
+    - runtime_models
+    future_validation: Replace with selected cell vendor datasheet nominal voltage and measured discharge curves at target
+      loads.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Typical range varies by lithium-ion chemistry and operating window.
+- entity_id: provenance:lpddr_bandwidth_assumption
+  kind: provenance
+  title: LPDDR memory bandwidth assumption
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 100-250
+    units: GB/s
+    confidence: low
+    used_by:
+    - memory_bandwidth
+    - interconnect_models
+    - local_ai_runtime_modeling
+    future_validation: Replace with target SoC memory subsystem specifications and sustained benchmark measurements.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+      - Peak and sustained bandwidth must be separated when vendor data is available.
+- entity_id: provenance:magnesium_alloy_density_g_cm3
+  kind: provenance
+  title: Magnesium alloy density
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 1.7-1.9
+    units: g/cm3
+    confidence: high
+    used_by:
+    - material_compare
+    - mass_budget
+    future_validation: Replace with selected alloy datasheet and finished-part mass measurements.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Typical value range varies by magnesium alloy family.
+- entity_id: provenance:magnesium_alloy_thermal_conductivity_w_mk
+  kind: provenance
+  title: Magnesium alloy thermal conductivity
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 50-100
+    units: W/mK
+    confidence: medium
+    used_by:
+    - material_compare
+    - thermal_resistance_network
+    future_validation: Replace with selected alloy datasheet and thermal test data for the manufacturing route.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Typical value range varies by alloy, supplier, process, and temperature.
+- entity_id: provenance:model_load_bandwidth_assumption
+  kind: provenance
+  title: Model load bandwidth assumption
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 1-4
+    units: GB/s
+    confidence: low
+    used_by:
+    - runtime_models
+    - storage_loading
+    future_validation: Replace with measured model load times on target storage and software stack.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+      - Screening value; storage benchmark data required.
+- entity_id: provenance:passive_sustained_power_pocket_w
+  kind: provenance
+  title: Passive sustained power for pocket device
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 3-6
+    units: W
+    confidence: low
+    used_by:
+    - thermal_limits
+    - thermal_density
+    - runtime_models
+    future_validation: Replace with thermal chamber measurements on prototypes and calibrated compact thermal models.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+      - High-risk screening assumption for sustained local AI workloads.
+- entity_id: provenance:passive_sustained_power_tablet_w
+  kind: provenance
+  title: Passive sustained power for tablet device
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 7-12
+    units: W
+    confidence: low
+    used_by:
+    - thermal_limits
+    - comparative_thermal_models
+    future_validation: Replace with measured tablet-class reference data or validated thermal simulation.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+      - Comparative screening value only.
+- entity_id: provenance:pcb_assembly_density_g_cm3
+  kind: provenance
+  title: PCB assembly effective density
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 1.6-2.2
+    units: g/cm3
+    confidence: low
+    used_by:
+    - mass_budget
+    - pcb_stackup
+    - component_models
+    future_validation: Replace with board layout mass properties and measured PCBA mass from prototypes.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+      - Initial screening value; replace with CAD and manufacturing data.
+- entity_id: provenance:pdn_resistance_assumption
+  kind: provenance
+  title: PDN effective resistance assumption
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 5-25
+    units: mOhm
+    confidence: low
+    used_by:
+    - power_integrity
+    - power_delivery
+    - interconnect_models
+    future_validation: Replace with extracted board/package PDN impedance and measured load-step response.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+      - Placeholder only; detailed SI/PI analysis is required.
+- entity_id: provenance:quantization_overhead_factor
+  kind: provenance
+  title: Quantization overhead factor
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 1.05-1.25
+    units: multiplier
+    confidence: medium
+    used_by:
+    - local_ai_runtime_modeling
+    - model_memory
+    future_validation: Replace with measured loaded-model memory for the selected runtime and quantization format.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+      - Initial screening range; replace with runtime measurements.
+- entity_id: provenance:safe_skin_temperature_c
+  kind: provenance
+  title: Safe exterior skin temperature screening limit
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 42-45
+    units: degC
+    confidence: medium
+    used_by:
+    - thermal_limits
+    - thermal_resistance_network
+    - runtime_throttling
+    future_validation: Replace with applicable safety standard limits and measured exterior temperature maps.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Review against relevant touch-temperature safety standards before design freeze.
+- entity_id: provenance:slate_100tops_npu_target
+  kind: provenance
+  title: Slate 100 TOPS NPU target
+  status: unresolved_research_blocker
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 100
+    units: TOPS
+    confidence: low
+    used_by:
+    - compute_specs
+    - thermal_limits
+    - runtime_targets
+    future_validation: Replace with vendor SoC/NPU specifications, sustained benchmark data, power telemetry, and thermal
+      chamber results.
+    source_notes:
+      source_type: concept target
+      citation_status: needs external citation
+      notes:
+      - Treat sustained 100 TOPS in phone-class passive operation as a research blocker until proven.
+- entity_id: provenance:slate_250g_mass_target
+  kind: provenance
+  title: Slate 250 g mass target
+  status: conceptual_extrapolation
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 250
+    units: g
+    confidence: low
+    used_by:
+    - mass_budget
+    - specs
+    - dimensional_constraints
+    future_validation: Replace with CAD-derived mass rollup, supplier part masses, and measured prototype mass.
+    source_notes:
+      source_type: concept target
+      citation_status: needs external citation
+      notes:
+      - High-risk target until reconciled with the full bill of materials.
+- entity_id: provenance:slate_320g_engineering_mass_estimate
+  kind: provenance
+  title: Slate 320 g engineering mass estimate
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 320
+    units: g
+    confidence: low
+    used_by:
+    - mass_budget
+    - feasibility_flags
+    future_validation: Replace with CAD mass properties, supplier quotes, and prototype weigh-ins.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+      - Screening estimate; should be superseded by a part-level mass budget.
+- entity_id: provenance:slate_512gb_memory_target
+  kind: provenance
+  title: Slate 512 GB memory target
+  status: conceptual_extrapolation
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 512
+    units: GB
+    confidence: low
+    used_by:
+    - memory_package
+    - specs
+    - interconnect_models
+    future_validation: Replace with vendor memory roadmap, package dimensions, power data, signal-integrity review, and procurement
+      feasibility.
+    source_notes:
+      source_type: concept target
+      citation_status: needs external citation
+      notes:
+      - High-risk assumption; do not present as available commodity mobile memory without supplier evidence.
+- entity_id: provenance:slate_6000mah_battery_target
+  kind: provenance
+  title: Slate 6000 mAh battery target
+  status: conceptual_extrapolation
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 6000
+    units: mAh
+    confidence: low
+    used_by:
+    - battery_pack
+    - specs
+    - runtime_targets
+    future_validation: Replace with selected battery pack CAD, vendor capacity data, safety review, and measured usable energy.
+    source_notes:
+      source_type: concept target
+      citation_status: needs external citation
+      notes:
+      - Target must be reconciled with stackup and mass budgets.
+- entity_id: provenance:slate_8_8mm_thickness_target
+  kind: provenance
+  title: Slate 8.8 mm thickness target
+  status: conceptual_extrapolation
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 8.8
+    units: mm
+    confidence: low
+    used_by:
+    - dimensions
+    - stackup_constraints
+    - manufacturing_models
+    future_validation: Replace with CAD stackup, tolerance analysis, prototype measurements, and supplier component envelopes.
+    source_notes:
+      source_type: concept target
+      citation_status: needs external citation
+      notes:
+      - Local z-height zones may fail even if the headline thickness appears plausible.
+- entity_id: provenance:stainless_steel_density_g_cm3
+  kind: provenance
+  title: Stainless steel density
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 7.7-8.1
+    units: g/cm3
+    confidence: high
+    used_by:
+    - material_compare
+    - mass_budget
+    future_validation: Replace with selected grade datasheet and CAD-derived part masses.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Typical value range varies by stainless steel grade.
+- entity_id: provenance:sunlight_display_multiplier
+  kind: provenance
+  title: Sunlight display power multiplier
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 0.5-2.2
+    units: multiplier
+    confidence: low
+    used_by:
+    - environment_models
+    - sunlight_display_load
+    - runtime_targets
+    future_validation: Replace with display supplier power curves, brightness measurements, sunlight readability tests, and
+      outdoor thermal measurements.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: citation recommended
+      notes:
+      - Multiplier range is a placeholder for early runtime and thermal screening.
+- entity_id: provenance:thermal_risk_heat_density_w_cm3
+  kind: provenance
+  title: Thermal risk heat density threshold
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 0.25-0.5
+    units: W/cm3
+    confidence: low
+    used_by:
+    - thermal_density
+    - feasibility_flags
+    future_validation: Calibrate against detailed thermal simulation and measured hotspot-to-skin temperature rise.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+      - Threshold is a triage marker, not a pass/fail design limit.
+- entity_id: provenance:thermal_throttle_thresholds
+  kind: provenance
+  title: Thermal throttle threshold assumptions
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: skin caution 40 C, skin limit 43 C, skin critical 45 C; battery caution 40 C, battery limit 45 C; SoC
+      caution 80 C, SoC limit 90 C
+    units: C
+    confidence: low
+    used_by:
+    - environment_models
+    - thermal_throttle_policy
+    - firmware_policy_screening
+    future_validation: Replace with safety review, regulatory guidance, component datasheets, sensor calibration, firmware
+      validation, and user-comfort testing.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: citation recommended
+      notes:
+      - Thresholds are intended for screening only and must not be treated as compliance evidence.
+- entity_id: provenance:titanium_alloy_density_g_cm3
+  kind: provenance
+  title: Titanium alloy density
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 4.4-4.6
+    units: g/cm3
+    confidence: high
+    used_by:
+    - material_compare
+    - mass_budget
+    future_validation: Replace with selected titanium grade datasheet and CAD-derived part masses.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Typical value range varies by titanium alloy grade.
+- entity_id: provenance:titanium_alloy_thermal_conductivity_w_mk
+  kind: provenance
+  title: Titanium alloy thermal conductivity
+  status: industry_reference
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 6-22
+    units: W/mK
+    confidence: medium
+    used_by:
+    - material_compare
+    - thermal_resistance_network
+    future_validation: Replace with selected alloy datasheet and stack-level thermal measurements.
+    source_notes:
+      source_type: industry reference
+      citation_status: citation recommended
+      notes:
+      - Typical value range varies by titanium alloy and temperature.
+- entity_id: provenance:transient_current_factor
+  kind: provenance
+  title: Transient current factor
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 1.5-2.5
+    units: multiplier
+    confidence: low
+    used_by:
+    - power_delivery
+    - power_integrity
+    - interconnect_models
+    future_validation: Replace with measured current transients from rail telemetry and oscilloscope captures on prototype
+      hardware.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+      - Initial PDN stress factor; not a substitute for power integrity simulation.
+- entity_id: provenance:usable_capacity_factor
+  kind: provenance
+  title: Usable battery capacity factor
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 0.80-0.90
+    units: fraction
+    confidence: medium
+    used_by:
+    - battery_runtime
+    - runtime_targets
+    future_validation: Replace with measured system energy delivered over representative workloads and battery-management
+      policy.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+      - Initial screening value; replace with measured prototype data.
+- entity_id: provenance:vapor_chamber_effective_conductivity_w_mk
+  kind: provenance
+  title: Vapor chamber effective conductivity
+  status: modeled_estimate
+  source_path: engineering/provenance/constants_provenance.yaml
+  attributes:
+    value_or_range: 1000-10000
+    units: W/mK effective
+    confidence: low
+    used_by:
+    - thermal_module
+    - thermal_resistance_network
+    - composite_chassis
+    future_validation: Replace with supplier vapor-chamber performance curves or measured thermal resistance in the target
+      stack.
+    source_notes:
+      source_type: engineering estimate
+      citation_status: needs external citation
+      notes:
+      - Effective conductivity is a model convenience and should not be treated as bulk material conductivity.
+- entity_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#compute.selected_platform
+  kind: provenance
+  title: configs/devices/slate-pocket-v1r.yaml#compute.selected_platform
+  status: traceable_reference
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    reference: configs/devices/slate-pocket-v1r.yaml#compute.selected_platform
+- entity_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.battery.target_mah
+  kind: provenance
+  title: configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.battery.target_mah
+  status: traceable_reference
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    reference: configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.battery.target_mah
+- entity_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.memory.aspirational_target_gb
+  kind: provenance
+  title: configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.memory.aspirational_target_gb
+  status: traceable_reference
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    reference: configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.memory.aspirational_target_gb
+- entity_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.storage.target_tb
+  kind: provenance
+  title: configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.storage.target_tb
+  status: traceable_reference
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    reference: configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.storage.target_tb
+- entity_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.thickness.target_mm
+  kind: provenance
+  title: configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.thickness.target_mm
+  status: traceable_reference
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    reference: configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.thickness.target_mm
+- entity_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.cellular
+  kind: provenance
+  title: configs/devices/slate-pocket-v1r.yaml#integration_configuration.cellular
+  status: traceable_reference
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    reference: configs/devices/slate-pocket-v1r.yaml#integration_configuration.cellular
+- entity_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.internal_storage_tb
+  kind: provenance
+  title: configs/devices/slate-pocket-v1r.yaml#integration_configuration.internal_storage_tb
+  status: traceable_reference
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    reference: configs/devices/slate-pocket-v1r.yaml#integration_configuration.internal_storage_tb
+- entity_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.memory_gb
+  kind: provenance
+  title: configs/devices/slate-pocket-v1r.yaml#integration_configuration.memory_gb
+  status: traceable_reference
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    reference: configs/devices/slate-pocket-v1r.yaml#integration_configuration.memory_gb
+- entity_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.npu_public_reference_tops_int8
+  kind: provenance
+  title: configs/devices/slate-pocket-v1r.yaml#integration_configuration.npu_public_reference_tops_int8
+  status: traceable_reference
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    reference: configs/devices/slate-pocket-v1r.yaml#integration_configuration.npu_public_reference_tops_int8
+- entity_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.product_storage_fallback_tb
+  kind: provenance
+  title: configs/devices/slate-pocket-v1r.yaml#integration_configuration.product_storage_fallback_tb
+  status: traceable_reference
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    reference: configs/devices/slate-pocket-v1r.yaml#integration_configuration.product_storage_fallback_tb
+- entity_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.wired_charge_evt0_input_cap_w
+  kind: provenance
+  title: configs/devices/slate-pocket-v1r.yaml#integration_configuration.wired_charge_evt0_input_cap_w
+  status: traceable_reference
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    reference: configs/devices/slate-pocket-v1r.yaml#integration_configuration.wired_charge_evt0_input_cap_w
+- entity_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.wireless_charging
+  kind: provenance
+  title: configs/devices/slate-pocket-v1r.yaml#integration_configuration.wireless_charging
+  status: traceable_reference
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    reference: configs/devices/slate-pocket-v1r.yaml#integration_configuration.wireless_charging
+- entity_id: provenance_ref:engineering/assumptions/assumption_registry.yaml#assumptions.memory_capacity_gb.notes
+  kind: provenance
+  title: engineering/assumptions/assumption_registry.yaml#assumptions.memory_capacity_gb.notes
+  status: traceable_reference
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    reference: engineering/assumptions/assumption_registry.yaml#assumptions.memory_capacity_gb.notes
+- entity_id: provenance_ref:engineering/assumptions/assumption_registry.yaml#assumptions.storage_capacity_tb.notes
+  kind: provenance
+  title: engineering/assumptions/assumption_registry.yaml#assumptions.storage_capacity_tb.notes
+  status: traceable_reference
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    reference: engineering/assumptions/assumption_registry.yaml#assumptions.storage_capacity_tb.notes
 - entity_id: outcome:7_5_inch_16_10_workspace
   kind: requirement
   title: 7 5 inch 16 10 workspace
@@ -1661,6 +2845,359 @@ entities:
   attributes:
     workload: none
     purpose: verify_high_power_and_charging_inhibition_only
+- entity_id: workflow:cad_budget
+  kind: workflow
+  title: cad budget
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - engineering/cad_envelope/generate_v1r_cad_budget.py
+    inputs:
+    - reports/program/configuration-resolution.yaml
+    - cad/slate-pocket-v1r/envelope-model/*.yaml
+    - engineering/cad_envelope/generate_v1r_cad_budget.py
+    outputs:
+    - reports/slate-pocket-v1r-cad-budget.txt
+- entity_id: workflow:configuration_resolution
+  kind: workflow
+  title: configuration resolution
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - -m
+    - buildslate
+    - configuration
+    - generate
+    inputs:
+    - engineering/program/configuration_registry.yaml
+    - buildslate/configuration.py
+    - configs/devices/slate-pocket-v1r.yaml
+    - engineering/assumptions/assumption_registry.yaml
+    - reports/program/supplier-response-review.yaml
+    - research/supplier-responses/receipts/*.yaml
+    outputs:
+    - reports/program/configuration-resolution.yaml
+- entity_id: workflow:dashboard
+  kind: workflow
+  title: dashboard
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - -m
+    - buildslate
+    - dashboard
+    - --generate
+    - --regeneration-context
+    inputs:
+    - buildslate/dashboard.py
+    - reports/program/buildslate-program-snapshot.yaml
+    - reports/program/configuration-resolution.yaml
+    - reports/program/integration-contracts.yaml
+    - reports/program/supplier-response-review.yaml
+    - reports/program/evt0-campaign.yaml
+    - reports/program/manufacturing-pilot-analytics.yaml
+    - reports/program/migration-audit.yaml
+    - engineering/evidence/evidence_registry.yaml
+    - engineering/evidence/external_blocker_registry.yaml
+    - engineering/program/configuration_registry.yaml
+    outputs:
+    - reports/program/dashboard.yaml
+    - reports/program/dashboard.md
+- entity_id: workflow:device_profile
+  kind: workflow
+  title: device profile
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - engineering/run_device_profile.py
+    - --profile
+    - configs/devices/slate-pocket-v1r.yaml
+    - --output
+    - reports/device-profile-slate-pocket-v1r.txt
+    inputs:
+    - configs/devices/slate-pocket-v1r.yaml
+    - reports/program/configuration-resolution.yaml
+    - engineering/registry/*.yaml
+    - engineering/**/*model*.py
+    - engineering/run_device_profile.py
+    outputs:
+    - reports/device-profile-slate-pocket-v1r.txt
+- entity_id: workflow:evt0_campaign
+  kind: workflow
+  title: evt0 campaign
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - -m
+    - buildslate
+    - evt0
+    - report
+    - --generate
+    inputs:
+    - buildslate/evt0.py
+    - validation/evt0/metric-definitions.yaml
+    - validation/evt0/schemas/*.yaml
+    - validation/evt0/test-matrix.yaml
+    - validation/evt0/instrumentation.yaml
+    - validation/evt0/campaigns/**/*
+    outputs:
+    - reports/program/evt0-campaign.yaml
+- entity_id: workflow:evt0_readiness
+  kind: workflow
+  title: evt0 readiness
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - validation/evt0/generate_evt0_gate_report.py
+    inputs:
+    - reports/program/evt0-campaign.yaml
+    - validation/evt0/evt0-spec.yaml
+    - validation/evt0/bom-strategy.yaml
+    - validation/evt0/test-matrix.yaml
+    - validation/evt0/workloads.yaml
+    - validation/evt0/generate_evt0_gate_report.py
+    - engineering/evidence/evidence_registry.yaml
+    outputs:
+    - reports/slate-pocket-v1r-evt0-gate.txt
+- entity_id: workflow:integration_contracts
+  kind: workflow
+  title: integration contracts
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - -m
+    - buildslate
+    - contracts
+    - generate
+    inputs:
+    - engineering/program/integration_contracts.yaml
+    - buildslate/contracts.py
+    - configs/devices/slate-pocket-v1r.yaml
+    - cad/slate-pocket-v1r/envelope-model/*.yaml
+    - engineering/pcb/*.yaml
+    - engineering/pcb/slate-pocket-v1r-floorplan/*.yaml
+    - simulations/thermal/slate-pocket-v1r/model/*.yaml
+    - simulations/thermal/slate-pocket-v1r/test-matrix.yaml
+    - engineering/rf/keepout-map/*.yaml
+    - validation/evt0/*.yaml
+    - manufacturing/*.yaml
+    outputs:
+    - reports/program/integration-contracts.yaml
+- entity_id: workflow:manufacturing_analytics
+  kind: workflow
+  title: manufacturing analytics
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - -m
+    - buildslate
+    - manufacturing
+    - report
+    - --generate
+    inputs:
+    - buildslate/manufacturing.py
+    - manufacturing/pilot-analytics.yaml
+    - manufacturing/pilot-build-plan.yaml
+    - manufacturing/defect-taxonomy.yaml
+    - manufacturing/schemas/*.yaml
+    - manufacturing/pilot-results/campaigns/**/*
+    outputs:
+    - reports/program/manufacturing-pilot-analytics.yaml
+- entity_id: workflow:manufacturing_readiness
+  kind: workflow
+  title: manufacturing readiness
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - manufacturing/generate_manufacturing_readiness_report.py
+    inputs:
+    - reports/program/manufacturing-pilot-analytics.yaml
+    - manufacturing/pilot-build-plan.yaml
+    - manufacturing/defect-taxonomy.yaml
+    - manufacturing/supplier-dfm-response.yaml
+    - manufacturing/generate_manufacturing_readiness_report.py
+    - engineering/evidence/evidence_registry.yaml
+    outputs:
+    - reports/slate-pocket-v1r-manufacturing-readiness.txt
+- entity_id: workflow:migration_audit
+  kind: workflow
+  title: migration audit
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - -m
+    - buildslate
+    - migrations
+    - audit
+    - --generate
+    inputs:
+    - buildslate/migrations.py
+    - engineering/program/migration_registry.yaml
+    - configs/devices/slate-pocket-v1r.yaml
+    - engineering/evidence/evidence_registry.yaml
+    - engineering/assumptions/assumption_registry.yaml
+    - engineering/risks/risk_register.yaml
+    - engineering/evidence/external_blocker_registry.yaml
+    outputs:
+    - reports/program/migration-audit.yaml
+- entity_id: workflow:pcb_power
+  kind: workflow
+  title: pcb power
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - engineering/pcb/generate_v1r_pcb_power_report.py
+    inputs:
+    - reports/program/configuration-resolution.yaml
+    - engineering/pcb/*.yaml
+    - engineering/pcb/slate-pocket-v1r-floorplan/*.yaml
+    - engineering/pcb/generate_v1r_pcb_power_report.py
+    outputs:
+    - reports/slate-pocket-v1r-pcb-power-architecture.txt
+- entity_id: workflow:program_handoff
+  kind: workflow
+  title: program handoff
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - engineering/evidence/generate_program_handoff_report.py
+    inputs:
+    - reports/program/configuration-resolution.yaml
+    - reports/program/supplier-response-review.yaml
+    - engineering/evidence/evidence_registry.yaml
+    - engineering/evidence/external_blocker_registry.yaml
+    - engineering/evidence/generate_program_handoff_report.py
+    outputs:
+    - reports/slate-pocket-v1r-program-readiness.txt
+- entity_id: workflow:program_snapshot
+  kind: workflow
+  title: program snapshot
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - -m
+    - buildslate
+    - generate
+    inputs:
+    - engineering/program/program_model.yaml
+    - buildslate/program.py
+    - configs/devices/slate-pocket-v1r.yaml
+    - engineering/evidence/evidence_registry.yaml
+    - engineering/assumptions/assumption_registry.yaml
+    - engineering/risks/risk_register.yaml
+    - engineering/evidence/external_blocker_registry.yaml
+    - research/rfqs/rfq_registry.yaml
+    - validation/evt0/bom-strategy.yaml
+    - validation/evt0/test-matrix.yaml
+    - manufacturing/defect-taxonomy.yaml
+    - engineering/program/configuration_registry.yaml
+    - engineering/provenance/constants_provenance.yaml
+    - engineering/program/regeneration.yaml
+    - reports/program/configuration-resolution.yaml
+    - reports/program/integration-contracts.yaml
+    - reports/program/evt0-campaign.yaml
+    - reports/slate-pocket-evidence-readiness.txt
+    - reports/slate-pocket-v1r-evt0-gate.txt
+    - reports/slate-pocket-v1r-manufacturing-readiness.txt
+    - reports/program/manufacturing-pilot-analytics.yaml
+    - reports/program/supplier-response-review.yaml
+    - reports/slate-pocket-v1r-program-readiness.txt
+    outputs:
+    - reports/program/buildslate-program-snapshot.yaml
+- entity_id: workflow:rf_architecture
+  kind: workflow
+  title: rf architecture
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - engineering/rf/generate_rf_architecture_report.py
+    inputs:
+    - reports/program/configuration-resolution.yaml
+    - engineering/rf/keepout-map/*.yaml
+    - engineering/rf/generate_rf_architecture_report.py
+    outputs:
+    - reports/slate-pocket-v1r-rf-wireless-architecture.txt
+- entity_id: workflow:risk_report
+  kind: workflow
+  title: risk report
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - engineering/risks/generate_risk_report.py
+    inputs:
+    - reports/program/configuration-resolution.yaml
+    - engineering/risks/risk_register.yaml
+    - engineering/risks/risk_engine.py
+    - engineering/risks/generate_risk_report.py
+    outputs:
+    - reports/slate-pocket-risk-register.txt
+- entity_id: workflow:supplier_review
+  kind: workflow
+  title: supplier review
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - -m
+    - buildslate
+    - suppliers
+    - queue
+    - --generate
+    inputs:
+    - engineering/program/supplier_ingestion.yaml
+    - engineering/program/supplier-schemas/*.yaml
+    - buildslate/suppliers.py
+    - research/supplier-responses/receipts/*.yaml
+    - research/supplier-responses/raw/**/*.yaml
+    outputs:
+    - reports/program/supplier-response-review.yaml
+- entity_id: workflow:thermal_readiness
+  kind: workflow
+  title: thermal readiness
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - simulations/thermal/slate-pocket-v1r/generate_thermal_model_readiness_report.py
+    inputs:
+    - reports/program/configuration-resolution.yaml
+    - simulations/thermal/slate-pocket-v1r/model/*.yaml
+    - simulations/thermal/slate-pocket-v1r/test-matrix.yaml
+    - simulations/thermal/slate-pocket-v1r/generate_thermal_model_readiness_report.py
+    outputs:
+    - reports/slate-pocket-v1r-thermal-model-readiness.txt
 relations:
 - source_id: blocker:accredited_labs_and_compliance_scope
   relationship: blocks
@@ -1771,6 +3308,48 @@ relations:
   relationship: planned_for
   target_id: configuration:slate-pocket-v1r
 - source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:battery_capacity_target
+- source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:cellular_integration
+- source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:chassis_thickness_target
+- source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:compute_platform_selection
+- source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:evt0_wired_charge_cap
+- source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:memory_aspiration
+- source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:memory_first_build_rejection
+- source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:memory_operational
+- source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:npu_public_reference
+- source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:storage_aspiration
+- source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:storage_first_build_rejection
+- source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:storage_operational
+- source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:storage_product_fallback
+- source_id: configuration:slate-pocket-v1r
+  relationship: governed_by
+  target_id: decision:wireless_charging_evt0
+- source_id: configuration:slate-pocket-v1r
   relationship: implements
   target_id: requirement:battery
 - source_id: configuration:slate-pocket-v1r
@@ -1791,6 +3370,54 @@ relations:
 - source_id: configuration:slate-pocket-v1r
   relationship: implements
   target_id: requirement:wireless_charging
+- source_id: decision:battery_capacity_target
+  relationship: sourced_from
+  target_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.battery.target_mah
+- source_id: decision:cellular_integration
+  relationship: blocked_by
+  target_id: blocker:accredited_labs_and_compliance_scope
+- source_id: decision:cellular_integration
+  relationship: sourced_from
+  target_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.cellular
+- source_id: decision:chassis_thickness_target
+  relationship: sourced_from
+  target_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.thickness.target_mm
+- source_id: decision:compute_platform_selection
+  relationship: blocked_by
+  target_id: blocker:platform_reference_design
+- source_id: decision:compute_platform_selection
+  relationship: sourced_from
+  target_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#compute.selected_platform
+- source_id: decision:evt0_wired_charge_cap
+  relationship: sourced_from
+  target_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.wired_charge_evt0_input_cap_w
+- source_id: decision:memory_aspiration
+  relationship: sourced_from
+  target_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.memory.aspirational_target_gb
+- source_id: decision:memory_first_build_rejection
+  relationship: sourced_from
+  target_id: provenance_ref:engineering/assumptions/assumption_registry.yaml#assumptions.memory_capacity_gb.notes
+- source_id: decision:memory_operational
+  relationship: sourced_from
+  target_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.memory_gb
+- source_id: decision:npu_public_reference
+  relationship: sourced_from
+  target_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.npu_public_reference_tops_int8
+- source_id: decision:storage_aspiration
+  relationship: sourced_from
+  target_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.storage.target_tb
+- source_id: decision:storage_first_build_rejection
+  relationship: sourced_from
+  target_id: provenance_ref:engineering/assumptions/assumption_registry.yaml#assumptions.storage_capacity_tb.notes
+- source_id: decision:storage_operational
+  relationship: sourced_from
+  target_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.internal_storage_tb
+- source_id: decision:storage_product_fallback
+  relationship: sourced_from
+  target_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.product_storage_fallback_tb
+- source_id: decision:wireless_charging_evt0
+  relationship: sourced_from
+  target_id: provenance_ref:configs/devices/slate-pocket-v1r.yaml#integration_configuration.wireless_charging
 - source_id: defect:AUD
   relationship: classified_by
   target_id: evidence:manufacturing_review_package
@@ -2322,5 +3949,176 @@ relations:
 - source_id: test:T40
   relationship: verifies
   target_id: evidence:evt0_prototype_evidence
+- source_id: workflow:cad_budget
+  relationship: depends_on
+  target_id: workflow:integration_contracts
+- source_id: workflow:cad_budget
+  relationship: produces
+  target_id: generated_output:reports/slate-pocket-v1r-cad-budget.txt
+- source_id: workflow:configuration_resolution
+  relationship: depends_on
+  target_id: workflow:supplier_review
+- source_id: workflow:configuration_resolution
+  relationship: produces
+  target_id: generated_output:reports/program/configuration-resolution.yaml
+- source_id: workflow:dashboard
+  relationship: depends_on
+  target_id: workflow:configuration_resolution
+- source_id: workflow:dashboard
+  relationship: depends_on
+  target_id: workflow:evt0_campaign
+- source_id: workflow:dashboard
+  relationship: depends_on
+  target_id: workflow:evt0_readiness
+- source_id: workflow:dashboard
+  relationship: depends_on
+  target_id: workflow:integration_contracts
+- source_id: workflow:dashboard
+  relationship: depends_on
+  target_id: workflow:manufacturing_analytics
+- source_id: workflow:dashboard
+  relationship: depends_on
+  target_id: workflow:manufacturing_readiness
+- source_id: workflow:dashboard
+  relationship: depends_on
+  target_id: workflow:migration_audit
+- source_id: workflow:dashboard
+  relationship: depends_on
+  target_id: workflow:program_handoff
+- source_id: workflow:dashboard
+  relationship: depends_on
+  target_id: workflow:program_snapshot
+- source_id: workflow:dashboard
+  relationship: depends_on
+  target_id: workflow:risk_report
+- source_id: workflow:dashboard
+  relationship: depends_on
+  target_id: workflow:supplier_review
+- source_id: workflow:dashboard
+  relationship: produces
+  target_id: generated_output:reports/program/dashboard.md
+- source_id: workflow:dashboard
+  relationship: produces
+  target_id: generated_output:reports/program/dashboard.yaml
+- source_id: workflow:device_profile
+  relationship: depends_on
+  target_id: workflow:integration_contracts
+- source_id: workflow:device_profile
+  relationship: produces
+  target_id: generated_output:reports/device-profile-slate-pocket-v1r.txt
+- source_id: workflow:evt0_campaign
+  relationship: depends_on
+  target_id: workflow:integration_contracts
+- source_id: workflow:evt0_campaign
+  relationship: produces
+  target_id: generated_output:reports/program/evt0-campaign.yaml
+- source_id: workflow:evt0_readiness
+  relationship: depends_on
+  target_id: workflow:evt0_campaign
+- source_id: workflow:evt0_readiness
+  relationship: produces
+  target_id: generated_output:reports/slate-pocket-v1r-evt0-gate.txt
+- source_id: workflow:integration_contracts
+  relationship: depends_on
+  target_id: workflow:configuration_resolution
+- source_id: workflow:integration_contracts
+  relationship: produces
+  target_id: generated_output:reports/program/integration-contracts.yaml
+- source_id: workflow:manufacturing_analytics
+  relationship: depends_on
+  target_id: workflow:evt0_readiness
+- source_id: workflow:manufacturing_analytics
+  relationship: produces
+  target_id: generated_output:reports/program/manufacturing-pilot-analytics.yaml
+- source_id: workflow:manufacturing_readiness
+  relationship: depends_on
+  target_id: workflow:manufacturing_analytics
+- source_id: workflow:manufacturing_readiness
+  relationship: produces
+  target_id: generated_output:reports/slate-pocket-v1r-manufacturing-readiness.txt
+- source_id: workflow:migration_audit
+  relationship: produces
+  target_id: generated_output:reports/program/migration-audit.yaml
+- source_id: workflow:pcb_power
+  relationship: depends_on
+  target_id: workflow:integration_contracts
+- source_id: workflow:pcb_power
+  relationship: produces
+  target_id: generated_output:reports/slate-pocket-v1r-pcb-power-architecture.txt
+- source_id: workflow:program_handoff
+  relationship: depends_on
+  target_id: workflow:cad_budget
+- source_id: workflow:program_handoff
+  relationship: depends_on
+  target_id: workflow:integration_contracts
+- source_id: workflow:program_handoff
+  relationship: depends_on
+  target_id: workflow:pcb_power
+- source_id: workflow:program_handoff
+  relationship: depends_on
+  target_id: workflow:rf_architecture
+- source_id: workflow:program_handoff
+  relationship: depends_on
+  target_id: workflow:supplier_review
+- source_id: workflow:program_handoff
+  relationship: depends_on
+  target_id: workflow:thermal_readiness
+- source_id: workflow:program_handoff
+  relationship: produces
+  target_id: generated_output:reports/slate-pocket-v1r-program-readiness.txt
+- source_id: workflow:program_snapshot
+  relationship: depends_on
+  target_id: workflow:configuration_resolution
+- source_id: workflow:program_snapshot
+  relationship: depends_on
+  target_id: workflow:device_profile
+- source_id: workflow:program_snapshot
+  relationship: depends_on
+  target_id: workflow:evt0_campaign
+- source_id: workflow:program_snapshot
+  relationship: depends_on
+  target_id: workflow:evt0_readiness
+- source_id: workflow:program_snapshot
+  relationship: depends_on
+  target_id: workflow:integration_contracts
+- source_id: workflow:program_snapshot
+  relationship: depends_on
+  target_id: workflow:manufacturing_analytics
+- source_id: workflow:program_snapshot
+  relationship: depends_on
+  target_id: workflow:manufacturing_readiness
+- source_id: workflow:program_snapshot
+  relationship: depends_on
+  target_id: workflow:program_handoff
+- source_id: workflow:program_snapshot
+  relationship: depends_on
+  target_id: workflow:risk_report
+- source_id: workflow:program_snapshot
+  relationship: depends_on
+  target_id: workflow:supplier_review
+- source_id: workflow:program_snapshot
+  relationship: produces
+  target_id: generated_output:reports/program/buildslate-program-snapshot.yaml
+- source_id: workflow:rf_architecture
+  relationship: depends_on
+  target_id: workflow:integration_contracts
+- source_id: workflow:rf_architecture
+  relationship: produces
+  target_id: generated_output:reports/slate-pocket-v1r-rf-wireless-architecture.txt
+- source_id: workflow:risk_report
+  relationship: depends_on
+  target_id: workflow:integration_contracts
+- source_id: workflow:risk_report
+  relationship: produces
+  target_id: generated_output:reports/slate-pocket-risk-register.txt
+- source_id: workflow:supplier_review
+  relationship: produces
+  target_id: generated_output:reports/program/supplier-response-review.yaml
+- source_id: workflow:thermal_readiness
+  relationship: depends_on
+  target_id: workflow:integration_contracts
+- source_id: workflow:thermal_readiness
+  relationship: produces
+  target_id: generated_output:reports/slate-pocket-v1r-thermal-model-readiness.txt
 caveat: The program graph is a traceability index, not supplier approval, verified evidence, prototype measurement, certification,
   or production readiness.

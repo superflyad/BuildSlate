@@ -213,13 +213,19 @@ def command_impact(args: argparse.Namespace) -> int:
 def command_stale(args: argparse.Namespace) -> int:
     engine = RegenerationEngine(Path(args.repo_root))
     stale = engine.stale_nodes()
-    payload = {"stale_count": len(stale), "stale_nodes": list(stale)}
+    differences = engine.state_differences()
+    payload = {"stale_count": len(stale), "stale_nodes": list(stale), "differences": list(differences)}
     if args.format in {"json", "yaml"}:
         _emit(payload, args.format)
     else:
         print(f"stale: {len(stale)}")
         for node_id in stale:
             print(f"  {node_id}")
+        for difference in differences:
+            if difference["scope"] == "state":
+                print(f"  state.{difference['field']}: {difference['saved']} -> {difference['current']}")
+            else:
+                print(f"  {difference['node']}.{difference['kind']}.{difference['path']}: {difference['saved']} -> {difference['current']}")
     return 1 if stale else 0
 
 

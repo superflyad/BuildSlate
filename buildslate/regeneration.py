@@ -162,6 +162,41 @@ class RegenerationEngine:
                 stale.add(node_id)
         return tuple(node_id for node_id in self.topological_order() if node_id in stale)
 
+    def state_differences(self) -> tuple[dict[str, Any], ...]:
+        """Explain exact saved/current hash differences for portable CI diagnostics."""
+        saved = self.load_state() or {}
+        current = self.build_state()
+        differences: list[dict[str, Any]] = []
+        for field in ("state_version", "hash_policy", "manifest_sha256"):
+            if saved.get(field) != current.get(field):
+                differences.append(
+                    {
+                        "scope": "state",
+                        "field": field,
+                        "saved": saved.get(field),
+                        "current": current.get(field),
+                    }
+                )
+        for node_id in self.topological_order():
+            saved_node = saved.get("nodes", {}).get(node_id, {})
+            current_node = current["nodes"][node_id]
+            for kind in ("inputs", "outputs"):
+                saved_hashes = saved_node.get(kind, {})
+                current_hashes = current_node[kind]
+                for path in sorted(set(saved_hashes) | set(current_hashes)):
+                    if saved_hashes.get(path) != current_hashes.get(path):
+                        differences.append(
+                            {
+                                "scope": "node",
+                                "node": node_id,
+                                "kind": kind,
+                                "path": path,
+                                "saved": saved_hashes.get(path),
+                                "current": current_hashes.get(path),
+                            }
+                        )
+        return tuple(differences)
+
     def impacted_nodes(self, changed_paths: Iterable[str]) -> tuple[str, ...]:
         normalized = [Path(path).as_posix().lstrip("./") for path in changed_paths]
         impacted: set[str] = set()

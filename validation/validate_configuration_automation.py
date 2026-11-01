@@ -214,7 +214,8 @@ def main() -> int:
 
     engine = RegenerationEngine(REPO_ROOT)
     require(engine.build_state()["state_version"] == 2, "regeneration state records the portable hash policy version")
-    require(engine.stale_nodes() == (), "all generated nodes match committed input and output hashes")
+    stale_nodes = engine.stale_nodes()
+    require(stale_nodes == (), f"all generated nodes match committed input and output hashes; stale={stale_nodes}; differences={engine.state_differences()}")
     profile_impact = engine.impacted_nodes(["configs/devices/slate-pocket-v1r.yaml"])
     require("configuration_resolution" in profile_impact and "program_snapshot" in profile_impact, "profile change propagates through configuration and program snapshot")
     supplier_impact = engine.impacted_nodes(["research/supplier-responses/receipts/example.yaml"])

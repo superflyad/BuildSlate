@@ -1,0 +1,32 @@
+metadata:
+  schema_version: 1
+  baseline: slate-pocket-v1r
+  authority: Unit-level records are authoritative for analytics; summary percentages are never accepted as source evidence.
+
+bundle:
+  manifest: pilot-manifest.yaml
+  required_tables: [units.csv, defects.csv, rework.csv]
+  optional_tables: [measurements.csv]
+
+required_columns:
+  units.csv: [unit_id, serial_number, entered_station1, part_lots, board_revision, enclosure_revision, firmware_hash, configuration_hash, first_pass, final_disposition, required_test_complete]
+  defects.csv: [defect_id, unit_id, defect_code, severity, suspected_origin, discovery_station, finding, disposition]
+  rework.csv: [rework_id, unit_id, action, outcome, approved_by]
+  measurements.csv: [characteristic_id, unit_id, value, lower_spec, upper_spec, measurement_system_approved, process_stable, distribution_reviewed]
+
+capability_policy:
+  minimum_observations: 30
+  required_prerequisites: [measurement_system_approved, process_stable, distribution_reviewed]
+  target_cpk_source: manufacturing/pilot-build-plan.yaml#provisional_yield_gates.critical_characteristic_capability.target_cpk
+  calculation: minimum_of_upper_and_lower_three_sigma_distance_using_sample_standard_deviation
+
+confidence_intervals:
+  method: wilson_score
+  confidence: 0.95
+  z: 1.959963984540054
+
+outputs:
+  report: reports/program/manufacturing-pilot-analytics.yaml
+
+caveat: Analytics characterize only ingested units and cannot prove long-term yield, rare-defect rates, process stability, or production readiness.
+

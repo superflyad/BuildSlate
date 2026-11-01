@@ -58,6 +58,9 @@ gate_sources:
   evt0_campaign_gate:
     path: reports/program/evt0-campaign.yaml
     marker: "EVT0_CAMPAIGN_GATE:"
+  manufacturing_analytics_gate:
+    path: reports/program/manufacturing-pilot-analytics.yaml
+    marker: "MANUFACTURING_ANALYTICS_GATE:"
 
 outputs:
   program_snapshot: reports/program/buildslate-program-snapshot.yaml

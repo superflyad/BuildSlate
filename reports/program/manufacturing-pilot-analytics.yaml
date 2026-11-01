@@ -1,0 +1,8 @@
+MANUFACTURING_ANALYTICS_GATE: EMPTY_PILOT_EVIDENCE
+campaign_count: 0
+campaigns: []
+next_actions:
+- Do not execute a pilot until EVT0, DFM, release, process, safety, and authorization prerequisites are satisfied.
+- Ingest every input unit and retain failures, rework, scrap, and unknown findings in the denominator.
+- Review stop conditions, confidence intervals, capability prerequisites, and signed quality disposition.
+caveat: No pilot evidence exists unless a hash-verified authorized campaign is ingested.

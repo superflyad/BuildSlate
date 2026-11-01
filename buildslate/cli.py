@@ -12,6 +12,7 @@ from .configuration import ConfigurationResolver
 from .contracts import IntegrationContractRepository
 from .evt0 import EVT0CampaignRepository
 from .io import dump_json, dump_yaml
+from .manufacturing import ManufacturingAnalyticsRepository
 from .program import DEFAULT_REPO_ROOT, ProgramRepository, compare_yaml
 from .regeneration import RegenerationEngine
 from .suppliers import SupplierResponseRepository
@@ -265,6 +266,41 @@ def command_evt0_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_manufacturing_validate(args: argparse.Namespace) -> int:
+    review = ManufacturingAnalyticsRepository(Path(args.repo_root)).review_bundle(Path(args.bundle))
+    if args.format in {"json", "yaml"}:
+        _emit(review, args.format)
+    else:
+        print(f"campaign_id: {review.get('campaign_id')}")
+        print(f"gate: {review['PILOT_GATE']}")
+        print(f"integrity_errors: {len(review['integrity_errors'])}")
+        print(f"denominator: {review.get('denominator', {}).get('input_units')}")
+    return 2 if review["integrity_errors"] else 0
+
+
+def command_manufacturing_ingest(args: argparse.Namespace) -> int:
+    repository = ManufacturingAnalyticsRepository(Path(args.repo_root))
+    receipt, review = repository.ingest(Path(args.bundle), args.received_at, args.received_by)
+    print(f"Wrote {receipt.relative_to(repository.repo_root)}")
+    print(f"pilot_gate: {review['PILOT_GATE']}")
+    print("evidence_effect: quality_review_only")
+    return 0
+
+
+def command_manufacturing_report(args: argparse.Namespace) -> int:
+    repository = ManufacturingAnalyticsRepository(Path(args.repo_root))
+    report = repository.build_report()
+    if args.generate:
+        destination = repository.generate_report()
+        print(f"Wrote {destination.relative_to(repository.repo_root)}")
+    if args.format in {"json", "yaml"}:
+        _emit(report, args.format)
+    elif not args.generate:
+        print(f"gate: {report['MANUFACTURING_ANALYTICS_GATE']}")
+        print(f"campaigns: {report['campaign_count']}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="buildslate", description="BuildSlate engineering execution CLI")
     parser.add_argument("--repo-root", default=str(DEFAULT_REPO_ROOT), help="BuildSlate repository root")
@@ -363,6 +399,22 @@ def build_parser() -> argparse.ArgumentParser:
     evt0_report.add_argument("--generate", action="store_true")
     evt0_report.add_argument("--format", choices=("text", "json", "yaml"), default="text")
     evt0_report.set_defaults(handler=command_evt0_report)
+
+    manufacturing_parser = subparsers.add_parser("manufacturing", help="validate and analyze pilot evidence")
+    manufacturing_commands = manufacturing_parser.add_subparsers(dest="manufacturing_command", required=True)
+    manufacturing_validate = manufacturing_commands.add_parser("validate", help="validate and analyze one pilot bundle")
+    manufacturing_validate.add_argument("--bundle", required=True)
+    manufacturing_validate.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    manufacturing_validate.set_defaults(handler=command_manufacturing_validate)
+    manufacturing_ingest = manufacturing_commands.add_parser("ingest", help="preserve an authorized pilot bundle")
+    manufacturing_ingest.add_argument("--bundle", required=True)
+    manufacturing_ingest.add_argument("--received-at", required=True)
+    manufacturing_ingest.add_argument("--received-by", required=True)
+    manufacturing_ingest.set_defaults(handler=command_manufacturing_ingest)
+    manufacturing_report = manufacturing_commands.add_parser("report", help="inspect or generate pilot analytics")
+    manufacturing_report.add_argument("--generate", action="store_true")
+    manufacturing_report.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    manufacturing_report.set_defaults(handler=command_manufacturing_report)
     return parser
 
 

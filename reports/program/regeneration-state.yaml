@@ -1,5 +1,5 @@
 state_version: 1
-manifest_sha256: f92633f8d2aa1bb7a958a905ab64056d220955e458855bb9c08a219420c0ac62
+manifest_sha256: 93e25977581b1db1ef0dfd093f0d251d07d3781f1db6b597bccf692304e38404
 nodes:
   supplier_review:
     inputs:
@@ -34,6 +34,7 @@ nodes:
       engineering/rf/keepout-map/map.yaml: 5f94e0422a298e5a937a3955d3a248a69f6c7ee8d17e69306d1751121415ec8d
       manufacturing/compliance-pretest-plan.yaml: 18042f3db64517b6fe1abc222a5ccf8cb8e3e14afa7581db33d48ad51a49e0c3
       manufacturing/defect-taxonomy.yaml: d58ccf15116e7d8c5de8004043b4e3346ccb7ac0cdb2ccc717924f104a3adade
+      manufacturing/pilot-analytics.yaml: ddd23c75a39d0ad263f3c21e225f2a65eb8bc932311aedd6e1e9b0a941af6061
       manufacturing/pilot-build-plan.yaml: 8bcc4d60a9ee710b524848eaeb4ab9646981874b67b1aafa17d50bbf8d77ebd4
       manufacturing/reliability-plan.yaml: 663573060f26499e7a613f65df606b937adafa299fb77f0c7bc16853134ea8e5
       manufacturing/supplier-dfm-response.yaml: 79eb4c2c77125a88d7b02d90ead69a749bb74b0d301254303e77cb613127cfdf
@@ -71,6 +72,26 @@ nodes:
       validation/evt0/workloads.yaml: 15ee8713856cd4191b2cd27eec23545b53cdda0b6c6f6528ce2268a8d78f1d35
     outputs:
       reports/slate-pocket-v1r-evt0-gate.txt: 012c3c68c54688cdef5bf5f3c8b6b035b55a73f7cce15f1ba82bc5edcda8578e
+  manufacturing_analytics:
+    inputs:
+      buildslate/manufacturing.py: 3da4e7d9e22fba1a5d88dab20a94c00a0cf3ef4157b8583b2094271c6febde03
+      manufacturing/defect-taxonomy.yaml: d58ccf15116e7d8c5de8004043b4e3346ccb7ac0cdb2ccc717924f104a3adade
+      manufacturing/pilot-analytics.yaml: ddd23c75a39d0ad263f3c21e225f2a65eb8bc932311aedd6e1e9b0a941af6061
+      manufacturing/pilot-build-plan.yaml: 8bcc4d60a9ee710b524848eaeb4ab9646981874b67b1aafa17d50bbf8d77ebd4
+      manufacturing/pilot-results/campaigns/README.md: 489b0f5d8f15458f1240197d2269f4253998fefb2ca83840969e7ee9fa6271c9
+      manufacturing/schemas/pilot-manifest.schema.yaml: d87fdb17f52c9778e40498fce85a39721d49eefe71c81d92c0ba5b28049c0eee
+    outputs:
+      reports/program/manufacturing-pilot-analytics.yaml: b2f7e464f231742c481dc92dec79cda01261ab8e4f0a5f0207abe1c85d761786
+  manufacturing_readiness:
+    inputs:
+      engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
+      manufacturing/defect-taxonomy.yaml: d58ccf15116e7d8c5de8004043b4e3346ccb7ac0cdb2ccc717924f104a3adade
+      manufacturing/generate_manufacturing_readiness_report.py: 2f4d4fc6c3fe34c1f2b23dc5b629efe50a5e2176e8fa769f0a82f6197b3f41a2
+      manufacturing/pilot-build-plan.yaml: 8bcc4d60a9ee710b524848eaeb4ab9646981874b67b1aafa17d50bbf8d77ebd4
+      manufacturing/supplier-dfm-response.yaml: 79eb4c2c77125a88d7b02d90ead69a749bb74b0d301254303e77cb613127cfdf
+      reports/program/manufacturing-pilot-analytics.yaml: b2f7e464f231742c481dc92dec79cda01261ab8e4f0a5f0207abe1c85d761786
+    outputs:
+      reports/slate-pocket-v1r-manufacturing-readiness.txt: 4b30d29aa917714323ccb40321ad7d8a8556baabcd2ecfd1162576af4e4a4374
   device_profile:
     inputs:
       configs/devices/slate-pocket-v1r.yaml: a0e4e3bbf41e266fd55866c1c9ad436e4f498f98edc33349e2108e4db4c67ae1
@@ -143,15 +164,16 @@ nodes:
   program_snapshot:
     inputs:
       buildslate/program.py: a50bcf1fb4137086ccc42fc9ec4c4b57126515a4fa506ab1e5892d7fd75ab40b
-      engineering/program/program_model.yaml: 47c678b971d76e76eb7529a554371c17250c0531494da57d4d8b695da64348f8
+      engineering/program/program_model.yaml: cd4dda023edf880ca4c6754905317c9a4df6875aa9602aa98aec782d18cd6931
       reports/program/configuration-resolution.yaml: bbbfb942f2b5fb410a50532535272d35a87af5c89ee4e62dde5942b6d6da4718
       reports/program/evt0-campaign.yaml: aab1632ff7d74dd8cc1415720ea9289d1eb10972ed2efa25578fb35866078fb9
       reports/program/integration-contracts.yaml: dc313f672099514e49197599b871f792ce9b5144612a0c863fdc06b376927c59
+      reports/program/manufacturing-pilot-analytics.yaml: b2f7e464f231742c481dc92dec79cda01261ab8e4f0a5f0207abe1c85d761786
       reports/program/supplier-response-review.yaml: c7a3941e81a65ef1023972169f80ffac7fef1adb103699b36a5622d20e9af7da
       reports/slate-pocket-evidence-readiness.txt: b31b8364ac46bc6fffdfb168433cda8cb3ab60dc69cec8c325757dfa1503889a
       reports/slate-pocket-v1r-evt0-gate.txt: 012c3c68c54688cdef5bf5f3c8b6b035b55a73f7cce15f1ba82bc5edcda8578e
-      reports/slate-pocket-v1r-manufacturing-readiness.txt: 2a6455e8295e839f94100d61893189fcf64eab14972031f137b336eafe30bb6c
+      reports/slate-pocket-v1r-manufacturing-readiness.txt: 4b30d29aa917714323ccb40321ad7d8a8556baabcd2ecfd1162576af4e4a4374
       reports/slate-pocket-v1r-program-readiness.txt: 0cf93e775f1fba2d62e9ea5e3272a325d25807013809d02fdcab42b8d82fcb8c
     outputs:
-      reports/program/buildslate-program-snapshot.yaml: 1ca536e897d16f646e036482749d8d35c35bdd0adae55f514fb5f8e98af3920b
+      reports/program/buildslate-program-snapshot.yaml: 200f034c61a70dd39333c8f47e617ab525e93e29cd5afd3e060c5145adacc14c
 caveat: Hashes establish deterministic staleness only; they do not verify engineering evidence or physical results.

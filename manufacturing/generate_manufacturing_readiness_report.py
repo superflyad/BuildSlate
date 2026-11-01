@@ -15,6 +15,7 @@ DEFECT_PATH = MANUFACTURING_ROOT / "defect-taxonomy.yaml"
 SUPPLIER_RESPONSE_PATH = MANUFACTURING_ROOT / "supplier-dfm-response.yaml"
 REGISTRY_PATH = REPO_ROOT / "engineering" / "evidence" / "evidence_registry.yaml"
 REPORT_PATH = REPO_ROOT / "reports" / "slate-pocket-v1r-manufacturing-readiness.txt"
+ANALYTICS_PATH = REPO_ROOT / "reports" / "program" / "manufacturing-pilot-analytics.yaml"
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -35,11 +36,20 @@ def build_report() -> str:
     defects = _load(DEFECT_PATH)
     supplier_response = _load(SUPPLIER_RESPONSE_PATH)
     registry = _load(REGISTRY_PATH)
+    analytics = _load(ANALYTICS_PATH)
     evt_status = registry["packages"]["evt0_prototype_evidence"]["status"]
     prerequisites = pilot["prerequisites"]
     unmet = [field for field, value in prerequisites.items() if value is not True and field != "evt0_prototype_evidence_status"]
     gates = pilot["provisional_yield_gates"]
     pilot_results = _real_pilot_files()
+    analytics_gate = analytics["MANUFACTURING_ANALYTICS_GATE"]
+    campaign_count = analytics["campaign_count"]
+    if evt_status != "verified" or unmet or supplier_response["review"]["status"] == "template_not_completed":
+        gate = "BLOCKED_ON_VERIFIED_EVT0_SUPPLIER_DFM_RELEASED_PROCESS_AND_PILOT_EVIDENCE"
+    elif analytics_gate == "PILOT_QUALITY_REVIEW_READY":
+        gate = "PILOT_QUALITY_REVIEW_READY"
+    else:
+        gate = "BLOCKED_ON_INVALID_INCOMPLETE_OR_FAILED_PILOT_EVIDENCE"
 
     required_artifacts = (
         "dfm-review.md",
@@ -91,6 +101,8 @@ def build_report() -> str:
         "  measured yield: no evidence",
         "  process capability: no evidence",
         "  reliability/compliance/service validation: no evidence",
+        f"  ingested analytics campaigns: {campaign_count}",
+        f"  manufacturing analytics gate: {analytics_gate}",
         "",
         "Unmet prerequisites:",
         f"  - EVT0 must be verified; current status is {evt_status}.",
@@ -101,7 +113,7 @@ def build_report() -> str:
     lines.extend(
         [
             "",
-            "MANUFACTURING_GATE: BLOCKED_ON_VERIFIED_EVT0_SUPPLIER_DFM_RELEASED_PROCESS_AND_PILOT_EVIDENCE",
+            f"MANUFACTURING_GATE: {gate}",
             "",
             "Caveat:",
             "  This package prepares supplier and pilot work; it does not prove manufacturability, process capability, yield, reliability, compliance, serviceability, supplier approval, or production readiness.",

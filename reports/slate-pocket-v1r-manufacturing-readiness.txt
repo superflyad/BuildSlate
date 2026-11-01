@@ -34,6 +34,8 @@ Manufacturing evidence:
   measured yield: no evidence
   process capability: no evidence
   reliability/compliance/service validation: no evidence
+  ingested analytics campaigns: 0
+  manufacturing analytics gate: EMPTY_PILOT_EVIDENCE
 
 Unmet prerequisites:
   - EVT0 must be verified; current status is planned.

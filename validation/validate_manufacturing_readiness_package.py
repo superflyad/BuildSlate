@@ -93,6 +93,7 @@ def main() -> int:
             "supplier DFM response status: template_not_completed",
             "pilot authorized: no",
             "pilot result files excluding instructions: 0",
+        "manufacturing analytics gate: EMPTY_PILOT_EVIDENCE",
             "measured yield: no evidence",
             "MANUFACTURING_GATE: BLOCKED_ON_VERIFIED_EVT0_SUPPLIER_DFM_RELEASED_PROCESS_AND_PILOT_EVIDENCE",
             "does not prove manufacturability",

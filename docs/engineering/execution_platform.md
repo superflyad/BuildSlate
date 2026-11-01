@@ -29,6 +29,9 @@ python -m buildslate contracts validate
 python -m buildslate evt0 validate --bundle path/to/run-bundle
 python -m buildslate evt0 ingest --bundle path/to/run-bundle --received-at 2026-11-02T12:00:00-06:00 --received-by operator@example.com
 python -m buildslate evt0 report --generate
+python -m buildslate manufacturing validate --bundle path/to/pilot-bundle
+python -m buildslate manufacturing ingest --bundle path/to/pilot-bundle --received-at 2026-11-03T12:00:00-06:00 --received-by operator@example.com
+python -m buildslate manufacturing report --generate
 python -m buildslate impact --changed configs/devices/slate-pocket-v1r.yaml
 python -m buildslate regenerate --stale --dry-run
 python -m buildslate regenerate --stale
@@ -65,6 +68,12 @@ The current gate is `CONTRACTS_CONSISTENT_NOT_RELEASED`: all checked interfaces 
 An EVT0 bundle contains `manifest.yaml`, `result.yaml`, referenced raw files, and calibration records/certificates. `evt0 validate` checks structure, test identity, time ranges, SHA-256 references, calibration validity at run start, required-channel status, hard stops, and deviations. It derives supported metrics directly from hash-verified CSV columns and calculates model-correlation residuals against declared tolerances.
 
 `evt0 ingest` preserves the complete bundle and a receipt; failed or aborted tests may be valid evidence and are retained, while structurally invalid or hash-inconsistent bundles are rejected. `evt0 report` requires objective passes for all 16 gate tests. The committed campaign remains empty because no authorized physical campaign or measurements exist.
+
+## Pilot manufacturing analytics
+
+Pilot bundles contain an explicitly authorized manifest plus unit genealogy, defects, rework, and optional critical-characteristic measurements. The analytics engine keeps every station-1 input in the denominator, calculates FPY/final yield/rework/unknown rates and Wilson 95% intervals, validates defect codes and unit references, generates defect Pareto counts, and applies the existing stop rules and provisional quality thresholds.
+
+Cpk is calculated only when the declared critical-characteristic scope requires it and every configured prerequisite is met, including at least 30 observations, approved measurement systems, process stability, reviewed distributions, consistent specifications, and nonzero sample variation. Passing point estimates produce `PILOT_ANALYTICS_PASS_REVIEW_REQUIRED`, never production approval. The committed pilot store remains empty.
 
 Structured output is available as JSON or YAML where applicable. Exit code `0` means the requested operation completed; validation/input errors return `2`; `validate --all` propagates the repository validation exit code.
 

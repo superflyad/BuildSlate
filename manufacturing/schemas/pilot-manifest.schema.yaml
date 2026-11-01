@@ -1,0 +1,40 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: buildslate://manufacturing/pilot-manifest.schema.yaml
+title: BuildSlate Pilot Evidence Manifest
+type: object
+additionalProperties: false
+required: [schema_version, campaign_id, build_id, start_time_utc, end_time_utc, authorization, released_baseline, input_unit_count, source_files, stop_events, capability_scope]
+properties:
+  schema_version: {const: 1}
+  campaign_id: {type: string, minLength: 1}
+  build_id: {type: string, minLength: 1}
+  start_time_utc: {type: string, format: date-time}
+  end_time_utc: {type: string, format: date-time}
+  authorization:
+    type: object
+    required: [authorized, authorized_by, reference]
+    properties:
+      authorized: {const: true}
+      authorized_by: {type: string, minLength: 1}
+      reference: {type: string, minLength: 1}
+  released_baseline:
+    type: object
+    required: [design_revision, bom_revision, process_revision, control_plan_revision]
+  input_unit_count: {type: integer, minimum: 1}
+  source_files:
+    type: array
+    minItems: 3
+    items:
+      type: object
+      required: [path, sha256]
+      properties:
+        path: {type: string}
+        sha256: {type: string, pattern: '^[a-fA-F0-9]{64}$'}
+  stop_events: {type: array, items: {type: object}}
+  capability_scope:
+    type: object
+    required: [critical_characteristics_required, rationale]
+    properties:
+      critical_characteristics_required: {type: boolean}
+      rationale: {type: string, minLength: 1}
+

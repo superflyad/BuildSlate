@@ -2,7 +2,7 @@ schema_version: 1
 program_id: slate-pocket-v1r
 title: Slate Pocket v1R Engineering Execution Program
 summary:
-  entity_count: 157
+  entity_count: 158
   relation_count: 220
   entity_kind_counts:
     artifact: 35
@@ -12,7 +12,7 @@ summary:
     configuration: 1
     defect_code: 14
     evidence_package: 10
-    gate: 8
+    gate: 9
     requirement: 14
     risk: 13
     supplier: 12
@@ -1036,6 +1036,13 @@ entities:
   source_path: reports/slate-pocket-v1r-program-readiness.txt
   attributes:
     marker: 'LOCAL_PROGRAM_DECISION:'
+- entity_id: gate:manufacturing_analytics_gate
+  kind: gate
+  title: manufacturing analytics gate
+  status: EMPTY_PILOT_EVIDENCE
+  source_path: reports/program/manufacturing-pilot-analytics.yaml
+  attributes:
+    marker: 'MANUFACTURING_ANALYTICS_GATE:'
 - entity_id: gate:manufacturing_gate
   kind: gate
   title: manufacturing gate

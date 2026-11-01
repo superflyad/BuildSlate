@@ -1,0 +1,177 @@
+DASHBOARD_GATE: LOCAL_SYSTEM_CURRENT_EXTERNALLY_BLOCKED
+program_id: slate-pocket-v1r
+summary:
+  verified: 1
+  available_not_verified: 3
+  modeled_not_verified: 4
+  rejected_options: 3
+  stale_nodes: 0
+  contradictions: 0
+  external_blockers: 8
+gates:
+- id: configuration_gate
+  status: CONTROLLED_WITH_UNRESOLVED_EXTERNAL_DECISIONS
+  source: reports/program/configuration-resolution.yaml
+- id: evidence_gate
+  status: BLOCKED_ON_FOUNDATIONAL_EVIDENCE
+  source: reports/slate-pocket-evidence-readiness.txt
+- id: evt0_campaign_gate
+  status: EMPTY_CAMPAIGN
+  source: reports/program/evt0-campaign.yaml
+- id: evt0_gate
+  status: BLOCKED_ON_SUPPLIER_PHASE2_VERIFICATION_BUILD_AUTHORIZATION_AND_RESULTS
+  source: reports/slate-pocket-v1r-evt0-gate.txt
+- id: integration_contract_gate
+  status: CONTRACTS_CONSISTENT_NOT_RELEASED
+  source: reports/program/integration-contracts.yaml
+- id: local_program_gate
+  status: SUPPLIER_READY_AND_PROTOTYPE_PLAN_READY_EXTERNALLY_BLOCKED
+  source: reports/slate-pocket-v1r-program-readiness.txt
+- id: manufacturing_analytics_gate
+  status: EMPTY_PILOT_EVIDENCE
+  source: reports/program/manufacturing-pilot-analytics.yaml
+- id: manufacturing_gate
+  status: BLOCKED_ON_VERIFIED_EVT0_SUPPLIER_DFM_RELEASED_PROCESS_AND_PILOT_EVIDENCE
+  source: reports/slate-pocket-v1r-manufacturing-readiness.txt
+- id: supplier_response_gate
+  status: EMPTY_INBOX
+  source: reports/program/supplier-response-review.yaml
+verified:
+- id: requirements_baseline
+  title: Freeze the v1R decision baseline
+  status: verified
+available_not_verified:
+- id: battery_supplier_package
+  title: Obtain a supplier-backed battery package
+  status: available
+  phase: 1
+- id: compute_memory_platform_package
+  title: Select a credible SoC, NPU, and memory topology
+  status: available
+  phase: 1
+- id: display_storage_package
+  title: Confirm display and storage package candidates
+  status: available
+  phase: 1
+modeled_not_verified:
+- id: mechanical_cad_stackup
+  title: Produce the first evidence-backed mechanical CAD stackup
+  evidence_status: planned
+  model_status: planning_artifacts_present_not_verified
+- id: pcb_power_architecture
+  title: Prove PCB placement, routing, and power architecture
+  evidence_status: planned
+  model_status: planning_artifacts_present_not_verified
+- id: thermal_model_and_test_plan
+  title: Build a geometry-specific thermal model and correlation plan
+  evidence_status: planned
+  model_status: planning_artifacts_present_not_verified
+- id: rf_wireless_architecture
+  title: Reserve and validate RF and wireless-charging architecture
+  evidence_status: planned
+  model_status: planning_artifacts_present_not_verified
+rejected_options:
+- id: memory_first_build_rejection
+  value: 512
+  unit: GB
+  notes: Unsupported as a first-build configuration; the headline target remains traceable.
+- id: storage_first_build_rejection
+  value: 4
+  unit: TB
+  notes: Unsupported as an internal first-build configuration.
+- id: wireless_charging_evt0
+  value: removed
+  unit: null
+  notes: Removed from EVT0 after z-height and certification screening.
+stale_nodes: []
+contradictions: []
+externally_blocked:
+- id: supplier_responses
+  category: supplier_and_nda
+  missing_evidence: Completed supplier response templates, controlled drawings, limits, lifecycle/availability, sample terms,
+    and attestations.
+  exact_next_action: Authorize supplier outreach using research/rfqs after contact and NDA review; request completed response
+    schemas and source documents.
+  authorization_required: supplier_contact_and_any_NDA_acceptance
+  fallback: Retain public candidates only as references; do not select components or release CAD.
+- id: battery_pack_and_charge_limits
+  category: supplier_safety
+  missing_evidence: Complete-pack CAD, swelling/tolerances, protection, charge/discharge curves, temperature/cycle limits,
+    safety and shipping documentation.
+  exact_next_action: Request a supplier-proposed pack fitting the RFQ envelope and validated charger/system limits; do not
+    prescribe unsupported capacity or charge rate.
+  authorization_required: supplier_contact_samples_and_purchases
+  fallback: Use the best supplier-validated capacity fitting the envelope; cap wired charge below 30 W if required; wireless
+    remains removed.
+- id: platform_reference_design
+  category: supplier_confidential_engineering
+  missing_evidence: Package/ball maps, qualified 128 GB topology, PMIC/rails, reference schematic, power/load steps, software
+    access, and sustained workload telemetry.
+  exact_next_action: Obtain the selected platform's NDA-controlled design package and evaluation access for the 128 GB fallback.
+  authorization_required: supplier_contact_NDA_eval_hardware_and_licenses
+  fallback: Use external 128 GB developer systems for workload characterization only; do not claim pocket integration.
+- id: display_storage_drawings
+  category: supplier_engineering
+  missing_evidence: Selected display module drawing/flex/power and selected storage package/host/power/thermal/lifecycle evidence.
+  exact_next_action: Run prepared display and storage RFIs; request EVT-available modules and complete response schemas.
+  authorization_required: supplier_contact_samples_and_purchases
+  fallback: Allow supplier-available 7–8.4 inch display variation and modular/external storage; 4 TB internal stays rejected.
+- id: released_integration_design
+  category: engineering_and_paid_tools
+  missing_evidence: Released 3D CAD, tolerance/mass/interference review, schematic/netlist/routed ECAD, solver model, EM model,
+    and peer signoff.
+  exact_next_action: After supplier packages are verified, authorize detailed CAD/ECAD/solver work and any required paid tools
+    or contractors.
+  authorization_required: design_release_paid_tools_and_external_engineering_if_needed
+  fallback: Preserve provisional blocking models and 10.2 mm first thickness fallback; do not release hardware.
+- id: accredited_labs_and_compliance_scope
+  category: laboratory_and_regulatory
+  missing_evidence: Market/SKU matrix, current lab scope, calibrated tests, accredited reports, certifications/declarations/filings.
+  exact_next_action: Select target markets/configurations and engage qualified labs/regulatory counsel after production-intent
+    hardware exists.
+  authorization_required: market_decisions_lab_contracts_and_test_samples
+  fallback: Defer cellular, remove wireless charging, limit claims/markets, and retain modular development radios.
+- id: evt0_build_and_measurement
+  category: physical_work
+  missing_evidence: Selected BOM, released designs, authorized build, calibrated setup, raw results, deviations, and correlated
+    models.
+  exact_next_action: Authorize procurement/build/energized testing only after the EVT0 prerequisite and safety gates pass.
+  authorization_required: purchases_physical_build_and_energized_testing
+  fallback: Continue workload characterization on external developer hardware without claiming integrated prototype performance.
+- id: supplier_dfm_and_pilot
+  category: manufacturing_physical_work
+  missing_evidence: Completed supplier DFM responses, released process/tooling, pilot authorization, 100-unit records, yield/capability,
+    reliability, compliance, and service results.
+  exact_next_action: After verified EVT0, authorize supplier DFM and then the controlled pilot only when G0/G1 pass.
+  authorization_required: supplier_engagement_tooling_materials_pilot_and_labs
+  fallback: Hold production claims and iterate EVT/design/process; do not shrink denominators or hide rework/failures.
+exact_next_actions:
+- blocker: supplier_responses
+  action: Authorize supplier outreach using research/rfqs after contact and NDA review; request completed response schemas
+    and source documents.
+  authorization_required: supplier_contact_and_any_NDA_acceptance
+- blocker: battery_pack_and_charge_limits
+  action: Request a supplier-proposed pack fitting the RFQ envelope and validated charger/system limits; do not prescribe
+    unsupported capacity or charge rate.
+  authorization_required: supplier_contact_samples_and_purchases
+- blocker: platform_reference_design
+  action: Obtain the selected platform's NDA-controlled design package and evaluation access for the 128 GB fallback.
+  authorization_required: supplier_contact_NDA_eval_hardware_and_licenses
+- blocker: display_storage_drawings
+  action: Run prepared display and storage RFIs; request EVT-available modules and complete response schemas.
+  authorization_required: supplier_contact_samples_and_purchases
+- blocker: released_integration_design
+  action: After supplier packages are verified, authorize detailed CAD/ECAD/solver work and any required paid tools or contractors.
+  authorization_required: design_release_paid_tools_and_external_engineering_if_needed
+- blocker: accredited_labs_and_compliance_scope
+  action: Select target markets/configurations and engage qualified labs/regulatory counsel after production-intent hardware
+    exists.
+  authorization_required: market_decisions_lab_contracts_and_test_samples
+- blocker: evt0_build_and_measurement
+  action: Authorize procurement/build/energized testing only after the EVT0 prerequisite and safety gates pass.
+  authorization_required: purchases_physical_build_and_energized_testing
+- blocker: supplier_dfm_and_pilot
+  action: After verified EVT0, authorize supplier DFM and then the controlled pilot only when G0/G1 pass.
+  authorization_required: supplier_engagement_tooling_materials_pilot_and_labs
+caveat: Artifact presence, current hashes, and consistent interfaces do not convert modeled or available evidence into verified
+  evidence.

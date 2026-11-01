@@ -10,9 +10,11 @@ from typing import Any, Sequence
 
 from .configuration import ConfigurationResolver
 from .contracts import IntegrationContractRepository
+from .dashboard import ProgramDashboard
 from .evt0 import EVT0CampaignRepository
 from .io import dump_json, dump_yaml
 from .manufacturing import ManufacturingAnalyticsRepository
+from .migrations import MigrationRegistry
 from .program import DEFAULT_REPO_ROOT, ProgramRepository, compare_yaml
 from .regeneration import RegenerationEngine
 from .suppliers import SupplierResponseRepository
@@ -301,6 +303,47 @@ def command_manufacturing_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_dashboard(args: argparse.Namespace) -> int:
+    dashboard = ProgramDashboard(Path(args.repo_root))
+    data = dashboard.build(assume_upstream_current=args.regeneration_context)
+    if args.generate:
+        yaml_path, markdown_path = dashboard.generate(assume_upstream_current=args.regeneration_context)
+        print(f"Wrote {yaml_path.relative_to(dashboard.repo_root)}")
+        print(f"Wrote {markdown_path.relative_to(dashboard.repo_root)}")
+    if args.format in {"json", "yaml"}:
+        _emit(data, args.format)
+    elif not args.generate:
+        print(f"gate: {data['DASHBOARD_GATE']}")
+        for key, value in data["summary"].items():
+            print(f"{key}: {value}")
+    return 0
+
+
+def command_migrations_audit(args: argparse.Namespace) -> int:
+    registry = MigrationRegistry(Path(args.repo_root))
+    audit = registry.audit()
+    if args.generate:
+        destination = registry.generate()
+        print(f"Wrote {destination.relative_to(registry.repo_root)}")
+    if args.format in {"json", "yaml"}:
+        _emit(audit, args.format)
+    elif not args.generate:
+        print(f"gate: {audit['MIGRATION_GATE']}")
+        print(f"artifacts: {audit['artifact_count']}")
+        print(f"errors: {len(audit['errors'])}")
+    return 2 if audit["errors"] else 0
+
+
+def command_migrations_explain(args: argparse.Namespace) -> int:
+    item = MigrationRegistry(Path(args.repo_root)).explain(args.id)
+    if args.format in {"json", "yaml"}:
+        _emit(item, args.format)
+    else:
+        for key, value in item.items():
+            print(f"{key}: {value}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="buildslate", description="BuildSlate engineering execution CLI")
     parser.add_argument("--repo-root", default=str(DEFAULT_REPO_ROOT), help="BuildSlate repository root")
@@ -415,6 +458,23 @@ def build_parser() -> argparse.ArgumentParser:
     manufacturing_report.add_argument("--generate", action="store_true")
     manufacturing_report.add_argument("--format", choices=("text", "json", "yaml"), default="text")
     manufacturing_report.set_defaults(handler=command_manufacturing_report)
+
+    dashboard_parser = subparsers.add_parser("dashboard", help="show or generate the program evidence dashboard")
+    dashboard_parser.add_argument("--generate", action="store_true")
+    dashboard_parser.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    dashboard_parser.add_argument("--regeneration-context", action="store_true", help=argparse.SUPPRESS)
+    dashboard_parser.set_defaults(handler=command_dashboard)
+
+    migrations_parser = subparsers.add_parser("migrations", help="audit or explain legacy artifact migrations")
+    migration_commands = migrations_parser.add_subparsers(dest="migration_command", required=True)
+    migrations_audit = migration_commands.add_parser("audit", help="validate authority and compatibility mappings")
+    migrations_audit.add_argument("--generate", action="store_true")
+    migrations_audit.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    migrations_audit.set_defaults(handler=command_migrations_audit)
+    migrations_explain = migration_commands.add_parser("explain", help="explain one legacy artifact mapping")
+    migrations_explain.add_argument("--id", required=True)
+    migrations_explain.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    migrations_explain.set_defaults(handler=command_migrations_explain)
     return parser
 
 

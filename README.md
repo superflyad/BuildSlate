@@ -14,6 +14,8 @@ python -m buildslate configuration validate
 python -m buildslate contracts validate
 python -m buildslate evt0 report
 python -m buildslate manufacturing report
+python -m buildslate dashboard
+python -m buildslate migrations audit
 python -m buildslate stale
 ```
 

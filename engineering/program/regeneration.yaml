@@ -86,6 +86,18 @@ nodes:
       - engineering/evidence/evidence_registry.yaml
     outputs: [reports/slate-pocket-v1r-manufacturing-readiness.txt]
     command: [python, manufacturing/generate_manufacturing_readiness_report.py]
+  migration_audit:
+    depends_on: []
+    inputs:
+      - buildslate/migrations.py
+      - engineering/program/migration_registry.yaml
+      - configs/devices/slate-pocket-v1r.yaml
+      - engineering/evidence/evidence_registry.yaml
+      - engineering/assumptions/assumption_registry.yaml
+      - engineering/risks/risk_register.yaml
+      - engineering/evidence/external_blocker_registry.yaml
+    outputs: [reports/program/migration-audit.yaml]
+    command: [python, -m, buildslate, migrations, audit, --generate]
   device_profile:
     depends_on: [integration_contracts]
     inputs:
@@ -165,4 +177,20 @@ nodes:
       - reports/slate-pocket-v1r-program-readiness.txt
     outputs: [reports/program/buildslate-program-snapshot.yaml]
     command: [python, -m, buildslate, generate]
+  dashboard:
+    depends_on: [supplier_review, configuration_resolution, integration_contracts, evt0_campaign, evt0_readiness, manufacturing_analytics, manufacturing_readiness, migration_audit, program_handoff, program_snapshot, risk_report]
+    inputs:
+      - buildslate/dashboard.py
+      - reports/program/buildslate-program-snapshot.yaml
+      - reports/program/configuration-resolution.yaml
+      - reports/program/integration-contracts.yaml
+      - reports/program/supplier-response-review.yaml
+      - reports/program/evt0-campaign.yaml
+      - reports/program/manufacturing-pilot-analytics.yaml
+      - reports/program/migration-audit.yaml
+      - engineering/evidence/evidence_registry.yaml
+      - engineering/evidence/external_blocker_registry.yaml
+      - engineering/program/configuration_registry.yaml
+    outputs: [reports/program/dashboard.yaml, reports/program/dashboard.md]
+    command: [python, -m, buildslate, dashboard, --generate, --regeneration-context]
 

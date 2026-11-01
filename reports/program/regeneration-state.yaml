@@ -1,5 +1,5 @@
 state_version: 1
-manifest_sha256: 93e25977581b1db1ef0dfd093f0d251d07d3781f1db6b597bccf692304e38404
+manifest_sha256: 74411c7cc2fa1e6e84bfdc7a67bdfdf482b70da2546af92516695fb2bd165012
 nodes:
   supplier_review:
     inputs:
@@ -92,6 +92,17 @@ nodes:
       reports/program/manufacturing-pilot-analytics.yaml: b2f7e464f231742c481dc92dec79cda01261ab8e4f0a5f0207abe1c85d761786
     outputs:
       reports/slate-pocket-v1r-manufacturing-readiness.txt: 4b30d29aa917714323ccb40321ad7d8a8556baabcd2ecfd1162576af4e4a4374
+  migration_audit:
+    inputs:
+      buildslate/migrations.py: b6b6a328c59d0c1cc96bcaf4924722dbc2f932e8682e5fe6ce20fc49e7db680f
+      configs/devices/slate-pocket-v1r.yaml: a0e4e3bbf41e266fd55866c1c9ad436e4f498f98edc33349e2108e4db4c67ae1
+      engineering/assumptions/assumption_registry.yaml: 7d57e8745722891208e58b469854c049115a634e410ee3644e9e9ebb3124c12f
+      engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
+      engineering/evidence/external_blocker_registry.yaml: 7d1f9caa12b431824f418ec957128e3a47f6239eec98b758697c8775927893b8
+      engineering/program/migration_registry.yaml: dc21ef47f8bf0653779986394c363a3b82abf874d40248715eec8dfc3d53b2ad
+      engineering/risks/risk_register.yaml: eae86e2b4c61d57e0a09e4310a3d7873c10d2af8945a7f84e493ac31a70751e9
+    outputs:
+      reports/program/migration-audit.yaml: ef9fc4e71c5b9f8c0f94b76b1b3db6f1b5673c97a4537f496f4f264f42d30b0d
   device_profile:
     inputs:
       configs/devices/slate-pocket-v1r.yaml: a0e4e3bbf41e266fd55866c1c9ad436e4f498f98edc33349e2108e4db4c67ae1
@@ -176,4 +187,20 @@ nodes:
       reports/slate-pocket-v1r-program-readiness.txt: 0cf93e775f1fba2d62e9ea5e3272a325d25807013809d02fdcab42b8d82fcb8c
     outputs:
       reports/program/buildslate-program-snapshot.yaml: 200f034c61a70dd39333c8f47e617ab525e93e29cd5afd3e060c5145adacc14c
+  dashboard:
+    inputs:
+      buildslate/dashboard.py: 5cc4ed5b9497ca3567e0691f635d5c298d37a89afcb746e43cd7207e7fb55eb3
+      engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
+      engineering/evidence/external_blocker_registry.yaml: 7d1f9caa12b431824f418ec957128e3a47f6239eec98b758697c8775927893b8
+      engineering/program/configuration_registry.yaml: 3aeeeb0e8e0490b44f06dc5f53d9a0c03106bf4b4b4a047aeae3d5dfada9226e
+      reports/program/buildslate-program-snapshot.yaml: 200f034c61a70dd39333c8f47e617ab525e93e29cd5afd3e060c5145adacc14c
+      reports/program/configuration-resolution.yaml: bbbfb942f2b5fb410a50532535272d35a87af5c89ee4e62dde5942b6d6da4718
+      reports/program/evt0-campaign.yaml: aab1632ff7d74dd8cc1415720ea9289d1eb10972ed2efa25578fb35866078fb9
+      reports/program/integration-contracts.yaml: dc313f672099514e49197599b871f792ce9b5144612a0c863fdc06b376927c59
+      reports/program/manufacturing-pilot-analytics.yaml: b2f7e464f231742c481dc92dec79cda01261ab8e4f0a5f0207abe1c85d761786
+      reports/program/migration-audit.yaml: ef9fc4e71c5b9f8c0f94b76b1b3db6f1b5673c97a4537f496f4f264f42d30b0d
+      reports/program/supplier-response-review.yaml: c7a3941e81a65ef1023972169f80ffac7fef1adb103699b36a5622d20e9af7da
+    outputs:
+      reports/program/dashboard.md: 44bcdce6eb4b5519aa95ab4fe2aba60a5f6f9b3a392dc22db8c55501a17a922a
+      reports/program/dashboard.yaml: 673be27162c0dd5da6ad2dee848dca1dda6c7c4ba77619b94e960dbba6032e0a
 caveat: Hashes establish deterministic staleness only; they do not verify engineering evidence or physical results.

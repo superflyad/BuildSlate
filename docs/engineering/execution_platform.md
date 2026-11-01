@@ -32,6 +32,9 @@ python -m buildslate evt0 report --generate
 python -m buildslate manufacturing validate --bundle path/to/pilot-bundle
 python -m buildslate manufacturing ingest --bundle path/to/pilot-bundle --received-at 2026-11-03T12:00:00-06:00 --received-by operator@example.com
 python -m buildslate manufacturing report --generate
+python -m buildslate dashboard --generate
+python -m buildslate migrations audit --generate
+python -m buildslate migrations explain --id legacy_evt0_results
 python -m buildslate impact --changed configs/devices/slate-pocket-v1r.yaml
 python -m buildslate regenerate --stale --dry-run
 python -m buildslate regenerate --stale
@@ -75,8 +78,20 @@ Pilot bundles contain an explicitly authorized manifest plus unit genealogy, def
 
 Cpk is calculated only when the declared critical-characteristic scope requires it and every configured prerequisite is met, including at least 30 observations, approved measurement systems, process stability, reviewed distributions, consistent specifications, and nonzero sample variation. Passing point estimates produce `PILOT_ANALYTICS_PASS_REVIEW_REQUIRED`, never production approval. The committed pilot store remains empty.
 
+## Program dashboard
+
+`reports/program/dashboard.md` is the operator-facing program view, with a machine-readable twin at `dashboard.yaml`. It separates verified, available-not-verified, modeled-not-verified, rejected, stale, contradictory, and externally blocked state. Every external blocker includes its missing evidence, exact next action, authorization boundary, and active fallback.
+
+The dashboard gate is local-system state, not product readiness. `LOCAL_SYSTEM_CURRENT_EXTERNALLY_BLOCKED` means tracked local outputs are current and contradiction-free while the listed external evidence remains absent.
+
+## Legacy migration and compatibility
+
+`engineering/program/migration_registry.yaml` records the authority domain, compatibility role, replacement, preservation rule, and migration command for legacy inputs and reports. Authoritative registries remain authoritative; the new platform wraps them rather than copying their status into a second source. Legacy EVT0 and pilot intake directories remain as documented compatibility paths, while all new evidence goes through the hash-preserving campaign commands.
+
+`migrations audit` rejects missing replacements, unknown states, legacy intake without a command, and duplicate authority for one domain. It never deletes historical artifacts.
+
 Structured output is available as JSON or YAML where applicable. Exit code `0` means the requested operation completed; validation/input errors return `2`; `validate --all` propagates the repository validation exit code.
 
 ## Current boundary
 
-This checkpoint provides the program model, traceability graph, status/blocker inspection, configuration comparison, and CLI validation/generation foundation. Supplier ingestion, configuration resolution, dependency-aware regeneration, campaign analytics, and dashboard workflows will build on this layer in later commits.
+The local execution platform can validate, ingest, resolve, regenerate, correlate, analyze, audit migrations, and report readiness. It remains externally blocked on supplier-authored evidence, selected parts, released design work, authorized prototypes, measurements, DFM/pilot evidence, labs, and approvals. None of those are inferred from the local tooling.

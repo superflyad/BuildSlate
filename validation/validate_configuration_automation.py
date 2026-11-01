@@ -72,7 +72,8 @@ def main() -> int:
     profile_impact = engine.impacted_nodes(["configs/devices/slate-pocket-v1r.yaml"])
     require("configuration_resolution" in profile_impact and "program_snapshot" in profile_impact, "profile change propagates through configuration and program snapshot")
     supplier_impact = engine.impacted_nodes(["research/supplier-responses/receipts/example.yaml"])
-    require(len(supplier_impact) == len(engine.nodes), "supplier receipt change propagates across every dependent node")
+    unaffected = set(engine.nodes) - set(supplier_impact)
+    require(unaffected == {"migration_audit"}, "supplier receipt change propagates across every dependent engineering node")
     require(engine.impacted_nodes(["docs/unrelated-note.md"]) == (), "untracked path does not trigger unrelated generators")
     require(engine.load_state() == engine.build_state(), "regeneration state is deterministic and current")
 

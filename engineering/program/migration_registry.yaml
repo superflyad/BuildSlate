@@ -1,0 +1,75 @@
+metadata:
+  schema_version: 1
+  authority: Migration records preserve legacy provenance while identifying the execution platform's authoritative replacement or compatibility role.
+
+artifacts:
+  protected_v1r_profile:
+    path: configs/devices/slate-pocket-v1r.yaml
+    role: authoritative_input
+    authority_domain: operational_configuration_values
+    replacement: engineering/program/configuration_registry.yaml
+    migration_state: wrapped_by_new_authority
+    preservation: permanent
+  evidence_registry:
+    path: engineering/evidence/evidence_registry.yaml
+    role: authoritative_input
+    authority_domain: evidence_package_status
+    replacement: null
+    migration_state: retained_authoritative
+    preservation: permanent
+  assumption_registry:
+    path: engineering/assumptions/assumption_registry.yaml
+    role: authoritative_input
+    authority_domain: assumptions
+    replacement: null
+    migration_state: retained_authoritative
+    preservation: permanent
+  risk_register:
+    path: engineering/risks/risk_register.yaml
+    role: authoritative_input
+    authority_domain: risks
+    replacement: null
+    migration_state: retained_authoritative
+    preservation: permanent
+  blocker_registry:
+    path: engineering/evidence/external_blocker_registry.yaml
+    role: authoritative_input
+    authority_domain: external_blockers
+    replacement: null
+    migration_state: retained_authoritative
+    preservation: permanent
+  legacy_program_readiness:
+    path: reports/slate-pocket-v1r-program-readiness.txt
+    role: generated_compatibility_view
+    authority_domain: none
+    replacement: reports/program/dashboard.md
+    migration_state: compatibility_view
+    preservation: retain_until_consumers_migrate
+  legacy_evt0_results:
+    path: validation/evt0/test-results
+    role: legacy_intake
+    authority_domain: none
+    replacement: validation/evt0/campaigns
+    migration_state: superseded_empty_intake
+    preservation: retain_readme_only
+    migration_command: python -m buildslate evt0 ingest --bundle <bundle> --received-at <iso8601> --received-by <operator>
+  legacy_pilot_results:
+    path: manufacturing/pilot-results
+    role: legacy_intake
+    authority_domain: none
+    replacement: manufacturing/pilot-results/campaigns
+    migration_state: superseded_empty_intake
+    preservation: retain_readme_and_campaigns
+    migration_command: python -m buildslate manufacturing ingest --bundle <bundle> --received-at <iso8601> --received-by <operator>
+  project_status_summary:
+    path: reports/project-status-summary.md
+    role: legacy_static_report
+    authority_domain: none
+    replacement: reports/program/dashboard.md
+    migration_state: superseded_not_deleted
+    preservation: historical
+
+allowed_roles: [authoritative_input, generated_compatibility_view, legacy_intake, legacy_static_report]
+allowed_states: [wrapped_by_new_authority, retained_authoritative, compatibility_view, superseded_empty_intake, superseded_not_deleted]
+output: reports/program/migration-audit.yaml
+

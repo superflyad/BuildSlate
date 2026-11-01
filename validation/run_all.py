@@ -44,6 +44,7 @@ VALIDATION_CHECKS = (
     "validation/validate_integration_contracts.py",
     "validation/validate_evt0_campaign_tooling.py",
     "validation/validate_manufacturing_analytics.py",
+    "validation/validate_dashboard_migrations.py",
 )
 
 

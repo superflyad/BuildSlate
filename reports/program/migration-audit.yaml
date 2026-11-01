@@ -1,0 +1,98 @@
+MIGRATION_GATE: MIGRATION_MAP_VALID
+artifact_count: 9
+authoritative_domains:
+  assumptions:
+  - assumption_registry
+  evidence_package_status:
+  - evidence_registry
+  external_blockers:
+  - blocker_registry
+  operational_configuration_values:
+  - protected_v1r_profile
+  risks:
+  - risk_register
+duplicate_authority: {}
+items:
+- id: protected_v1r_profile
+  path: configs/devices/slate-pocket-v1r.yaml
+  role: authoritative_input
+  authority_domain: operational_configuration_values
+  replacement: engineering/program/configuration_registry.yaml
+  migration_state: wrapped_by_new_authority
+  preservation: permanent
+  migration_command: null
+  errors: []
+- id: evidence_registry
+  path: engineering/evidence/evidence_registry.yaml
+  role: authoritative_input
+  authority_domain: evidence_package_status
+  replacement: null
+  migration_state: retained_authoritative
+  preservation: permanent
+  migration_command: null
+  errors: []
+- id: assumption_registry
+  path: engineering/assumptions/assumption_registry.yaml
+  role: authoritative_input
+  authority_domain: assumptions
+  replacement: null
+  migration_state: retained_authoritative
+  preservation: permanent
+  migration_command: null
+  errors: []
+- id: risk_register
+  path: engineering/risks/risk_register.yaml
+  role: authoritative_input
+  authority_domain: risks
+  replacement: null
+  migration_state: retained_authoritative
+  preservation: permanent
+  migration_command: null
+  errors: []
+- id: blocker_registry
+  path: engineering/evidence/external_blocker_registry.yaml
+  role: authoritative_input
+  authority_domain: external_blockers
+  replacement: null
+  migration_state: retained_authoritative
+  preservation: permanent
+  migration_command: null
+  errors: []
+- id: legacy_program_readiness
+  path: reports/slate-pocket-v1r-program-readiness.txt
+  role: generated_compatibility_view
+  authority_domain: none
+  replacement: reports/program/dashboard.md
+  migration_state: compatibility_view
+  preservation: retain_until_consumers_migrate
+  migration_command: null
+  errors: []
+- id: legacy_evt0_results
+  path: validation/evt0/test-results
+  role: legacy_intake
+  authority_domain: none
+  replacement: validation/evt0/campaigns
+  migration_state: superseded_empty_intake
+  preservation: retain_readme_only
+  migration_command: python -m buildslate evt0 ingest --bundle <bundle> --received-at <iso8601> --received-by <operator>
+  errors: []
+- id: legacy_pilot_results
+  path: manufacturing/pilot-results
+  role: legacy_intake
+  authority_domain: none
+  replacement: manufacturing/pilot-results/campaigns
+  migration_state: superseded_empty_intake
+  preservation: retain_readme_and_campaigns
+  migration_command: python -m buildslate manufacturing ingest --bundle <bundle> --received-at <iso8601> --received-by <operator>
+  errors: []
+- id: project_status_summary
+  path: reports/project-status-summary.md
+  role: legacy_static_report
+  authority_domain: none
+  replacement: reports/program/dashboard.md
+  migration_state: superseded_not_deleted
+  preservation: historical
+  migration_command: null
+  errors: []
+errors: []
+caveat: Migration status preserves traceability; it does not upgrade the evidence contained in any legacy artifact.

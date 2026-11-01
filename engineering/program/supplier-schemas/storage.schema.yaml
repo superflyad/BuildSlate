@@ -1,0 +1,44 @@
+schema_version: 1
+domain: storage
+document_type: supplier_response
+template: research/rfqs/storage/response-template.yaml
+constants:
+  request.packet: slate-pocket-v1r-storage
+required_sections: [request, supplier, device, mechanical, interface_firmware, performance, power_thermal_endurance, capacity_architecture, supply, supplier_attestation]
+required_fields:
+  - request.packet
+  - supplier.legal_name
+  - supplier.response_date
+  - supplier.confidentiality
+  - device.part_number
+  - device.source_documents
+  - device.capacity_tb_user
+  - mechanical.package_or_module_mm.length
+  - mechanical.package_or_module_mm.width
+  - mechanical.package_or_module_mm.height
+  - interface_firmware.interface_and_version
+  - power_thermal_endurance.active_idle_sleep_power
+  - capacity_architecture.supported_two_tb_topology
+  - supply.sample_availability
+  - supply.production_status
+  - supplier_attestation.values_are_supplier_provided
+  - supplier_attestation.authorized_for_public_disclosure
+source_documents_path: device.source_documents
+attestation_paths:
+  - supplier_attestation.values_are_supplier_provided
+contradiction_rules:
+  - id: storage_headline_target
+    field: device.capacity_tb_user
+    operator: at_least
+    expected: 4
+    requirement_class: locked_target
+    fallback: use the approved 2 TB modular or external strategy
+    basis: configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.storage.target_tb
+  - id: storage_operational_floor
+    field: device.capacity_tb_user
+    operator: at_least
+    expected: 1
+    requirement_class: operational_fallback
+    fallback: reject the option for the current integration configuration
+    basis: configs/devices/slate-pocket-v1r.yaml#integration_configuration.internal_storage_tb
+

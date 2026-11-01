@@ -1,0 +1,52 @@
+schema_version: 1
+domain: compute_memory
+document_type: supplier_response
+template: research/rfqs/compute-memory/response-template.yaml
+constants:
+  request.packet: slate-pocket-v1r-compute-memory
+required_sections: [request, supplier, platform, package, memory_topology, power, ai_runtime, interfaces_security, development_supply, supplier_attestation]
+required_fields:
+  - request.packet
+  - supplier.legal_name
+  - supplier.response_date
+  - supplier.confidentiality
+  - platform.family
+  - platform.sku
+  - platform.source_documents
+  - package.dimensions_mm.length
+  - package.dimensions_mm.width
+  - package.dimensions_mm.height
+  - memory_topology.supported_capacity_gb
+  - memory_topology.qualified_parts
+  - power.sustained_platform_w
+  - ai_runtime.sustained_workload_results
+  - development_supply.sample_availability
+  - development_supply.production_status
+  - supplier_attestation.values_are_supplier_provided
+  - supplier_attestation.authorized_for_public_disclosure
+source_documents_path: platform.source_documents
+attestation_paths:
+  - supplier_attestation.values_are_supplier_provided
+contradiction_rules:
+  - id: memory_aspirational_target
+    field: memory_topology.supported_capacity_gb
+    operator: at_least
+    expected: 512
+    requirement_class: locked_target
+    fallback: use the highest supported approved tier, then 256 GB, then 128 GB
+    basis: configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.memory.aspirational_target_gb
+  - id: memory_operational_floor
+    field: memory_topology.supported_capacity_gb
+    operator: at_least
+    expected: 128
+    requirement_class: operational_fallback
+    fallback: reject the option for the current integration configuration
+    basis: configs/devices/slate-pocket-v1r.yaml#integration_configuration.memory_gb
+  - id: compute_sustained_power_budget
+    field: power.sustained_platform_w
+    operator: at_most
+    expected: 28
+    requirement_class: integration_allocation
+    fallback: re-run power and thermal budgets at the supplier-supported operating point
+    basis: configs/devices/slate-pocket-v1r.yaml#compute.sustained_power_w
+

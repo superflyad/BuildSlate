@@ -46,6 +46,9 @@ gate_sources:
   local_program_gate:
     path: reports/slate-pocket-v1r-program-readiness.txt
     marker: "LOCAL_PROGRAM_DECISION:"
+  supplier_response_gate:
+    path: reports/program/supplier-response-review.yaml
+    marker: "SUPPLIER_RESPONSE_GATE:"
 
 outputs:
   program_snapshot: reports/program/buildslate-program-snapshot.yaml

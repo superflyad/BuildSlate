@@ -1,0 +1,39 @@
+schema_version: 1
+domain: display
+document_type: supplier_response
+template: research/rfqs/display/response-template.yaml
+constants:
+  request.packet: slate-pocket-v1r-display
+required_sections: [request, supplier, module, mechanical, electrical_interface, optical, power_thermal, reliability_supply, supplier_attestation]
+required_fields:
+  - request.packet
+  - supplier.legal_name
+  - supplier.response_date
+  - supplier.confidentiality
+  - module.part_number
+  - module.source_documents
+  - mechanical.diagonal_in
+  - mechanical.module_outline_mm.width
+  - mechanical.module_outline_mm.height
+  - mechanical.module_outline_mm.thickness
+  - optical.resolution
+  - optical.aspect_ratio
+  - optical.refresh_modes_hz
+  - power_thermal.peak_power_w
+  - reliability_supply.sample_availability
+  - reliability_supply.production_status
+  - supplier_attestation.values_are_supplier_provided
+  - supplier_attestation.authorized_for_public_disclosure
+source_documents_path: module.source_documents
+attestation_paths:
+  - supplier_attestation.values_are_supplier_provided
+contradiction_rules:
+  - id: display_diagonal_target
+    field: mechanical.diagonal_in
+    operator: equal
+    expected: 7.5
+    tolerance: 0.05
+    requirement_class: locked_target
+    fallback: open a product decision for the closest supplier-backed module
+    basis: configs/devices/slate-pocket-v1r.yaml#geometry.display_diagonal_in
+

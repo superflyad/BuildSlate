@@ -1,0 +1,27 @@
+schema_version: 1
+domain: dfm
+document_type: supplier_dfm_response
+template: manufacturing/supplier-dfm-response.yaml
+constants: {}
+required_sections: [review, scope, comments, capability, supply, attestation]
+required_fields:
+  - review.status
+  - review.supplier_legal_name
+  - review.supplier_site
+  - review.reviewer_names_and_roles
+  - review.review_date
+  - review.buildslate_documents_and_revisions_reviewed
+  - scope.supplied_parts_or_processes
+  - capability.proposed_process_flow
+  - capability.critical_characteristics
+  - capability.measurement_systems
+  - supply.lead_time_weeks
+  - attestation.response_is_supplier_authored
+  - attestation.values_are_not_buildslate_estimates
+  - attestation.signature_or_approval_reference
+source_documents_path: review.buildslate_documents_and_revisions_reviewed
+attestation_paths:
+  - attestation.response_is_supplier_authored
+  - attestation.values_are_not_buildslate_estimates
+contradiction_rules: []
+

@@ -10,6 +10,7 @@ from typing import Any, Sequence
 
 from .io import dump_json, dump_yaml
 from .program import DEFAULT_REPO_ROOT, ProgramRepository, compare_yaml
+from .suppliers import SupplierResponseRepository
 
 
 def _emit(data: Any, output_format: str) -> None:
@@ -101,6 +102,50 @@ def command_generate(args: argparse.Namespace) -> int:
     return 0
 
 
+def _supplier_repository(args: argparse.Namespace) -> SupplierResponseRepository:
+    return SupplierResponseRepository(Path(args.repo_root))
+
+
+def command_suppliers_validate(args: argparse.Namespace) -> int:
+    review = _supplier_repository(args).validate_response(Path(args.response), args.domain)
+    if args.format in {"json", "yaml"}:
+        _emit(review.to_dict(), args.format)
+    else:
+        print(f"domain: {review.domain}")
+        print(f"disposition: {review.disposition}")
+        print(f"completeness: {review.completeness_percent:.1f}%")
+        print(f"schema_errors: {len(review.schema_errors)}")
+        print(f"provenance_issues: {len(review.provenance_issues)}")
+        print(f"contradictions: {len(review.contradictions)}")
+    return 2 if review.schema_errors else 0
+
+
+def command_suppliers_ingest(args: argparse.Namespace) -> int:
+    receipt, review = _supplier_repository(args).ingest(
+        Path(args.response), args.domain, args.received_at, args.received_by
+    )
+    print(f"Wrote {receipt.relative_to(Path(args.repo_root).resolve())}")
+    print(f"disposition: {review.disposition}")
+    print("evidence_effect: none")
+    return 0
+
+
+def command_suppliers_queue(args: argparse.Namespace) -> int:
+    repository = _supplier_repository(args)
+    queue = repository.build_review_queue()
+    if args.generate:
+        destination = repository.generate_review_queue()
+        print(f"Wrote {destination.relative_to(repository.repo_root)}")
+    if args.format in {"json", "yaml"}:
+        _emit(queue, args.format)
+    elif not args.generate:
+        print(f"gate: {queue['SUPPLIER_RESPONSE_GATE']}")
+        print(f"receipts: {queue['summary']['receipt_count']}")
+        for item in queue["items"]:
+            print(f"  {item['receipt']}: {item['disposition']}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="buildslate", description="BuildSlate engineering execution CLI")
     parser.add_argument("--repo-root", default=str(DEFAULT_REPO_ROOT), help="BuildSlate repository root")
@@ -128,6 +173,27 @@ def build_parser() -> argparse.ArgumentParser:
     generate_parser = subparsers.add_parser("generate", help="generate the unified program snapshot")
     generate_parser.add_argument("--output", help="override snapshot output path")
     generate_parser.set_defaults(handler=command_generate)
+
+    suppliers_parser = subparsers.add_parser("suppliers", help="validate and ingest supplier responses")
+    supplier_commands = suppliers_parser.add_subparsers(dest="supplier_command", required=True)
+
+    supplier_validate = supplier_commands.add_parser("validate", help="validate one response without ingesting it")
+    supplier_validate.add_argument("--domain", required=True, choices=("battery", "compute_memory", "display", "storage", "dfm"))
+    supplier_validate.add_argument("--response", required=True)
+    supplier_validate.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    supplier_validate.set_defaults(handler=command_suppliers_validate)
+
+    supplier_ingest = supplier_commands.add_parser("ingest", help="preserve a schema-valid raw response and receipt")
+    supplier_ingest.add_argument("--domain", required=True, choices=("battery", "compute_memory", "display", "storage", "dfm"))
+    supplier_ingest.add_argument("--response", required=True)
+    supplier_ingest.add_argument("--received-at", required=True, help="explicit ISO-8601 receipt timestamp")
+    supplier_ingest.add_argument("--received-by", required=True, help="operator identity recorded in the receipt")
+    supplier_ingest.set_defaults(handler=command_suppliers_ingest)
+
+    supplier_queue = supplier_commands.add_parser("queue", help="inspect or regenerate the supplier review queue")
+    supplier_queue.add_argument("--generate", action="store_true")
+    supplier_queue.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    supplier_queue.set_defaults(handler=command_suppliers_queue)
     return parser
 
 

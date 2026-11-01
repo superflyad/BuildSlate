@@ -1,0 +1,34 @@
+metadata:
+  schema_version: 1
+  baseline_profile: slate-pocket-v1r
+  authority: Supplier responses are raw evidence inputs. Ingestion never verifies evidence or selects a component.
+
+storage:
+  raw_root: research/supplier-responses/raw
+  receipt_root: research/supplier-responses/receipts
+  review_report: reports/program/supplier-response-review.yaml
+
+domains:
+  battery:
+    schema: engineering/program/supplier-schemas/battery.schema.yaml
+    linked_evidence_package: battery_supplier_package
+  compute_memory:
+    schema: engineering/program/supplier-schemas/compute-memory.schema.yaml
+    linked_evidence_package: compute_memory_platform_package
+  display:
+    schema: engineering/program/supplier-schemas/display.schema.yaml
+    linked_evidence_package: display_storage_package
+  storage:
+    schema: engineering/program/supplier-schemas/storage.schema.yaml
+    linked_evidence_package: display_storage_package
+  dfm:
+    schema: engineering/program/supplier-schemas/dfm.schema.yaml
+    linked_evidence_package: manufacturing_readiness_package
+
+review_policy:
+  ready_requires_completeness_percent: 100
+  ready_requires_positive_attestation: true
+  schema_errors_reject_ingestion: true
+  contradiction_disposition: engineering_review_required
+  evidence_promotion: prohibited
+

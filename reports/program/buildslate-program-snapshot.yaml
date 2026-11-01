@@ -2,7 +2,7 @@ schema_version: 1
 program_id: slate-pocket-v1r
 title: Slate Pocket v1R Engineering Execution Program
 summary:
-  entity_count: 153
+  entity_count: 154
   relation_count: 220
   entity_kind_counts:
     artifact: 35
@@ -12,7 +12,7 @@ summary:
     configuration: 1
     defect_code: 14
     evidence_package: 10
-    gate: 4
+    gate: 5
     requirement: 14
     risk: 13
     supplier: 12
@@ -1022,6 +1022,13 @@ entities:
   source_path: reports/slate-pocket-v1r-manufacturing-readiness.txt
   attributes:
     marker: 'MANUFACTURING_GATE:'
+- entity_id: gate:supplier_response_gate
+  kind: gate
+  title: supplier response gate
+  status: EMPTY_INBOX
+  source_path: reports/program/supplier-response-review.yaml
+  attributes:
+    marker: 'SUPPLIER_RESPONSE_GATE:'
 - entity_id: outcome:7_5_inch_16_10_workspace
   kind: requirement
   title: 7 5 inch 16 10 workspace

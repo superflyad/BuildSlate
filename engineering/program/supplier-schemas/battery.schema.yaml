@@ -1,0 +1,51 @@
+schema_version: 1
+domain: battery
+document_type: supplier_response
+template: research/rfqs/battery/response-template.yaml
+constants:
+  request.packet: slate-pocket-v1r-battery
+required_sections: [request, supplier, proposal, electrical, mechanical, charge_discharge, thermal_safety, reliability_supply, supplier_attestation]
+required_fields:
+  - request.packet
+  - supplier.legal_name
+  - supplier.response_date
+  - supplier.confidentiality
+  - proposal.option_id
+  - proposal.source_documents
+  - electrical.energy_wh_min
+  - mechanical.complete_pack_mm.length
+  - mechanical.complete_pack_mm.width
+  - mechanical.complete_pack_mm.thickness
+  - mechanical.complete_pack_volume_mm3
+  - mechanical.mass_g
+  - charge_discharge.maximum_validated_charge_w
+  - thermal_safety.protection_requirements
+  - reliability_supply.sample_availability
+  - supplier_attestation.values_are_supplier_provided
+  - supplier_attestation.authorized_for_public_disclosure
+source_documents_path: proposal.source_documents
+attestation_paths:
+  - supplier_attestation.values_are_supplier_provided
+contradiction_rules:
+  - id: battery_energy_target
+    field: electrical.energy_wh_min
+    operator: at_least
+    expected: 23.1
+    requirement_class: locked_target
+    fallback: best_supplier_validated_complete_pack_capacity
+    basis: research/evidence/battery/pack-envelope.yaml#target.energy_wh
+  - id: battery_pack_volume_allocation
+    field: mechanical.complete_pack_volume_mm3
+    operator: at_most
+    expected: 28824
+    requirement_class: integration_allocation
+    fallback: re-run CAD budget and apply the approved thickness trade rule
+    basis: research/evidence/battery/pack-envelope.yaml#target.complete_pack_volume_mm3
+  - id: battery_evt0_charge_cap
+    field: charge_discharge.maximum_validated_charge_w
+    operator: at_least
+    expected: 30
+    requirement_class: operational_fallback
+    fallback: lower the EVT0 input cap to the supplier-validated limit
+    basis: configs/devices/slate-pocket-v1r.yaml#integration_configuration.wired_charge_evt0_input_cap_w
+

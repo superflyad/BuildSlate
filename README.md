@@ -213,6 +213,18 @@ python engineering/cad_envelope/generate_v1r_cad_budget.py
 
 The resulting report is conflict-finding input for future CAD. It is not proof of fit or manufacturability.
 
+## Slate Pocket v1R Provisional PCB and Power Architecture
+
+The Phase 2 electrical package under `engineering/pcb/` carries only the locked 128 GB memory fallback into a supplier-replaceable floorplan. It combines a provisional 78 x 55 mm board, routing groups, assumed 12-layer HDI stack, load scenarios, charging prohibitions, and a PDN validation plan. The 512 GB memory and 4 TB storage headlines are not treated as buildable configurations.
+
+Generate the architecture screen with:
+
+```bash
+python engineering/pcb/generate_v1r_pcb_power_report.py
+```
+
+The report is an electrical risk and input-gap screen. It is not a schematic, routed-board result, charging authorization, or proof of electrical feasibility.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

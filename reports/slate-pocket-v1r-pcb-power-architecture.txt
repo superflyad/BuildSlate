@@ -1,0 +1,48 @@
+Slate Pocket v1R Provisional PCB and Power Architecture
+=========================================================
+
+Architecture basis:
+  modeled memory tier: 128 GB
+  memory planning sites: 4 x 32 GB
+  512 GB topology modeled: no
+  board outline: 78.0 x 55.0 x 0.8 mm
+  assumed layer count: 12
+
+Floorplan screen:
+  planning blocks: 12
+  component-side occupancy before passives/routing: 47.6%
+  containment failures: 0
+  placement overlaps: 0
+
+System-load screen:
+  - sustained_ai
+    internal load: 52.0 W
+    battery current at 3.85 V and 88% efficiency: 15.3 A
+  - peak_all_subsystems
+    internal load: 93.0 W
+    battery current at 3.85 V and 88% efficiency: 27.4 A
+
+Charging boundary screen:
+  100 W wired target estimated pack charge current at 4.40 V: 20.5 A
+  50 W wireless target estimated pack charge current at 4.40 V: 8.5 A
+  full-power wired plus sustained AI: PROHIBITED_UNTIL_VALIDATED
+  wireless charging plus sustained AI: PROHIBITED_UNTIL_VALIDATED
+  EVT0 wired input cap before supplier derating: 30 W
+  EVT0 wireless charging: DISABLED
+
+Compute-rail hypothesis:
+  peak rail current at 0.90 V: 50.0 A
+  first-order target impedance for 5.0% droop: 0.90 mOhm
+  status: placeholder until platform rail map and load-step profile exist
+
+Routing and release gaps:
+  - No released package ball map, schematic, pin map, preliminary netlist, or escape study.
+  - No supplier stackup, impedance rules, via qualification, SI/PI analysis, or routed-board review.
+  - No selected PMIC, charger, protection path, battery pack, connector, cable, or charge curve.
+  - No verified loss map, safe charge/load overlap envelope, or thermal correlation.
+  - The 2 TB fallback requires an additional qualified storage path; 4 TB is not supported by the reviewed packages.
+
+PROVISIONAL_PCB_POWER_DECISION: BLOCKED_ON_PLATFORM_REFERENCE_DESIGN_AND_BATTERY_CHARGE_LIMITS
+
+Caveat:
+  This report exposes architecture pressure; it does not prove routing closure, electrical feasibility, signal integrity, power integrity, charge safety, thermal performance, manufacturability, or component availability.

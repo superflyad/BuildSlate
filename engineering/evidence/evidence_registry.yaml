@@ -147,8 +147,8 @@ packages:
     title: Prove PCB placement, routing, and power architecture
     phase: 2
     priority: critical
-    status: missing
-    owner: unassigned
+    status: planned
+    owner: BuildSlate engineering
     depends_on:
       - compute_memory_platform_package
       - display_storage_package

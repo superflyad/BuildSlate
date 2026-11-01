@@ -1,0 +1,103 @@
+metadata:
+  device: slate-pocket-v1r
+  status: provisional_pre_supplier_power_architecture
+  caveat: Loads, efficiencies, rail voltages, and policies are screening assumptions, not a released electrical design.
+
+source_constraints:
+  battery_nominal_voltage_v: 3.85
+  battery_charge_voltage_screen_v: 4.4
+  battery_capacity_target_mah: 6000
+  wired_input_target_w: 100
+  wireless_input_target_w: 50
+  wired_path_efficiency: 0.90
+  wireless_path_efficiency: 0.75
+  system_conversion_efficiency: 0.88
+  sources:
+    battery_and_charging: configs/devices/slate-pocket-v1r.yaml
+    charge_limit_status: research/evidence/battery/evidence-review.md
+
+loads:
+  compute_platform:
+    sustained_w: 28.0
+    peak_w: 45.0
+    evidence_class: locked_profile_target_not_supplier_verified
+  memory_128gb:
+    sustained_w: 12.0
+    peak_w: 16.0
+    evidence_class: estimate
+  storage_1tb:
+    sustained_w: 5.0
+    peak_w: 7.0
+    evidence_class: estimate
+  display:
+    sustained_w: 3.5
+    peak_w: 6.0
+    evidence_class: profile_and_estimate
+  radios:
+    sustained_w: 2.0
+    peak_w: 8.0
+    evidence_class: estimate
+  cameras:
+    sustained_w: 0.0
+    peak_w: 6.0
+    evidence_class: estimate
+  system_io_and_controls:
+    sustained_w: 1.5
+    peak_w: 5.0
+    evidence_class: estimate
+
+scenarios:
+  sustained_ai:
+    load_column: sustained_w
+    included_loads: [compute_platform, memory_128gb, storage_1tb, display, radios, cameras, system_io_and_controls]
+  peak_all_subsystems:
+    load_column: peak_w
+    included_loads: [compute_platform, memory_128gb, storage_1tb, display, radios, cameras, system_io_and_controls]
+
+rail_hypotheses:
+  compute_core:
+    nominal_voltage_v: 0.9
+    peak_power_w: 45.0
+    maximum_droop_percent: 5.0
+    status: placeholder_requires_platform_rail_map
+  memory:
+    nominal_voltage_v: null
+    peak_power_w: 16.0
+    maximum_droop_percent: null
+    status: supplier_reference_design_required
+  storage:
+    nominal_voltage_v: null
+    peak_power_w: 7.0
+    maximum_droop_percent: null
+    status: selected_device_data_required
+  display_and_io:
+    nominal_voltage_v: null
+    peak_power_w: 19.0
+    maximum_droop_percent: null
+    status: interface_inventory_required
+
+charging_policy:
+  full_power_wired_overlap_with_sustained_ai: prohibited_until_validated
+  wireless_overlap_with_sustained_ai: prohibited_until_validated
+  evt0_wired_input_cap_w: 30
+  evt0_wireless_enabled: false
+  supplier_limits_override_all_screening_values: true
+  required_controls:
+    - Battery current, voltage, temperature, and state-of-charge limits.
+    - Connector, cable, charger, PMIC, and board-temperature limits.
+    - System-load-aware input-current reduction and charge suspension.
+    - Independent hardware protection plus firmware fault handling.
+
+pdn_validation_plan:
+  - Obtain regulator models, package/board parasitics, load-step profiles, and impedance limits.
+  - Allocate target impedance by rail and frequency before choosing capacitor quantities.
+  - Simulate DC drop, frequency-domain impedance, transient droop, and regulator stability.
+  - Measure rail ripple and droop with approved probing on load-step and workload transitions.
+  - Validate brownout, charger handoff, thermal throttling, and protection faults at voltage and temperature corners.
+
+release_blockers:
+  - No selected battery pack or supplier charge-current curve.
+  - No selected compute platform package, PMIC, rail map, or reference design.
+  - No verified 128 GB memory power or topology.
+  - No selected charger, USB-PD controller, connector, cable, protection, or wireless receiver.
+  - No component-level thermal-loss map or safe charging-overlap envelope.

@@ -1,0 +1,117 @@
+metadata:
+  device: slate-pocket-v1r
+  status: provisional_pre_supplier_ecad
+  modeled_memory_tier_gb: 128
+  caveat: Planning rectangles and routing groups do not constitute a schematic, pin map, escape study, or routed board.
+
+board:
+  outline_mm: {length: 78.0, width: 55.0, thickness: 0.8}
+  origin_in_mechanical_model_mm: {x: 92.0, y: 12.0}
+  component_side_boundary_mm: {x: 2.0, y: 2.0, length: 74.0, width: 51.0}
+  fabrication_class: provisional_12_layer_hdi_rigid
+  evidence_class: estimate
+
+placements:
+  compute_soc:
+    rectangle_mm: {x: 28.0, y: 18.0, length: 20.0, width: 20.0}
+    function: compute_platform
+    evidence_class: placeholder
+    source: research/evidence/compute/platform-comparison.yaml#qualcomm_snapdragon_x2_elite_extreme
+  memory_a_32gb:
+    rectangle_mm: {x: 10.0, y: 19.0, length: 14.0, width: 10.0}
+    function: lpddr5x_32gb_planning_site
+    evidence_class: placeholder
+  memory_b_32gb:
+    rectangle_mm: {x: 10.0, y: 31.0, length: 14.0, width: 10.0}
+    function: lpddr5x_32gb_planning_site
+    evidence_class: placeholder
+  memory_c_32gb:
+    rectangle_mm: {x: 52.0, y: 19.0, length: 14.0, width: 10.0}
+    function: lpddr5x_32gb_planning_site
+    evidence_class: placeholder
+  memory_d_32gb:
+    rectangle_mm: {x: 52.0, y: 31.0, length: 14.0, width: 10.0}
+    function: lpddr5x_32gb_planning_site
+    evidence_class: placeholder
+  storage_ufs_1tb_reference:
+    rectangle_mm: {x: 67.0, y: 18.0, length: 7.5, width: 13.0}
+    function: embedded_storage
+    evidence_class: public_supplier_reference
+    source: research/evidence/display-storage/candidate-comparison.yaml#samsung_ufs_5_0_1tb
+  platform_pmic:
+    rectangle_mm: {x: 30.0, y: 41.0, length: 16.0, width: 10.0}
+    function: platform_power
+    evidence_class: placeholder
+  battery_charger:
+    rectangle_mm: {x: 2.0, y: 2.0, length: 18.0, width: 12.0}
+    function: wired_charge_and_system_path
+    evidence_class: placeholder
+  usb_pd_controller:
+    rectangle_mm: {x: 22.0, y: 2.0, length: 10.0, width: 8.0}
+    function: usb_power_delivery_policy
+    evidence_class: placeholder
+  wireless_charge_controller:
+    rectangle_mm: {x: 34.0, y: 2.0, length: 10.0, width: 8.0}
+    function: wireless_power_receiver
+    evidence_class: placeholder
+  wifi_bluetooth:
+    rectangle_mm: {x: 48.0, y: 2.0, length: 14.0, width: 10.0}
+    function: connectivity
+    evidence_class: placeholder
+  security_controller:
+    rectangle_mm: {x: 64.0, y: 2.0, length: 8.0, width: 8.0}
+    function: hardware_root_of_trust
+    evidence_class: placeholder
+
+edge_reserves:
+  bottom_connector_escape_mm: {x: 0.0, y: 0.0, length: 78.0, width: 2.0}
+  top_display_camera_escape_mm: {x: 0.0, y: 53.0, length: 78.0, width: 2.0}
+  left_antenna_transition_mm: {x: 0.0, y: 0.0, length: 2.0, width: 55.0}
+  right_antenna_transition_mm: {x: 76.0, y: 0.0, length: 2.0, width: 55.0}
+
+routing_groups:
+  memory:
+    endpoints: [compute_soc, memory_a_32gb, memory_b_32gb, memory_c_32gb, memory_d_32gb]
+    rule: supplier_reference_design_required_for_channel_assignment_escape_and_matching
+    risk: critical
+  storage:
+    endpoints: [compute_soc, storage_ufs_1tb_reference]
+    rule: host_support_and_interface_generation_must_match_selected_device
+    risk: high
+  platform_power:
+    endpoints: [battery_charger, platform_pmic, compute_soc, memory_a_32gb, memory_b_32gb, memory_c_32gb, memory_d_32gb]
+    rule: wide_copper_planes_and_frequency_domain_pdn_review_required
+    risk: critical
+  external_interfaces:
+    endpoints: [compute_soc, usb_pd_controller, wifi_bluetooth, security_controller]
+    rule: connector_flex_rf_and_security_partitioning_required
+    risk: high
+
+layer_stack:
+  assumed_total_layers: 12
+  assumed_finished_thickness_mm: 0.8
+  layers:
+    - {id: L1, role: component_and_short_signal}
+    - {id: L2, role: solid_reference_plane}
+    - {id: L3, role: high_speed_signal}
+    - {id: L4, role: power_plane}
+    - {id: L5, role: high_speed_signal}
+    - {id: L6, role: solid_reference_plane}
+    - {id: L7, role: solid_reference_plane}
+    - {id: L8, role: high_speed_signal}
+    - {id: L9, role: power_plane}
+    - {id: L10, role: high_speed_signal}
+    - {id: L11, role: solid_reference_plane}
+    - {id: L12, role: component_and_short_signal}
+  via_strategy:
+    assumed: stacked_or_staggered_laser_microvias_with_buried_vias
+    status: fabrication_partner_review_required
+    forbidden_assumption: via_structure_is_not_yet_qualified_for_yield_or_reliability
+
+missing_release_inputs:
+  - Platform package drawing, ball map, reference schematic, rail map, and power sequence.
+  - Qualified memory part numbers, package drawings, channel topology, and placement rules.
+  - Storage host support, package selection, pin map, power, and thermal limits.
+  - Display, camera, RF, USB, charging, security, debug, and factory-test interfaces.
+  - Controlled-impedance stackup, loss budget, via coupons, fabrication rules, and assembly limits.
+  - Schematic, preliminary netlist, constraints, escape study, SI/PI simulation, and layout review.

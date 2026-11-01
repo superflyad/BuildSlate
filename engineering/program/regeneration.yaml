@@ -1,0 +1,101 @@
+metadata:
+  schema_version: 1
+  authority: Commands are repository-local deterministic generators; physical work and external actions are excluded.
+state_file: reports/program/regeneration-state.yaml
+
+nodes:
+  supplier_review:
+    depends_on: []
+    inputs:
+      - engineering/program/supplier_ingestion.yaml
+      - engineering/program/supplier-schemas/*.yaml
+      - buildslate/suppliers.py
+      - research/supplier-responses/receipts/*.yaml
+      - research/supplier-responses/raw/**/*.yaml
+    outputs: [reports/program/supplier-response-review.yaml]
+    command: [python, -m, buildslate, suppliers, queue, --generate]
+  configuration_resolution:
+    depends_on: [supplier_review]
+    inputs:
+      - engineering/program/configuration_registry.yaml
+      - buildslate/configuration.py
+      - configs/devices/slate-pocket-v1r.yaml
+      - engineering/assumptions/assumption_registry.yaml
+      - reports/program/supplier-response-review.yaml
+      - research/supplier-responses/receipts/*.yaml
+    outputs: [reports/program/configuration-resolution.yaml]
+    command: [python, -m, buildslate, configuration, generate]
+  device_profile:
+    depends_on: [configuration_resolution]
+    inputs:
+      - configs/devices/slate-pocket-v1r.yaml
+      - reports/program/configuration-resolution.yaml
+      - engineering/registry/*.yaml
+      - engineering/**/*model*.py
+      - engineering/run_device_profile.py
+    outputs: [reports/device-profile-slate-pocket-v1r.txt]
+    command: [python, engineering/run_device_profile.py, --profile, configs/devices/slate-pocket-v1r.yaml, --output, reports/device-profile-slate-pocket-v1r.txt]
+  cad_budget:
+    depends_on: [configuration_resolution]
+    inputs:
+      - reports/program/configuration-resolution.yaml
+      - cad/slate-pocket-v1r/envelope-model/*.yaml
+      - engineering/cad_envelope/generate_v1r_cad_budget.py
+    outputs: [reports/slate-pocket-v1r-cad-budget.txt]
+    command: [python, engineering/cad_envelope/generate_v1r_cad_budget.py]
+  pcb_power:
+    depends_on: [configuration_resolution]
+    inputs:
+      - reports/program/configuration-resolution.yaml
+      - engineering/pcb/*.yaml
+      - engineering/pcb/slate-pocket-v1r-floorplan/*.yaml
+      - engineering/pcb/generate_v1r_pcb_power_report.py
+    outputs: [reports/slate-pocket-v1r-pcb-power-architecture.txt]
+    command: [python, engineering/pcb/generate_v1r_pcb_power_report.py]
+  thermal_readiness:
+    depends_on: [configuration_resolution]
+    inputs:
+      - reports/program/configuration-resolution.yaml
+      - simulations/thermal/slate-pocket-v1r/model/*.yaml
+      - simulations/thermal/slate-pocket-v1r/test-matrix.yaml
+      - simulations/thermal/slate-pocket-v1r/generate_thermal_model_readiness_report.py
+    outputs: [reports/slate-pocket-v1r-thermal-model-readiness.txt]
+    command: [python, simulations/thermal/slate-pocket-v1r/generate_thermal_model_readiness_report.py]
+  rf_architecture:
+    depends_on: [configuration_resolution]
+    inputs:
+      - reports/program/configuration-resolution.yaml
+      - engineering/rf/keepout-map/*.yaml
+      - engineering/rf/generate_rf_architecture_report.py
+    outputs: [reports/slate-pocket-v1r-rf-wireless-architecture.txt]
+    command: [python, engineering/rf/generate_rf_architecture_report.py]
+  risk_report:
+    depends_on: [configuration_resolution]
+    inputs:
+      - reports/program/configuration-resolution.yaml
+      - engineering/risks/risk_register.yaml
+      - engineering/risks/risk_engine.py
+      - engineering/risks/generate_risk_report.py
+    outputs: [reports/slate-pocket-risk-register.txt]
+    command: [python, engineering/risks/generate_risk_report.py]
+  program_handoff:
+    depends_on: [supplier_review, configuration_resolution, cad_budget, pcb_power, thermal_readiness, rf_architecture]
+    inputs:
+      - reports/program/configuration-resolution.yaml
+      - reports/program/supplier-response-review.yaml
+      - engineering/evidence/evidence_registry.yaml
+      - engineering/evidence/external_blocker_registry.yaml
+      - engineering/evidence/generate_program_handoff_report.py
+    outputs: [reports/slate-pocket-v1r-program-readiness.txt]
+    command: [python, engineering/evidence/generate_program_handoff_report.py]
+  program_snapshot:
+    depends_on: [supplier_review, configuration_resolution, program_handoff, device_profile, risk_report]
+    inputs:
+      - engineering/program/program_model.yaml
+      - buildslate/program.py
+      - reports/program/configuration-resolution.yaml
+      - reports/program/supplier-response-review.yaml
+      - reports/slate-pocket-v1r-program-readiness.txt
+    outputs: [reports/program/buildslate-program-snapshot.yaml]
+    command: [python, -m, buildslate, generate]
+

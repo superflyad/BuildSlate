@@ -24,6 +24,10 @@ python -m buildslate generate
 python -m buildslate suppliers validate --domain battery --response path/to/response.yaml
 python -m buildslate suppliers ingest --domain battery --response path/to/response.yaml --received-at 2026-11-01T12:00:00-05:00 --received-by operator@example.com
 python -m buildslate suppliers queue --generate
+python -m buildslate configuration validate
+python -m buildslate impact --changed configs/devices/slate-pocket-v1r.yaml
+python -m buildslate regenerate --stale --dry-run
+python -m buildslate regenerate --stale
 ```
 
 ## Supplier-response ingestion
@@ -33,6 +37,18 @@ The supplier workflow supports battery, compute/memory, display, storage, and DF
 `suppliers validate` is read-only. `suppliers ingest` accepts only structurally valid YAML, preserves the original bytes under a hash-addressed raw path, and creates an explicit receipt. `suppliers queue --generate` verifies receipt hashes and rebuilds the review queue. A `READY_FOR_ENGINEERING_REVIEW` disposition is not verified evidence and does not select a component. Configuration changes require the separate controlled resolver workflow.
 
 The inbox is intentionally empty until authorized supplier-authored evidence is received. Do not copy RFQ templates into the raw store as if they were responses.
+
+## Configuration authority
+
+`engineering/program/configuration_registry.yaml` is the classification layer between requirements/evidence and downstream model inputs. It keeps locked targets, operational fallbacks, modeled references, rejected options, selected components, and unresolved decisions distinct. Bindings assert that every controlled profile value matches its authority entry. An unresolved or prohibited value cannot be bound as a model input.
+
+Selected-component entries require a non-null value, a review-ready ingestion receipt, a matching value in the hash-verified raw response, and an explicit value path; no such entry exists in the protected baseline. The generated `reports/program/configuration-resolution.yaml` currently preserves compute selection and cellular integration as externally unresolved while allowing only the documented v1R planning values into models.
+
+## Dependency-aware regeneration
+
+`engineering/program/regeneration.yaml` defines a generator DAG from supplier inputs and configuration through device profiles, CAD, PCB/power, thermal, RF, risks, handoff, and the program snapshot. `impact` answers what a proposed path change affects. `stale` compares current input/output SHA-256 hashes with the committed state. `regenerate` executes only whitelisted repository-local commands in dependency order and refreshes the state after every successful run.
+
+The regeneration state proves only that generated files match repository inputs. It does not prove supplier claims, model accuracy, test results, or physical readiness.
 
 Structured output is available as JSON or YAML where applicable. Exit code `0` means the requested operation completed; validation/input errors return `2`; `validate --all` propagates the repository validation exit code.
 

@@ -4,11 +4,10 @@
 from __future__ import annotations
 
 import argparse
-import platform
+import hashlib
 import subprocess
 import sys
 from dataclasses import dataclass
-from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -424,8 +423,8 @@ def render_result(result: ModelResult) -> str:
 
 
 def render_report(profile: dict[str, Any], profile_path: Path, results: list[ModelResult]) -> str:
-    generated = datetime.now(UTC).isoformat(timespec="seconds")
     identity = require_mapping(profile, "identity")
+    profile_sha256 = hashlib.sha256(profile_path.read_bytes()).hexdigest()
     by_section: dict[str, list[ModelResult]] = {section: [] for section in REPORT_SECTIONS}
     for result in results:
         by_section.setdefault(result.command.section, []).append(result)
@@ -436,10 +435,9 @@ def render_report(profile: dict[str, Any], profile_path: Path, results: list[Mod
     report: list[str] = [
         "BuildSlate Device Profile Report",
         "Report Metadata:",
-        f"  generated timestamp: {generated}",
-        f"  Python version: {platform.python_version()}",
-        f"  platform: {platform.platform()}",
-        f"  repo root: {REPO_ROOT}",
+        "  generator: engineering/run_device_profile.py",
+        f"  profile sha256: {profile_sha256}",
+        "  output mode: deterministic",
         "Profile Identity:",
         f"  name: {identity.get('name', 'unknown')}",
         f"  profile_id: {identity.get('profile_id', 'unknown')}",

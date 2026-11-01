@@ -1,0 +1,116 @@
+metadata:
+  schema_version: 1
+  profile: slate-pocket-v1r
+  authority: This registry classifies configuration values; it does not qualify or select supplier components.
+
+entries:
+  chassis_thickness_target:
+    state: locked_target
+    value: 9.5
+    unit: mm
+    model_use: allowed
+    sources: [configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.thickness.target_mm]
+  battery_capacity_target:
+    state: locked_target
+    value: 6000
+    unit: mAh
+    model_use: allowed_with_caveat
+    sources: [configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.battery.target_mah]
+  memory_aspiration:
+    state: locked_target
+    value: 512
+    unit: GB
+    model_use: prohibited
+    sources: [configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.memory.aspirational_target_gb]
+  memory_first_build_rejection:
+    state: rejected_option
+    value: 512
+    unit: GB
+    model_use: prohibited
+    sources: [engineering/assumptions/assumption_registry.yaml#assumptions.memory_capacity_gb.notes]
+    notes: Unsupported as a first-build configuration; the headline target remains traceable.
+  memory_operational:
+    state: operational_fallback
+    value: 128
+    unit: GB
+    model_use: allowed_with_caveat
+    sources: [configs/devices/slate-pocket-v1r.yaml#integration_configuration.memory_gb]
+  storage_aspiration:
+    state: locked_target
+    value: 4
+    unit: TB
+    model_use: prohibited
+    sources: [configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.storage.target_tb]
+  storage_first_build_rejection:
+    state: rejected_option
+    value: 4
+    unit: TB
+    model_use: prohibited
+    sources: [engineering/assumptions/assumption_registry.yaml#assumptions.storage_capacity_tb.notes]
+    notes: Unsupported as an internal first-build configuration.
+  storage_operational:
+    state: operational_fallback
+    value: 1
+    unit: TB
+    model_use: allowed_with_caveat
+    sources: [configs/devices/slate-pocket-v1r.yaml#integration_configuration.internal_storage_tb]
+  storage_product_fallback:
+    state: operational_fallback
+    value: 2
+    unit: TB
+    model_use: status_only
+    sources: [configs/devices/slate-pocket-v1r.yaml#integration_configuration.product_storage_fallback_tb]
+  npu_public_reference:
+    state: modeled_reference
+    value: 80
+    unit: TOPS_INT8
+    model_use: allowed_with_caveat
+    sources: [configs/devices/slate-pocket-v1r.yaml#integration_configuration.npu_public_reference_tops_int8]
+  compute_platform_selection:
+    state: unresolved_decision
+    value: null
+    unit: null
+    model_use: prohibited
+    sources: [configs/devices/slate-pocket-v1r.yaml#compute.selected_platform]
+    external_blocker: compute_memory_package
+  evt0_wired_charge_cap:
+    state: operational_fallback
+    value: 30
+    unit: W
+    model_use: allowed_with_caveat
+    sources: [configs/devices/slate-pocket-v1r.yaml#integration_configuration.wired_charge_evt0_input_cap_w]
+  wireless_charging_evt0:
+    state: rejected_option
+    value: removed
+    unit: null
+    model_use: allowed_disabled_state
+    sources: [configs/devices/slate-pocket-v1r.yaml#integration_configuration.wireless_charging]
+    notes: Removed from EVT0 after z-height and certification screening.
+  cellular_integration:
+    state: unresolved_decision
+    value: deferred
+    unit: null
+    model_use: status_only
+    sources: [configs/devices/slate-pocket-v1r.yaml#integration_configuration.cellular]
+    external_blocker: rf_compliance_package
+
+bindings:
+  - {profile_path: geometry.thickness_mm, authority: chassis_thickness_target, consumption: model_input}
+  - {profile_path: battery.capacity_mah, authority: battery_capacity_target, consumption: model_input}
+  - {profile_path: memory.capacity_gb, authority: memory_operational, consumption: model_input}
+  - {profile_path: runtime.available_memory_gb, authority: memory_operational, consumption: model_input}
+  - {profile_path: integration_configuration.memory_gb, authority: memory_operational, consumption: model_input}
+  - {profile_path: storage.capacity_tb, authority: storage_operational, consumption: model_input}
+  - {profile_path: integration_configuration.internal_storage_tb, authority: storage_operational, consumption: model_input}
+  - {profile_path: integration_configuration.product_storage_fallback_tb, authority: storage_product_fallback, consumption: status_only}
+  - {profile_path: compute.npu_tops, authority: npu_public_reference, consumption: model_input}
+  - {profile_path: integration_configuration.npu_public_reference_tops_int8, authority: npu_public_reference, consumption: model_input}
+  - {profile_path: compute.selected_platform, authority: compute_platform_selection, consumption: status_only}
+  - {profile_path: battery.charging_wired_w, authority: evt0_wired_charge_cap, consumption: model_input}
+  - {profile_path: integration_configuration.wired_charge_evt0_input_cap_w, authority: evt0_wired_charge_cap, consumption: model_input}
+  - {profile_path: integration_configuration.wireless_charging, authority: wireless_charging_evt0, consumption: disabled_input}
+  - {profile_path: integration_configuration.cellular, authority: cellular_integration, consumption: status_only}
+
+outputs:
+  resolution_report: reports/program/configuration-resolution.yaml
+

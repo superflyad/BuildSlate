@@ -40,6 +40,7 @@ VALIDATION_CHECKS = (
     "validation/validate_program_handoff.py",
     "validation/validate_execution_platform.py",
     "validation/validate_supplier_ingestion.py",
+    "validation/validate_configuration_automation.py",
 )
 
 

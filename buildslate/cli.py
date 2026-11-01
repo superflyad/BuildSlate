@@ -8,8 +8,10 @@ import sys
 from pathlib import Path
 from typing import Any, Sequence
 
+from .configuration import ConfigurationResolver
 from .io import dump_json, dump_yaml
 from .program import DEFAULT_REPO_ROOT, ProgramRepository, compare_yaml
+from .regeneration import RegenerationEngine
 from .suppliers import SupplierResponseRepository
 
 
@@ -146,6 +148,64 @@ def command_suppliers_queue(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_configuration_validate(args: argparse.Namespace) -> int:
+    resolution = ConfigurationResolver(Path(args.repo_root)).resolve()
+    if args.format in {"json", "yaml"}:
+        _emit(resolution, args.format)
+    else:
+        print(f"gate: {resolution['CONFIGURATION_GATE']}")
+        print(f"bindings: {len(resolution['resolved_bindings'])}")
+        print(f"violations: {len(resolution['violations'])}")
+        print(f"unresolved_decisions: {len(resolution['unresolved_decisions'])}")
+    return 2 if resolution["violations"] else 0
+
+
+def command_configuration_generate(args: argparse.Namespace) -> int:
+    resolver = ConfigurationResolver(Path(args.repo_root))
+    destination = resolver.generate()
+    resolution = resolver.resolve()
+    print(f"Wrote {destination.relative_to(resolver.repo_root)}")
+    print(f"gate: {resolution['CONFIGURATION_GATE']}")
+    return 2 if resolution["violations"] else 0
+
+
+def command_impact(args: argparse.Namespace) -> int:
+    engine = RegenerationEngine(Path(args.repo_root))
+    impacted = engine.impacted_nodes(args.changed)
+    payload = {"changed": args.changed, "impacted_count": len(impacted), "impacted_nodes": list(impacted)}
+    if args.format in {"json", "yaml"}:
+        _emit(payload, args.format)
+    else:
+        print(f"impacted: {len(impacted)}")
+        for node_id in impacted:
+            print(f"  {node_id}")
+    return 0
+
+
+def command_stale(args: argparse.Namespace) -> int:
+    engine = RegenerationEngine(Path(args.repo_root))
+    stale = engine.stale_nodes()
+    payload = {"stale_count": len(stale), "stale_nodes": list(stale)}
+    if args.format in {"json", "yaml"}:
+        _emit(payload, args.format)
+    else:
+        print(f"stale: {len(stale)}")
+        for node_id in stale:
+            print(f"  {node_id}")
+    return 1 if stale else 0
+
+
+def command_regenerate(args: argparse.Namespace) -> int:
+    engine = RegenerationEngine(Path(args.repo_root))
+    nodes = engine.impacted_nodes(args.changed) if args.changed else engine.stale_nodes()
+    executed = engine.regenerate(nodes, dry_run=args.dry_run)
+    verb = "Would regenerate" if args.dry_run else "Regenerated"
+    print(f"{verb} {len(executed)} node(s)")
+    for node_id in executed:
+        print(f"  {node_id}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="buildslate", description="BuildSlate engineering execution CLI")
     parser.add_argument("--repo-root", default=str(DEFAULT_REPO_ROOT), help="BuildSlate repository root")
@@ -194,6 +254,32 @@ def build_parser() -> argparse.ArgumentParser:
     supplier_queue.add_argument("--generate", action="store_true")
     supplier_queue.add_argument("--format", choices=("text", "json", "yaml"), default="text")
     supplier_queue.set_defaults(handler=command_suppliers_queue)
+
+    configuration_parser = subparsers.add_parser("configuration", help="resolve configuration authority and model bindings")
+    configuration_commands = configuration_parser.add_subparsers(dest="configuration_command", required=True)
+
+    configuration_validate = configuration_commands.add_parser("validate", help="validate configuration bindings without writing")
+    configuration_validate.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    configuration_validate.set_defaults(handler=command_configuration_validate)
+
+    configuration_generate = configuration_commands.add_parser("generate", help="generate the authoritative resolution report")
+    configuration_generate.set_defaults(handler=command_configuration_generate)
+
+    impact_parser = subparsers.add_parser("impact", help="show dependency-aware impact for changed paths")
+    impact_parser.add_argument("--changed", nargs="+", required=True)
+    impact_parser.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    impact_parser.set_defaults(handler=command_impact)
+
+    stale_parser = subparsers.add_parser("stale", help="show generated nodes with changed inputs or outputs")
+    stale_parser.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    stale_parser.set_defaults(handler=command_stale)
+
+    regenerate_parser = subparsers.add_parser("regenerate", help="run controlled generators in dependency order")
+    regenerate_selection = regenerate_parser.add_mutually_exclusive_group(required=True)
+    regenerate_selection.add_argument("--changed", nargs="+", help="regenerate everything affected by these paths")
+    regenerate_selection.add_argument("--stale", action="store_true", help="regenerate all hash-stale nodes")
+    regenerate_parser.add_argument("--dry-run", action="store_true")
+    regenerate_parser.set_defaults(handler=command_regenerate)
     return parser
 
 

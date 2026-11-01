@@ -1,0 +1,156 @@
+CONFIGURATION_GATE: CONTROLLED_WITH_UNRESOLVED_EXTERNAL_DECISIONS
+profile: slate-pocket-v1r
+classification_counts:
+  locked_target: 4
+  modeled_reference: 1
+  operational_fallback: 4
+  rejected_option: 3
+  unresolved_decision: 2
+resolved_bindings:
+- profile_path: geometry.thickness_mm
+  authority: chassis_thickness_target
+  state: locked_target
+  value: 9.5
+  unit: mm
+  consumption: model_input
+  model_use: allowed
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.thickness.target_mm
+- profile_path: battery.capacity_mah
+  authority: battery_capacity_target
+  state: locked_target
+  value: 6000
+  unit: mAh
+  consumption: model_input
+  model_use: allowed_with_caveat
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#decision_baseline.locked_trade_rules.battery.target_mah
+- profile_path: memory.capacity_gb
+  authority: memory_operational
+  state: operational_fallback
+  value: 128
+  unit: GB
+  consumption: model_input
+  model_use: allowed_with_caveat
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#integration_configuration.memory_gb
+- profile_path: runtime.available_memory_gb
+  authority: memory_operational
+  state: operational_fallback
+  value: 128
+  unit: GB
+  consumption: model_input
+  model_use: allowed_with_caveat
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#integration_configuration.memory_gb
+- profile_path: integration_configuration.memory_gb
+  authority: memory_operational
+  state: operational_fallback
+  value: 128
+  unit: GB
+  consumption: model_input
+  model_use: allowed_with_caveat
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#integration_configuration.memory_gb
+- profile_path: storage.capacity_tb
+  authority: storage_operational
+  state: operational_fallback
+  value: 1
+  unit: TB
+  consumption: model_input
+  model_use: allowed_with_caveat
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#integration_configuration.internal_storage_tb
+- profile_path: integration_configuration.internal_storage_tb
+  authority: storage_operational
+  state: operational_fallback
+  value: 1
+  unit: TB
+  consumption: model_input
+  model_use: allowed_with_caveat
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#integration_configuration.internal_storage_tb
+- profile_path: integration_configuration.product_storage_fallback_tb
+  authority: storage_product_fallback
+  state: operational_fallback
+  value: 2
+  unit: TB
+  consumption: status_only
+  model_use: status_only
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#integration_configuration.product_storage_fallback_tb
+- profile_path: compute.npu_tops
+  authority: npu_public_reference
+  state: modeled_reference
+  value: 80
+  unit: TOPS_INT8
+  consumption: model_input
+  model_use: allowed_with_caveat
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#integration_configuration.npu_public_reference_tops_int8
+- profile_path: integration_configuration.npu_public_reference_tops_int8
+  authority: npu_public_reference
+  state: modeled_reference
+  value: 80
+  unit: TOPS_INT8
+  consumption: model_input
+  model_use: allowed_with_caveat
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#integration_configuration.npu_public_reference_tops_int8
+- profile_path: compute.selected_platform
+  authority: compute_platform_selection
+  state: unresolved_decision
+  value: null
+  unit: null
+  consumption: status_only
+  model_use: prohibited
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#compute.selected_platform
+- profile_path: battery.charging_wired_w
+  authority: evt0_wired_charge_cap
+  state: operational_fallback
+  value: 30
+  unit: W
+  consumption: model_input
+  model_use: allowed_with_caveat
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#integration_configuration.wired_charge_evt0_input_cap_w
+- profile_path: integration_configuration.wired_charge_evt0_input_cap_w
+  authority: evt0_wired_charge_cap
+  state: operational_fallback
+  value: 30
+  unit: W
+  consumption: model_input
+  model_use: allowed_with_caveat
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#integration_configuration.wired_charge_evt0_input_cap_w
+- profile_path: integration_configuration.wireless_charging
+  authority: wireless_charging_evt0
+  state: rejected_option
+  value: removed
+  unit: null
+  consumption: disabled_input
+  model_use: allowed_disabled_state
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#integration_configuration.wireless_charging
+- profile_path: integration_configuration.cellular
+  authority: cellular_integration
+  state: unresolved_decision
+  value: deferred
+  unit: null
+  consumption: status_only
+  model_use: status_only
+  sources:
+  - configs/devices/slate-pocket-v1r.yaml#integration_configuration.cellular
+violations: []
+unresolved_decisions:
+- authority: compute_platform_selection
+  current_value: null
+  external_blocker: compute_memory_package
+  model_use: prohibited
+- authority: cellular_integration
+  current_value: deferred
+  external_blocker: rf_compliance_package
+  model_use: status_only
+caveat: Resolved values remain targets, fallbacks, references, or dispositions as classified; no supplier component is selected
+  or verified.

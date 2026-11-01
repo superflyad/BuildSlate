@@ -1,9 +1,8 @@
 BuildSlate Device Profile Report
 Report Metadata:
-  generated timestamp: 2026-11-01T04:29:05+00:00
-  Python version: 3.14.4
-  platform: Windows-11-10.0.26300-SP0
-  repo root: C:\Users\michael.CORP\source\repos\BuildSlate
+  generator: engineering/run_device_profile.py
+  profile sha256: a0e4e3bbf41e266fd55866c1c9ad436e4f498f98edc33349e2108e4db4c67ae1
+  output mode: deterministic
 Profile Identity:
   name: Slate Pocket v1R
   profile_id: slate-pocket-v1r

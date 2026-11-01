@@ -10,6 +10,8 @@ python -m buildslate status
 python -m buildslate blockers
 python -m buildslate generate
 python -m buildslate suppliers queue
+python -m buildslate configuration validate
+python -m buildslate stale
 ```
 
 See `docs/engineering/execution_platform.md` for the authority model and full command reference.

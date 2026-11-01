@@ -16,6 +16,7 @@ MATRIX_PATH = EVT_ROOT / "test-matrix.yaml"
 WORKLOAD_PATH = EVT_ROOT / "workloads.yaml"
 REGISTRY_PATH = REPO_ROOT / "engineering" / "evidence" / "evidence_registry.yaml"
 REPORT_PATH = REPO_ROOT / "reports" / "slate-pocket-v1r-evt0-gate.txt"
+CAMPAIGN_REPORT_PATH = REPO_ROOT / "reports" / "program" / "evt0-campaign.yaml"
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -37,6 +38,7 @@ def build_report() -> str:
     matrix = _load(MATRIX_PATH)
     workloads = _load(WORKLOAD_PATH)
     registry = _load(REGISTRY_PATH)
+    campaign = _load(CAMPAIGN_REPORT_PATH)
 
     prerequisite_ids: list[str] = []
     for gate in spec["prerequisite_gates"].values():
@@ -63,6 +65,15 @@ def build_report() -> str:
         for workload_id, workload in workloads["workloads"].items()
         if any(value is None for value in workload.values())
     ]
+    campaign_gate = campaign["EVT0_CAMPAIGN_GATE"]
+    campaign_runs = campaign["summary"]["ingested_run_count"]
+    campaign_passing = campaign["summary"]["passing_required_test_count"]
+    if unverified or false_authorizations or false_safety_gates or not selected_roles:
+        gate = "BLOCKED_ON_SUPPLIER_PHASE2_VERIFICATION_BUILD_AUTHORIZATION_AND_RESULTS"
+    elif campaign_gate == "OBJECTIVE_EVIDENCE_REVIEW_READY":
+        gate = "OBJECTIVE_EVIDENCE_REVIEW_READY"
+    else:
+        gate = "BLOCKED_ON_INCOMPLETE_OR_INVALID_CAMPAIGN_RESULTS"
 
     lines = [
         "Slate Pocket v1R EVT0 Gate",
@@ -109,8 +120,10 @@ def build_report() -> str:
             "",
             "Measured evidence:",
             f"  result files excluding instructions: {len(real_results)}",
-            "  schema-valid completed required tests: 0",
-            "  model correlation completed: no",
+            f"  ingested campaign runs: {campaign_runs}",
+            f"  objective passing required tests: {campaign_passing}/{len(required_test_ids)}",
+            f"  campaign gate: {campaign_gate}",
+            f"  model correlation completed: {'yes' if campaign_gate == 'OBJECTIVE_EVIDENCE_REVIEW_READY' else 'no'}",
             "",
             "Gate blockers:",
             "  - Supplier packages and Phase 2 integration packages are not verified.",
@@ -118,7 +131,7 @@ def build_report() -> str:
             "  - Purchase, build, and energized-test authorization have not been granted.",
             "  - No physical unit, raw measurement campaign, reviewed result, or correlation evidence exists.",
             "",
-            "EVT0_GATE: BLOCKED_ON_SUPPLIER_PHASE2_VERIFICATION_BUILD_AUTHORIZATION_AND_RESULTS",
+            f"EVT0_GATE: {gate}",
             "",
             "Caveat:",
             "  The EVT0 package is executable planning evidence only. It does not claim a component selection, prototype build, measurement, correlated model, safety validation, certification, or prototype readiness.",

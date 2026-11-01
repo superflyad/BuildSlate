@@ -1,0 +1,22 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: buildslate://validation/evt0/calibration.schema.yaml
+title: BuildSlate EVT0 Calibration Reference
+type: object
+additionalProperties: false
+required: [schema_version, calibration_id, instrument_id, valid_from_utc, valid_until_utc, certificate]
+properties:
+  schema_version: {const: 1}
+  calibration_id: {type: string, minLength: 1}
+  instrument_id: {type: string, minLength: 1}
+  valid_from_utc: {type: string, format: date-time}
+  valid_until_utc: {type: string, format: date-time}
+  channels: {type: array, items: {type: string}}
+  certificate:
+    type: object
+    additionalProperties: false
+    required: [path, sha256]
+    properties:
+      path: {type: string, minLength: 1}
+      sha256: {type: string, pattern: '^[a-fA-F0-9]{64}$'}
+  uncertainty_note: {type: string}
+

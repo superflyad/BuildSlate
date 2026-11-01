@@ -41,6 +41,29 @@ nodes:
       - manufacturing/*.yaml
     outputs: [reports/program/integration-contracts.yaml]
     command: [python, -m, buildslate, contracts, generate]
+  evt0_campaign:
+    depends_on: [integration_contracts]
+    inputs:
+      - buildslate/evt0.py
+      - validation/evt0/metric-definitions.yaml
+      - validation/evt0/schemas/*.yaml
+      - validation/evt0/test-matrix.yaml
+      - validation/evt0/instrumentation.yaml
+      - validation/evt0/campaigns/**/*
+    outputs: [reports/program/evt0-campaign.yaml]
+    command: [python, -m, buildslate, evt0, report, --generate]
+  evt0_readiness:
+    depends_on: [evt0_campaign]
+    inputs:
+      - reports/program/evt0-campaign.yaml
+      - validation/evt0/evt0-spec.yaml
+      - validation/evt0/bom-strategy.yaml
+      - validation/evt0/test-matrix.yaml
+      - validation/evt0/workloads.yaml
+      - validation/evt0/generate_evt0_gate_report.py
+      - engineering/evidence/evidence_registry.yaml
+    outputs: [reports/slate-pocket-v1r-evt0-gate.txt]
+    command: [python, validation/evt0/generate_evt0_gate_report.py]
   device_profile:
     depends_on: [integration_contracts]
     inputs:
@@ -105,12 +128,16 @@ nodes:
     outputs: [reports/slate-pocket-v1r-program-readiness.txt]
     command: [python, engineering/evidence/generate_program_handoff_report.py]
   program_snapshot:
-    depends_on: [supplier_review, configuration_resolution, integration_contracts, program_handoff, device_profile, risk_report]
+    depends_on: [supplier_review, configuration_resolution, integration_contracts, evt0_campaign, evt0_readiness, program_handoff, device_profile, risk_report]
     inputs:
       - engineering/program/program_model.yaml
       - buildslate/program.py
       - reports/program/configuration-resolution.yaml
       - reports/program/integration-contracts.yaml
+      - reports/program/evt0-campaign.yaml
+      - reports/slate-pocket-evidence-readiness.txt
+      - reports/slate-pocket-v1r-evt0-gate.txt
+      - reports/slate-pocket-v1r-manufacturing-readiness.txt
       - reports/program/supplier-response-review.yaml
       - reports/slate-pocket-v1r-program-readiness.txt
     outputs: [reports/program/buildslate-program-snapshot.yaml]

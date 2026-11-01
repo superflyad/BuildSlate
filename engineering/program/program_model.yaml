@@ -55,6 +55,9 @@ gate_sources:
   integration_contract_gate:
     path: reports/program/integration-contracts.yaml
     marker: "INTEGRATION_CONTRACT_GATE:"
+  evt0_campaign_gate:
+    path: reports/program/evt0-campaign.yaml
+    marker: "EVT0_CAMPAIGN_GATE:"
 
 outputs:
   program_snapshot: reports/program/buildslate-program-snapshot.yaml

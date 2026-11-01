@@ -1,5 +1,5 @@
 state_version: 1
-manifest_sha256: 0d366eede874e0b9a24099f6e8a588f8f9e68ed9a3e44c78273c49b80c66e1dc
+manifest_sha256: f92633f8d2aa1bb7a958a905ab64056d220955e458855bb9c08a219420c0ac62
 nodes:
   supplier_review:
     inputs:
@@ -42,10 +42,35 @@ nodes:
       validation/evt0/bom-strategy.yaml: 4efe93039fe301aaa34b26999e332f9d559ad6a05153bbcf79223bfcd48b4d6d
       validation/evt0/evt0-spec.yaml: 2c1a0823ef0285d749ece9bc6741cd866f92ebce4ceb24e24b08d3dab6cdbe10
       validation/evt0/instrumentation.yaml: 47c9e8942a533cc94c919e17581315fccd3e41ed668fe7091613460afd6c3004
-      validation/evt0/test-matrix.yaml: 695d1ab551b0fefa205fdb71f3b5eb824c305199ff939c134f07482ba6238063
+      validation/evt0/metric-definitions.yaml: b02a8eaa62ddbbc88520545a070a84bd400375b9f4c8c3874009b3eab8d6a22d
+      validation/evt0/test-matrix.yaml: 0250480061bc8751c180f86901b0335f64e497038b24aa04d9c91876fa04ddf6
       validation/evt0/workloads.yaml: 15ee8713856cd4191b2cd27eec23545b53cdda0b6c6f6528ce2268a8d78f1d35
     outputs:
       reports/program/integration-contracts.yaml: dc313f672099514e49197599b871f792ce9b5144612a0c863fdc06b376927c59
+  evt0_campaign:
+    inputs:
+      buildslate/evt0.py: 97828a6dd9dca249efa86816375a8e429c03556bb8fc2271abaa275ef326b322
+      validation/evt0/campaigns/README.md: 13b8802320a6b4cb49693c3b63aa28f7a2cfee2693fee29c7e4717dd3662a3aa
+      validation/evt0/instrumentation.yaml: 47c9e8942a533cc94c919e17581315fccd3e41ed668fe7091613460afd6c3004
+      validation/evt0/metric-definitions.yaml: b02a8eaa62ddbbc88520545a070a84bd400375b9f4c8c3874009b3eab8d6a22d
+      validation/evt0/schemas/calibration.schema.yaml: 83e0f80006b6ddb6b418fe0337c57a1c7d1d9688dad7399b6b9a87c98f6eb19d
+      validation/evt0/schemas/deviation.schema.yaml: 176cf86d86e96e62bbac6cec98220544181eac7236f9ec379231d0ffcd28f379
+      validation/evt0/schemas/run-manifest.schema.yaml: 931d13494beba81a35eecfa646f0ebd809b46a97de273f9c328091b15101dfc5
+      validation/evt0/schemas/test-result.schema.yaml: 74797d851a2444ce40e9ccc83ca0919617dd1dd73aa583780721c5e437963cca
+      validation/evt0/test-matrix.yaml: 0250480061bc8751c180f86901b0335f64e497038b24aa04d9c91876fa04ddf6
+    outputs:
+      reports/program/evt0-campaign.yaml: aab1632ff7d74dd8cc1415720ea9289d1eb10972ed2efa25578fb35866078fb9
+  evt0_readiness:
+    inputs:
+      engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
+      reports/program/evt0-campaign.yaml: aab1632ff7d74dd8cc1415720ea9289d1eb10972ed2efa25578fb35866078fb9
+      validation/evt0/bom-strategy.yaml: 4efe93039fe301aaa34b26999e332f9d559ad6a05153bbcf79223bfcd48b4d6d
+      validation/evt0/evt0-spec.yaml: 2c1a0823ef0285d749ece9bc6741cd866f92ebce4ceb24e24b08d3dab6cdbe10
+      validation/evt0/generate_evt0_gate_report.py: cd7b17c17d6ddf59c22a351c33ab2d3c975050f3a7aa0dc1349686b93e0cb5c4
+      validation/evt0/test-matrix.yaml: 0250480061bc8751c180f86901b0335f64e497038b24aa04d9c91876fa04ddf6
+      validation/evt0/workloads.yaml: 15ee8713856cd4191b2cd27eec23545b53cdda0b6c6f6528ce2268a8d78f1d35
+    outputs:
+      reports/slate-pocket-v1r-evt0-gate.txt: 012c3c68c54688cdef5bf5f3c8b6b035b55a73f7cce15f1ba82bc5edcda8578e
   device_profile:
     inputs:
       configs/devices/slate-pocket-v1r.yaml: a0e4e3bbf41e266fd55866c1c9ad436e4f498f98edc33349e2108e4db4c67ae1
@@ -118,11 +143,15 @@ nodes:
   program_snapshot:
     inputs:
       buildslate/program.py: a50bcf1fb4137086ccc42fc9ec4c4b57126515a4fa506ab1e5892d7fd75ab40b
-      engineering/program/program_model.yaml: 333e36deeece9fb2bfb912837a206b9d7bfa69716f517d71d983eca09793f65a
+      engineering/program/program_model.yaml: 47c678b971d76e76eb7529a554371c17250c0531494da57d4d8b695da64348f8
       reports/program/configuration-resolution.yaml: bbbfb942f2b5fb410a50532535272d35a87af5c89ee4e62dde5942b6d6da4718
+      reports/program/evt0-campaign.yaml: aab1632ff7d74dd8cc1415720ea9289d1eb10972ed2efa25578fb35866078fb9
       reports/program/integration-contracts.yaml: dc313f672099514e49197599b871f792ce9b5144612a0c863fdc06b376927c59
       reports/program/supplier-response-review.yaml: c7a3941e81a65ef1023972169f80ffac7fef1adb103699b36a5622d20e9af7da
+      reports/slate-pocket-evidence-readiness.txt: b31b8364ac46bc6fffdfb168433cda8cb3ab60dc69cec8c325757dfa1503889a
+      reports/slate-pocket-v1r-evt0-gate.txt: 012c3c68c54688cdef5bf5f3c8b6b035b55a73f7cce15f1ba82bc5edcda8578e
+      reports/slate-pocket-v1r-manufacturing-readiness.txt: 2a6455e8295e839f94100d61893189fcf64eab14972031f137b336eafe30bb6c
       reports/slate-pocket-v1r-program-readiness.txt: 0cf93e775f1fba2d62e9ea5e3272a325d25807013809d02fdcab42b8d82fcb8c
     outputs:
-      reports/program/buildslate-program-snapshot.yaml: 073a7356f203defd525a38e6931613b2bbc55a63c9de413d953006ad7073bed2
+      reports/program/buildslate-program-snapshot.yaml: 1ca536e897d16f646e036482749d8d35c35bdd0adae55f514fb5f8e98af3920b
 caveat: Hashes establish deterministic staleness only; they do not verify engineering evidence or physical results.

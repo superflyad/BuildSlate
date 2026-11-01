@@ -40,3 +40,23 @@ sequence:
 
 required_for_evt0_evidence_gate: [B00, B01, F00, P00, P10, P11, M20, S30, C40, T10, T20, T30, B40, B50, R50, MC0]
 explicitly_not_required_because_removed_or_deferred: [wireless_charging, cellular, 512gb_memory, 4tb_storage]
+
+channel_requirements:
+  B00: [configuration]
+  B01: [configuration, electrical_slow]
+  F00: [configuration, platform]
+  P00: [configuration, electrical_slow, thermal, platform]
+  P10: [configuration, electrical_slow, electrical_transient, thermal, platform, workload]
+  P11: [configuration, electrical_transient, platform, workload]
+  M20: [configuration, electrical_slow, platform, workload]
+  S30: [configuration, electrical_slow, platform, workload]
+  C40: [configuration, electrical_slow, electrical_transient, thermal, platform, workload]
+  T10: [configuration, electrical_slow, thermal, platform, workload]
+  T20: [configuration, electrical_slow, thermal, platform, workload]
+  T30: [configuration, electrical_slow, thermal, platform, workload]
+  T40: [configuration, electrical_slow, thermal, platform]
+  B40: [configuration, electrical_slow, thermal, platform, workload]
+  B50: [configuration, electrical_slow, thermal, platform]
+  B51: [configuration, electrical_slow, thermal, platform]
+  R50: [configuration, electrical_slow, platform, workload]
+  MC0: [configuration]

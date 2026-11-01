@@ -1,0 +1,16 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: buildslate://validation/evt0/deviation.schema.yaml
+title: BuildSlate EVT0 Deviation
+type: object
+additionalProperties: false
+required: [deviation_id, requirement, observed_evidence, root_cause_status, affected_artifacts, disposition]
+properties:
+  deviation_id: {type: string, minLength: 1}
+  requirement: {type: string, minLength: 1}
+  observed_evidence: {type: string, minLength: 1}
+  root_cause_status: {enum: [unknown, investigating, identified, corrected]}
+  proposed_trade: {type: [string, 'null']}
+  affected_artifacts: {type: array, items: {type: string}, minItems: 1}
+  approver: {type: [string, 'null']}
+  disposition: {enum: [open, accepted, rejected, superseded]}
+

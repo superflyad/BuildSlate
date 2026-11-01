@@ -1,0 +1,38 @@
+schema_version: 1
+time_column: elapsed_s
+metrics:
+  duration_s:
+    method: last_minus_first
+    columns: [elapsed_s]
+    unit: s
+  mean_system_power_w:
+    method: mean
+    columns: [system_power_w]
+    unit: W
+  energy_consumed_wh:
+    method: trapezoidal_integral_divide_3600
+    columns: [elapsed_s, system_power_w]
+    unit: Wh
+  maximum_skin_c:
+    method: maximum_across
+    columns: [TC_REAR_SOC, TC_FRONT_SOC, TC_FRONT_CENTER, TC_REAR_CHARGER, TC_EDGE_LEFT, TC_EDGE_RIGHT]
+    unit: C
+  maximum_battery_temperature_c:
+    method: maximum
+    columns: [TC_REAR_BATTERY]
+    unit: C
+  completed_work_units:
+    method: last_minus_first
+    columns: [work_units_completed]
+    unit: work_unit
+  average_throughput_per_s:
+    method: delta_over_duration
+    columns: [elapsed_s, work_units_completed]
+    unit: work_unit/s
+  performance_per_watt:
+    method: throughput_divide_mean_power
+    columns: [elapsed_s, work_units_completed, system_power_w]
+    unit: work_unit/s/W
+
+caveat: Metrics are derived only from hash-verified CSV columns. Missing channels produce unavailable metrics, never fabricated values.
+

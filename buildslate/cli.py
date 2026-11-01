@@ -10,6 +10,7 @@ from typing import Any, Sequence
 
 from .configuration import ConfigurationResolver
 from .contracts import IntegrationContractRepository
+from .evt0 import EVT0CampaignRepository
 from .io import dump_json, dump_yaml
 from .program import DEFAULT_REPO_ROOT, ProgramRepository, compare_yaml
 from .regeneration import RegenerationEngine
@@ -228,6 +229,42 @@ def command_contracts_generate(args: argparse.Namespace) -> int:
     return 2 if result["contradictions"] else 0
 
 
+def command_evt0_validate(args: argparse.Namespace) -> int:
+    review = EVT0CampaignRepository(Path(args.repo_root)).review_bundle(Path(args.bundle))
+    if args.format in {"json", "yaml"}:
+        _emit(review, args.format)
+    else:
+        print(f"test_id: {review.get('test_id')}")
+        print(f"disposition: {review['objective_disposition']}")
+        print(f"integrity_errors: {len(review['integrity_errors'])}")
+        print(f"calculated_metrics: {len(review.get('calculated_metrics', {}))}")
+    return 2 if review["integrity_errors"] else 0
+
+
+def command_evt0_ingest(args: argparse.Namespace) -> int:
+    repository = EVT0CampaignRepository(Path(args.repo_root))
+    receipt, review = repository.ingest(Path(args.bundle), args.received_at, args.received_by)
+    print(f"Wrote {receipt.relative_to(repository.repo_root)}")
+    print(f"objective_disposition: {review['objective_disposition']}")
+    print("evidence_effect: review_queue_only")
+    return 0
+
+
+def command_evt0_report(args: argparse.Namespace) -> int:
+    repository = EVT0CampaignRepository(Path(args.repo_root))
+    report = repository.build_campaign_report()
+    if args.generate:
+        destination = repository.generate_campaign_report()
+        print(f"Wrote {destination.relative_to(repository.repo_root)}")
+    if args.format in {"json", "yaml"}:
+        _emit(report, args.format)
+    elif not args.generate:
+        print(f"gate: {report['EVT0_CAMPAIGN_GATE']}")
+        print(f"runs: {report['summary']['ingested_run_count']}")
+        print(f"passing_required_tests: {report['summary']['passing_required_test_count']}/{report['summary']['required_test_count']}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="buildslate", description="BuildSlate engineering execution CLI")
     parser.add_argument("--repo-root", default=str(DEFAULT_REPO_ROOT), help="BuildSlate repository root")
@@ -310,6 +347,22 @@ def build_parser() -> argparse.ArgumentParser:
     contracts_validate.set_defaults(handler=command_contracts_validate)
     contracts_generate = contract_commands.add_parser("generate", help="generate the integration-contract report")
     contracts_generate.set_defaults(handler=command_contracts_generate)
+
+    evt0_parser = subparsers.add_parser("evt0", help="validate and ingest EVT0 campaign evidence")
+    evt0_commands = evt0_parser.add_subparsers(dest="evt0_command", required=True)
+    evt0_validate = evt0_commands.add_parser("validate", help="validate one EVT0 evidence bundle")
+    evt0_validate.add_argument("--bundle", required=True)
+    evt0_validate.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    evt0_validate.set_defaults(handler=command_evt0_validate)
+    evt0_ingest = evt0_commands.add_parser("ingest", help="preserve one valid EVT0 evidence bundle")
+    evt0_ingest.add_argument("--bundle", required=True)
+    evt0_ingest.add_argument("--received-at", required=True)
+    evt0_ingest.add_argument("--received-by", required=True)
+    evt0_ingest.set_defaults(handler=command_evt0_ingest)
+    evt0_report = evt0_commands.add_parser("report", help="inspect or generate the EVT0 campaign gate")
+    evt0_report.add_argument("--generate", action="store_true")
+    evt0_report.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    evt0_report.set_defaults(handler=command_evt0_report)
     return parser
 
 

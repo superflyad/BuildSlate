@@ -43,7 +43,9 @@ Executable test package:
 
 Measured evidence:
   result files excluding instructions: 0
-  schema-valid completed required tests: 0
+  ingested campaign runs: 0
+  objective passing required tests: 0/16
+  campaign gate: EMPTY_CAMPAIGN
   model correlation completed: no
 
 Gate blockers:

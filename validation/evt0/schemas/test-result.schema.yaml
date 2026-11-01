@@ -73,5 +73,22 @@ properties:
       properties:
         path: {type: string}
         sha256: {type: string, pattern: '^[a-fA-F0-9]{64}$'}
+  deviations:
+    type: array
+    items:
+      $ref: buildslate://validation/evt0/deviation.schema.yaml
+  model_correlations:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [model_id, metric_id, predicted, measured, unit, tolerance_absolute]
+      properties:
+        model_id: {type: string, minLength: 1}
+        metric_id: {type: string, minLength: 1}
+        predicted: {type: number}
+        measured: {type: number}
+        unit: {type: string}
+        tolerance_absolute: {type: number, minimum: 0}
   reviewers: {type: array, items: {type: string}}
   notes: {type: string}

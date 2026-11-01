@@ -26,6 +26,9 @@ python -m buildslate suppliers ingest --domain battery --response path/to/respon
 python -m buildslate suppliers queue --generate
 python -m buildslate configuration validate
 python -m buildslate contracts validate
+python -m buildslate evt0 validate --bundle path/to/run-bundle
+python -m buildslate evt0 ingest --bundle path/to/run-bundle --received-at 2026-11-02T12:00:00-06:00 --received-by operator@example.com
+python -m buildslate evt0 report --generate
 python -m buildslate impact --changed configs/devices/slate-pocket-v1r.yaml
 python -m buildslate regenerate --stale --dry-run
 python -m buildslate regenerate --stale
@@ -56,6 +59,12 @@ The regeneration state proves only that generated files match repository inputs.
 `engineering/program/integration_contracts.yaml` defines explicit input/output boundaries for mechanical, ECAD, power, thermal, RF, firmware, and manufacturing. Cross-domain checks bind the common envelope, board placement, memory tier, power loads, thermal sources, wireless disposition, EVT0 configuration, sensor inventory, and pilot denominator. A contradiction returns a nonzero CLI result and stops controlled regeneration before downstream reports are refreshed.
 
 The current gate is `CONTRACTS_CONSISTENT_NOT_RELEASED`: all checked interfaces agree, but every domain remains provisional, planned, or not authorized. Interface consistency is not evidence of design release or physical validation.
+
+## EVT0 campaign evidence
+
+An EVT0 bundle contains `manifest.yaml`, `result.yaml`, referenced raw files, and calibration records/certificates. `evt0 validate` checks structure, test identity, time ranges, SHA-256 references, calibration validity at run start, required-channel status, hard stops, and deviations. It derives supported metrics directly from hash-verified CSV columns and calculates model-correlation residuals against declared tolerances.
+
+`evt0 ingest` preserves the complete bundle and a receipt; failed or aborted tests may be valid evidence and are retained, while structurally invalid or hash-inconsistent bundles are rejected. `evt0 report` requires objective passes for all 16 gate tests. The committed campaign remains empty because no authorized physical campaign or measurements exist.
 
 Structured output is available as JSON or YAML where applicable. Exit code `0` means the requested operation completed; validation/input errors return `2`; `validate --all` propagates the repository validation exit code.
 

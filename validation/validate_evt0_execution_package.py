@@ -106,6 +106,7 @@ def main() -> int:
             "physical prototype exists: no evidence",
             "selected roles: 0",
             "result files excluding instructions: 0",
+            "campaign gate: EMPTY_CAMPAIGN",
             "EVT0_GATE: BLOCKED_ON_SUPPLIER_PHASE2_VERIFICATION_BUILD_AUTHORIZATION_AND_RESULTS",
             "does not claim a component selection",
         )

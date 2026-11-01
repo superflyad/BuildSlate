@@ -12,6 +12,7 @@ python -m buildslate generate
 python -m buildslate suppliers queue
 python -m buildslate configuration validate
 python -m buildslate contracts validate
+python -m buildslate evt0 report
 python -m buildslate stale
 ```
 

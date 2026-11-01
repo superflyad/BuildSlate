@@ -1,0 +1,29 @@
+EVT0_CAMPAIGN_GATE: EMPTY_CAMPAIGN
+summary:
+  ingested_run_count: 0
+  required_test_count: 16
+  passing_required_test_count: 0
+missing_or_nonpassing_required_tests:
+- B00
+- B01
+- B40
+- B50
+- C40
+- F00
+- M20
+- MC0
+- P00
+- P10
+- P11
+- R50
+- S30
+- T10
+- T20
+- T30
+runs: []
+next_actions:
+- Satisfy supplier, Phase 2, safety, calibration, and authorization prerequisites before physical work.
+- Ingest only hash-verifiable run bundles; resolve invalid evidence and open deviations.
+- Complete every required test and model-correlation review before an EVT0 evidence gate decision.
+caveat: An objective evidence review queue does not claim prototype readiness, safety validation, certification, or product
+  verification.

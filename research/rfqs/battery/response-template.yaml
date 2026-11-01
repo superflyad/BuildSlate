@@ -1,0 +1,61 @@
+request:
+  packet: slate-pocket-v1r-battery
+  status: prepared_not_sent
+supplier:
+  legal_name: null
+  contact: null
+  response_date: null
+  confidentiality: public_or_nda
+proposal:
+  option_id: null
+  part_or_project_id: null
+  maturity: concept_sample_qualification_production
+  source_documents: []
+electrical:
+  capacity_mah_min: null
+  capacity_mah_typical: null
+  energy_wh_min: null
+  energy_wh_typical: null
+  voltage_v_nominal: null
+  voltage_v_min: null
+  voltage_v_max: null
+  acir_milliohm: null
+  dcir_milliohm: null
+mechanical:
+  cell_body_mm: {length: null, width: null, thickness: null}
+  complete_pack_mm: {length: null, width: null, thickness: null}
+  complete_pack_volume_mm3: null
+  mass_g: null
+  dimensional_tolerances: null
+  tab_and_protection_geometry: null
+  swelling_by_cycle_temperature_soc: null
+  compression_limits: null
+charge_discharge:
+  continuous_discharge_a: null
+  pulse_discharge_a_and_duration: null
+  recommended_charge_curve: null
+  maximum_validated_charge_w: null
+  maximum_validated_charge_c: null
+  charge_time_minutes: null
+  fast_charge_cycle_life_impact: null
+thermal_safety:
+  charge_temperature_c: null
+  discharge_temperature_c: null
+  storage_temperature_c: null
+  protection_requirements: null
+  transport_and_safety_certifications: []
+  abuse_test_summary: null
+reliability_supply:
+  cycle_life_definition_and_result: null
+  calendar_life: null
+  sample_availability: null
+  qualification_timeline: null
+  production_site_and_status: null
+  lifecycle_years: null
+  moq: null
+  lead_time_weeks: null
+  pricing_basis: null
+deviations_and_unknowns: []
+supplier_attestation:
+  values_are_supplier_provided: null
+  authorized_for_public_disclosure: null

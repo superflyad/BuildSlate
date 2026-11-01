@@ -1,0 +1,53 @@
+request:
+  packet: slate-pocket-v1r-display
+  status: prepared_not_sent
+supplier:
+  legal_name: null
+  contact: null
+  response_date: null
+  confidentiality: public_or_nda
+module:
+  part_number: null
+  maturity: demonstration_sample_qualification_production
+  source_documents: []
+mechanical:
+  diagonal_in: null
+  active_area_mm: {width: null, height: null}
+  module_outline_mm: {width: null, height: null, thickness: null}
+  mass_g: null
+  tolerances_and_keepouts: null
+  flex_location_and_bend_rules: null
+electrical_interface:
+  interface: null
+  lanes_and_timing: null
+  connector_and_pinout: null
+  driver_ic: null
+  touch_controller: null
+optical:
+  technology: null
+  resolution: null
+  aspect_ratio: null
+  refresh_modes_hz: []
+  luminance_nits_typical_peak: null
+  color_gamut_and_hdr: null
+  dimming_pwm: null
+  under_display_camera_support: null
+power_thermal:
+  power_curves: []
+  peak_power_w: null
+  sustained_temperature_limits_c: null
+reliability_supply:
+  lifetime_and_burn_in: null
+  qualification_summary: null
+  sample_availability: null
+  customization_nre: null
+  production_status: null
+  lifecycle_years: null
+  pcn_eol_policy: null
+  moq: null
+  lead_time_weeks: null
+  pricing_basis: null
+deviations_and_unknowns: []
+supplier_attestation:
+  values_are_supplier_provided: null
+  authorized_for_public_disclosure: null

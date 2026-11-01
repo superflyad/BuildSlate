@@ -1,0 +1,50 @@
+metadata:
+  baseline_profile: slate-pocket-v1r
+  prepared_on: 2026-10-31
+  request_status: prepared_not_sent
+  authorization_boundary: Sending, NDA acceptance, paid samples, purchases, and confidential disclosure require explicit user authorization.
+
+packets:
+  battery:
+    linked_evidence_package: battery_supplier_package
+    request_type: custom_cell_and_complete_pack_rfq
+    target_suppliers: [Enovix]
+    alternates: [Amprius_Technologies, Panasonic_Energy]
+    request_document: research/rfqs/battery/rfq.md
+    response_template: research/rfqs/battery/response-template.yaml
+    status: prepared_not_sent
+    objective: Establish whether a safe, supplier-backed 23.1 Wh flat pack can fit the v1R allocation.
+  compute_memory:
+    linked_evidence_package: compute_memory_platform_package
+    request_type: platform_rfi_and_nda_data_request
+    target_suppliers: [Qualcomm]
+    alternates: [AMD, NVIDIA]
+    request_document: research/rfqs/compute-memory/rfq.md
+    response_template: research/rfqs/compute-memory/response-template.yaml
+    status: prepared_not_sent
+    objective: Establish a supported 128 GB platform topology and measured workload power/performance envelope.
+  display:
+    linked_evidence_package: display_storage_package
+    request_type: display_module_rfi
+    target_suppliers: [BOE, Tianma, Samsung_Display]
+    alternates: []
+    request_document: research/rfqs/display/rfi.md
+    response_template: research/rfqs/display/response-template.yaml
+    status: prepared_not_sent
+    objective: Find the closest supplyable module to the 7.5-inch 16:10 workspace target.
+  storage:
+    linked_evidence_package: display_storage_package
+    request_type: embedded_storage_rfi
+    target_suppliers: [Samsung_Semiconductor, KIOXIA, Micron]
+    alternates: []
+    request_document: research/rfqs/storage/rfi.md
+    response_template: research/rfqs/storage/response-template.yaml
+    status: prepared_not_sent
+    objective: Establish a supplyable 1 TB package and a supported path to the 2 TB fallback.
+
+common_requirements:
+  - Identify public versus NDA-restricted claims.
+  - Provide document identifiers, revisions, and dates for technical claims.
+  - State sample, qualification, production, lifecycle, and end-of-life status.
+  - State pricing assumptions, minimum order quantity, lead time, and geographic restrictions when available.
+  - Identify deviations from the request rather than leaving fields ambiguous.

@@ -1,0 +1,62 @@
+request:
+  packet: slate-pocket-v1r-compute-memory
+  status: prepared_not_sent
+supplier:
+  legal_name: null
+  contact: null
+  response_date: null
+  confidentiality: public_or_nda
+platform:
+  family: null
+  sku: null
+  maturity: sample_qualification_production
+  source_documents: []
+package:
+  dimensions_mm: {length: null, width: null, height: null}
+  keepouts_and_mounting: null
+  thermal_interface_and_limits: null
+memory_topology:
+  supported_capacity_gb: null
+  qualified_parts: []
+  package_count_and_capacity: null
+  bus_width_bits: null
+  transfer_rate_mt_s: null
+  bandwidth_gb_s: null
+  placement_and_routing_guide: null
+  roadmap_only_capacities_gb: []
+power:
+  sustained_platform_w: null
+  peak_platform_w_and_duration: null
+  workload_and_ambient_conditions: null
+  rail_map_and_sequence: null
+  transient_current_profile: null
+  regulator_and_memory_losses_w: null
+ai_runtime:
+  npu_tops_by_precision: null
+  supported_precisions: []
+  runtimes_and_toolchains: []
+  supported_model_operators: null
+  sustained_workload_results: []
+  throttle_policy_and_duration: null
+interfaces_security:
+  storage_interfaces: []
+  display_interfaces: []
+  camera_interfaces: []
+  connectivity: []
+  measured_boot_attestation_memory_protection: null
+development_supply:
+  evaluation_hardware: null
+  bsp_sdk_access: null
+  os_support: []
+  license_restrictions: null
+  sample_availability: null
+  production_status: null
+  lifecycle_years: null
+  pcn_eol_policy: null
+  moq: null
+  lead_time_weeks: null
+  pricing_basis: null
+deviations_and_unknowns: []
+supplier_attestation:
+  values_are_supplier_provided: null
+  authorized_for_public_disclosure: null

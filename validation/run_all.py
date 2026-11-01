@@ -29,6 +29,7 @@ VALIDATION_CHECKS = (
     "validation/validate_risk_register.py",
     "validation/validate_evidence_readiness.py",
     "validation/validate_phase1_candidate_evidence.py",
+    "validation/validate_supplier_rfq_packages.py",
 )
 
 

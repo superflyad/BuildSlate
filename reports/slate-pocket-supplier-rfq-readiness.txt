@@ -1,0 +1,60 @@
+Slate Pocket Supplier RFQ/RFI Readiness
+========================================
+
+Scope:
+  baseline: slate-pocket-v1r
+  prepared on: 2026-10-31
+  request status: prepared_not_sent
+  packet count: 4
+
+Prepared packets:
+  - battery: custom_cell_and_complete_pack_rfq
+    status: prepared_not_sent
+    evidence package: battery_supplier_package
+    target suppliers: Enovix
+    objective: Establish whether a safe, supplier-backed 23.1 Wh flat pack can fit the v1R allocation.
+    request: research/rfqs/battery/rfq.md
+    response template: research/rfqs/battery/response-template.yaml
+  - compute_memory: platform_rfi_and_nda_data_request
+    status: prepared_not_sent
+    evidence package: compute_memory_platform_package
+    target suppliers: Qualcomm
+    objective: Establish a supported 128 GB platform topology and measured workload power/performance envelope.
+    request: research/rfqs/compute-memory/rfq.md
+    response template: research/rfqs/compute-memory/response-template.yaml
+  - display: display_module_rfi
+    status: prepared_not_sent
+    evidence package: display_storage_package
+    target suppliers: BOE, Tianma, Samsung_Display
+    objective: Find the closest supplyable module to the 7.5-inch 16:10 workspace target.
+    request: research/rfqs/display/rfi.md
+    response template: research/rfqs/display/response-template.yaml
+  - storage: embedded_storage_rfi
+    status: prepared_not_sent
+    evidence package: display_storage_package
+    target suppliers: Samsung_Semiconductor, KIOXIA, Micron
+    objective: Establish a supplyable 1 TB package and a supported path to the 2 TB fallback.
+    request: research/rfqs/storage/rfi.md
+    response template: research/rfqs/storage/response-template.yaml
+
+Common supplier requirements:
+  - Identify public versus NDA-restricted claims.
+  - Provide document identifiers, revisions, and dates for technical claims.
+  - State sample, qualification, production, lifecycle, and end-of-life status.
+  - State pricing assumptions, minimum order quantity, lead time, and geographic restrictions when available.
+  - Identify deviations from the request rather than leaving fields ambiguous.
+
+Authorization boundary:
+  Sending, NDA acceptance, paid samples, purchases, and confidential disclosure require explicit user authorization.
+  No packet has been sent and no supplier relationship is implied.
+
+Next external actions after authorization:
+  - Confirm the legal entity and contact identity used for outreach.
+  - Send the non-confidential packet or review the supplier NDA before restricted disclosure.
+  - Store responses with revision, confidentiality, and source metadata intact.
+  - Score each response against the evidence registry acceptance criteria.
+
+SUPPLIER_OUTREACH_DECISION: PREPARED_AWAITING_AUTHORIZATION
+
+Caveat:
+  Packet readiness is not supplier contact, NDA acceptance, quotation, component approval, or supply commitment.

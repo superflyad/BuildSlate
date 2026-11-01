@@ -50,6 +50,8 @@ Phase 1 evidence packages:
       - research/evidence/battery/supplier-source-index.yaml
       - research/evidence/battery/pack-envelope.yaml
       - research/evidence/battery/evidence-review.md
+      - research/rfqs/battery/rfq.md
+      - research/rfqs/battery/response-template.yaml
     notes: This package tests whether the retained 6000 mAh target can coexist with the v1R battery volume.
   - compute_memory_platform_package: Select a credible SoC, NPU, and memory topology
     priority: critical
@@ -67,6 +69,8 @@ Phase 1 evidence packages:
       - research/evidence/compute/platform-comparison.yaml
       - research/evidence/compute/package-and-memory-topology.md
       - research/evidence/compute/evidence-review.md
+      - research/rfqs/compute-memory/rfq.md
+      - research/rfqs/compute-memory/response-template.yaml
     notes: This package is the primary reality check for the 512 GB memory and 100 TOPS targets.
   - display_storage_package: Confirm display and storage package candidates
     priority: high
@@ -81,6 +85,10 @@ Phase 1 evidence packages:
     expected artifacts:
       - research/evidence/display-storage/candidate-comparison.yaml
       - research/evidence/display-storage/evidence-review.md
+      - research/rfqs/display/rfi.md
+      - research/rfqs/display/response-template.yaml
+      - research/rfqs/storage/rfi.md
+      - research/rfqs/storage/response-template.yaml
     notes: These candidates are needed before local z-height and PCB placement can be trusted.
 
 Phase 2 evidence packages:

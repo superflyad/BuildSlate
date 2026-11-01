@@ -193,6 +193,14 @@ python engineering/evidence/generate_phase1_candidate_report.py
 
 The report is written to `reports/slate-pocket-phase1-candidate-screen.txt` and preserves the current conservative decision boundary: public evidence is sufficient to initiate supplier RFQs, not to select components.
 
+Prepared supplier RFQ/RFI packets and machine-readable response templates live under `research/rfqs/`. Generate their readiness report with:
+
+```bash
+python engineering/evidence/generate_supplier_rfq_readiness_report.py
+```
+
+The packets are intentionally marked `prepared_not_sent`. Sending them, accepting an NDA, disclosing confidential information, requesting paid samples, or purchasing parts requires explicit authorization.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

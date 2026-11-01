@@ -1,0 +1,53 @@
+request:
+  packet: slate-pocket-v1r-storage
+  status: prepared_not_sent
+supplier:
+  legal_name: null
+  contact: null
+  response_date: null
+  confidentiality: public_or_nda
+device:
+  part_number: null
+  maturity: sample_qualification_production
+  source_documents: []
+  capacity_tb_raw: null
+  capacity_tb_user: null
+mechanical:
+  package_or_module_mm: {length: null, width: null, height: null}
+  mass_g: null
+  ball_map_or_connector: null
+  keepouts_and_tolerances: null
+interface_firmware:
+  interface_and_version: null
+  lane_configuration: null
+  host_and_boot_requirements: null
+  firmware_update_and_health_telemetry: null
+  security_and_encryption: null
+performance:
+  sequential_read_write: null
+  random_read_write: null
+  test_conditions: null
+  sustained_write_curve: null
+power_thermal_endurance:
+  rail_requirements: null
+  active_idle_sleep_power: null
+  startup_and_transient_current: null
+  thermal_limits_and_throttling: null
+  endurance_and_retention: null
+capacity_architecture:
+  supported_two_tb_topology: null
+  multi_device_host_requirements: null
+  aggregation_and_software_implications: null
+  four_tb_status: unsupported_roadmap_orderable
+supply:
+  sample_availability: null
+  production_status: null
+  lifecycle_years: null
+  pcn_eol_policy: null
+  moq: null
+  lead_time_weeks: null
+  pricing_basis: null
+deviations_and_unknowns: []
+supplier_attestation:
+  values_are_supplier_provided: null
+  authorized_for_public_disclosure: null

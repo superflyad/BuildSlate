@@ -52,6 +52,9 @@ gate_sources:
   configuration_gate:
     path: reports/program/configuration-resolution.yaml
     marker: "CONFIGURATION_GATE:"
+  integration_contract_gate:
+    path: reports/program/integration-contracts.yaml
+    marker: "INTEGRATION_CONTRACT_GATE:"
 
 outputs:
   program_snapshot: reports/program/buildslate-program-snapshot.yaml

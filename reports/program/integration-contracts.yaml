@@ -1,0 +1,222 @@
+INTEGRATION_CONTRACT_GATE: CONTRACTS_CONSISTENT_NOT_RELEASED
+domain_statuses:
+  mechanical: provisional
+  ecad: provisional
+  power: provisional
+  thermal: provisional
+  rf: provisional
+  firmware: planned
+  manufacturing: planned_not_authorized
+check_count: 20
+contradiction_count: 0
+checks:
+- id: mechanical_length
+  operator: equal
+  passed: true
+  left: configs/devices/slate-pocket-v1r.yaml#geometry.length_mm
+  right: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.external_mm.length
+  left_value: 180
+  right_value: 180.0
+- id: mechanical_width
+  operator: equal
+  passed: true
+  left: configs/devices/slate-pocket-v1r.yaml#geometry.width_mm
+  right: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.external_mm.width
+  left_value: 95
+  right_value: 95.0
+- id: mechanical_thickness
+  operator: equal
+  passed: true
+  left: configs/devices/slate-pocket-v1r.yaml#geometry.thickness_mm
+  right: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.external_mm.thickness
+  left_value: 9.5
+  right_value: 9.5
+- id: board_length
+  operator: equal
+  passed: true
+  left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder.rectangle_mm.length
+  right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#board.outline_mm.length
+  left_value: 78.0
+  right_value: 78.0
+- id: board_width
+  operator: equal
+  passed: true
+  left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder.rectangle_mm.width
+  right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#board.outline_mm.width
+  left_value: 55.0
+  right_value: 55.0
+- id: board_origin
+  operator: equal
+  passed: true
+  left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder.rectangle_mm
+  right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#board.origin_in_mechanical_model_mm
+  left_value:
+    x: 92.0
+    y: 12.0
+    length: 78.0
+    width: 55.0
+  right_value:
+    x: 92.0
+    y: 12.0
+- id: ecad_memory_tier
+  operator: equal
+  passed: true
+  left: configs/devices/slate-pocket-v1r.yaml#memory.capacity_gb
+  right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#metadata.modeled_memory_tier_gb
+  left_value: 128
+  right_value: 128
+- id: power_compute_sustained
+  operator: equal
+  passed: true
+  left: configs/devices/slate-pocket-v1r.yaml#compute.sustained_power_w
+  right: engineering/pcb/power-tree.yaml#loads.compute_platform.sustained_w
+  left_value: 28
+  right_value: 28.0
+- id: power_compute_peak
+  operator: equal
+  passed: true
+  left: configs/devices/slate-pocket-v1r.yaml#compute.peak_power_w
+  right: engineering/pcb/power-tree.yaml#loads.compute_platform.peak_w
+  left_value: 45
+  right_value: 45.0
+- id: charge_cap
+  operator: equal
+  passed: true
+  left: configs/devices/slate-pocket-v1r.yaml#integration_configuration.wired_charge_evt0_input_cap_w
+  right: engineering/pcb/power-tree.yaml#charging_policy.evt0_wired_input_cap_w
+  left_value: 30
+  right_value: 30
+- id: thermal_enclosure
+  operator: equal
+  passed: true
+  left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.external_mm
+  right: simulations/thermal/slate-pocket-v1r/model/model.yaml#enclosure.external_mm
+  left_value: &id001
+    length: 180.0
+    width: 95.0
+    thickness: 9.5
+  right_value:
+    length: 180.0
+    width: 95.0
+    thickness: 9.5
+- id: thermal_compute_sustained
+  operator: equal
+  passed: true
+  left: engineering/pcb/power-tree.yaml#loads.compute_platform.sustained_w
+  right: simulations/thermal/slate-pocket-v1r/model/model.yaml#heat_sources.compute_soc.sustained_w
+  left_value: 28.0
+  right_value: 28.0
+- id: thermal_storage_power
+  operator: equal
+  passed: true
+  left: engineering/pcb/power-tree.yaml#loads.storage_1tb.sustained_w
+  right: simulations/thermal/slate-pocket-v1r/model/model.yaml#heat_sources.storage_1tb_reference.sustained_w
+  left_value: 5.0
+  right_value: 5.0
+- id: rf_envelope
+  operator: equal
+  passed: true
+  left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.external_mm
+  right: engineering/rf/keepout-map/map.yaml#device_mm
+  left_value: *id001
+  right_value:
+    length: 180.0
+    width: 95.0
+    thickness: 9.5
+- id: wireless_removed_rf
+  operator: expected
+  passed: true
+  left: engineering/rf/keepout-map/map.yaml#wireless_power_reservation.evt0_state
+  right: null
+  left_value: removed
+  right_value: removed
+- id: wireless_disabled_power
+  operator: expected
+  passed: true
+  left: engineering/pcb/power-tree.yaml#charging_policy.evt0_wireless_enabled
+  right: null
+  left_value: false
+  right_value: false
+- id: firmware_memory
+  operator: equal
+  passed: true
+  left: configs/devices/slate-pocket-v1r.yaml#integration_configuration.memory_gb
+  right: validation/evt0/evt0-spec.yaml#configuration_rules.memory_tier_gb
+  left_value: 128
+  right_value: 128
+- id: firmware_storage
+  operator: equal
+  passed: true
+  left: configs/devices/slate-pocket-v1r.yaml#integration_configuration.internal_storage_tb
+  right: validation/evt0/evt0-spec.yaml#configuration_rules.storage_tier_tb
+  left_value: 1
+  right_value: 1
+- id: thermal_sensor_contract
+  operator: subset_keys
+  passed: true
+  left: validation/evt0/instrumentation.yaml#channel_groups.thermal.required
+  right: simulations/thermal/slate-pocket-v1r/model/model.yaml#sensor_map
+  left_value:
+  - TC_REAR_SOC
+  - TC_FRONT_SOC
+  - TC_REAR_BATTERY
+  - TC_FRONT_CENTER
+  - TC_REAR_CHARGER
+  - TC_EDGE_LEFT
+  - TC_EDGE_RIGHT
+  - T_AMBIENT
+  right_value:
+    TC_REAR_SOC:
+      surface: rear
+      x_mm: 130.0
+      y_mm: 40.0
+      purpose: expected_compute_hotspot
+    TC_FRONT_SOC:
+      surface: front
+      x_mm: 130.0
+      y_mm: 40.0
+      purpose: display_side_compute_hotspot
+    TC_REAR_BATTERY:
+      surface: rear
+      x_mm: 50.0
+      y_mm: 45.0
+      purpose: battery_center
+    TC_FRONT_CENTER:
+      surface: front
+      x_mm: 90.0
+      y_mm: 47.5
+      purpose: display_center
+    TC_REAR_CHARGER:
+      surface: rear
+      x_mm: 103.0
+      y_mm: 20.0
+      purpose: wired_charge_hotspot
+    TC_REAR_COIL:
+      surface: rear
+      x_mm: 45.0
+      y_mm: 46.0
+      purpose: wireless_charge_hotspot
+    TC_EDGE_LEFT:
+      surface: frame
+      x_mm: 3.0
+      y_mm: 47.5
+      purpose: grip_edge
+    TC_EDGE_RIGHT:
+      surface: frame
+      x_mm: 177.0
+      y_mm: 47.5
+      purpose: grip_edge
+    T_AMBIENT:
+      surface: chamber
+      x_mm: null
+      y_mm: null
+      purpose: ambient_reference
+- id: pilot_unit_denominator
+  operator: equal
+  passed: true
+  left: manufacturing/pilot-build-plan.yaml#lot.proposed_input_units
+  right: manufacturing/pilot-build-plan.yaml#phases.pilot.product_units
+  left_value: 100
+  right_value: 100
+contradictions: []
+caveat: Consistency means interfaces agree; it does not verify provisional values, release designs, or authorize a build.

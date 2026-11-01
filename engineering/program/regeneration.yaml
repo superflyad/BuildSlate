@@ -25,8 +25,24 @@ nodes:
       - research/supplier-responses/receipts/*.yaml
     outputs: [reports/program/configuration-resolution.yaml]
     command: [python, -m, buildslate, configuration, generate]
-  device_profile:
+  integration_contracts:
     depends_on: [configuration_resolution]
+    inputs:
+      - engineering/program/integration_contracts.yaml
+      - buildslate/contracts.py
+      - configs/devices/slate-pocket-v1r.yaml
+      - cad/slate-pocket-v1r/envelope-model/*.yaml
+      - engineering/pcb/*.yaml
+      - engineering/pcb/slate-pocket-v1r-floorplan/*.yaml
+      - simulations/thermal/slate-pocket-v1r/model/*.yaml
+      - simulations/thermal/slate-pocket-v1r/test-matrix.yaml
+      - engineering/rf/keepout-map/*.yaml
+      - validation/evt0/*.yaml
+      - manufacturing/*.yaml
+    outputs: [reports/program/integration-contracts.yaml]
+    command: [python, -m, buildslate, contracts, generate]
+  device_profile:
+    depends_on: [integration_contracts]
     inputs:
       - configs/devices/slate-pocket-v1r.yaml
       - reports/program/configuration-resolution.yaml
@@ -36,7 +52,7 @@ nodes:
     outputs: [reports/device-profile-slate-pocket-v1r.txt]
     command: [python, engineering/run_device_profile.py, --profile, configs/devices/slate-pocket-v1r.yaml, --output, reports/device-profile-slate-pocket-v1r.txt]
   cad_budget:
-    depends_on: [configuration_resolution]
+    depends_on: [integration_contracts]
     inputs:
       - reports/program/configuration-resolution.yaml
       - cad/slate-pocket-v1r/envelope-model/*.yaml
@@ -44,7 +60,7 @@ nodes:
     outputs: [reports/slate-pocket-v1r-cad-budget.txt]
     command: [python, engineering/cad_envelope/generate_v1r_cad_budget.py]
   pcb_power:
-    depends_on: [configuration_resolution]
+    depends_on: [integration_contracts]
     inputs:
       - reports/program/configuration-resolution.yaml
       - engineering/pcb/*.yaml
@@ -53,7 +69,7 @@ nodes:
     outputs: [reports/slate-pocket-v1r-pcb-power-architecture.txt]
     command: [python, engineering/pcb/generate_v1r_pcb_power_report.py]
   thermal_readiness:
-    depends_on: [configuration_resolution]
+    depends_on: [integration_contracts]
     inputs:
       - reports/program/configuration-resolution.yaml
       - simulations/thermal/slate-pocket-v1r/model/*.yaml
@@ -62,7 +78,7 @@ nodes:
     outputs: [reports/slate-pocket-v1r-thermal-model-readiness.txt]
     command: [python, simulations/thermal/slate-pocket-v1r/generate_thermal_model_readiness_report.py]
   rf_architecture:
-    depends_on: [configuration_resolution]
+    depends_on: [integration_contracts]
     inputs:
       - reports/program/configuration-resolution.yaml
       - engineering/rf/keepout-map/*.yaml
@@ -70,7 +86,7 @@ nodes:
     outputs: [reports/slate-pocket-v1r-rf-wireless-architecture.txt]
     command: [python, engineering/rf/generate_rf_architecture_report.py]
   risk_report:
-    depends_on: [configuration_resolution]
+    depends_on: [integration_contracts]
     inputs:
       - reports/program/configuration-resolution.yaml
       - engineering/risks/risk_register.yaml
@@ -79,7 +95,7 @@ nodes:
     outputs: [reports/slate-pocket-risk-register.txt]
     command: [python, engineering/risks/generate_risk_report.py]
   program_handoff:
-    depends_on: [supplier_review, configuration_resolution, cad_budget, pcb_power, thermal_readiness, rf_architecture]
+    depends_on: [supplier_review, integration_contracts, cad_budget, pcb_power, thermal_readiness, rf_architecture]
     inputs:
       - reports/program/configuration-resolution.yaml
       - reports/program/supplier-response-review.yaml
@@ -89,11 +105,12 @@ nodes:
     outputs: [reports/slate-pocket-v1r-program-readiness.txt]
     command: [python, engineering/evidence/generate_program_handoff_report.py]
   program_snapshot:
-    depends_on: [supplier_review, configuration_resolution, program_handoff, device_profile, risk_report]
+    depends_on: [supplier_review, configuration_resolution, integration_contracts, program_handoff, device_profile, risk_report]
     inputs:
       - engineering/program/program_model.yaml
       - buildslate/program.py
       - reports/program/configuration-resolution.yaml
+      - reports/program/integration-contracts.yaml
       - reports/program/supplier-response-review.yaml
       - reports/slate-pocket-v1r-program-readiness.txt
     outputs: [reports/program/buildslate-program-snapshot.yaml]

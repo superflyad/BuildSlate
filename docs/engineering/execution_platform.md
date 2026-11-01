@@ -25,6 +25,7 @@ python -m buildslate suppliers validate --domain battery --response path/to/resp
 python -m buildslate suppliers ingest --domain battery --response path/to/response.yaml --received-at 2026-11-01T12:00:00-05:00 --received-by operator@example.com
 python -m buildslate suppliers queue --generate
 python -m buildslate configuration validate
+python -m buildslate contracts validate
 python -m buildslate impact --changed configs/devices/slate-pocket-v1r.yaml
 python -m buildslate regenerate --stale --dry-run
 python -m buildslate regenerate --stale
@@ -49,6 +50,12 @@ Selected-component entries require a non-null value, a review-ready ingestion re
 `engineering/program/regeneration.yaml` defines a generator DAG from supplier inputs and configuration through device profiles, CAD, PCB/power, thermal, RF, risks, handoff, and the program snapshot. `impact` answers what a proposed path change affects. `stale` compares current input/output SHA-256 hashes with the committed state. `regenerate` executes only whitelisted repository-local commands in dependency order and refreshes the state after every successful run.
 
 The regeneration state proves only that generated files match repository inputs. It does not prove supplier claims, model accuracy, test results, or physical readiness.
+
+## Phase 2 integration contracts
+
+`engineering/program/integration_contracts.yaml` defines explicit input/output boundaries for mechanical, ECAD, power, thermal, RF, firmware, and manufacturing. Cross-domain checks bind the common envelope, board placement, memory tier, power loads, thermal sources, wireless disposition, EVT0 configuration, sensor inventory, and pilot denominator. A contradiction returns a nonzero CLI result and stops controlled regeneration before downstream reports are refreshed.
+
+The current gate is `CONTRACTS_CONSISTENT_NOT_RELEASED`: all checked interfaces agree, but every domain remains provisional, planned, or not authorized. Interface consistency is not evidence of design release or physical validation.
 
 Structured output is available as JSON or YAML where applicable. Exit code `0` means the requested operation completed; validation/input errors return `2`; `validate --all` propagates the repository validation exit code.
 

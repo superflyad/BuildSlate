@@ -1,5 +1,5 @@
 state_version: 1
-manifest_sha256: fd248e298de60fac62e9354b8db35b729339126e6d158228778442f06cfe7428
+manifest_sha256: 0d366eede874e0b9a24099f6e8a588f8f9e68ed9a3e44c78273c49b80c66e1dc
 nodes:
   supplier_review:
     inputs:
@@ -21,6 +21,31 @@ nodes:
       reports/program/supplier-response-review.yaml: c7a3941e81a65ef1023972169f80ffac7fef1adb103699b36a5622d20e9af7da
     outputs:
       reports/program/configuration-resolution.yaml: bbbfb942f2b5fb410a50532535272d35a87af5c89ee4e62dde5942b6d6da4718
+  integration_contracts:
+    inputs:
+      buildslate/contracts.py: 8e1a970f350d03465c2816dad79c7d5d7df0fe25a33cf9bc37b9eefdcf584e68
+      cad/slate-pocket-v1r/envelope-model/envelope.yaml: d894c1d9c0bac3ffe3f16fcb884e1a0e29d7ca33e3b331a64b1d15d561078006
+      cad/slate-pocket-v1r/envelope-model/keepouts.yaml: e3dba136016905f26f50bb664e19e90e7d2eeb406355cb00b198299a24102d02
+      cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml: f9a67c9ec0b46eb3d7366ca0dfda4bddfc3d5774bb2f34722eea35fc43e19eda
+      configs/devices/slate-pocket-v1r.yaml: a0e4e3bbf41e266fd55866c1c9ad436e4f498f98edc33349e2108e4db4c67ae1
+      engineering/pcb/power-tree.yaml: 0d06861e1524e1158b440961ec6d96c7dba35404b8de6af4801fc1fc35b2ac6c
+      engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml: 8d97cf5d635e423a5fea7d90b9c52b815be67d807ce5490016bc0784eb18d58b
+      engineering/program/integration_contracts.yaml: 2b2d767960ca78f44e64d2db557dfdf138b96d59ab0fed0719a777a27c61732a
+      engineering/rf/keepout-map/map.yaml: 5f94e0422a298e5a937a3955d3a248a69f6c7ee8d17e69306d1751121415ec8d
+      manufacturing/compliance-pretest-plan.yaml: 18042f3db64517b6fe1abc222a5ccf8cb8e3e14afa7581db33d48ad51a49e0c3
+      manufacturing/defect-taxonomy.yaml: d58ccf15116e7d8c5de8004043b4e3346ccb7ac0cdb2ccc717924f104a3adade
+      manufacturing/pilot-build-plan.yaml: 8bcc4d60a9ee710b524848eaeb4ab9646981874b67b1aafa17d50bbf8d77ebd4
+      manufacturing/reliability-plan.yaml: 663573060f26499e7a613f65df606b937adafa299fb77f0c7bc16853134ea8e5
+      manufacturing/supplier-dfm-response.yaml: 79eb4c2c77125a88d7b02d90ead69a749bb74b0d301254303e77cb613127cfdf
+      simulations/thermal/slate-pocket-v1r/model/model.yaml: 3aebbfd9fb27432ca9b4a7a8c3f877fc34510c13c8cc79c29e0d2f795f9c3035
+      simulations/thermal/slate-pocket-v1r/test-matrix.yaml: 989da9fb89fbc1e72e2a43ad317e10f11a50294346bf305183574234657f2cf4
+      validation/evt0/bom-strategy.yaml: 4efe93039fe301aaa34b26999e332f9d559ad6a05153bbcf79223bfcd48b4d6d
+      validation/evt0/evt0-spec.yaml: 2c1a0823ef0285d749ece9bc6741cd866f92ebce4ceb24e24b08d3dab6cdbe10
+      validation/evt0/instrumentation.yaml: 47c9e8942a533cc94c919e17581315fccd3e41ed668fe7091613460afd6c3004
+      validation/evt0/test-matrix.yaml: 695d1ab551b0fefa205fdb71f3b5eb824c305199ff939c134f07482ba6238063
+      validation/evt0/workloads.yaml: 15ee8713856cd4191b2cd27eec23545b53cdda0b6c6f6528ce2268a8d78f1d35
+    outputs:
+      reports/program/integration-contracts.yaml: dc313f672099514e49197599b871f792ce9b5144612a0c863fdc06b376927c59
   device_profile:
     inputs:
       configs/devices/slate-pocket-v1r.yaml: a0e4e3bbf41e266fd55866c1c9ad436e4f498f98edc33349e2108e4db4c67ae1
@@ -93,10 +118,11 @@ nodes:
   program_snapshot:
     inputs:
       buildslate/program.py: a50bcf1fb4137086ccc42fc9ec4c4b57126515a4fa506ab1e5892d7fd75ab40b
-      engineering/program/program_model.yaml: b31976bc485e780561aa607808cbc00d9cffb3728aff7ae7a536094714de7d3f
+      engineering/program/program_model.yaml: 333e36deeece9fb2bfb912837a206b9d7bfa69716f517d71d983eca09793f65a
       reports/program/configuration-resolution.yaml: bbbfb942f2b5fb410a50532535272d35a87af5c89ee4e62dde5942b6d6da4718
+      reports/program/integration-contracts.yaml: dc313f672099514e49197599b871f792ce9b5144612a0c863fdc06b376927c59
       reports/program/supplier-response-review.yaml: c7a3941e81a65ef1023972169f80ffac7fef1adb103699b36a5622d20e9af7da
       reports/slate-pocket-v1r-program-readiness.txt: 0cf93e775f1fba2d62e9ea5e3272a325d25807013809d02fdcab42b8d82fcb8c
     outputs:
-      reports/program/buildslate-program-snapshot.yaml: c61c5157b0ce2565f826832a05c3eb38eddb8757ed66b1e1cd35c831fd4ad566
+      reports/program/buildslate-program-snapshot.yaml: 073a7356f203defd525a38e6931613b2bbc55a63c9de413d953006ad7073bed2
 caveat: Hashes establish deterministic staleness only; they do not verify engineering evidence or physical results.

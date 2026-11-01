@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from .configuration import ConfigurationResolver
+from .contracts import IntegrationContractRepository
 from .io import dump_json, dump_yaml
 from .program import DEFAULT_REPO_ROOT, ProgramRepository, compare_yaml
 from .regeneration import RegenerationEngine
@@ -206,6 +207,27 @@ def command_regenerate(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_contracts_validate(args: argparse.Namespace) -> int:
+    result = IntegrationContractRepository(Path(args.repo_root)).evaluate()
+    if args.format in {"json", "yaml"}:
+        _emit(result, args.format)
+    else:
+        print(f"gate: {result['INTEGRATION_CONTRACT_GATE']}")
+        print(f"domains: {len(result['domain_statuses'])}")
+        print(f"checks: {result['check_count']}")
+        print(f"contradictions: {result['contradiction_count']}")
+    return 2 if result["contradictions"] else 0
+
+
+def command_contracts_generate(args: argparse.Namespace) -> int:
+    repository = IntegrationContractRepository(Path(args.repo_root))
+    destination = repository.generate()
+    result = repository.evaluate()
+    print(f"Wrote {destination.relative_to(repository.repo_root)}")
+    print(f"gate: {result['INTEGRATION_CONTRACT_GATE']}")
+    return 2 if result["contradictions"] else 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="buildslate", description="BuildSlate engineering execution CLI")
     parser.add_argument("--repo-root", default=str(DEFAULT_REPO_ROOT), help="BuildSlate repository root")
@@ -280,6 +302,14 @@ def build_parser() -> argparse.ArgumentParser:
     regenerate_selection.add_argument("--stale", action="store_true", help="regenerate all hash-stale nodes")
     regenerate_parser.add_argument("--dry-run", action="store_true")
     regenerate_parser.set_defaults(handler=command_regenerate)
+
+    contracts_parser = subparsers.add_parser("contracts", help="validate Phase 2 integration contracts")
+    contract_commands = contracts_parser.add_subparsers(dest="contracts_command", required=True)
+    contracts_validate = contract_commands.add_parser("validate", help="run cross-domain consistency checks")
+    contracts_validate.add_argument("--format", choices=("text", "json", "yaml"), default="text")
+    contracts_validate.set_defaults(handler=command_contracts_validate)
+    contracts_generate = contract_commands.add_parser("generate", help="generate the integration-contract report")
+    contracts_generate.set_defaults(handler=command_contracts_generate)
     return parser
 
 

@@ -1,0 +1,60 @@
+metadata:
+  schema_version: 1
+  baseline: slate-pocket-v1r
+  authority: Contracts detect interface drift; provisional inputs remain provisional and do not become verified evidence.
+
+domains:
+  mechanical:
+    status: provisional
+    inputs: [configs/devices/slate-pocket-v1r.yaml, research/evidence/battery/pack-envelope.yaml]
+    outputs: [cad/slate-pocket-v1r/envelope-model/envelope.yaml, cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml]
+  ecad:
+    status: provisional
+    inputs: [cad/slate-pocket-v1r/envelope-model/envelope.yaml, configs/devices/slate-pocket-v1r.yaml]
+    outputs: [engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml]
+  power:
+    status: provisional
+    inputs: [configs/devices/slate-pocket-v1r.yaml, engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml]
+    outputs: [engineering/pcb/power-tree.yaml]
+  thermal:
+    status: provisional
+    inputs: [cad/slate-pocket-v1r/envelope-model/envelope.yaml, engineering/pcb/power-tree.yaml]
+    outputs: [simulations/thermal/slate-pocket-v1r/model/model.yaml, simulations/thermal/slate-pocket-v1r/test-matrix.yaml]
+  rf:
+    status: provisional
+    inputs: [cad/slate-pocket-v1r/envelope-model/envelope.yaml, engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml]
+    outputs: [engineering/rf/keepout-map/map.yaml]
+  firmware:
+    status: planned
+    inputs: [configs/devices/slate-pocket-v1r.yaml, engineering/pcb/power-tree.yaml]
+    outputs: [validation/evt0/evt0-spec.yaml, validation/evt0/instrumentation.yaml]
+  manufacturing:
+    status: planned_not_authorized
+    inputs: [validation/evt0/evt0-spec.yaml, manufacturing/defect-taxonomy.yaml]
+    outputs: [manufacturing/pilot-build-plan.yaml, manufacturing/supplier-dfm-response.yaml]
+
+checks:
+  - {id: mechanical_length, operator: equal, left: configs/devices/slate-pocket-v1r.yaml#geometry.length_mm, right: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.external_mm.length}
+  - {id: mechanical_width, operator: equal, left: configs/devices/slate-pocket-v1r.yaml#geometry.width_mm, right: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.external_mm.width}
+  - {id: mechanical_thickness, operator: equal, left: configs/devices/slate-pocket-v1r.yaml#geometry.thickness_mm, right: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.external_mm.thickness}
+  - {id: board_length, operator: equal, left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder.rectangle_mm.length, right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#board.outline_mm.length}
+  - {id: board_width, operator: equal, left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder.rectangle_mm.width, right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#board.outline_mm.width}
+  - {id: board_origin, operator: equal, left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder.rectangle_mm, right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#board.origin_in_mechanical_model_mm, keys: [x, y]}
+  - {id: ecad_memory_tier, operator: equal, left: configs/devices/slate-pocket-v1r.yaml#memory.capacity_gb, right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#metadata.modeled_memory_tier_gb}
+  - {id: power_compute_sustained, operator: equal, left: configs/devices/slate-pocket-v1r.yaml#compute.sustained_power_w, right: engineering/pcb/power-tree.yaml#loads.compute_platform.sustained_w}
+  - {id: power_compute_peak, operator: equal, left: configs/devices/slate-pocket-v1r.yaml#compute.peak_power_w, right: engineering/pcb/power-tree.yaml#loads.compute_platform.peak_w}
+  - {id: charge_cap, operator: equal, left: configs/devices/slate-pocket-v1r.yaml#integration_configuration.wired_charge_evt0_input_cap_w, right: engineering/pcb/power-tree.yaml#charging_policy.evt0_wired_input_cap_w}
+  - {id: thermal_enclosure, operator: equal, left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.external_mm, right: simulations/thermal/slate-pocket-v1r/model/model.yaml#enclosure.external_mm}
+  - {id: thermal_compute_sustained, operator: equal, left: engineering/pcb/power-tree.yaml#loads.compute_platform.sustained_w, right: simulations/thermal/slate-pocket-v1r/model/model.yaml#heat_sources.compute_soc.sustained_w}
+  - {id: thermal_storage_power, operator: equal, left: engineering/pcb/power-tree.yaml#loads.storage_1tb.sustained_w, right: simulations/thermal/slate-pocket-v1r/model/model.yaml#heat_sources.storage_1tb_reference.sustained_w}
+  - {id: rf_envelope, operator: equal, left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.external_mm, right: engineering/rf/keepout-map/map.yaml#device_mm}
+  - {id: wireless_removed_rf, operator: expected, left: engineering/rf/keepout-map/map.yaml#wireless_power_reservation.evt0_state, expected: removed}
+  - {id: wireless_disabled_power, operator: expected, left: engineering/pcb/power-tree.yaml#charging_policy.evt0_wireless_enabled, expected: false}
+  - {id: firmware_memory, operator: equal, left: configs/devices/slate-pocket-v1r.yaml#integration_configuration.memory_gb, right: validation/evt0/evt0-spec.yaml#configuration_rules.memory_tier_gb}
+  - {id: firmware_storage, operator: equal, left: configs/devices/slate-pocket-v1r.yaml#integration_configuration.internal_storage_tb, right: validation/evt0/evt0-spec.yaml#configuration_rules.storage_tier_tb}
+  - {id: thermal_sensor_contract, operator: subset_keys, left: validation/evt0/instrumentation.yaml#channel_groups.thermal.required, right: simulations/thermal/slate-pocket-v1r/model/model.yaml#sensor_map}
+  - {id: pilot_unit_denominator, operator: equal, left: manufacturing/pilot-build-plan.yaml#lot.proposed_input_units, right: manufacturing/pilot-build-plan.yaml#phases.pilot.product_units}
+
+outputs:
+  report: reports/program/integration-contracts.yaml
+

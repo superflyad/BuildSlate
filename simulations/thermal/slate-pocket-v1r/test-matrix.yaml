@@ -1,0 +1,129 @@
+metadata:
+  device: slate-pocket-v1r
+  status: planned_pre_hardware
+  caveat: Limits are engineering screening gates; supplier safety limits and approved lab procedures always control.
+
+common_instrumentation:
+  sample_rate_hz: 1
+  channels:
+    - All thermocouples from model/model.yaml sensor_map.
+    - Platform-reported junction sensors with raw logging where available.
+    - Battery cell/pack temperature, voltage, current, and state of charge.
+    - Charger input/output voltage and current.
+    - Workload throughput, clocks, throttling state, and errors.
+  setup_controls:
+    - Calibrate temperature channels before the run.
+    - Record unit serial, build, firmware, thermal stack, battery, and instrumentation configuration.
+    - Stabilize at ambient before applying workload.
+    - Stop on any supplier, lab-safety, protection, swelling, odor, smoke, or abnormal-voltage limit.
+
+screening_limits:
+  maximum_skin_c: 43.0
+  skin_caution_c: 40.0
+  battery_test_abort_c: 40.0
+  battery_limit_status: conservative_pre_supplier_test_abort_not_product_limit
+  maximum_uncommanded_reset_count: 0
+  maximum_sensor_fault_count: 0
+
+cases:
+  T01_idle_open_air_25c:
+    category: baseline
+    state: planned_pre_hardware
+    ambient_c: 25
+    condition: open_air_landscape
+    workload: idle_stabilization
+    duration_min: 30
+    charging: off
+    pass_focus: stable_baseline_and_sensor_sanity
+  T02_sustained_ai_open_air_25c:
+    category: sustained
+    state: planned_pre_hardware
+    ambient_c: 25
+    condition: open_air_landscape
+    workload: measured_target_workload_up_to_28w_compute
+    duration_min: 60
+    charging: off
+    pass_focus: skin_battery_junction_steady_state_and_throughput
+  T03_peak_ai_burst_25c:
+    category: peak
+    state: planned_pre_hardware
+    ambient_c: 25
+    condition: open_air_landscape
+    workload: measured_peak_burst_up_to_45w_compute
+    duration_s: 60
+    charging: off
+    pass_focus: transient_rise_droop_throttle_and_recovery
+  T04_sustained_ai_hot_ambient_35c:
+    category: hot_ambient
+    state: planned_pre_hardware
+    ambient_c: 35
+    condition: open_air_landscape
+    workload: controlled_ramp_toward_target_workload
+    duration_min: 60
+    charging: off
+    pass_focus: throttle_before_skin_or_battery_abort_limit
+  T05_handheld_sustained_ramp:
+    category: handheld
+    state: planned_pre_hardware
+    ambient_c: 25
+    condition: defined_grip_fixture_then_human_factors_protocol
+    workload: step_ramp_not_immediate_28w
+    duration_min: 30
+    charging: off
+    pass_focus: grip_temperature_and_control_stability
+  T06_pocket_fault_containment:
+    category: pocket
+    state: prohibited_until_controls_validated
+    ambient_c: 25
+    condition: instrumented_pocket_fixture
+    workload: verify_detection_and_power_reduction_only
+    duration_min: 15
+    charging: off
+    pass_focus: sustained_ai_is_not_allowed_to_continue
+  T07_bag_fault_containment:
+    category: bag
+    state: prohibited_until_controls_validated
+    ambient_c: 25
+    condition: instrumented_insulated_bag_fixture
+    workload: verify_detection_and_power_reduction_only
+    duration_min: 15
+    charging: off
+    pass_focus: high_power_operation_and_charging_are_inhibited
+  T08_wired_charge_evt0_cap:
+    category: wired_charging
+    state: blocked_on_selected_battery_and_charger
+    ambient_c: 25
+    condition: open_air_landscape
+    workload: idle
+    duration: complete_charge_profile_or_supplier_defined_stop
+    charging: wired_input_up_to_30w_and_lower_supplier_limit_controls
+    pass_focus: charge_curve_loss_map_skin_battery_connector_and_protection
+  T09_wired_charge_compute_overlap_guard:
+    category: charging_overlap
+    state: prohibited_until_controls_validated
+    ambient_c: 25
+    condition: open_air_landscape
+    workload: control_verification_only
+    duration_min: 15
+    charging: verify_input_derate_or_charge_suspension
+    pass_focus: full_power_charge_and_sustained_ai_cannot_coexist
+  T10_wireless_charge:
+    category: wireless_charging
+    state: blocked_wireless_disabled_for_evt0
+    ambient_c: 25
+    condition: open_air_with_alignment_fixture
+    workload: idle_then_controlled_overlap_after_separate_approval
+    duration: supplier_defined
+    charging: disabled
+    pass_focus: coil_ferrite_alignment_foreign_object_loss_and_skin_map
+  T11_sunlight_display_hot_ambient:
+    category: sunlight
+    state: blocked_on_approved_solar_fixture
+    ambient_c: 35
+    condition: calibrated_solar_load_fixture
+    workload: display_high_brightness_plus_controlled_compute_ramp
+    duration_min: 30
+    charging: off
+    pass_focus: display_load_solar_absorption_skin_limit_and_throttle
+
+release_rule: No prohibited or blocked case may be executed until its named prerequisites and lab safety review are complete.

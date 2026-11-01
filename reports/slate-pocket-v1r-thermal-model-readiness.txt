@@ -1,0 +1,47 @@
+Slate Pocket v1R Thermal Model and Test Readiness
+===================================================
+
+Geometry and source map:
+  enclosure: 180.0 x 95.0 x 9.5 mm
+  mapped heat sources: 6
+  mapped temperature sensors: 9
+  sources outside enclosure: 0
+  unset material/interface/boundary values: 25
+  solver status: not_built
+
+Thermal source boundaries:
+  compute target: 28.0 W sustained / 45.0 W peak (not measured)
+  128 GB memory estimate: 12.0 W sustained / 16.0 W peak
+  wired charger losses: unset pending selected charger and measured loss map
+  wireless charger losses: unset; wireless disabled for EVT0
+
+Test matrix:
+  total cases: 11
+  categories: bag, baseline, charging_overlap, handheld, hot_ambient, peak, pocket, sunlight, sustained, wired_charging, wireless_charging
+  missing required categories: none
+  state blocked_on_approved_solar_fixture: 1
+  state blocked_on_selected_battery_and_charger: 1
+  state blocked_wireless_disabled_for_evt0: 1
+  state planned_pre_hardware: 5
+  state prohibited_until_controls_validated: 3
+
+Control gates:
+  maximum skin screen: 43.0 C
+  skin caution: 40.0 C
+  pre-supplier battery test abort: 40.0 C
+  pocket sustained AI: PROHIBITED_UNTIL_CONTROLS_VALIDATED
+  bag high-power operation: PROHIBITED_UNTIL_CONTROLS_VALIDATED
+  full-power charge plus sustained AI: PROHIBITED_UNTIL_VALIDATED
+  EVT0 wireless charging: DISABLED
+
+Correlation gates:
+  exterior steady-state target: +/-2 C by mapped sensor
+  internal steady-state target: +/-3 C where placement is controlled
+  time-to-40 C target: +/-15%
+  steady-state model energy imbalance target: below 3%
+  validation cases must remain separate from calibration cases
+
+THERMAL_MODEL_DECISION: BLOCKED_ON_TRACEABLE_PROPERTIES_SOLVER_BUILD_AND_INSTRUMENTED_HARDWARE
+
+Caveat:
+  This package defines a model and correlation program; it does not prove CFD/FEA completion, skin-temperature compliance, sustained performance, charging safety, or prototype readiness.

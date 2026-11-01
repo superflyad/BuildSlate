@@ -174,8 +174,8 @@ packages:
     title: Build a geometry-specific thermal model and correlation plan
     phase: 2
     priority: critical
-    status: missing
-    owner: unassigned
+    status: planned
+    owner: BuildSlate engineering
     depends_on:
       - battery_supplier_package
       - compute_memory_platform_package

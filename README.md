@@ -225,6 +225,18 @@ python engineering/pcb/generate_v1r_pcb_power_report.py
 
 The report is an electrical risk and input-gap screen. It is not a schematic, routed-board result, charging authorization, or proof of electrical feasibility.
 
+## Slate Pocket v1R Thermal Model and Correlation Plan
+
+The thermal package under `simulations/thermal/slate-pocket-v1r/` links provisional CAD/ECAD heat-source locations to a nine-channel sensor map, eleven operating and fault-containment cases, explicit screening limits, and solver-to-hardware correlation gates. Material properties, contacts, and boundary coefficients remain unset rather than being invented.
+
+Generate the readiness report with:
+
+```bash
+python simulations/thermal/slate-pocket-v1r/generate_thermal_model_readiness_report.py
+```
+
+The package defines how a future solver model and EVT unit will be tested and correlated. It does not claim a completed simulation or validated thermal performance.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

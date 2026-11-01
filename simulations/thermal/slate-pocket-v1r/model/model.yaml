@@ -1,0 +1,110 @@
+metadata:
+  device: slate-pocket-v1r
+  status: provisional_geometry_linked_model_definition
+  solver_status: not_built
+  caveat: Source locations are tied to provisional CAD/ECAD blocks; material, interface, and boundary values remain unset until evidence exists.
+
+enclosure:
+  external_mm: {length: 180.0, width: 95.0, thickness: 9.5}
+  source: cad/slate-pocket-v1r/envelope-model/envelope.yaml
+
+heat_sources:
+  compute_soc:
+    planform_mm: {x: 120.0, y: 30.0, length: 20.0, width: 20.0}
+    sustained_w: 28.0
+    peak_w: 45.0
+    evidence_class: locked_target_not_measured
+    source: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#compute_soc
+  memory_128gb_group:
+    planform_mm: {x: 102.0, y: 31.0, length: 56.0, width: 22.0}
+    sustained_w: 12.0
+    peak_w: 16.0
+    evidence_class: estimate
+    source: engineering/pcb/power-tree.yaml#memory_128gb
+  storage_1tb_reference:
+    planform_mm: {x: 159.0, y: 30.0, length: 7.5, width: 13.0}
+    sustained_w: 5.0
+    peak_w: 7.0
+    evidence_class: estimate
+    source: engineering/pcb/power-tree.yaml#storage_1tb
+  battery_charger:
+    planform_mm: {x: 94.0, y: 14.0, length: 18.0, width: 12.0}
+    sustained_w: null
+    peak_w: null
+    evidence_class: requires_selected_charger_loss_map
+  display:
+    planform_mm: {x: 3.0, y: 3.0, length: 174.0, width: 89.0}
+    sustained_w: 3.5
+    peak_w: 6.0
+    evidence_class: profile_and_estimate
+  wireless_charging:
+    planform_mm: {x: 16.0, y: 17.0, length: 58.0, width: 58.0}
+    sustained_w: null
+    peak_w: null
+    evidence_class: disabled_pending_coil_and_loss_map
+
+temperature_sensitive_regions:
+  battery_pack:
+    planform_mm: {x: 10.0, y: 12.0, length: 80.0, width: 66.74}
+    limit_source: selected_cell_and_pack_supplier_required
+  rear_skin_compute:
+    planform_mm: {x: 112.0, y: 22.0, length: 48.0, width: 40.0}
+    screening_limit_c: 43.0
+  grip_edges:
+    planform_mm: {x: 3.0, y: 3.0, length: 174.0, width: 89.0}
+    note: Resolve left, right, top, and bottom edge temperatures separately in the model and test map.
+
+material_regions:
+  display_stack:
+    geometry_source: cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml
+    properties: null
+    status: supplier_module_stack_required
+  aluminum_frame:
+    geometry_source: configs/devices/slate-pocket-v1r.yaml#materials
+    properties: null
+    status: alloy_temper_finish_and_geometry_required
+  rear_glass_window:
+    geometry_source: configs/devices/slate-pocket-v1r.yaml#materials
+    properties: null
+    status: composition_thickness_coating_and_bondline_required
+  thermal_spreader:
+    geometry_source: cad/slate-pocket-v1r/envelope-model/envelope.yaml#thermal_spreader_placeholder
+    properties: null
+    status: supplier_performance_map_and_orientation_required
+  battery_pack:
+    geometry_source: cad/slate-pocket-v1r/envelope-model/envelope.yaml#battery_reference
+    properties: null
+    status: complete_pack_thermal_properties_required
+
+interfaces:
+  soc_to_tim: {bondline_mm: null, contact_pressure_kpa: null, resistance_m2k_w: null, status: unset}
+  tim_to_spreader: {bondline_mm: null, contact_pressure_kpa: null, resistance_m2k_w: null, status: unset}
+  spreader_to_frame: {bondline_mm: null, contact_pressure_kpa: null, resistance_m2k_w: null, status: unset}
+  battery_to_structure: {bondline_mm: null, contact_pressure_kpa: null, resistance_m2k_w: null, status: unset}
+  rear_cover_bond: {bondline_mm: null, contact_pressure_kpa: null, resistance_m2k_w: null, status: unset}
+
+boundary_conditions:
+  convection_coefficients_w_m2k: null
+  radiation_emissivity_by_surface: null
+  hand_contact_map: null
+  pocket_and_bag_contact_properties: null
+  solar_load_w_m2: null
+  status: chamber_and_use_condition_calibration_required
+
+sensor_map:
+  TC_REAR_SOC: {surface: rear, x_mm: 130.0, y_mm: 40.0, purpose: expected_compute_hotspot}
+  TC_FRONT_SOC: {surface: front, x_mm: 130.0, y_mm: 40.0, purpose: display_side_compute_hotspot}
+  TC_REAR_BATTERY: {surface: rear, x_mm: 50.0, y_mm: 45.0, purpose: battery_center}
+  TC_FRONT_CENTER: {surface: front, x_mm: 90.0, y_mm: 47.5, purpose: display_center}
+  TC_REAR_CHARGER: {surface: rear, x_mm: 103.0, y_mm: 20.0, purpose: wired_charge_hotspot}
+  TC_REAR_COIL: {surface: rear, x_mm: 45.0, y_mm: 46.0, purpose: wireless_charge_hotspot}
+  TC_EDGE_LEFT: {surface: frame, x_mm: 3.0, y_mm: 47.5, purpose: grip_edge}
+  TC_EDGE_RIGHT: {surface: frame, x_mm: 177.0, y_mm: 47.5, purpose: grip_edge}
+  T_AMBIENT: {surface: chamber, x_mm: null, y_mm: null, purpose: ambient_reference}
+
+model_release_requirements:
+  - Replace all null material, interface, and boundary properties with traceable sources.
+  - Import released mechanical solids and ECAD copper/component geometry.
+  - Map measured workload power and charging losses to physical sources.
+  - Complete mesh, convergence, energy-balance, sensitivity, and peer reviews.
+  - Correlate against instrumented hardware before using the model for design signoff.

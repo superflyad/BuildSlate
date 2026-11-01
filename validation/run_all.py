@@ -32,6 +32,7 @@ VALIDATION_CHECKS = (
     "validation/validate_supplier_rfq_packages.py",
     "validation/validate_v1r_cad_integration_model.py",
     "validation/validate_v1r_pcb_power_architecture.py",
+    "validation/validate_v1r_thermal_model_plan.py",
 )
 
 

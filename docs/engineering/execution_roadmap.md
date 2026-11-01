@@ -4,7 +4,7 @@
 
 Move Slate Pocket v1R from a screening recovery profile to an evidence-backed prototype decision without allowing generated reports to imply more maturity than the underlying evidence supports.
 
-The current baseline is `slate-pocket-v1r`: 9.5 mm thick, 6000 mAh, 512 GB memory, 4 TB storage, 28 W sustained compute, and 45 W peak compute. The profile has a conditional physical pass, but every headline target remains subject to supplier, CAD, electrical, thermal, RF, manufacturing, and prototype evidence.
+The locked target baseline is `slate-pocket-v1r`: 9.5 mm thick, 6000 mAh, 512 GB aspirational memory, 4 TB target storage, 28 W sustained compute, and 45 W peak compute. Evidence-driven operational planning now uses the 128 GB memory fallback, one 1 TB internal storage reference with a modular/external path toward the 2 TB fallback, an 80 TOPS public compute reference, a 30 W EVT0 wired-input cap, no EVT0 wireless charging, and deferred cellular. These are planning inputs, not selected or validated components.
 
 ## Operating rules
 

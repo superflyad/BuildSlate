@@ -6,7 +6,7 @@ Executive risk summary:
   purpose: rank fragile assumptions, physical gate failures, recovery tradeoffs, and thermal consequence findings as engineering risks
   total risks: 13
   severity counts: CRITICAL=6, HIGH=5, MEDIUM=2, LOW=0
-  status counts: blocked=6, open=6, monitoring=1, mitigated=0, accepted=0
+  status counts: blocked=7, open=5, monitoring=0, mitigated=1, accepted=0
   highest ranked risk: memory_packaging_512gb - CRITICAL - score=14 (likelihood 4 x impact 3 + maturity penalty 2)
   register source: engineering\risks\risk_register.yaml
 
@@ -53,7 +53,7 @@ Top 10 risks:
   7. storage_packaging_4tb - HIGH - score=11 (likelihood 3 x impact 3 + maturity penalty 2)
      title: 4 TB storage packaging
      subsystem: storage
-     status: open
+     status: blocked
      profile_scope: both
   8. skin_temperature_target_43c - HIGH - score=10 (likelihood 3 x impact 3 + maturity penalty 1)
      title: 43 C skin-temperature target
@@ -73,7 +73,7 @@ Top 10 risks:
 
 Blocked/critical risks:
   - memory_packaging_512gb - CRITICAL - blocked - score=14 (likelihood 4 x impact 3 + maturity penalty 2)
-    why it matters: The memory target can drive package area, routing layers, heat, power, sourcing, and local AI runtime claims.
+    why it matters: The 512 GB aspiration is rejected as a first-build configuration. Risk remains blocked until the 128 GB fallback topology is supplier-qualified and routed.
   - npu_100_tops_sustained - CRITICAL - blocked - score=14 (likelihood 4 x impact 3 + maturity penalty 2)
     why it matters: TOPS alone does not prove sustained inference performance, memory fit, bandwidth, or thermal viability in the pocket form factor.
   - sustained_compute_power - CRITICAL - blocked - score=14 (likelihood 3 x impact 4 + maturity penalty 2)
@@ -84,6 +84,8 @@ Blocked/critical risks:
     why it matters: Physical recovery can improve screening margins without proving assembly yield, serviceability, or production repeatability.
   - thickness_stackup_margin - CRITICAL - blocked - score=13 (likelihood 3 x impact 4 + maturity penalty 1)
     why it matters: v1 was blocked by thickness consumption, and v1R adds thickness as a recovery lever rather than proving local z-height clearance.
+  - storage_packaging_4tb - HIGH - blocked - score=11 (likelihood 3 x impact 3 + maturity penalty 2)
+    why it matters: The 4 TB internal target is unsupported by reviewed mobile packages and is rejected as the first-build configuration.
 
 All risk entries grouped by subsystem:
   battery:
@@ -110,7 +112,7 @@ All risk entries grouped by subsystem:
   charging:
     - wireless_charging_packaging: Wireless charging packaging
       severity: MEDIUM
-      status: monitoring
+      status: mitigated
       profile_scope: both
       likelihood: high (3)
       impact: medium (2)
@@ -126,7 +128,7 @@ All risk entries grouped by subsystem:
       - wireless_charging_enabled
       - device_thickness_mm
       notes:
-        Wireless charging adds z-height, heat, shielding, and RF/material coupling that can conflict with thin-package recovery.
+        EVT0 exposure is mitigated by feature removal. Product-level risk remains if wireless charging is reintroduced.
   compute:
     - npu_100_tops_sustained: 100 TOPS sustained NPU claim
       severity: CRITICAL
@@ -231,7 +233,7 @@ All risk entries grouped by subsystem:
       - memory_capacity_gb
       - sustained_compute_w
       notes:
-        The memory target can drive package area, routing layers, heat, power, sourcing, and local AI runtime claims.
+        The 512 GB aspiration is rejected as a first-build configuration. Risk remains blocked until the 128 GB fallback topology is supplier-qualified and routed.
   pcb:
     - pcb_routing_density: PCB routing density
       severity: HIGH
@@ -294,7 +296,7 @@ All risk entries grouped by subsystem:
   storage:
     - storage_packaging_4tb: 4 TB storage packaging
       severity: HIGH
-      status: open
+      status: blocked
       profile_scope: both
       likelihood: high (3)
       impact: high (3)
@@ -309,7 +311,7 @@ All risk entries grouped by subsystem:
       related assumptions:
       - storage_capacity_tb
       notes:
-        Multi-TB storage creates package-height, thermal, cost, and sourcing risk inside the recovered envelope.
+        The 4 TB internal target is unsupported by reviewed mobile packages and is rejected as the first-build configuration.
   thermal:
     - skin_temperature_target_43c: 43 C skin-temperature target
       severity: HIGH
@@ -418,8 +420,8 @@ Evidence required:
 
 Mitigation summary:
   - memory_packaging_512gb:
-    - Replace capacity target with supplier-backed package count, height, bandwidth, and power options.
-    - Evaluate smaller memory configurations before coupling feasibility to 512 GB.
+    - Use the 128 GB fallback for integration and EVT0 planning.
+    - Require supplier-backed package count, height, bandwidth, power, and routing evidence before qualification.
   - npu_100_tops_sustained:
     - Separate peak marketing TOPS from sustained local workload performance in reports.
     - Require supplier disclosure and measured workloads before using the target as engineering evidence.
@@ -436,8 +438,8 @@ Mitigation summary:
     - Replace placeholder z-height allocations with CAD stackup and supplier package drawings.
     - Hold v1R thickness as provisional until tolerance stack and local zone conflicts are resolved.
   - storage_packaging_4tb:
-    - Check package height, sustained write heat, availability, and cost against the pocket board area.
-    - Keep lower-capacity storage variants available during recovery screening.
+    - Use one 1 TB embedded package as the integration geometry reference.
+    - Satisfy the approved 2 TB product fallback through a verified second device or modular/external path.
   - skin_temperature_target_43c:
     - Treat 43 C as a throttle-policy boundary until prototype thermal maps exist.
     - Screen hot ambient, hand contact, charging overlap, and pocket/bag operating states as separate limits.
@@ -454,8 +456,8 @@ Mitigation summary:
     - Reserve antenna keepouts and RF-transparent windows before finalizing chassis material or charging layout.
     - Validate coexistence between rear material, wireless charging, frame conduction, and antenna zones.
   - wireless_charging_packaging:
-    - Validate coil, ferrite, rear material, alignment, and charging heat as a coupled package.
-    - Consider making wireless charging optional if thickness or thermal margin remains blocked.
+    - Remove wireless charging from EVT0 and reserve the rear zone only for future study.
+    - Require a passing stack, selected standard/profile, supplier module, safety/thermal/RF validation, and certification plan before re-entry.
 
 Register caveat:
   This is a screening-level risk register, not formal FMEA, validation evidence, supplier approval, or production readiness evidence.

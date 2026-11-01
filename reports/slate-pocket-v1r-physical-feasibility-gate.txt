@@ -11,10 +11,10 @@ Scope:
 Target inputs:
   display: 7.5 in
   battery: 6000 mAh
-  memory: 512 GB RAM
-  storage: 4 TB
+  memory: 128 GB RAM
+  storage: 1 TB
   cooling: dual-zone vapor chamber, graphite spreaders, graphene frame conduction, PCM beneath NPU and RAM
-  NPU: 100 TOPS
+  NPU: 80 TOPS
   target mass: 250 g
   target thickness: 9.5 mm
 
@@ -66,12 +66,17 @@ Recovery profile notes:
   - Added usable internal volume is increased by 11970 mm3 per the recovery planner's 9.5 mm thickness scenario.
   - Thickness target increases from 8.8 mm to 9.5 mm.
   - The 6000 mAh capacity target is retained only as an unvalidated high-density battery assumption.
+  - The operational memory tier is the approved 128 GB fallback; 512 GB remains an unsupported aspiration.
+  - The operational internal-storage reference is 1 TB; the approved 2 TB product fallback requires a modular or external second tier.
+  - The operational NPU reference is the public 80 TOPS INT8 X2 figure, not a selected or sustained-performance claim.
+  - Wired charging is capped at 30 W for EVT0 planning pending supplier limits; wireless charging is removed from EVT0.
 
 Known remaining risks:
   - Reduced battery volume may require unavailable cell energy density or a later runtime/capacity tradeoff.
   - Added thickness has not been CAD validated against industrial design, camera, RF, sealing, or ergonomics.
   - Passive thermal target remains unproven at 28 W sustained compute.
   - Supplier package drawings and selected components are still required before manufacturability claims.
+  - The 128 GB memory and 1 TB storage integration values are planning fallbacks, not qualified component selections.
 
 Required evidence before next phase:
   - CAD-derived internal volume allocation with keepouts, flexes, shields, fasteners, seals, and service allowances.

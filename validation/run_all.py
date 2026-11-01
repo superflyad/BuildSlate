@@ -36,6 +36,8 @@ VALIDATION_CHECKS = (
     "validation/validate_v1r_rf_wireless_architecture.py",
     "validation/validate_evt0_execution_package.py",
     "validation/validate_manufacturing_readiness_package.py",
+    "validation/validate_v1r_fallback_propagation.py",
+    "validation/validate_program_handoff.py",
 )
 
 

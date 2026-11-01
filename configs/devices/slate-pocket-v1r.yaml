@@ -80,8 +80,12 @@ mass_targets:
 battery:
   capacity_mah: 6000
   nominal_voltage_v: 3.85
-  charging_wired_w: 100
-  charging_wireless_w: 50
+  charging_wired_target_w: 100
+  charging_wired_w: 30
+  charging_wired_status: provisional_EVT0_input_cap_not_supplier_authorized
+  charging_wireless_target_w: 50
+  charging_wireless_w: 0
+  charging_wireless_status: removed_from_EVT0_after_z_height_and_certification_screen
   physical_volume_mm3: 28824
   recovery_volume_delta_mm3: -12000
   recovery_thickness_delta_mm: -0.35
@@ -96,17 +100,26 @@ display:
 compute:
   sustained_power_w: 28
   peak_power_w: 45
-  npu_tops: 100
+  npu_tops: 80
+  npu_tops_aspirational: 100
+  screening_reference: qualcomm_snapdragon_x2_elite_extreme_public_brief
+  selected_platform: null
 
 memory:
-  capacity_gb: 512
+  capacity_gb: 128
   gb_per_package: 32
-  bandwidth_gbps: 2048
+  bandwidth_gbps: 1824
+  aspirational_target_gb: 512
+  integration_status: locked_fallback_planning_tier_not_qualified_topology
 
 storage:
-  capacity_tb: 4
-  tb_per_package: 2
+  capacity_tb: 1
+  tb_per_package: 1
   active_power_w: 5
+  target_tb: 4
+  approved_product_fallback_tb: 2
+  remaining_fallback_capacity_strategy: modular_or_external
+  integration_status: public_single_package_geometry_reference_not_selected
 
 thermal:
   sustained_w: 28
@@ -139,7 +152,24 @@ runtime:
   model_params_billions: 70
   quantization_bits: 4
   context_tokens: 32768
-  available_memory_gb: 512
+  available_memory_gb: 128
+
+integration_configuration:
+  status: provisional_evidence_driven_fallbacks
+  purpose: Operational inputs for Phase 2 and EVT0 planning; not selected components or validated performance.
+  memory_gb: 128
+  internal_storage_tb: 1
+  product_storage_fallback_tb: 2
+  npu_public_reference_tops_int8: 80
+  wired_charge_evt0_input_cap_w: 30
+  wireless_charging: removed
+  cellular: deferred
+  source_artifacts:
+    - research/evidence/compute/platform-comparison.yaml
+    - research/evidence/display-storage/candidate-comparison.yaml
+    - reports/slate-pocket-v1r-cad-budget.txt
+    - reports/slate-pocket-v1r-pcb-power-architecture.txt
+    - reports/slate-pocket-v1r-rf-wireless-architecture.txt
 
 manufacturing:
   maturity: concept_screening
@@ -159,14 +189,20 @@ recovery_notes:
   - Added usable internal volume is increased by 11970 mm3 per the recovery planner's 9.5 mm thickness scenario.
   - Thickness target increases from 8.8 mm to 9.5 mm.
   - The 6000 mAh capacity target is retained only as an unvalidated high-density battery assumption.
+  - The operational memory tier is the approved 128 GB fallback; 512 GB remains an unsupported aspiration.
+  - The operational internal-storage reference is 1 TB; the approved 2 TB product fallback requires a modular or external second tier.
+  - The operational NPU reference is the public 80 TOPS INT8 X2 figure, not a selected or sustained-performance claim.
+  - Wired charging is capped at 30 W for EVT0 planning pending supplier limits; wireless charging is removed from EVT0.
 
 known_remaining_risks:
   - Reduced battery volume may require unavailable cell energy density or a later runtime/capacity tradeoff.
   - Added thickness has not been CAD validated against industrial design, camera, RF, sealing, or ergonomics.
   - Passive thermal target remains unproven at 28 W sustained compute.
   - Supplier package drawings and selected components are still required before manufacturability claims.
+  - The 128 GB memory and 1 TB storage integration values are planning fallbacks, not qualified component selections.
 
 notes:
   - Slate Pocket v1R is the first recovered engineering profile candidate.
   - The Phase 0 decision baseline is approved; headline targets use the locked fallback rules when supplier or integration evidence fails.
   - Screening results must not be interpreted as validation or manufacturability evidence.
+  - Locked headline targets remain in decision_baseline; top-level subsystem values are the current operational integration configuration.

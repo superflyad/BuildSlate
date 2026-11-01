@@ -1,0 +1,99 @@
+Slate Pocket v1R Program Readiness and External Handoff
+=======================================================
+
+Executive state:
+  local/public engineering program: complete to the defensible pre-supplier/pre-hardware boundary
+  supplier handoff: prepared, not sent
+  prototype execution package: prepared, not authorized
+  manufacturing/pilot package: prepared, not authorized
+  evidence gate: BLOCKED_ON_FOUNDATIONAL_EVIDENCE
+
+Operational integration configuration:
+  memory: 128 GB fallback planning tier
+  internal storage: 1 TB reference; 2 TB product fallback needs modular/external path
+  compute: 80 TOPS INT8 public reference, not selected or sustained
+  wired charging: 30 W EVT0 input cap before supplier derating
+  wireless charging: removed
+  cellular: deferred
+
+Verified evidence (1):
+  - requirements_baseline: Freeze the v1R decision baseline
+
+Available public evidence (3; not verified):
+  - battery_supplier_package: Obtain a supplier-backed battery package
+  - compute_memory_platform_package: Select a credible SoC, NPU, and memory topology
+  - display_storage_package: Confirm display and storage package candidates
+
+Modeled Phase 2 planning evidence (4; not verified):
+  - mechanical_cad_stackup: Produce the first evidence-backed mechanical CAD stackup
+  - pcb_power_architecture: Prove PCB placement, routing, and power architecture
+  - thermal_model_and_test_plan: Build a geometry-specific thermal model and correlation plan
+  - rf_wireless_architecture: Reserve and validate RF and wireless-charging architecture
+
+Prepared execution packages (2; no physical evidence):
+  - evt0_prototype_evidence: Build and characterize an EVT-0 integration prototype
+  - manufacturing_review_package: Complete supplier DFM and pilot-build readiness review
+
+Rejected, removed, or unsupported configurations (6):
+  - 512 GB memory first-build configuration: unsupported by reviewed platform limits; 128 GB fallback modeled
+  - 4 TB internal storage first-build configuration: unsupported by reviewed embedded packages; 1 TB internal reference modeled
+  - 100 TOPS sustained requirement: headline TOPS does not substitute for measured workload performance per watt
+  - 50 W wireless charging in EVT0: local stack exceeds envelope and certification path is unestablished
+  - optional 5G in EVT0: market, bands, operators, antenna topology, SAR, and certification scope are unset
+  - 100 W charging as an authorized EVT0 mode: battery/charger limits and thermal evidence are absent; planning cap is 30 W input
+
+Externally blocked work (8):
+  - supplier_responses [supplier_and_nda]
+    affects: battery_supplier_package, compute_memory_platform_package, display_storage_package
+    missing: Completed supplier response templates, controlled drawings, limits, lifecycle/availability, sample terms, and attestations.
+    exact request: Authorize supplier outreach using research/rfqs after contact and NDA review; request completed response schemas and source documents.
+    authorization: supplier_contact_and_any_NDA_acceptance
+  - battery_pack_and_charge_limits [supplier_safety]
+    affects: battery_supplier_package, mechanical_cad_stackup, pcb_power_architecture, evt0_prototype_evidence
+    missing: Complete-pack CAD, swelling/tolerances, protection, charge/discharge curves, temperature/cycle limits, safety and shipping documentation.
+    exact request: Request a supplier-proposed pack fitting the RFQ envelope and validated charger/system limits; do not prescribe unsupported capacity or charge rate.
+    authorization: supplier_contact_samples_and_purchases
+  - platform_reference_design [supplier_confidential_engineering]
+    affects: compute_memory_platform_package, pcb_power_architecture, thermal_model_and_test_plan, evt0_prototype_evidence
+    missing: Package/ball maps, qualified 128 GB topology, PMIC/rails, reference schematic, power/load steps, software access, and sustained workload telemetry.
+    exact request: Obtain the selected platform's NDA-controlled design package and evaluation access for the 128 GB fallback.
+    authorization: supplier_contact_NDA_eval_hardware_and_licenses
+  - display_storage_drawings [supplier_engineering]
+    affects: display_storage_package, mechanical_cad_stackup, pcb_power_architecture, evt0_prototype_evidence
+    missing: Selected display module drawing/flex/power and selected storage package/host/power/thermal/lifecycle evidence.
+    exact request: Run prepared display and storage RFIs; request EVT-available modules and complete response schemas.
+    authorization: supplier_contact_samples_and_purchases
+  - released_integration_design [engineering_and_paid_tools]
+    affects: mechanical_cad_stackup, pcb_power_architecture, thermal_model_and_test_plan, rf_wireless_architecture
+    missing: Released 3D CAD, tolerance/mass/interference review, schematic/netlist/routed ECAD, solver model, EM model, and peer signoff.
+    exact request: After supplier packages are verified, authorize detailed CAD/ECAD/solver work and any required paid tools or contractors.
+    authorization: design_release_paid_tools_and_external_engineering_if_needed
+  - accredited_labs_and_compliance_scope [laboratory_and_regulatory]
+    affects: rf_wireless_architecture, evt0_prototype_evidence, manufacturing_review_package
+    missing: Market/SKU matrix, current lab scope, calibrated tests, accredited reports, certifications/declarations/filings.
+    exact request: Select target markets/configurations and engage qualified labs/regulatory counsel after production-intent hardware exists.
+    authorization: market_decisions_lab_contracts_and_test_samples
+  - evt0_build_and_measurement [physical_work]
+    affects: evt0_prototype_evidence
+    missing: Selected BOM, released designs, authorized build, calibrated setup, raw results, deviations, and correlated models.
+    exact request: Authorize procurement/build/energized testing only after the EVT0 prerequisite and safety gates pass.
+    authorization: purchases_physical_build_and_energized_testing
+  - supplier_dfm_and_pilot [manufacturing_physical_work]
+    affects: manufacturing_review_package
+    missing: Completed supplier DFM responses, released process/tooling, pilot authorization, 100-unit records, yield/capability, reliability, compliance, and service results.
+    exact request: After verified EVT0, authorize supplier DFM and then the controlled pilot only when G0/G1 pass.
+    authorization: supplier_engagement_tooling_materials_pilot_and_labs
+
+Coverage and evidence integrity:
+  evidence packages tracked: 10
+  nonverified packages mapped to external blockers: 9
+  supplier RFQ/NDA packets: battery, compute/memory, display, and storage prepared
+  Phase 2: mechanical, PCB/power, thermal, and RF planning packages prepared
+  EVT0: BOM strategy, instrumentation, workloads, tests, schemas, hard stops, and correlation workflow prepared
+  manufacturing: DFM, assembly, reliability, compliance-pretest, serviceability, pilot, defects, and quality gates prepared
+  external messages/purchases/builds/tests performed: none
+
+LOCAL_PROGRAM_DECISION: SUPPLIER_READY_AND_PROTOTYPE_PLAN_READY_EXTERNALLY_BLOCKED
+
+Caveat:
+  Supplier-ready and prototype-plan-ready describe the handoff artifacts, not supplier approval or permission to build. BuildSlate does not yet have selected components, released production design, validated CAD/ECAD/thermal/RF performance, prototype measurements, manufacturability evidence, certification, or production readiness.

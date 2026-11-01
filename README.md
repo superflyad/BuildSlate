@@ -273,6 +273,16 @@ python manufacturing/generate_manufacturing_readiness_report.py
 
 The pilot remains proposed and unauthorized. The package does not claim manufacturability, supplier approval, yield, reliability, compliance, serviceability, or production readiness.
 
+## Slate Pocket v1R Final Program Handoff
+
+The final generator classifies verified, available, modeled, execution-prepared, rejected, and externally blocked evidence. It also verifies that every nonverified registry package maps to an explicit blocker with an exact request, acceptance criteria, fallback, completed independent work, and authorization boundary.
+
+```bash
+python engineering/evidence/generate_program_handoff_report.py
+```
+
+The resulting state is supplier-ready and prototype-plan-ready, not supplier-approved, build-authorized, prototype-validated, manufacturable, certified, or production-ready.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

@@ -1,8 +1,8 @@
 BuildSlate Device Profile Report
 Report Metadata:
-  generated timestamp: 2026-06-26T16:51:03+00:00
+  generated timestamp: 2026-11-01T04:29:05+00:00
   Python version: 3.14.4
-  platform: Windows-11-10.0.26200-SP0
+  platform: Windows-11-10.0.26300-SP0
   repo root: C:\Users\michael.CORP\source\repos\BuildSlate
 Profile Identity:
   name: Slate Pocket v1R
@@ -36,8 +36,12 @@ Profile Summary:
 - battery:
     capacity_mah: 6000
     nominal_voltage_v: 3.85
-    charging_wired_w: 100
-    charging_wireless_w: 50
+    charging_wired_target_w: 100
+    charging_wired_w: 30
+    charging_wired_status: provisional_EVT0_input_cap_not_supplier_authorized
+    charging_wireless_target_w: 50
+    charging_wireless_w: 0
+    charging_wireless_status: removed_from_EVT0_after_z_height_and_certification_screen
     physical_volume_mm3: 28824
     recovery_volume_delta_mm3: -12000
     recovery_thickness_delta_mm: -0.35
@@ -45,15 +49,24 @@ Profile Summary:
 - compute:
     sustained_power_w: 28
     peak_power_w: 45
-    npu_tops: 100
+    npu_tops: 80
+    npu_tops_aspirational: 100
+    screening_reference: qualcomm_snapdragon_x2_elite_extreme_public_brief
+    selected_platform: None
 - memory:
-    capacity_gb: 512
+    capacity_gb: 128
     gb_per_package: 32
-    bandwidth_gbps: 2048
+    bandwidth_gbps: 1824
+    aspirational_target_gb: 512
+    integration_status: locked_fallback_planning_tier_not_qualified_topology
 - storage:
-    capacity_tb: 4
-    tb_per_package: 2
+    capacity_tb: 1
+    tb_per_package: 1
     active_power_w: 5
+    target_tb: 4
+    approved_product_fallback_tb: 2
+    remaining_fallback_capacity_strategy: modular_or_external
+    integration_status: public_single_package_geometry_reference_not_selected
 - thermal:
     sustained_w: 28
     max_skin_c: 43
@@ -69,11 +82,16 @@ Recovery Notes:
     - Added usable internal volume is increased by 11970 mm3 per the recovery planner's 9.5 mm thickness scenario.
     - Thickness target increases from 8.8 mm to 9.5 mm.
     - The 6000 mAh capacity target is retained only as an unvalidated high-density battery assumption.
+    - The operational memory tier is the approved 128 GB fallback; 512 GB remains an unsupported aspiration.
+    - The operational internal-storage reference is 1 TB; the approved 2 TB product fallback requires a modular or external second tier.
+    - The operational NPU reference is the public 80 TOPS INT8 X2 figure, not a selected or sustained-performance claim.
+    - Wired charging is capped at 30 W for EVT0 planning pending supplier limits; wireless charging is removed from EVT0.
 - known_remaining_risks:
     - Reduced battery volume may require unavailable cell energy density or a later runtime/capacity tradeoff.
     - Added thickness has not been CAD validated against industrial design, camera, RF, sealing, or ergonomics.
     - Passive thermal target remains unproven at 28 W sustained compute.
     - Supplier package drawings and selected components are still required before manufacturability claims.
+    - The 128 GB memory and 1 TB storage integration values are planning fallbacks, not qualified component selections.
 
 Model Results:
 validation
@@ -332,14 +350,14 @@ primary_blocker: real feasibility requires CAD geometry, thermal contacts, aniso
 
 component models
 ### Battery pack component model
-Command: python engineering/component_models/battery_pack.py --capacity-mah 6000 --nominal-voltage-v 3.85 --workload-w 28 --charging-w 100
+Command: python engineering/component_models/battery_pack.py --capacity-mah 6000 --nominal-voltage-v 3.85 --workload-w 28 --charging-w 30
 Status: PASSED (exit code 0)
 Battery pack physics model
 inputs:
   capacity_mAh: 6000
   nominal_voltage_v: 3.85
   workload_w: 28
-  charging_w: 100
+  charging_w: 30
   footprint_area_mm2: 7500
 assumptions:
   usable energy is 82-90% after reserve, aging, voltage cutoffs, and high-load losses
@@ -361,11 +379,10 @@ outputs:
   pack_volume_cm3_range: 32-40
   pack_mass_g_range: 89-105
   estimated_pack_thickness_mm_range: 4.3-5.3
-  charge_current_a_estimate: 26
-  charging_loss_heat_w_range: 8-18
+  charge_current_a_estimate: 8
+  charging_loss_heat_w_range: 2-5
 warnings:
   workload is laptop-class for a phone pack; runtime and cell temperature are aggressive
-  fast charging may create roughly 8-18 W of pack/electronics heat
   pack thickness estimate exceeds common thin-phone battery allowances
 confidence: medium for energy arithmetic; low for packaging, cycle life, and fast-charge thermals
 basis: conservative first-pass lithium-ion pack screening ranges
@@ -410,7 +427,7 @@ confidence: medium for geometry; low for supplier-specific OLED/LCD mass and pow
 basis: phone/tablet-class display screening assumptions
 primary blocker: front-face area, display heat, camera openings, and border electronics packaging
 ### SoC package component model
-Command: python engineering/component_models/soc_package.py --sustained-power-w 28 --peak-power-w 45 --npu-tops 100
+Command: python engineering/component_models/soc_package.py --sustained-power-w 28 --peak-power-w 45 --npu-tops 80
 Status: PASSED (exit code 0)
 SoC/NPU package physics model
 inputs:
@@ -419,7 +436,7 @@ inputs:
   package_thickness_mm: 1.2
   sustained_power_w: 28
   peak_power_w: 45
-  npu_tops: 100
+  npu_tops: 80
 assumptions:
   package footprint is rectangular and approximates thermal contact footprint
   passive spreading target is roughly 4 W/cm2 at the contact patch for screening
@@ -438,19 +455,18 @@ outputs:
   peak_heat_flux_w_per_cm2: 13.9
   required_contact_area_cm2_sustained: 7.0
   required_contact_area_cm2_peak: 11.2
-  npu_tops_context: 100
+  npu_tops_context: 80
 warnings:
   peak package heat flux is high for passive phone-class spreading
-  100 TOPS-class claim needs memory bandwidth and sustained thermal validation
 confidence: medium for package arithmetic; low for die stack and real thermal resistance
 basis: first-pass phone-class passive thermal spreading screen
 primary blocker: sustained SoC/NPU heat removal without throttling or hot spots
 ### Memory package component model
-Command: python engineering/component_models/memory_package.py --capacity-gb 512 --gb-per-package 32
+Command: python engineering/component_models/memory_package.py --capacity-gb 128 --gb-per-package 32
 Status: PASSED (exit code 0)
 Memory package physics model
 inputs:
-  capacity_gb: 512
+  capacity_gb: 128
   gb_per_package: 32
   package_area_mm2: 120
   package_thickness_mm: 1.2
@@ -469,28 +485,25 @@ formulas:
   active_power_W = capacity_GB * active_power_per_GB_W
   power_per_GB_W = total_power_W / capacity_GB
 outputs:
-  memory_required_gb: 512
-  estimated_package_count: 16
-  total_package_area_mm2: 1920
-  total_package_volume_cm3: 2.3
-  idle_memory_power_w: 2.6
-  active_memory_power_w: 13
+  memory_required_gb: 128
+  estimated_package_count: 4
+  total_package_area_mm2: 480
+  total_package_volume_cm3: 0.6
+  idle_memory_power_w: 0.6
+  active_memory_power_w: 3
   active_power_per_gb_w: 0.025
-  routing_pressure_note: 16 high-pin-count packages require short routes and wide power delivery
+  routing_pressure_note: 4 high-pin-count packages require short routes and wide power delivery
 warnings:
-  large package count creates severe board area, escape routing, and power rail pressure
-  active memory power is high enough to be a major thermal load
-  phone-class 256 GB+ RAM target is likely availability, cost, and packaging constrained
 confidence: low because package capacity and availability are supplier-specific
 basis: capacity-driven first-pass memory packaging screen
 primary blocker: sourcing and routing enough high-density memory in phone-class board area
 ### Storage package component model
-Command: python engineering/component_models/storage_package.py --capacity-tb 4 --tb-per-package 2 --active-power-w 5
+Command: python engineering/component_models/storage_package.py --capacity-tb 1 --tb-per-package 1 --active-power-w 5
 Status: PASSED (exit code 0)
 Storage package physics model
 inputs:
-  capacity_tb: 4
-  tb_per_package: 2
+  capacity_tb: 1
+  tb_per_package: 1
   package_area_mm2: 180
   package_thickness_mm: 1.5
   idle_power_w_per_package: 0.5
@@ -507,15 +520,13 @@ formulas:
   idle_power_W = package_count * idle_power_W_per_package
   active_power_W = package_count * active_power_W_per_package
 outputs:
-  estimated_package_count: 2
-  total_area_mm2: 360
-  total_volume_cm3: 0.5
-  idle_power_w: 1.0
-  active_power_w: 10
+  estimated_package_count: 1
+  total_area_mm2: 180
+  total_volume_cm3: 0.3
+  idle_power_w: 0.5
+  active_power_w: 5
   active_heat_warning_threshold_w: 8
 warnings:
-  active storage heat can throttle sustained writes and warm nearby battery/display areas
-  multi-TB phone storage is package-height, cost, and availability constrained
   PCIe Gen5-class storage increases controller thermal risk unless bandwidth is capped or well spread
 confidence: medium for count arithmetic; low for sustained bandwidth and controller thermals
 basis: first-pass NAND/UFS/NVMe-like package screening
@@ -723,7 +734,7 @@ primary blocker: camera_zone has the tightest z-height margin
 
 interconnect
 ### Memory bandwidth interconnect model
-Command: python engineering/interconnect_models/memory_bandwidth.py --memory-capacity-gb 512 --memory-bandwidth-gbps 2048 --model-params-b 70 --quantization-bits 4
+Command: python engineering/interconnect_models/memory_bandwidth.py --memory-capacity-gb 128 --memory-bandwidth-gbps 1824 --model-params-b 70 --quantization-bits 4
 Status: PASSED (exit code 0)
 Memory bandwidth screening model
 
@@ -742,8 +753,8 @@ formulas:
 - bandwidth_utilization_percent = bandwidth_demand_Gbps / memory_bandwidth_Gbps * 100
 
 outputs:
-- memory_capacity_gb: 512
-- memory_bandwidth_gbps: 2048
+- memory_capacity_gb: 128
+- memory_bandwidth_gbps: 1824
 - model_params_b: 70
 - quantization_bits: 4
 - target_tokens_per_sec: 25
@@ -751,8 +762,8 @@ outputs:
 - estimated_active_model_footprint_gb: 43.8
 - bytes_per_token_estimate_gb: 43.8
 - estimated_bandwidth_demand_gbps: 8750
-- bandwidth_utilization_percent: 427
-- capacity_headroom_gb: 468.2
+- bandwidth_utilization_percent: 480
+- capacity_headroom_gb: 84.2
 
 warnings:
 - bandwidth utilization exceeds 70%; memory bandwidth is likely a first-order limiter
@@ -762,11 +773,11 @@ primary blocker: memory bandwidth headroom
 
 runtime memory
 ### Runtime memory budget model
-Command: python engineering/runtime_models/runtime_memory_budget.py --available-memory-gb 512 --params-billions 70 --quantization-bits 4 --context-tokens 32768
+Command: python engineering/runtime_models/runtime_memory_budget.py --available-memory-gb 128 --params-billions 70 --quantization-bits 4 --context-tokens 32768
 Status: PASSED (exit code 0)
 Runtime memory budget estimate
 inputs:
-  available_memory_gb: 512.00
+  available_memory_gb: 128.00
   params_billions: 70.0
   quantization_bits: 4.0
   model_overhead_factor: 1.25
@@ -796,13 +807,15 @@ outputs:
   os_reserve_gb: 16.00
   safety_reserve_gb: 32.00
   total_used_gb: 207.65
-  remaining_gb: 304.35
-  pass_fail: pass
+  remaining_gb: -79.65
+  pass_fail: fail
 warnings:
+  remaining memory is below 64 GB
   KV cache is larger than model weights/resident model estimate
+  total used memory exceeds available memory
 confidence: low for complete runtime feasibility; medium for combined memory arithmetic
 basis: additive first-pass local AI runtime memory budget
-primary blocker: KV cache dominates resident model weights
+primary blocker: total runtime memory budget exceeds available memory
 
 environment
 ### Ambient temperature environment model
@@ -923,9 +936,10 @@ Warning/risk lines:
 - engineering/interconnect_models/memory_bandwidth.py: warnings:
 - engineering/interconnect_models/memory_bandwidth.py: - bandwidth utilization exceeds 70%; memory bandwidth is likely a first-order limiter
 - engineering/interconnect_models/memory_bandwidth.py: primary blocker: memory bandwidth headroom
-- engineering/runtime_models/runtime_memory_budget.py: pass_fail: pass
+- engineering/runtime_models/runtime_memory_budget.py: pass_fail: fail
 - engineering/runtime_models/runtime_memory_budget.py: warnings:
-- engineering/runtime_models/runtime_memory_budget.py: primary blocker: KV cache dominates resident model weights
+- engineering/runtime_models/runtime_memory_budget.py: total used memory exceeds available memory
+- engineering/runtime_models/runtime_memory_budget.py: primary blocker: total runtime memory budget exceeds available memory
 - engineering/environment_models/ambient_temperature.py: warnings:
 - engineering/environment_models/ambient_temperature.py: primary blocker: fixed skin-rise assumption does not capture enclosure, airflow, solar load, or dynamic throttling
 - engineering/environment_models/enclosure_condition.py: warnings:

@@ -139,11 +139,11 @@ assumptions:
       - regulator transient test
     notes: Peak compute stress can break power delivery and hotspot assumptions before average thermal density changes.
   npu_tops:
-    value: 100
+    value: 80
     unit: TOPS
-    profile_scope: both
-    confidence: placeholder
-    maturity: concept
+    profile_scope: v1r
+    confidence: estimate
+    maturity: screening
     affected_domains:
       - compute capability
       - SoC sourcing
@@ -161,13 +161,13 @@ assumptions:
       - SoC package spec
       - benchmark disclosure
       - sustained TOPS telemetry
-    notes: TOPS is capability context, not proof of sustained local AI performance in the pocket envelope.
+    notes: Uses the public Snapdragon X2 INT8 figure as an integration reference; the platform is not selected and 80 TOPS is not a sustained workload claim. The locked 100 TOPS aspiration was not preserved as an operational input.
   memory_capacity_gb:
-    value: 512
+    value: 128
     unit: GB
-    profile_scope: both
-    confidence: placeholder
-    maturity: concept
+    profile_scope: v1r
+    confidence: estimate
+    maturity: screening
     affected_domains:
       - memory packaging
       - runtime memory
@@ -189,13 +189,13 @@ assumptions:
       - routing escape study
       - memory power telemetry
       - thermal placement review
-    notes: The capacity target may dominate package count, routing pressure, power, thermal behavior, and sourcing risk.
+    notes: The approved 128 GB fallback is now the operational integration value. Public 32 GB package capacity supports a four-site hypothesis, but topology, routing, power, and qualification remain unverified; 512 GB is rejected as a first-build configuration.
   storage_capacity_tb:
-    value: 4
+    value: 1
     unit: TB
-    profile_scope: both
-    confidence: placeholder
-    maturity: concept
+    profile_scope: v1r
+    confidence: estimate
+    maturity: screening
     affected_domains:
       - storage packaging
       - thermal
@@ -214,7 +214,7 @@ assumptions:
       - storage package spec
       - sustained write telemetry
       - package height drawing
-    notes: Multi-TB storage is package-height, heat, cost, and availability constrained in the target form factor.
+    notes: One TB is the operational internal-package reference supported by reviewed public geometry. The 2 TB product fallback needs a second modular/external path; 4 TB is rejected as a supported internal configuration.
   max_skin_temp_c:
     value: 43
     unit: C
@@ -289,9 +289,9 @@ assumptions:
       - supplier thermal module datasheet
     notes: Thickness is package allocation only; it does not prove thermal spreading, contact quality, or skin-temperature compliance.
   wireless_charging_enabled:
-    value: true
+    value: false
     unit: boolean
-    profile_scope: both
+    profile_scope: v1r
     confidence: estimate
     maturity: screening
     affected_domains:
@@ -312,4 +312,4 @@ assumptions:
       - charging coil drawing
       - ferrite shield spec
       - charging heat telemetry
-    notes: Wireless charging adds z-height, heat, shielding, alignment, and rear-material constraints.
+    notes: Wireless charging is removed from EVT0 after the local stack exceeded the 9.5 mm envelope and no 50 W certification path was established. The product option can return only through the defined mechanical, thermal, RF, safety, and certification gates.

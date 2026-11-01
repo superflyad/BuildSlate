@@ -153,14 +153,14 @@ risks:
       - memory_capacity_gb
       - sustained_compute_w
     mitigation:
-      - Replace capacity target with supplier-backed package count, height, bandwidth, and power options.
-      - Evaluate smaller memory configurations before coupling feasibility to 512 GB.
+      - Use the 128 GB fallback for integration and EVT0 planning.
+      - Require supplier-backed package count, height, bandwidth, power, and routing evidence before qualification.
     evidence_required:
       - Memory supplier package data
       - Routing escape study
       - Memory power telemetry
       - Thermal placement review
-    notes: The memory target can drive package area, routing layers, heat, power, sourcing, and local AI runtime claims.
+    notes: The 512 GB aspiration is rejected as a first-build configuration. Risk remains blocked until the 128 GB fallback topology is supplier-qualified and routed.
   storage_packaging_4tb:
     title: 4 TB storage packaging
     subsystem: storage
@@ -168,7 +168,7 @@ risks:
     likelihood: high
     impact: high
     maturity: concept
-    status: open
+    status: blocked
     affected_reports:
       - reports/device-profile-slate-pocket-v1.txt
       - reports/device-profile-slate-pocket-v1r.txt
@@ -178,14 +178,14 @@ risks:
     related_assumptions:
       - storage_capacity_tb
     mitigation:
-      - Check package height, sustained write heat, availability, and cost against the pocket board area.
-      - Keep lower-capacity storage variants available during recovery screening.
+      - Use one 1 TB embedded package as the integration geometry reference.
+      - Satisfy the approved 2 TB product fallback through a verified second device or modular/external path.
     evidence_required:
       - Storage package spec
       - Sustained write telemetry
       - Package height drawing
       - Sourcing and availability review
-    notes: Multi-TB storage creates package-height, thermal, cost, and sourcing risk inside the recovered envelope.
+    notes: The 4 TB internal target is unsupported by reviewed mobile packages and is rejected as the first-build configuration.
   npu_100_tops_sustained:
     title: 100 TOPS sustained NPU claim
     subsystem: compute
@@ -220,7 +220,7 @@ risks:
     likelihood: high
     impact: medium
     maturity: screening
-    status: monitoring
+    status: mitigated
     affected_reports:
       - reports/device-profile-slate-pocket-v1.txt
       - reports/device-profile-slate-pocket-v1r.txt
@@ -231,14 +231,14 @@ risks:
       - wireless_charging_enabled
       - device_thickness_mm
     mitigation:
-      - Validate coil, ferrite, rear material, alignment, and charging heat as a coupled package.
-      - Consider making wireless charging optional if thickness or thermal margin remains blocked.
+      - Remove wireless charging from EVT0 and reserve the rear zone only for future study.
+      - Require a passing stack, selected standard/profile, supplier module, safety/thermal/RF validation, and certification plan before re-entry.
     evidence_required:
       - Charging coil drawing
       - Ferrite shield spec
       - Charging heat telemetry
       - Rear material and alignment study
-    notes: Wireless charging adds z-height, heat, shielding, and RF/material coupling that can conflict with thin-package recovery.
+    notes: EVT0 exposure is mitigated by feature removal. Product-level risk remains if wireless charging is reintroduced.
   pcb_routing_density:
     title: PCB routing density
     subsystem: pcb

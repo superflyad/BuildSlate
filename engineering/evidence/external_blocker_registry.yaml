@@ -1,0 +1,78 @@
+metadata:
+  device: slate-pocket-v1r
+  status: externally_blocked_handoff
+  rule: Blockers identify missing evidence and authorized next actions; they do not imply supplier commitment, approval, purchase, or test completion.
+
+blockers:
+  supplier_responses:
+    category: supplier_and_nda
+    affects: [battery_supplier_package, compute_memory_platform_package, display_storage_package]
+    missing_evidence: Completed supplier response templates, controlled drawings, limits, lifecycle/availability, sample terms, and attestations.
+    exact_request: Authorize supplier outreach using research/rfqs after contact and NDA review; request completed response schemas and source documents.
+    acceptance_criteria: Every Phase 1 acceptance criterion is met with traceable supplier-authored evidence and engineering review.
+    fallback: Retain public candidates only as references; do not select components or release CAD.
+    independent_work_complete: [public_primary_source_screen, RFQ_packets, response_templates, NDA_checklist, candidate_comparisons]
+    authorization_required: supplier_contact_and_any_NDA_acceptance
+  battery_pack_and_charge_limits:
+    category: supplier_safety
+    affects: [battery_supplier_package, mechanical_cad_stackup, pcb_power_architecture, evt0_prototype_evidence]
+    missing_evidence: Complete-pack CAD, swelling/tolerances, protection, charge/discharge curves, temperature/cycle limits, safety and shipping documentation.
+    exact_request: Request a supplier-proposed pack fitting the RFQ envelope and validated charger/system limits; do not prescribe unsupported capacity or charge rate.
+    acceptance_criteria: Pack-backed capacity/energy/geometry and safe current/temperature limits close CAD, power, and EVT hard stops.
+    fallback: Use the best supplier-validated capacity fitting the envelope; cap wired charge below 30 W if required; wireless remains removed.
+    independent_work_complete: [pack_envelope_screen, local_zone_stack, power_current_screen, EVT_charge_test_plan]
+    authorization_required: supplier_contact_samples_and_purchases
+  platform_reference_design:
+    category: supplier_confidential_engineering
+    affects: [compute_memory_platform_package, pcb_power_architecture, thermal_model_and_test_plan, evt0_prototype_evidence]
+    missing_evidence: Package/ball maps, qualified 128 GB topology, PMIC/rails, reference schematic, power/load steps, software access, and sustained workload telemetry.
+    exact_request: Obtain the selected platform's NDA-controlled design package and evaluation access for the 128 GB fallback.
+    acceptance_criteria: Topology, routing, power, software, thermal, sourcing, and measured workload evidence satisfy the package criteria.
+    fallback: Use external 128 GB developer systems for workload characterization only; do not claim pocket integration.
+    independent_work_complete: [public_platform_comparison, provisional_floorplan, power_tree, PDN_plan, workload_definitions]
+    authorization_required: supplier_contact_NDA_eval_hardware_and_licenses
+  display_storage_drawings:
+    category: supplier_engineering
+    affects: [display_storage_package, mechanical_cad_stackup, pcb_power_architecture, evt0_prototype_evidence]
+    missing_evidence: Selected display module drawing/flex/power and selected storage package/host/power/thermal/lifecycle evidence.
+    exact_request: Run prepared display and storage RFIs; request EVT-available modules and complete response schemas.
+    acceptance_criteria: A panel preserves workspace intent and fits; one TB storage is host-qualified, with a verified path toward the 2 TB product fallback.
+    fallback: Allow supplier-available 7–8.4 inch display variation and modular/external storage; 4 TB internal stays rejected.
+    independent_work_complete: [public_candidate_screen, provisional_keepouts, one_tb_geometry_reference, EVT_storage_test]
+    authorization_required: supplier_contact_samples_and_purchases
+  released_integration_design:
+    category: engineering_and_paid_tools
+    affects: [mechanical_cad_stackup, pcb_power_architecture, thermal_model_and_test_plan, rf_wireless_architecture]
+    missing_evidence: Released 3D CAD, tolerance/mass/interference review, schematic/netlist/routed ECAD, solver model, EM model, and peer signoff.
+    exact_request: After supplier packages are verified, authorize detailed CAD/ECAD/solver work and any required paid tools or contractors.
+    acceptance_criteria: All Phase 2 acceptance criteria pass with selected-component geometry/properties and reviewed analyses.
+    fallback: Preserve provisional blocking models and 10.2 mm first thickness fallback; do not release hardware.
+    independent_work_complete: [mechanical_blocking_model, local_stackups, PCB_floorplan, power_PDN_plan, thermal_correlation_plan, RF_keepouts]
+    authorization_required: design_release_paid_tools_and_external_engineering_if_needed
+  accredited_labs_and_compliance_scope:
+    category: laboratory_and_regulatory
+    affects: [rf_wireless_architecture, evt0_prototype_evidence, manufacturing_review_package]
+    missing_evidence: Market/SKU matrix, current lab scope, calibrated tests, accredited reports, certifications/declarations/filings.
+    exact_request: Select target markets/configurations and engage qualified labs/regulatory counsel after production-intent hardware exists.
+    acceptance_criteria: All required configurations and claims have passing traceable evidence and completed approvals.
+    fallback: Defer cellular, remove wireless charging, limit claims/markets, and retain modular development radios.
+    independent_work_complete: [primary_compliance_anchors, RF_validation_plan, compliance_pretest_plan]
+    authorization_required: market_decisions_lab_contracts_and_test_samples
+  evt0_build_and_measurement:
+    category: physical_work
+    affects: [evt0_prototype_evidence]
+    missing_evidence: Selected BOM, released designs, authorized build, calibrated setup, raw results, deviations, and correlated models.
+    exact_request: Authorize procurement/build/energized testing only after the EVT0 prerequisite and safety gates pass.
+    acceptance_criteria: Every required EVT0 test has schema-valid raw data and reviewed disposition; correlation gates pass or trades are approved.
+    fallback: Continue workload characterization on external developer hardware without claiming integrated prototype performance.
+    independent_work_complete: [BOM_strategy, build_traveler, instrumentation, workloads, test_matrix, schemas, correlation_workflow]
+    authorization_required: purchases_physical_build_and_energized_testing
+  supplier_dfm_and_pilot:
+    category: manufacturing_physical_work
+    affects: [manufacturing_review_package]
+    missing_evidence: Completed supplier DFM responses, released process/tooling, pilot authorization, 100-unit records, yield/capability, reliability, compliance, and service results.
+    exact_request: After verified EVT0, authorize supplier DFM and then the controlled pilot only when G0/G1 pass.
+    acceptance_criteria: Supplier comments close and manufacturing gates G0–G4 meet their evidence requirements with zero critical defects.
+    fallback: Hold production claims and iterate EVT/design/process; do not shrink denominators or hide rework/failures.
+    independent_work_complete: [DFM_packet, assembly_plan, pilot_plan, defect_taxonomy, quality_gates, reliability_compliance_service_plans]
+    authorization_required: supplier_engagement_tooling_materials_pilot_and_labs

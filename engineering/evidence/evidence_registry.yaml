@@ -202,8 +202,8 @@ packages:
     title: Reserve and validate RF and wireless-charging architecture
     phase: 2
     priority: critical
-    status: missing
-    owner: unassigned
+    status: planned
+    owner: BuildSlate engineering
     depends_on:
       - mechanical_cad_stackup
       - pcb_power_architecture

@@ -237,6 +237,18 @@ python simulations/thermal/slate-pocket-v1r/generate_thermal_model_readiness_rep
 
 The package defines how a future solver model and EVT unit will be tested and correlated. It does not claim a completed simulation or validated thermal performance.
 
+## Slate Pocket v1R RF and Wireless Architecture
+
+The RF package under `engineering/rf/` reserves four perimeter antenna negotiation zones, defines simulation/chamber/compliance work, and records the Phase 2 fallback decisions. EVT0 uses modular Wi-Fi/Bluetooth, defers cellular until market and band scope exists, and removes wireless charging because its local stack exceeds the envelope and the 50 W target lacks an established certification path.
+
+Generate the architecture report with:
+
+```bash
+python engineering/rf/generate_rf_architecture_report.py
+```
+
+The report reserves integration space and compliance work. It is not an antenna design, chamber result, certification, or regulatory approval.
+
 ## Component Modeling
 
 - `engineering/components/component_library.yaml` defines subsystem properties.

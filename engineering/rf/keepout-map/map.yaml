@@ -1,0 +1,42 @@
+metadata:
+  device: slate-pocket-v1r
+  status: provisional_reservation_map
+  coordinate_system: Matches cad/slate-pocket-v1r/envelope-model/envelope.yaml rear view.
+  caveat: Zones reserve negotiation space only; they are not antenna designs or validated clearances.
+
+device_mm: {length: 180.0, width: 95.0, thickness: 9.5}
+
+antenna_reservations:
+  top_left:
+    rectangle_mm: {x: 3.0, y: 86.0, length: 35.0, width: 6.0}
+    candidate_functions: [wifi_bluetooth_diversity, cellular_if_retained]
+    nonmetal_window_required: true
+  top_right:
+    rectangle_mm: {x: 142.0, y: 86.0, length: 35.0, width: 6.0}
+    candidate_functions: [wifi_bluetooth_primary, cellular_if_retained]
+    nonmetal_window_required: true
+  bottom_left:
+    rectangle_mm: {x: 3.0, y: 3.0, length: 35.0, width: 6.0}
+    candidate_functions: [uwb_if_retained, cellular_if_retained]
+    nonmetal_window_required: true
+  bottom_right:
+    rectangle_mm: {x: 142.0, y: 3.0, length: 35.0, width: 6.0}
+    candidate_functions: [wifi_bluetooth_auxiliary, cellular_if_retained]
+    nonmetal_window_required: true
+
+wireless_power_reservation:
+  rectangle_mm: {x: 16.0, y: 17.0, length: 58.0, width: 58.0}
+  stack_height_mm: 0.8
+  evt0_state: removed
+  reason: battery_zone_exceeds_9_5mm_envelope_and_50w_certification_path_is_unestablished
+
+conductive_exclusions_pending_rf_design:
+  - Thermal spreader extensions into antenna reservations.
+  - Graphite or copper crossing antenna-window boundaries.
+  - Unreviewed frame bridges, coatings, gaskets, fasteners, shields, flex grounds, or battery foils.
+
+required_future_overlays:
+  - Final board outline, ground clearances, feeds, matching networks, and module keepouts.
+  - Display, camera, speaker, microphone, USB, button, haptic, battery, and flex geometry.
+  - Hand, head/body, table, cable, charger, case, and orientation phantoms.
+  - Cellular antenna volumes after the market/band matrix is approved.

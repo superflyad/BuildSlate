@@ -5,7 +5,7 @@ Executive summary:
   baseline profile: slate-pocket-v1r
   evidence packages: 10
   verified packages: 1/10
-  status counts: missing=3, planned=3, in_progress=0, available=3, verified=1
+  status counts: missing=2, planned=4, in_progress=0, available=3, verified=1
   open critical packages: 8
   EVIDENCE_DECISION: BLOCKED_ON_FOUNDATIONAL_EVIDENCE
   registry source: engineering\evidence\evidence_registry.yaml
@@ -127,8 +127,8 @@ Phase 2 evidence packages:
     notes: This package must exist before average power calculations can be treated as an integration plan.
   - rf_wireless_architecture: Reserve and validate RF and wireless-charging architecture
     priority: critical
-    status: missing
-    owner: unassigned
+    status: planned
+    owner: BuildSlate engineering
     depends_on: mechanical_cad_stackup, pcb_power_architecture
     linked_risks: rf_antenna_window_constraints, wireless_charging_packaging, thickness_stackup_margin
     acceptance criteria:

@@ -17,9 +17,11 @@ python -m buildslate manufacturing report
 python -m buildslate dashboard
 python -m buildslate migrations audit
 python -m buildslate stale
+python scripts/ci_validate.py
 ```
 
 See `docs/engineering/execution_platform.md` for the authority model and full command reference.
+Operator procedures and handoff boundaries are in `docs/engineering/operator_workflows.md` and `docs/engineering/platform_handoff.md`.
 
 BuildSlate is a hardware digital-twin repository for the Slate Ecosystem. It turns the Slate v1 source-intent concept into structured engineering data, validation checks, derived calculations, CAD planning, and feasibility documentation.
 

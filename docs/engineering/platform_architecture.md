@@ -1,0 +1,43 @@
+# BuildSlate execution-platform architecture
+
+## Authority layers
+
+1. **Protected engineering inputs** — the v1R profile, evidence/assumption/risk/blocker registries, RFQ packets, integration models, EVT0 definitions, and manufacturing plans retain their existing authority and classifications.
+2. **Controlled evidence stores** — supplier responses, EVT0 run bundles, and pilot bundles preserve source bytes and SHA-256 receipts. Ingestion never changes requirements or evidence status.
+3. **Resolution and contracts** — configuration authority classifies targets, fallbacks, references, rejections, selections, and unresolved decisions. Phase 2 contracts reject cross-domain drift.
+4. **Deterministic generation** — the regeneration DAG hashes inputs/outputs and runs whitelisted commands in dependency order.
+5. **Decision views** — program snapshot, gates, migration audit, and dashboard are generated views. They are not independent evidence authorities.
+
+## Core flow
+
+```text
+raw supplier / EVT0 / pilot evidence
+              |
+              v
+schema + provenance + hash review
+              |
+              v
+review queues and objective analytics
+              |
+              v
+configuration authority + Phase 2 contracts
+              |
+              v
+dependency-aware regeneration
+              |
+              v
+gates + unified graph + dashboard
+```
+
+No arrow automatically promotes evidence. Supplier claims require engineering review; selected components require a matching review-ready receipt; test/pilot evidence remains subject to deviations, correlations, stop rules, and named approvals.
+
+## Failure behavior
+
+- Malformed or hash-inconsistent evidence is rejected before ingestion.
+- Valid failed/aborted evidence is preserved and blocks or opens review; it is not discarded.
+- Unsupported configuration bound to a model returns a nonzero result.
+- Cross-domain contradictions stop regeneration before downstream reports refresh.
+- Missing or changed generator inputs/outputs become hash-stale.
+- Critical pilot defects trigger stop/quarantine regardless of average yield.
+- Dashboard currency never implies physical or commercial readiness.
+

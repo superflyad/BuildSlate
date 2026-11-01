@@ -38,7 +38,10 @@ python -m buildslate migrations explain --id legacy_evt0_results
 python -m buildslate impact --changed configs/devices/slate-pocket-v1r.yaml
 python -m buildslate regenerate --stale --dry-run
 python -m buildslate regenerate --stale
+python scripts/ci_validate.py
 ```
+
+Architecture, operator recovery procedures, and handoff boundaries are documented in `platform_architecture.md`, `operator_workflows.md`, and `platform_handoff.md`.
 
 ## Supplier-response ingestion
 

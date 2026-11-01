@@ -1,0 +1,38 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+title: BuildSlate Program Model Manifest
+type: object
+additionalProperties: false
+required: [metadata, sources, gate_sources, outputs, caveat]
+properties:
+  metadata:
+    type: object
+    required: [schema_version, program_id, title, authority]
+    properties:
+      schema_version: {const: 1}
+      program_id: {type: string, minLength: 1}
+      title: {type: string, minLength: 1}
+      authority: {type: string, minLength: 1}
+  sources:
+    type: object
+    minProperties: 9
+    additionalProperties:
+      type: object
+      required: [entity_kind, path]
+      properties:
+        entity_kind: {type: string, minLength: 1}
+        path: {type: string, minLength: 1}
+  gate_sources:
+    type: object
+    minProperties: 1
+    additionalProperties:
+      type: object
+      required: [path, marker]
+      properties:
+        path: {type: string, minLength: 1}
+        marker: {type: string, minLength: 1}
+  outputs:
+    type: object
+    required: [program_snapshot]
+    properties:
+      program_snapshot: {type: string, minLength: 1}
+  caveat: {type: string, minLength: 1}

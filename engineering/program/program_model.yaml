@@ -1,0 +1,53 @@
+metadata:
+  schema_version: 1
+  program_id: slate-pocket-v1r
+  title: Slate Pocket v1R Engineering Execution Program
+  authority: This manifest identifies authoritative inputs; generated snapshots never upgrade evidence status.
+
+sources:
+  profile:
+    entity_kind: configuration
+    path: configs/devices/slate-pocket-v1r.yaml
+  evidence:
+    entity_kind: evidence_package
+    path: engineering/evidence/evidence_registry.yaml
+  assumptions:
+    entity_kind: assumption
+    path: engineering/assumptions/assumption_registry.yaml
+  risks:
+    entity_kind: risk
+    path: engineering/risks/risk_register.yaml
+  blockers:
+    entity_kind: blocker
+    path: engineering/evidence/external_blocker_registry.yaml
+  suppliers:
+    entity_kind: supplier
+    path: research/rfqs/rfq_registry.yaml
+  components:
+    entity_kind: component_role
+    path: validation/evt0/bom-strategy.yaml
+  tests:
+    entity_kind: test
+    path: validation/evt0/test-matrix.yaml
+  defects:
+    entity_kind: defect_code
+    path: manufacturing/defect-taxonomy.yaml
+
+gate_sources:
+  evidence_gate:
+    path: reports/slate-pocket-evidence-readiness.txt
+    marker: "EVIDENCE_DECISION:"
+  evt0_gate:
+    path: reports/slate-pocket-v1r-evt0-gate.txt
+    marker: "EVT0_GATE:"
+  manufacturing_gate:
+    path: reports/slate-pocket-v1r-manufacturing-readiness.txt
+    marker: "MANUFACTURING_GATE:"
+  local_program_gate:
+    path: reports/slate-pocket-v1r-program-readiness.txt
+    marker: "LOCAL_PROGRAM_DECISION:"
+
+outputs:
+  program_snapshot: reports/program/buildslate-program-snapshot.yaml
+
+caveat: The program graph is a traceability index, not supplier approval, verified evidence, prototype measurement, certification, or production readiness.

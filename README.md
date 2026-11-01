@@ -1,5 +1,18 @@
 # BuildSlate
 
+## Engineering Execution CLI
+
+BuildSlate's integrated program graph and command-line interface index the protected v1R baseline, evidence, assumptions, risks, blockers, suppliers, configurations, components, tests, defects, artifacts, and gate decisions without changing their evidence status.
+
+```bash
+python -m buildslate validate
+python -m buildslate status
+python -m buildslate blockers
+python -m buildslate generate
+```
+
+See `docs/engineering/execution_platform.md` for the authority model and full command reference.
+
 BuildSlate is a hardware digital-twin repository for the Slate Ecosystem. It turns the Slate v1 source-intent concept into structured engineering data, validation checks, derived calculations, CAD planning, and feasibility documentation.
 
 The repository tracks both target concept specs and feasibility constraints. Target specs describe what Slate is intended to become; feasibility constraints describe what must be validated before those targets can be treated as buildable engineering claims.

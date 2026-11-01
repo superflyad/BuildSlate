@@ -38,6 +38,7 @@ VALIDATION_CHECKS = (
     "validation/validate_manufacturing_readiness_package.py",
     "validation/validate_v1r_fallback_propagation.py",
     "validation/validate_program_handoff.py",
+    "validation/validate_execution_platform.py",
 )
 
 

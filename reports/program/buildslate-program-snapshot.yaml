@@ -1,0 +1,2291 @@
+schema_version: 1
+program_id: slate-pocket-v1r
+title: Slate Pocket v1R Engineering Execution Program
+summary:
+  entity_count: 153
+  relation_count: 220
+  entity_kind_counts:
+    artifact: 35
+    assumption: 12
+    blocker: 8
+    component_role: 12
+    configuration: 1
+    defect_code: 14
+    evidence_package: 10
+    gate: 4
+    requirement: 14
+    risk: 13
+    supplier: 12
+    test: 18
+  evidence_status_counts:
+    available: 3
+    planned: 6
+    verified: 1
+entities:
+- entity_id: artifact:cad/slate-pocket-v1r/envelope-model
+  kind: artifact
+  title: cad/slate-pocket-v1r/envelope-model
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: mechanical_cad_stackup
+- entity_id: artifact:cad/slate-pocket-v1r/stackup-review.md
+  kind: artifact
+  title: cad/slate-pocket-v1r/stackup-review.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: mechanical_cad_stackup
+- entity_id: artifact:docs/engineering/slate-pocket-v1r-decision-baseline.md
+  kind: artifact
+  title: docs/engineering/slate-pocket-v1r-decision-baseline.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: requirements_baseline
+- entity_id: artifact:engineering/pcb/placement-routing-review.md
+  kind: artifact
+  title: engineering/pcb/placement-routing-review.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: pcb_power_architecture
+- entity_id: artifact:engineering/pcb/power-tree.yaml
+  kind: artifact
+  title: engineering/pcb/power-tree.yaml
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: pcb_power_architecture
+- entity_id: artifact:engineering/pcb/slate-pocket-v1r-floorplan
+  kind: artifact
+  title: engineering/pcb/slate-pocket-v1r-floorplan
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: pcb_power_architecture
+- entity_id: artifact:engineering/rf/architecture.md
+  kind: artifact
+  title: engineering/rf/architecture.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: rf_wireless_architecture
+- entity_id: artifact:engineering/rf/keepout-map
+  kind: artifact
+  title: engineering/rf/keepout-map
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: rf_wireless_architecture
+- entity_id: artifact:engineering/rf/validation-plan.md
+  kind: artifact
+  title: engineering/rf/validation-plan.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: rf_wireless_architecture
+- entity_id: artifact:manufacturing/dfm-review.md
+  kind: artifact
+  title: manufacturing/dfm-review.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: manufacturing_review_package
+- entity_id: artifact:manufacturing/pilot-build-plan.yaml
+  kind: artifact
+  title: manufacturing/pilot-build-plan.yaml
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: manufacturing_review_package
+- entity_id: artifact:manufacturing/quality-gate.md
+  kind: artifact
+  title: manufacturing/quality-gate.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: manufacturing_review_package
+- entity_id: artifact:reports/slate-pocket-v1r-cad-budget.txt
+  kind: artifact
+  title: reports/slate-pocket-v1r-cad-budget.txt
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: mechanical_cad_stackup
+- entity_id: artifact:reports/slate-pocket-v1r-evt0-gate.txt
+  kind: artifact
+  title: reports/slate-pocket-v1r-evt0-gate.txt
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: evt0_prototype_evidence
+- entity_id: artifact:research/evidence/battery/evidence-review.md
+  kind: artifact
+  title: research/evidence/battery/evidence-review.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: battery_supplier_package
+- entity_id: artifact:research/evidence/battery/pack-envelope.yaml
+  kind: artifact
+  title: research/evidence/battery/pack-envelope.yaml
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: battery_supplier_package
+- entity_id: artifact:research/evidence/battery/supplier-source-index.yaml
+  kind: artifact
+  title: research/evidence/battery/supplier-source-index.yaml
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: battery_supplier_package
+- entity_id: artifact:research/evidence/compute/evidence-review.md
+  kind: artifact
+  title: research/evidence/compute/evidence-review.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: compute_memory_platform_package
+- entity_id: artifact:research/evidence/compute/package-and-memory-topology.md
+  kind: artifact
+  title: research/evidence/compute/package-and-memory-topology.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: compute_memory_platform_package
+- entity_id: artifact:research/evidence/compute/platform-comparison.yaml
+  kind: artifact
+  title: research/evidence/compute/platform-comparison.yaml
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: compute_memory_platform_package
+- entity_id: artifact:research/evidence/display-storage/candidate-comparison.yaml
+  kind: artifact
+  title: research/evidence/display-storage/candidate-comparison.yaml
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: display_storage_package
+- entity_id: artifact:research/evidence/display-storage/evidence-review.md
+  kind: artifact
+  title: research/evidence/display-storage/evidence-review.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: display_storage_package
+- entity_id: artifact:research/rfqs/battery/response-template.yaml
+  kind: artifact
+  title: research/rfqs/battery/response-template.yaml
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: battery_supplier_package
+- entity_id: artifact:research/rfqs/battery/rfq.md
+  kind: artifact
+  title: research/rfqs/battery/rfq.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: battery_supplier_package
+- entity_id: artifact:research/rfqs/compute-memory/response-template.yaml
+  kind: artifact
+  title: research/rfqs/compute-memory/response-template.yaml
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: compute_memory_platform_package
+- entity_id: artifact:research/rfqs/compute-memory/rfq.md
+  kind: artifact
+  title: research/rfqs/compute-memory/rfq.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: compute_memory_platform_package
+- entity_id: artifact:research/rfqs/display/response-template.yaml
+  kind: artifact
+  title: research/rfqs/display/response-template.yaml
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: display_storage_package
+- entity_id: artifact:research/rfqs/display/rfi.md
+  kind: artifact
+  title: research/rfqs/display/rfi.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: display_storage_package
+- entity_id: artifact:research/rfqs/storage/response-template.yaml
+  kind: artifact
+  title: research/rfqs/storage/response-template.yaml
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: display_storage_package
+- entity_id: artifact:research/rfqs/storage/rfi.md
+  kind: artifact
+  title: research/rfqs/storage/rfi.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: display_storage_package
+- entity_id: artifact:simulations/thermal/slate-pocket-v1r/correlation-plan.md
+  kind: artifact
+  title: simulations/thermal/slate-pocket-v1r/correlation-plan.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: thermal_model_and_test_plan
+- entity_id: artifact:simulations/thermal/slate-pocket-v1r/model
+  kind: artifact
+  title: simulations/thermal/slate-pocket-v1r/model
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: thermal_model_and_test_plan
+- entity_id: artifact:simulations/thermal/slate-pocket-v1r/test-matrix.yaml
+  kind: artifact
+  title: simulations/thermal/slate-pocket-v1r/test-matrix.yaml
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: thermal_model_and_test_plan
+- entity_id: artifact:validation/evt0/model-correlation.md
+  kind: artifact
+  title: validation/evt0/model-correlation.md
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: evt0_prototype_evidence
+- entity_id: artifact:validation/evt0/test-results
+  kind: artifact
+  title: validation/evt0/test-results
+  status: present
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    expected_by: evt0_prototype_evidence
+- entity_id: assumption:battery_capacity_mah
+  kind: assumption
+  title: battery capacity mah
+  status: screening
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    value: 6000
+    unit: mAh
+    confidence: estimate
+    profile_scope: both
+    evidence_required:
+    - battery cell datasheet
+    - pack construction drawing
+    - discharge curve
+    - cycle-life data
+- entity_id: assumption:battery_volume_mm3
+  kind: assumption
+  title: battery volume mm3
+  status: screening
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    value: 28824
+    unit: mm3
+    confidence: placeholder
+    profile_scope: v1r
+    evidence_required:
+    - battery cell datasheet
+    - pack CAD
+    - swelling allowance
+    - safety certification plan
+- entity_id: assumption:device_thickness_mm
+  kind: assumption
+  title: device thickness mm
+  status: screening
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    value: 9.5
+    unit: mm
+    confidence: estimate
+    profile_scope: both
+    evidence_required:
+    - CAD stackup
+    - mechanical envelope drawing
+    - tolerance stack review
+    - industrial design review
+- entity_id: assumption:internal_usable_volume_factor
+  kind: assumption
+  title: internal usable volume factor
+  status: screening
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    value: 0.72
+    unit: ratio
+    confidence: estimate
+    profile_scope: both
+    evidence_required:
+    - CAD stackup
+    - keepout map
+    - supplier package drawings
+- entity_id: assumption:max_skin_temp_c
+  kind: assumption
+  title: max skin temp c
+  status: screening
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    value: 43
+    unit: C
+    confidence: estimate
+    profile_scope: both
+    evidence_required:
+    - thermocouple map
+    - thermal chamber data
+    - workload profile
+- entity_id: assumption:memory_capacity_gb
+  kind: assumption
+  title: memory capacity gb
+  status: screening
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    value: 128
+    unit: GB
+    confidence: estimate
+    profile_scope: v1r
+    evidence_required:
+    - memory supplier package data
+    - routing escape study
+    - memory power telemetry
+    - thermal placement review
+- entity_id: assumption:npu_tops
+  kind: assumption
+  title: npu tops
+  status: screening
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    value: 80
+    unit: TOPS
+    confidence: estimate
+    profile_scope: v1r
+    evidence_required:
+    - SoC package spec
+    - benchmark disclosure
+    - sustained TOPS telemetry
+- entity_id: assumption:peak_compute_w
+  kind: assumption
+  title: peak compute w
+  status: concept
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    value: 45
+    unit: W
+    confidence: placeholder
+    profile_scope: both
+    evidence_required:
+    - SoC package spec
+    - peak workload telemetry
+    - regulator transient test
+- entity_id: assumption:storage_capacity_tb
+  kind: assumption
+  title: storage capacity tb
+  status: screening
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    value: 1
+    unit: TB
+    confidence: estimate
+    profile_scope: v1r
+    evidence_required:
+    - storage package spec
+    - sustained write telemetry
+    - package height drawing
+- entity_id: assumption:sustained_compute_w
+  kind: assumption
+  title: sustained compute w
+  status: concept
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    value: 28
+    unit: W
+    confidence: placeholder
+    profile_scope: both
+    evidence_required:
+    - sustained power telemetry
+    - workload definition
+    - thermal chamber data
+    - throttle policy validation
+- entity_id: assumption:thermal_module_thickness_mm
+  kind: assumption
+  title: thermal module thickness mm
+  status: screening
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    value: 1.0
+    unit: mm
+    confidence: estimate
+    profile_scope: both
+    evidence_required:
+    - thermal module CAD
+    - TIM stack drawing
+    - supplier thermal module datasheet
+- entity_id: assumption:wireless_charging_enabled
+  kind: assumption
+  title: wireless charging enabled
+  status: screening
+  source_path: engineering/assumptions/assumption_registry.yaml
+  attributes:
+    value: false
+    unit: boolean
+    confidence: estimate
+    profile_scope: v1r
+    evidence_required:
+    - charging coil drawing
+    - ferrite shield spec
+    - charging heat telemetry
+- entity_id: blocker:accredited_labs_and_compliance_scope
+  kind: blocker
+  title: accredited labs and compliance scope
+  status: external
+  source_path: engineering/evidence/external_blocker_registry.yaml
+  attributes:
+    category: laboratory_and_regulatory
+    missing_evidence: Market/SKU matrix, current lab scope, calibrated tests, accredited reports, certifications/declarations/filings.
+    exact_request: Select target markets/configurations and engage qualified labs/regulatory counsel after production-intent
+      hardware exists.
+    acceptance_criteria: All required configurations and claims have passing traceable evidence and completed approvals.
+    fallback: Defer cellular, remove wireless charging, limit claims/markets, and retain modular development radios.
+    authorization_required: market_decisions_lab_contracts_and_test_samples
+- entity_id: blocker:battery_pack_and_charge_limits
+  kind: blocker
+  title: battery pack and charge limits
+  status: external
+  source_path: engineering/evidence/external_blocker_registry.yaml
+  attributes:
+    category: supplier_safety
+    missing_evidence: Complete-pack CAD, swelling/tolerances, protection, charge/discharge curves, temperature/cycle limits,
+      safety and shipping documentation.
+    exact_request: Request a supplier-proposed pack fitting the RFQ envelope and validated charger/system limits; do not prescribe
+      unsupported capacity or charge rate.
+    acceptance_criteria: Pack-backed capacity/energy/geometry and safe current/temperature limits close CAD, power, and EVT
+      hard stops.
+    fallback: Use the best supplier-validated capacity fitting the envelope; cap wired charge below 30 W if required; wireless
+      remains removed.
+    authorization_required: supplier_contact_samples_and_purchases
+- entity_id: blocker:display_storage_drawings
+  kind: blocker
+  title: display storage drawings
+  status: external
+  source_path: engineering/evidence/external_blocker_registry.yaml
+  attributes:
+    category: supplier_engineering
+    missing_evidence: Selected display module drawing/flex/power and selected storage package/host/power/thermal/lifecycle
+      evidence.
+    exact_request: Run prepared display and storage RFIs; request EVT-available modules and complete response schemas.
+    acceptance_criteria: A panel preserves workspace intent and fits; one TB storage is host-qualified, with a verified path
+      toward the 2 TB product fallback.
+    fallback: Allow supplier-available 7–8.4 inch display variation and modular/external storage; 4 TB internal stays rejected.
+    authorization_required: supplier_contact_samples_and_purchases
+- entity_id: blocker:evt0_build_and_measurement
+  kind: blocker
+  title: evt0 build and measurement
+  status: external
+  source_path: engineering/evidence/external_blocker_registry.yaml
+  attributes:
+    category: physical_work
+    missing_evidence: Selected BOM, released designs, authorized build, calibrated setup, raw results, deviations, and correlated
+      models.
+    exact_request: Authorize procurement/build/energized testing only after the EVT0 prerequisite and safety gates pass.
+    acceptance_criteria: Every required EVT0 test has schema-valid raw data and reviewed disposition; correlation gates pass
+      or trades are approved.
+    fallback: Continue workload characterization on external developer hardware without claiming integrated prototype performance.
+    authorization_required: purchases_physical_build_and_energized_testing
+- entity_id: blocker:platform_reference_design
+  kind: blocker
+  title: platform reference design
+  status: external
+  source_path: engineering/evidence/external_blocker_registry.yaml
+  attributes:
+    category: supplier_confidential_engineering
+    missing_evidence: Package/ball maps, qualified 128 GB topology, PMIC/rails, reference schematic, power/load steps, software
+      access, and sustained workload telemetry.
+    exact_request: Obtain the selected platform's NDA-controlled design package and evaluation access for the 128 GB fallback.
+    acceptance_criteria: Topology, routing, power, software, thermal, sourcing, and measured workload evidence satisfy the
+      package criteria.
+    fallback: Use external 128 GB developer systems for workload characterization only; do not claim pocket integration.
+    authorization_required: supplier_contact_NDA_eval_hardware_and_licenses
+- entity_id: blocker:released_integration_design
+  kind: blocker
+  title: released integration design
+  status: external
+  source_path: engineering/evidence/external_blocker_registry.yaml
+  attributes:
+    category: engineering_and_paid_tools
+    missing_evidence: Released 3D CAD, tolerance/mass/interference review, schematic/netlist/routed ECAD, solver model, EM
+      model, and peer signoff.
+    exact_request: After supplier packages are verified, authorize detailed CAD/ECAD/solver work and any required paid tools
+      or contractors.
+    acceptance_criteria: All Phase 2 acceptance criteria pass with selected-component geometry/properties and reviewed analyses.
+    fallback: Preserve provisional blocking models and 10.2 mm first thickness fallback; do not release hardware.
+    authorization_required: design_release_paid_tools_and_external_engineering_if_needed
+- entity_id: blocker:supplier_dfm_and_pilot
+  kind: blocker
+  title: supplier dfm and pilot
+  status: external
+  source_path: engineering/evidence/external_blocker_registry.yaml
+  attributes:
+    category: manufacturing_physical_work
+    missing_evidence: Completed supplier DFM responses, released process/tooling, pilot authorization, 100-unit records, yield/capability,
+      reliability, compliance, and service results.
+    exact_request: After verified EVT0, authorize supplier DFM and then the controlled pilot only when G0/G1 pass.
+    acceptance_criteria: Supplier comments close and manufacturing gates G0–G4 meet their evidence requirements with zero
+      critical defects.
+    fallback: Hold production claims and iterate EVT/design/process; do not shrink denominators or hide rework/failures.
+    authorization_required: supplier_engagement_tooling_materials_pilot_and_labs
+- entity_id: blocker:supplier_responses
+  kind: blocker
+  title: supplier responses
+  status: external
+  source_path: engineering/evidence/external_blocker_registry.yaml
+  attributes:
+    category: supplier_and_nda
+    missing_evidence: Completed supplier response templates, controlled drawings, limits, lifecycle/availability, sample terms,
+      and attestations.
+    exact_request: Authorize supplier outreach using research/rfqs after contact and NDA review; request completed response
+      schemas and source documents.
+    acceptance_criteria: Every Phase 1 acceptance criterion is met with traceable supplier-authored evidence and engineering
+      review.
+    fallback: Retain public candidates only as references; do not select components or release CAD.
+    authorization_required: supplier_contact_and_any_NDA_acceptance
+- entity_id: component_role:battery_pack
+  kind: component_role
+  title: battery pack
+  status: selection_required
+  source_path: validation/evt0/bom-strategy.yaml
+  attributes:
+    quantity_per_unit: 1
+    required_evidence:
+    - cell_and_pack_drawing
+    - protection
+    - swelling
+    - charge_discharge_limits
+    - impedance
+    - cycle_life
+    - safety_and_shipping
+- entity_id: component_role:cellular
+  kind: component_role
+  title: cellular
+  status: deferred_from_EVT0
+  source_path: validation/evt0/bom-strategy.yaml
+  attributes:
+    quantity_per_unit: 0
+    required_evidence: []
+- entity_id: component_role:compute_platform
+  kind: component_role
+  title: compute platform
+  status: selection_required
+  source_path: validation/evt0/bom-strategy.yaml
+  attributes:
+    quantity_per_unit: 1
+    required_evidence:
+    - package_drawing
+    - reference_design
+    - rail_map
+    - sustained_workload_telemetry
+    - software_support
+    - sample_terms
+- entity_id: component_role:display_module
+  kind: component_role
+  title: display module
+  status: selection_required
+  source_path: validation/evt0/bom-strategy.yaml
+  attributes:
+    quantity_per_unit: 1
+    required_evidence:
+    - outline
+    - stack_height
+    - flex
+    - interface
+    - power_curve
+    - optical_limits
+    - samples
+    - lifecycle
+- entity_id: component_role:enclosure_and_fixtures
+  kind: component_role
+  title: enclosure and fixtures
+  status: design_required
+  source_path: validation/evt0/bom-strategy.yaml
+  attributes:
+    quantity_per_unit: 1
+    required_evidence:
+    - released_CAD
+    - tolerances
+    - materials
+    - fasteners
+    - sensor_access
+    - safety_guards
+- entity_id: component_role:instrumentation_and_safety
+  kind: component_role
+  title: instrumentation and safety
+  status: selection_and_calibration_required
+  source_path: validation/evt0/bom-strategy.yaml
+  attributes:
+    quantity_per_unit: lab_shared
+    required_evidence:
+    - ranges
+    - accuracy
+    - bandwidth
+    - isolation
+    - calibration
+    - fixture_rating
+    - emergency_controls
+- entity_id: component_role:main_board_and_power
+  kind: component_role
+  title: main board and power
+  status: design_required
+  source_path: validation/evt0/bom-strategy.yaml
+  attributes:
+    quantity_per_unit: 1
+    required_evidence:
+    - released_schematic
+    - netlist
+    - layout
+    - stackup
+    - SI_PI_review
+    - protection_review
+    - bringup_plan
+- entity_id: component_role:memory
+  kind: component_role
+  title: memory
+  status: selection_required
+  source_path: validation/evt0/bom-strategy.yaml
+  attributes:
+    quantity_per_unit: topology_dependent
+    required_evidence:
+    - qualified_part_numbers
+    - package_drawings
+    - controller_support
+    - routing_rules
+    - power
+    - thermal_limits
+- entity_id: component_role:radios_and_antennas
+  kind: component_role
+  title: radios and antennas
+  status: modular_development_selection_required
+  source_path: validation/evt0/bom-strategy.yaml
+  attributes:
+    quantity_per_unit: configuration_dependent
+    required_evidence:
+    - module_grants_and_conditions
+    - reference_design
+    - bands
+    - antennas
+    - drivers
+    - lab_plan
+- entity_id: component_role:storage
+  kind: component_role
+  title: storage
+  status: selection_required
+  source_path: validation/evt0/bom-strategy.yaml
+  attributes:
+    quantity_per_unit: 1
+    required_evidence:
+    - host_support
+    - package_drawing
+    - pin_map
+    - power_states
+    - sustained_write_thermal_data
+    - lifecycle
+- entity_id: component_role:thermal_module
+  kind: component_role
+  title: thermal module
+  status: design_required
+  source_path: validation/evt0/bom-strategy.yaml
+  attributes:
+    quantity_per_unit: 1
+    required_evidence:
+    - geometry
+    - materials
+    - performance_map
+    - TIM
+    - contact_pressure
+    - tolerance
+    - assembly_process
+- entity_id: component_role:wireless_charging
+  kind: component_role
+  title: wireless charging
+  status: removed_from_EVT0
+  source_path: validation/evt0/bom-strategy.yaml
+  attributes:
+    quantity_per_unit: 0
+    required_evidence: []
+- entity_id: configuration:slate-pocket-v1r
+  kind: configuration
+  title: Slate Pocket v1R
+  status: provisional_evidence_driven_fallbacks
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    operational:
+      status: provisional_evidence_driven_fallbacks
+      purpose: Operational inputs for Phase 2 and EVT0 planning; not selected components or validated performance.
+      memory_gb: 128
+      internal_storage_tb: 1
+      product_storage_fallback_tb: 2
+      npu_public_reference_tops_int8: 80
+      wired_charge_evt0_input_cap_w: 30
+      wireless_charging: removed
+      cellular: deferred
+      source_artifacts:
+      - research/evidence/compute/platform-comparison.yaml
+      - research/evidence/display-storage/candidate-comparison.yaml
+      - reports/slate-pocket-v1r-cad-budget.txt
+      - reports/slate-pocket-v1r-pcb-power-architecture.txt
+      - reports/slate-pocket-v1r-rf-wireless-architecture.txt
+    geometry:
+      length_mm: 180
+      width_mm: 95
+      thickness_mm: 9.5
+      display_diagonal_in: 7.5
+- entity_id: defect:AUD
+  kind: defect_code
+  title: AUD
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: speaker_microphone_port_seal_or_acoustic
+- entity_id: defect:BAT
+  kind: defect_code
+  title: BAT
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: battery_identity_damage_swelling_protection_interconnect_clearance_or_thermal
+- entity_id: defect:CAM
+  kind: defect_code
+  title: CAM
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: camera_alignment_focus_module_flex_or_contamination
+- entity_id: defect:COS
+  kind: defect_code
+  title: COS
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: scratch_dent_gap_flush_color_finish_or_foreign_material
+- entity_id: defect:DSP
+  kind: defect_code
+  title: DSP
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: display_touch_flex_bond_optical_or_cosmetic
+- entity_id: defect:MECH
+  kind: defect_code
+  title: MECH
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: dimension_datum_flatness_interference_fastener_frame_or_structure
+- entity_id: defect:PCBA
+  kind: defect_code
+  title: PCBA
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: fabrication_solder_placement_via_warpage_contamination_or_component
+- entity_id: defect:PWR
+  kind: defect_code
+  title: PWR
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: power_charge_protection_grounding_isolation_transient_or_connector
+- entity_id: defect:RF
+  kind: defect_code
+  title: RF
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: module_antenna_feed_matching_ground_coexistence_or_region_configuration
+- entity_id: defect:SEAL
+  kind: defect_code
+  title: SEAL
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: adhesive_gasket_leak_surface_prep_cure_or_contamination
+- entity_id: defect:SW
+  kind: defect_code
+  title: SW
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: firmware_driver_provisioning_security_calibration_or_configuration
+- entity_id: defect:TEST
+  kind: defect_code
+  title: TEST
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: fixture_instrument_calibration_coverage_false_failure_or_data_loss
+- entity_id: defect:THM
+  kind: defect_code
+  title: THM
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: TIM_spreader_bondline_contact_pressure_sensor_or_thermal_performance
+- entity_id: defect:TRACE
+  kind: defect_code
+  title: TRACE
+  status: proposed
+  source_path: manufacturing/defect-taxonomy.yaml
+  attributes:
+    description: missing_wrong_or_inconsistent_unit_part_lot_process_or_test_identity
+- entity_id: evidence:battery_supplier_package
+  kind: evidence_package
+  title: Obtain a supplier-backed battery package
+  status: available
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    phase: 1
+    priority: critical
+    owner: BuildSlate engineering
+    acceptance_criteria:
+    - Candidate cell dimensions, mass, nominal energy, and minimum capacity come from supplier documentation.
+    - Pack CAD includes tabs, protection electronics, restraint, adhesive, tolerances, and swelling allowance.
+    - Volumetric energy density is calculated from the complete pack envelope rather than bare-cell volume.
+    - Discharge, charge-rate, cycle-life, temperature, and certification constraints are recorded.
+    notes: This package tests whether the retained 6000 mAh target can coexist with the v1R battery volume.
+- entity_id: evidence:compute_memory_platform_package
+  kind: evidence_package
+  title: Select a credible SoC, NPU, and memory topology
+  status: available
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    phase: 1
+    priority: critical
+    owner: BuildSlate engineering
+    acceptance_criteria:
+    - SoC package, memory-controller limits, supported memory topology, and package drawings are documented.
+    - Peak TOPS is separated from measured or vendor-supported sustained workload performance.
+    - Sustained and peak power assumptions have workload definitions and evidence.
+    - Memory capacity, bandwidth, package count, board area, power, and thermal implications are quantified.
+    - Development-board and software-runtime access are confirmed.
+    notes: This package is the primary reality check for the 512 GB memory and 100 TOPS targets.
+- entity_id: evidence:display_storage_package
+  kind: evidence_package
+  title: Confirm display and storage package candidates
+  status: available
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    phase: 1
+    priority: high
+    owner: BuildSlate engineering
+    acceptance_criteria:
+    - Display outline, active area, thickness, flex location, interface, luminance, and power curves are documented.
+    - Storage package dimensions, capacity options, interface, power, and sustained-write thermal behavior are documented.
+    - Candidate availability and lifecycle status are recorded.
+    notes: These candidates are needed before local z-height and PCB placement can be trusted.
+- entity_id: evidence:evt0_prototype_evidence
+  kind: evidence_package
+  title: Build and characterize an EVT-0 integration prototype
+  status: planned
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    phase: 3
+    priority: critical
+    owner: BuildSlate engineering and authorized test owner
+    acceptance_criteria:
+    - Prototype reproduces the intended geometry, major heat paths, power rails, and component topology.
+    - Sustained workload performance, power, clocks, throttling, memory use, and temperatures are logged.
+    - Battery runtime, charging overlap, load transients, and exterior temperature maps are measured.
+    - Model-to-measurement differences are documented and models are recalibrated.
+    - Failed targets trigger an explicit requirement trade rather than an untracked assumption change.
+    notes: EVT-0 is an engineering mule; it is not a cosmetic or production-representative build.
+- entity_id: evidence:manufacturing_review_package
+  kind: evidence_package
+  title: Complete supplier DFM and pilot-build readiness review
+  status: planned
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    phase: 4
+    priority: critical
+    owner: BuildSlate manufacturing engineering and authorized supplier quality owner
+    acceptance_criteria:
+    - Assembly sequence, datum scheme, tolerance ownership, adhesives, fixtures, and rework paths are documented.
+    - Critical suppliers have reviewed package, process, tolerance, and availability assumptions.
+    - Pilot build plan defines sample size, inspection points, defect taxonomy, and yield thresholds.
+    - Serviceability, reliability, and compliance-pretest plans are approved.
+    notes: This package is required before BuildSlate can make manufacturing-readiness claims.
+- entity_id: evidence:mechanical_cad_stackup
+  kind: evidence_package
+  title: Produce the first evidence-backed mechanical CAD stackup
+  status: planned
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    phase: 2
+    priority: critical
+    owner: BuildSlate engineering
+    acceptance_criteria:
+    - CAD uses supplier package geometry for all critical components.
+    - Keepouts include flexes, connectors, fasteners, seals, shields, antennas, service access, and assembly clearance.
+    - Zone-by-zone z-height and tolerance stacks have positive margin.
+    - Mass rollup and center-of-mass estimates are tied to the modeled parts.
+    - Interference and serviceability reviews are recorded.
+    notes: A verified CAD stackup replaces the current usable-volume factor and bounding-box assumptions.
+- entity_id: evidence:pcb_power_architecture
+  kind: evidence_package
+  title: Prove PCB placement, routing, and power architecture
+  status: planned
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    phase: 2
+    priority: critical
+    owner: BuildSlate engineering
+    acceptance_criteria:
+    - Board outline and placement include package, connector, antenna, shield, fastener, and test-point keepouts.
+    - Preliminary netlist, pin map, escape study, layer stack, and HDI strategy are reviewed.
+    - Power tree includes rail loads, efficiency, sequencing, charger, battery current, and thermal loss.
+    - PDN targets, decoupling strategy, and transient validation plan are defined.
+    notes: This package must exist before average power calculations can be treated as an integration plan.
+- entity_id: evidence:requirements_baseline
+  kind: evidence_package
+  title: Freeze the v1R decision baseline
+  status: verified
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    phase: 0
+    priority: critical
+    owner: BuildSlate product owner
+    acceptance_criteria:
+    - Must-have, target, and negotiable requirements are separated.
+    - The 9.5 mm v1R envelope is explicitly accepted or replaced.
+    - Battery, memory, storage, compute, charging, mass, and skin-temperature targets each have an approved fallback.
+    - Every retained target has a named verification method and decision owner.
+    notes: This prevents supplier and CAD work from optimizing against an unstable set of headline targets.
+- entity_id: evidence:rf_wireless_architecture
+  kind: evidence_package
+  title: Reserve and validate RF and wireless-charging architecture
+  status: planned
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    phase: 2
+    priority: critical
+    owner: BuildSlate engineering
+    acceptance_criteria:
+    - Target radios, bands, antenna topology, keepouts, grounding, and RF-transparent material zones are defined.
+    - Wireless-charging coil, ferrite, shield, alignment, and rear-material stack are modeled.
+    - Antenna and charging coexistence risks have a simulation and chamber-test plan.
+    - SAR, EMC, and applicable charging-certification targets are identified.
+    notes: RF space must be reserved before the enclosure and thermal spreader are frozen.
+- entity_id: evidence:thermal_model_and_test_plan
+  kind: evidence_package
+  title: Build a geometry-specific thermal model and correlation plan
+  status: planned
+  source_path: engineering/evidence/evidence_registry.yaml
+  attributes:
+    phase: 2
+    priority: critical
+    owner: BuildSlate engineering
+    acceptance_criteria:
+    - Thermal model uses actual source locations, materials, interfaces, contact pressure, and boundary conditions.
+    - Sustained, peak, charging-overlap, hot-ambient, handheld, pocket, and bag cases are defined.
+    - Thermal module and TIM candidates have supplier-backed properties.
+    - Skin-temperature sensor locations, chamber procedure, and model-correlation thresholds are defined.
+    - Throttle policy and pass/fail limits are explicit.
+    notes: The current thermal improvement is a geometry-level indication only; this package turns it into a testable hypothesis.
+- entity_id: gate:evidence_gate
+  kind: gate
+  title: evidence gate
+  status: BLOCKED_ON_FOUNDATIONAL_EVIDENCE
+  source_path: reports/slate-pocket-evidence-readiness.txt
+  attributes:
+    marker: 'EVIDENCE_DECISION:'
+- entity_id: gate:evt0_gate
+  kind: gate
+  title: evt0 gate
+  status: BLOCKED_ON_SUPPLIER_PHASE2_VERIFICATION_BUILD_AUTHORIZATION_AND_RESULTS
+  source_path: reports/slate-pocket-v1r-evt0-gate.txt
+  attributes:
+    marker: 'EVT0_GATE:'
+- entity_id: gate:local_program_gate
+  kind: gate
+  title: local program gate
+  status: SUPPLIER_READY_AND_PROTOTYPE_PLAN_READY_EXTERNALLY_BLOCKED
+  source_path: reports/slate-pocket-v1r-program-readiness.txt
+  attributes:
+    marker: 'LOCAL_PROGRAM_DECISION:'
+- entity_id: gate:manufacturing_gate
+  kind: gate
+  title: manufacturing gate
+  status: BLOCKED_ON_VERIFIED_EVT0_SUPPLIER_DFM_RELEASED_PROCESS_AND_PILOT_EVIDENCE
+  source_path: reports/slate-pocket-v1r-manufacturing-readiness.txt
+  attributes:
+    marker: 'MANUFACTURING_GATE:'
+- entity_id: outcome:7_5_inch_16_10_workspace
+  kind: requirement
+  title: 7 5 inch 16 10 workspace
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: must_have_outcome
+- entity_id: outcome:evidence_backed_integrated_design
+  kind: requirement
+  title: evidence backed integrated design
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: must_have_outcome
+- entity_id: outcome:measured_sustained_workloads
+  kind: requirement
+  title: measured sustained workloads
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: must_have_outcome
+- entity_id: outcome:offline_local_inference_and_security
+  kind: requirement
+  title: offline local inference and security
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: must_have_outcome
+- entity_id: outcome:pocket_ai_workstation
+  kind: requirement
+  title: pocket ai workstation
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: must_have_outcome
+- entity_id: requirement:battery
+  kind: requirement
+  title: battery
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: trade_rule
+    rule:
+      target_mah: 6000
+      fallback: best_supplier_validated_complete_pack_capacity
+      same_density_reference_mah: 4236
+- entity_id: requirement:compute
+  kind: requirement
+  title: compute
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: trade_rule
+    rule:
+      platform_metric: measured_workload_performance_per_watt
+      sustained_tops_required: false
+- entity_id: requirement:mass
+  kind: requirement
+  title: mass
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: trade_rule
+    rule:
+      aspirational_target_g: 250
+      working_range_g:
+      - 290
+      - 350
+- entity_id: requirement:memory
+  kind: requirement
+  title: memory
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: trade_rule
+    rule:
+      aspirational_target_gb: 512
+      fallback_tiers_gb:
+      - 256
+      - 128
+- entity_id: requirement:storage
+  kind: requirement
+  title: storage
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: trade_rule
+    rule:
+      target_tb: 4
+      fallback_tb: 2
+      fallback_strategy: modular_or_external_storage
+- entity_id: requirement:thickness
+  kind: requirement
+  title: thickness
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: trade_rule
+    rule:
+      target_mm: 9.5
+      first_fallback_mm: 10.2
+- entity_id: requirement:wireless_charging
+  kind: requirement
+  title: wireless charging
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: trade_rule
+    rule:
+      target_w: 50
+      negotiable: true
+      removal_allowed_if_blocking: true
+- entity_id: safety:max_skin_c
+  kind: requirement
+  title: max skin c
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: safety_boundary
+    value: 43
+- entity_id: safety:rule
+  kind: requirement
+  title: rule
+  status: locked
+  source_path: configs/devices/slate-pocket-v1r.yaml
+  attributes:
+    requirement_class: safety_boundary
+    value: throttle_before_relaxing_without_safety_and_human_factors_review
+- entity_id: risk:battery_volume_capacity_tradeoff
+  kind: risk
+  title: Battery volume and capacity tradeoff
+  status: blocked
+  source_path: engineering/risks/risk_register.yaml
+  attributes:
+    subsystem: battery
+    likelihood: high
+    impact: critical
+    maturity: screening
+    mitigation:
+    - Re-baseline battery capacity against actual pack CAD, swelling allowance, and runtime targets.
+    - Evaluate lower-capacity and higher-thickness recovery variants before treating v1R as stable.
+    evidence_required:
+    - Battery cell datasheet
+    - Pack construction drawing
+    - Swelling allowance and safety spacing review
+    - Runtime and discharge telemetry for target workloads
+- entity_id: risk:manufacturability_yield_risk
+  kind: risk
+  title: Manufacturability and yield risk
+  status: blocked
+  source_path: engineering/risks/risk_register.yaml
+  attributes:
+    subsystem: manufacturing
+    likelihood: high
+    impact: critical
+    maturity: screening
+    mitigation:
+    - Keep manufacturability status blocked until tolerance, assembly, serviceability, yield, and supplier package evidence
+      exist.
+    - Convert high-pressure package assumptions into prototype build risks before committing to industrial design.
+    evidence_required:
+    - DFM review
+    - Tolerance stack and assembly plan
+    - Supplier package drawings
+    - Prototype build and yield data
+- entity_id: risk:memory_packaging_512gb
+  kind: risk
+  title: 512 GB memory packaging
+  status: blocked
+  source_path: engineering/risks/risk_register.yaml
+  attributes:
+    subsystem: memory
+    likelihood: critical
+    impact: high
+    maturity: concept
+    mitigation:
+    - Use the 128 GB fallback for integration and EVT0 planning.
+    - Require supplier-backed package count, height, bandwidth, power, and routing evidence before qualification.
+    evidence_required:
+    - Memory supplier package data
+    - Routing escape study
+    - Memory power telemetry
+    - Thermal placement review
+- entity_id: risk:npu_100_tops_sustained
+  kind: risk
+  title: 100 TOPS sustained NPU claim
+  status: blocked
+  source_path: engineering/risks/risk_register.yaml
+  attributes:
+    subsystem: compute
+    likelihood: critical
+    impact: high
+    maturity: concept
+    mitigation:
+    - Separate peak marketing TOPS from sustained local workload performance in reports.
+    - Require supplier disclosure and measured workloads before using the target as engineering evidence.
+    evidence_required:
+    - SoC package spec
+    - Benchmark disclosure
+    - Sustained TOPS telemetry
+    - Memory bandwidth and thermal throttle characterization
+- entity_id: risk:pcb_routing_density
+  kind: risk
+  title: PCB routing density
+  status: open
+  source_path: engineering/risks/risk_register.yaml
+  attributes:
+    subsystem: pcb
+    likelihood: high
+    impact: high
+    maturity: first_order
+    mitigation:
+    - Perform a placement and escape-route study for SoC, memory, storage, RF, PMIC, and flex interconnects.
+    - Reassess memory/storage targets if layer count or keepout pressure becomes excessive.
+    evidence_required:
+    - Board floorplan
+    - Routing escape study
+    - Stackup and layer-count proposal
+    - SI/PI review plan
+- entity_id: risk:power_delivery_transients
+  kind: risk
+  title: Power delivery transients
+  status: open
+  source_path: engineering/risks/risk_register.yaml
+  attributes:
+    subsystem: power
+    likelihood: high
+    impact: high
+    maturity: first_order
+    mitigation:
+    - Size regulator, battery, and decoupling assumptions from peak transient workloads, not only average compute power.
+    - Require PI simulation or bench transients before accepting the compute envelope.
+    evidence_required:
+    - Regulator transient test
+    - PMIC and battery current specs
+    - Decoupling plan
+    - Peak workload telemetry
+- entity_id: risk:rf_antenna_window_constraints
+  kind: risk
+  title: RF antenna window constraints
+  status: open
+  source_path: engineering/risks/risk_register.yaml
+  attributes:
+    subsystem: rf
+    likelihood: medium
+    impact: high
+    maturity: screening
+    mitigation:
+    - Reserve antenna keepouts and RF-transparent windows before finalizing chassis material or charging layout.
+    - Validate coexistence between rear material, wireless charging, frame conduction, and antenna zones.
+    evidence_required:
+    - Antenna keepout map
+    - Chassis material stack review
+    - RF simulation or chamber plan
+    - Wireless charging coexistence review
+- entity_id: risk:skin_temperature_target_43c
+  kind: risk
+  title: 43 C skin-temperature target
+  status: open
+  source_path: engineering/risks/risk_register.yaml
+  attributes:
+    subsystem: thermal
+    likelihood: high
+    impact: high
+    maturity: screening
+    mitigation:
+    - Treat 43 C as a throttle-policy boundary until prototype thermal maps exist.
+    - Screen hot ambient, hand contact, charging overlap, and pocket/bag operating states as separate limits.
+    evidence_required:
+    - Skin thermocouple map
+    - Thermal chamber data
+    - Workload and ambient profiles
+    - User-contact operating policy
+- entity_id: risk:storage_packaging_4tb
+  kind: risk
+  title: 4 TB storage packaging
+  status: blocked
+  source_path: engineering/risks/risk_register.yaml
+  attributes:
+    subsystem: storage
+    likelihood: high
+    impact: high
+    maturity: concept
+    mitigation:
+    - Use one 1 TB embedded package as the integration geometry reference.
+    - Satisfy the approved 2 TB product fallback through a verified second device or modular/external path.
+    evidence_required:
+    - Storage package spec
+    - Sustained write telemetry
+    - Package height drawing
+    - Sourcing and availability review
+- entity_id: risk:sustained_compute_power
+  kind: risk
+  title: Sustained compute power envelope
+  status: blocked
+  source_path: engineering/risks/risk_register.yaml
+  attributes:
+    subsystem: compute
+    likelihood: high
+    impact: critical
+    maturity: concept
+    mitigation:
+    - Define sustained workload classes and throttle policy before preserving headline compute targets.
+    - Re-score runtime and thermal reports after supplier-backed SoC power data is available.
+    evidence_required:
+    - Sustained power telemetry
+    - Target workload definition
+    - SoC package and power mode disclosure
+    - Thermal chamber run with throttling enabled
+- entity_id: risk:thermal_module_effectiveness
+  kind: risk
+  title: Thermal module effectiveness
+  status: open
+  source_path: engineering/risks/risk_register.yaml
+  attributes:
+    subsystem: thermal
+    likelihood: high
+    impact: high
+    maturity: screening
+    mitigation:
+    - Screen vapor chamber, graphite, frame-coupled spreader, and TIM options against available z-height.
+    - Define a thermal test plan before claiming module adequacy.
+    evidence_required:
+    - Thermal module CAD
+    - TIM stack drawing
+    - Supplier thermal module datasheet
+    - CFD or FEA model correlated to test coupons
+- entity_id: risk:thickness_stackup_margin
+  kind: risk
+  title: Thickness stackup margin
+  status: blocked
+  source_path: engineering/risks/risk_register.yaml
+  attributes:
+    subsystem: mechanical
+    likelihood: high
+    impact: critical
+    maturity: screening
+    mitigation:
+    - Replace placeholder z-height allocations with CAD stackup and supplier package drawings.
+    - Hold v1R thickness as provisional until tolerance stack and local zone conflicts are resolved.
+    evidence_required:
+    - Mechanical CAD stackup
+    - Tolerance stack review
+    - Supplier package height drawings
+    - Industrial design envelope approval
+- entity_id: risk:wireless_charging_packaging
+  kind: risk
+  title: Wireless charging packaging
+  status: mitigated
+  source_path: engineering/risks/risk_register.yaml
+  attributes:
+    subsystem: charging
+    likelihood: high
+    impact: medium
+    maturity: screening
+    mitigation:
+    - Remove wireless charging from EVT0 and reserve the rear zone only for future study.
+    - Require a passing stack, selected standard/profile, supplier module, safety/thermal/RF validation, and certification
+      plan before re-entry.
+    evidence_required:
+    - Charging coil drawing
+    - Ferrite shield spec
+    - Charging heat telemetry
+    - Rear material and alignment study
+- entity_id: supplier:AMD
+  kind: supplier
+  title: AMD
+  status: candidate_not_contacted
+  source_path: research/rfqs/rfq_registry.yaml
+  attributes:
+    evidence_packages:
+    - compute_memory_platform_package
+- entity_id: supplier:Amprius_Technologies
+  kind: supplier
+  title: Amprius Technologies
+  status: candidate_not_contacted
+  source_path: research/rfqs/rfq_registry.yaml
+  attributes:
+    evidence_packages:
+    - battery_supplier_package
+- entity_id: supplier:BOE
+  kind: supplier
+  title: BOE
+  status: candidate_not_contacted
+  source_path: research/rfqs/rfq_registry.yaml
+  attributes:
+    evidence_packages:
+    - display_storage_package
+- entity_id: supplier:Enovix
+  kind: supplier
+  title: Enovix
+  status: candidate_not_contacted
+  source_path: research/rfqs/rfq_registry.yaml
+  attributes:
+    evidence_packages:
+    - battery_supplier_package
+- entity_id: supplier:KIOXIA
+  kind: supplier
+  title: KIOXIA
+  status: candidate_not_contacted
+  source_path: research/rfqs/rfq_registry.yaml
+  attributes:
+    evidence_packages:
+    - display_storage_package
+- entity_id: supplier:Micron
+  kind: supplier
+  title: Micron
+  status: candidate_not_contacted
+  source_path: research/rfqs/rfq_registry.yaml
+  attributes:
+    evidence_packages:
+    - display_storage_package
+- entity_id: supplier:NVIDIA
+  kind: supplier
+  title: NVIDIA
+  status: candidate_not_contacted
+  source_path: research/rfqs/rfq_registry.yaml
+  attributes:
+    evidence_packages:
+    - compute_memory_platform_package
+- entity_id: supplier:Panasonic_Energy
+  kind: supplier
+  title: Panasonic Energy
+  status: candidate_not_contacted
+  source_path: research/rfqs/rfq_registry.yaml
+  attributes:
+    evidence_packages:
+    - battery_supplier_package
+- entity_id: supplier:Qualcomm
+  kind: supplier
+  title: Qualcomm
+  status: candidate_not_contacted
+  source_path: research/rfqs/rfq_registry.yaml
+  attributes:
+    evidence_packages:
+    - compute_memory_platform_package
+- entity_id: supplier:Samsung_Display
+  kind: supplier
+  title: Samsung Display
+  status: candidate_not_contacted
+  source_path: research/rfqs/rfq_registry.yaml
+  attributes:
+    evidence_packages:
+    - display_storage_package
+- entity_id: supplier:Samsung_Semiconductor
+  kind: supplier
+  title: Samsung Semiconductor
+  status: candidate_not_contacted
+  source_path: research/rfqs/rfq_registry.yaml
+  attributes:
+    evidence_packages:
+    - display_storage_package
+- entity_id: supplier:Tianma
+  kind: supplier
+  title: Tianma
+  status: candidate_not_contacted
+  source_path: research/rfqs/rfq_registry.yaml
+  attributes:
+    evidence_packages:
+    - display_storage_package
+- entity_id: test:B00
+  kind: test
+  title: incoming inspection and mass
+  status: blocked_on_selected_components
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: none
+    purpose: identity_dimensions_mass_damage_and_traceability
+- entity_id: test:B01
+  kind: test
+  title: build traveler and electrical safety review
+  status: blocked_on_build
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: none
+    purpose: assembly_inspection_isolation_ground_and_protection_checks
+- entity_id: test:B40
+  kind: test
+  title: battery runtime at validated sustained load
+  status: blocked_on_selected_pack_and_P10
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: W10_ai_reference_70b_4bit
+    purpose: measure_runtime_discharge_temperature_and_energy
+- entity_id: test:B50
+  kind: test
+  title: wired charge at EVT cap
+  status: blocked_on_selected_pack_charger_and_charge_plan
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: W00_idle_baseline
+    purpose: measure_charge_curve_losses_temperatures_and_protection
+- entity_id: test:B51
+  kind: test
+  title: charging overlap guard
+  status: prohibited_until_controls_validated
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: control_verification_only
+    purpose: prove_full_power_charge_and_sustained_AI_cannot_coexist
+- entity_id: test:C40
+  kind: test
+  title: combined system sustained
+  status: blocked_on_component_tests
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: W40_combined_ai_storage_display
+    purpose: measure_coupled_performance_per_watt_and_throttling
+- entity_id: test:F00
+  kind: test
+  title: boot telemetry and radio kill
+  status: blocked_on_build
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: W00_idle_baseline
+    purpose: functional_baseline_security_and_fault_logging
+- entity_id: test:M20
+  kind: test
+  title: memory capacity bandwidth and stability
+  status: blocked_on_build
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: W20_memory_capacity_and_bandwidth
+    purpose: prove_128gb_fallback_behavior
+- entity_id: test:MC0
+  kind: test
+  title: model correlation and residual review
+  status: blocked_on_required_measurements
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: none
+    purpose: compare_mechanical_power_thermal_and_runtime_models_to_data
+- entity_id: test:P00
+  kind: test
+  title: idle power and thermal stabilization
+  status: blocked_on_build
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: W00_idle_baseline
+    purpose: establish_baseline_and_sensor_sanity
+- entity_id: test:P10
+  kind: test
+  title: controlled compute power ramp
+  status: blocked_on_build
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: W10_ai_reference_70b_4bit
+    purpose: find_safe_sustained_envelope_without_assuming_28w
+- entity_id: test:P11
+  kind: test
+  title: peak burst and rail transient
+  status: blocked_on_P10
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: W11_ai_peak_burst
+    purpose: measure_droop_response_and_recovery_within_approved_peak_duration
+- entity_id: test:R50
+  kind: test
+  title: modular radio coexistence
+  status: blocked_on_radio_mule
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: W50_radio_coexistence_traffic
+    purpose: detect_desense_EMC_and_performance_coupling
+- entity_id: test:S30
+  kind: test
+  title: storage sustained io and thermal
+  status: blocked_on_selected_storage
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: W30_storage_sustained_io
+    purpose: characterize_one_tb_baseline_and_host_behavior
+- entity_id: test:T10
+  kind: test
+  title: open air 25c thermal map
+  status: blocked_on_thermal_mule
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: W10_ai_reference_70b_4bit
+    purpose: correlate_primary_sustained_case
+- entity_id: test:T20
+  kind: test
+  title: hot ambient 35c control ramp
+  status: blocked_on_T10
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: W10_ai_reference_70b_4bit
+    purpose: verify_throttle_before_skin_or_battery_limit
+- entity_id: test:T30
+  kind: test
+  title: handheld fixture
+  status: blocked_on_T10
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: W10_ai_reference_70b_4bit
+    purpose: map_grip_temperature_and_control_response
+- entity_id: test:T40
+  kind: test
+  title: pocket bag fault containment
+  status: prohibited_until_controls_validated
+  source_path: validation/evt0/test-matrix.yaml
+  attributes:
+    workload: none
+    purpose: verify_high_power_and_charging_inhibition_only
+relations:
+- source_id: blocker:accredited_labs_and_compliance_scope
+  relationship: blocks
+  target_id: evidence:evt0_prototype_evidence
+- source_id: blocker:accredited_labs_and_compliance_scope
+  relationship: blocks
+  target_id: evidence:manufacturing_review_package
+- source_id: blocker:accredited_labs_and_compliance_scope
+  relationship: blocks
+  target_id: evidence:rf_wireless_architecture
+- source_id: blocker:battery_pack_and_charge_limits
+  relationship: blocks
+  target_id: evidence:battery_supplier_package
+- source_id: blocker:battery_pack_and_charge_limits
+  relationship: blocks
+  target_id: evidence:evt0_prototype_evidence
+- source_id: blocker:battery_pack_and_charge_limits
+  relationship: blocks
+  target_id: evidence:mechanical_cad_stackup
+- source_id: blocker:battery_pack_and_charge_limits
+  relationship: blocks
+  target_id: evidence:pcb_power_architecture
+- source_id: blocker:display_storage_drawings
+  relationship: blocks
+  target_id: evidence:display_storage_package
+- source_id: blocker:display_storage_drawings
+  relationship: blocks
+  target_id: evidence:evt0_prototype_evidence
+- source_id: blocker:display_storage_drawings
+  relationship: blocks
+  target_id: evidence:mechanical_cad_stackup
+- source_id: blocker:display_storage_drawings
+  relationship: blocks
+  target_id: evidence:pcb_power_architecture
+- source_id: blocker:evt0_build_and_measurement
+  relationship: blocks
+  target_id: evidence:evt0_prototype_evidence
+- source_id: blocker:platform_reference_design
+  relationship: blocks
+  target_id: evidence:compute_memory_platform_package
+- source_id: blocker:platform_reference_design
+  relationship: blocks
+  target_id: evidence:evt0_prototype_evidence
+- source_id: blocker:platform_reference_design
+  relationship: blocks
+  target_id: evidence:pcb_power_architecture
+- source_id: blocker:platform_reference_design
+  relationship: blocks
+  target_id: evidence:thermal_model_and_test_plan
+- source_id: blocker:released_integration_design
+  relationship: blocks
+  target_id: evidence:mechanical_cad_stackup
+- source_id: blocker:released_integration_design
+  relationship: blocks
+  target_id: evidence:pcb_power_architecture
+- source_id: blocker:released_integration_design
+  relationship: blocks
+  target_id: evidence:rf_wireless_architecture
+- source_id: blocker:released_integration_design
+  relationship: blocks
+  target_id: evidence:thermal_model_and_test_plan
+- source_id: blocker:supplier_dfm_and_pilot
+  relationship: blocks
+  target_id: evidence:manufacturing_review_package
+- source_id: blocker:supplier_responses
+  relationship: blocks
+  target_id: evidence:battery_supplier_package
+- source_id: blocker:supplier_responses
+  relationship: blocks
+  target_id: evidence:compute_memory_platform_package
+- source_id: blocker:supplier_responses
+  relationship: blocks
+  target_id: evidence:display_storage_package
+- source_id: component_role:battery_pack
+  relationship: planned_for
+  target_id: configuration:slate-pocket-v1r
+- source_id: component_role:cellular
+  relationship: planned_for
+  target_id: configuration:slate-pocket-v1r
+- source_id: component_role:compute_platform
+  relationship: planned_for
+  target_id: configuration:slate-pocket-v1r
+- source_id: component_role:display_module
+  relationship: planned_for
+  target_id: configuration:slate-pocket-v1r
+- source_id: component_role:enclosure_and_fixtures
+  relationship: planned_for
+  target_id: configuration:slate-pocket-v1r
+- source_id: component_role:instrumentation_and_safety
+  relationship: planned_for
+  target_id: configuration:slate-pocket-v1r
+- source_id: component_role:main_board_and_power
+  relationship: planned_for
+  target_id: configuration:slate-pocket-v1r
+- source_id: component_role:memory
+  relationship: planned_for
+  target_id: configuration:slate-pocket-v1r
+- source_id: component_role:radios_and_antennas
+  relationship: planned_for
+  target_id: configuration:slate-pocket-v1r
+- source_id: component_role:storage
+  relationship: planned_for
+  target_id: configuration:slate-pocket-v1r
+- source_id: component_role:thermal_module
+  relationship: planned_for
+  target_id: configuration:slate-pocket-v1r
+- source_id: component_role:wireless_charging
+  relationship: planned_for
+  target_id: configuration:slate-pocket-v1r
+- source_id: configuration:slate-pocket-v1r
+  relationship: implements
+  target_id: requirement:battery
+- source_id: configuration:slate-pocket-v1r
+  relationship: implements
+  target_id: requirement:compute
+- source_id: configuration:slate-pocket-v1r
+  relationship: implements
+  target_id: requirement:mass
+- source_id: configuration:slate-pocket-v1r
+  relationship: implements
+  target_id: requirement:memory
+- source_id: configuration:slate-pocket-v1r
+  relationship: implements
+  target_id: requirement:storage
+- source_id: configuration:slate-pocket-v1r
+  relationship: implements
+  target_id: requirement:thickness
+- source_id: configuration:slate-pocket-v1r
+  relationship: implements
+  target_id: requirement:wireless_charging
+- source_id: defect:AUD
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: defect:BAT
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: defect:CAM
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: defect:COS
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: defect:DSP
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: defect:MECH
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: defect:PCBA
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: defect:PWR
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: defect:RF
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: defect:SEAL
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: defect:SW
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: defect:TEST
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: defect:THM
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: defect:TRACE
+  relationship: classified_by
+  target_id: evidence:manufacturing_review_package
+- source_id: evidence:battery_supplier_package
+  relationship: depends_on
+  target_id: evidence:requirements_baseline
+- source_id: evidence:battery_supplier_package
+  relationship: expects
+  target_id: artifact:research/evidence/battery/evidence-review.md
+- source_id: evidence:battery_supplier_package
+  relationship: expects
+  target_id: artifact:research/evidence/battery/pack-envelope.yaml
+- source_id: evidence:battery_supplier_package
+  relationship: expects
+  target_id: artifact:research/evidence/battery/supplier-source-index.yaml
+- source_id: evidence:battery_supplier_package
+  relationship: expects
+  target_id: artifact:research/rfqs/battery/response-template.yaml
+- source_id: evidence:battery_supplier_package
+  relationship: expects
+  target_id: artifact:research/rfqs/battery/rfq.md
+- source_id: evidence:battery_supplier_package
+  relationship: linked_to
+  target_id: risk:battery_volume_capacity_tradeoff
+- source_id: evidence:battery_supplier_package
+  relationship: linked_to
+  target_id: risk:manufacturability_yield_risk
+- source_id: evidence:battery_supplier_package
+  relationship: linked_to
+  target_id: risk:thickness_stackup_margin
+- source_id: evidence:compute_memory_platform_package
+  relationship: depends_on
+  target_id: evidence:requirements_baseline
+- source_id: evidence:compute_memory_platform_package
+  relationship: expects
+  target_id: artifact:research/evidence/compute/evidence-review.md
+- source_id: evidence:compute_memory_platform_package
+  relationship: expects
+  target_id: artifact:research/evidence/compute/package-and-memory-topology.md
+- source_id: evidence:compute_memory_platform_package
+  relationship: expects
+  target_id: artifact:research/evidence/compute/platform-comparison.yaml
+- source_id: evidence:compute_memory_platform_package
+  relationship: expects
+  target_id: artifact:research/rfqs/compute-memory/response-template.yaml
+- source_id: evidence:compute_memory_platform_package
+  relationship: expects
+  target_id: artifact:research/rfqs/compute-memory/rfq.md
+- source_id: evidence:compute_memory_platform_package
+  relationship: linked_to
+  target_id: risk:memory_packaging_512gb
+- source_id: evidence:compute_memory_platform_package
+  relationship: linked_to
+  target_id: risk:npu_100_tops_sustained
+- source_id: evidence:compute_memory_platform_package
+  relationship: linked_to
+  target_id: risk:pcb_routing_density
+- source_id: evidence:compute_memory_platform_package
+  relationship: linked_to
+  target_id: risk:power_delivery_transients
+- source_id: evidence:compute_memory_platform_package
+  relationship: linked_to
+  target_id: risk:sustained_compute_power
+- source_id: evidence:display_storage_package
+  relationship: depends_on
+  target_id: evidence:requirements_baseline
+- source_id: evidence:display_storage_package
+  relationship: expects
+  target_id: artifact:research/evidence/display-storage/candidate-comparison.yaml
+- source_id: evidence:display_storage_package
+  relationship: expects
+  target_id: artifact:research/evidence/display-storage/evidence-review.md
+- source_id: evidence:display_storage_package
+  relationship: expects
+  target_id: artifact:research/rfqs/display/response-template.yaml
+- source_id: evidence:display_storage_package
+  relationship: expects
+  target_id: artifact:research/rfqs/display/rfi.md
+- source_id: evidence:display_storage_package
+  relationship: expects
+  target_id: artifact:research/rfqs/storage/response-template.yaml
+- source_id: evidence:display_storage_package
+  relationship: expects
+  target_id: artifact:research/rfqs/storage/rfi.md
+- source_id: evidence:display_storage_package
+  relationship: linked_to
+  target_id: risk:pcb_routing_density
+- source_id: evidence:display_storage_package
+  relationship: linked_to
+  target_id: risk:storage_packaging_4tb
+- source_id: evidence:display_storage_package
+  relationship: linked_to
+  target_id: risk:thickness_stackup_margin
+- source_id: evidence:evt0_prototype_evidence
+  relationship: depends_on
+  target_id: evidence:mechanical_cad_stackup
+- source_id: evidence:evt0_prototype_evidence
+  relationship: depends_on
+  target_id: evidence:pcb_power_architecture
+- source_id: evidence:evt0_prototype_evidence
+  relationship: depends_on
+  target_id: evidence:rf_wireless_architecture
+- source_id: evidence:evt0_prototype_evidence
+  relationship: depends_on
+  target_id: evidence:thermal_model_and_test_plan
+- source_id: evidence:evt0_prototype_evidence
+  relationship: expects
+  target_id: artifact:reports/slate-pocket-v1r-evt0-gate.txt
+- source_id: evidence:evt0_prototype_evidence
+  relationship: expects
+  target_id: artifact:validation/evt0/model-correlation.md
+- source_id: evidence:evt0_prototype_evidence
+  relationship: expects
+  target_id: artifact:validation/evt0/test-results
+- source_id: evidence:evt0_prototype_evidence
+  relationship: linked_to
+  target_id: risk:battery_volume_capacity_tradeoff
+- source_id: evidence:evt0_prototype_evidence
+  relationship: linked_to
+  target_id: risk:npu_100_tops_sustained
+- source_id: evidence:evt0_prototype_evidence
+  relationship: linked_to
+  target_id: risk:power_delivery_transients
+- source_id: evidence:evt0_prototype_evidence
+  relationship: linked_to
+  target_id: risk:skin_temperature_target_43c
+- source_id: evidence:evt0_prototype_evidence
+  relationship: linked_to
+  target_id: risk:sustained_compute_power
+- source_id: evidence:evt0_prototype_evidence
+  relationship: linked_to
+  target_id: risk:thermal_module_effectiveness
+- source_id: evidence:manufacturing_review_package
+  relationship: depends_on
+  target_id: evidence:evt0_prototype_evidence
+- source_id: evidence:manufacturing_review_package
+  relationship: expects
+  target_id: artifact:manufacturing/dfm-review.md
+- source_id: evidence:manufacturing_review_package
+  relationship: expects
+  target_id: artifact:manufacturing/pilot-build-plan.yaml
+- source_id: evidence:manufacturing_review_package
+  relationship: expects
+  target_id: artifact:manufacturing/quality-gate.md
+- source_id: evidence:manufacturing_review_package
+  relationship: linked_to
+  target_id: risk:battery_volume_capacity_tradeoff
+- source_id: evidence:manufacturing_review_package
+  relationship: linked_to
+  target_id: risk:manufacturability_yield_risk
+- source_id: evidence:manufacturing_review_package
+  relationship: linked_to
+  target_id: risk:thickness_stackup_margin
+- source_id: evidence:mechanical_cad_stackup
+  relationship: depends_on
+  target_id: evidence:battery_supplier_package
+- source_id: evidence:mechanical_cad_stackup
+  relationship: depends_on
+  target_id: evidence:compute_memory_platform_package
+- source_id: evidence:mechanical_cad_stackup
+  relationship: depends_on
+  target_id: evidence:display_storage_package
+- source_id: evidence:mechanical_cad_stackup
+  relationship: expects
+  target_id: artifact:cad/slate-pocket-v1r/envelope-model
+- source_id: evidence:mechanical_cad_stackup
+  relationship: expects
+  target_id: artifact:cad/slate-pocket-v1r/stackup-review.md
+- source_id: evidence:mechanical_cad_stackup
+  relationship: expects
+  target_id: artifact:reports/slate-pocket-v1r-cad-budget.txt
+- source_id: evidence:mechanical_cad_stackup
+  relationship: linked_to
+  target_id: risk:battery_volume_capacity_tradeoff
+- source_id: evidence:mechanical_cad_stackup
+  relationship: linked_to
+  target_id: risk:manufacturability_yield_risk
+- source_id: evidence:mechanical_cad_stackup
+  relationship: linked_to
+  target_id: risk:rf_antenna_window_constraints
+- source_id: evidence:mechanical_cad_stackup
+  relationship: linked_to
+  target_id: risk:thermal_module_effectiveness
+- source_id: evidence:mechanical_cad_stackup
+  relationship: linked_to
+  target_id: risk:thickness_stackup_margin
+- source_id: evidence:pcb_power_architecture
+  relationship: depends_on
+  target_id: evidence:compute_memory_platform_package
+- source_id: evidence:pcb_power_architecture
+  relationship: depends_on
+  target_id: evidence:display_storage_package
+- source_id: evidence:pcb_power_architecture
+  relationship: depends_on
+  target_id: evidence:mechanical_cad_stackup
+- source_id: evidence:pcb_power_architecture
+  relationship: expects
+  target_id: artifact:engineering/pcb/placement-routing-review.md
+- source_id: evidence:pcb_power_architecture
+  relationship: expects
+  target_id: artifact:engineering/pcb/power-tree.yaml
+- source_id: evidence:pcb_power_architecture
+  relationship: expects
+  target_id: artifact:engineering/pcb/slate-pocket-v1r-floorplan
+- source_id: evidence:pcb_power_architecture
+  relationship: linked_to
+  target_id: risk:memory_packaging_512gb
+- source_id: evidence:pcb_power_architecture
+  relationship: linked_to
+  target_id: risk:pcb_routing_density
+- source_id: evidence:pcb_power_architecture
+  relationship: linked_to
+  target_id: risk:power_delivery_transients
+- source_id: evidence:pcb_power_architecture
+  relationship: linked_to
+  target_id: risk:storage_packaging_4tb
+- source_id: evidence:pcb_power_architecture
+  relationship: linked_to
+  target_id: risk:sustained_compute_power
+- source_id: evidence:requirements_baseline
+  relationship: expects
+  target_id: artifact:docs/engineering/slate-pocket-v1r-decision-baseline.md
+- source_id: evidence:requirements_baseline
+  relationship: linked_to
+  target_id: risk:battery_volume_capacity_tradeoff
+- source_id: evidence:requirements_baseline
+  relationship: linked_to
+  target_id: risk:memory_packaging_512gb
+- source_id: evidence:requirements_baseline
+  relationship: linked_to
+  target_id: risk:npu_100_tops_sustained
+- source_id: evidence:requirements_baseline
+  relationship: linked_to
+  target_id: risk:storage_packaging_4tb
+- source_id: evidence:requirements_baseline
+  relationship: linked_to
+  target_id: risk:sustained_compute_power
+- source_id: evidence:requirements_baseline
+  relationship: linked_to
+  target_id: risk:thickness_stackup_margin
+- source_id: evidence:rf_wireless_architecture
+  relationship: depends_on
+  target_id: evidence:mechanical_cad_stackup
+- source_id: evidence:rf_wireless_architecture
+  relationship: depends_on
+  target_id: evidence:pcb_power_architecture
+- source_id: evidence:rf_wireless_architecture
+  relationship: expects
+  target_id: artifact:engineering/rf/architecture.md
+- source_id: evidence:rf_wireless_architecture
+  relationship: expects
+  target_id: artifact:engineering/rf/keepout-map
+- source_id: evidence:rf_wireless_architecture
+  relationship: expects
+  target_id: artifact:engineering/rf/validation-plan.md
+- source_id: evidence:rf_wireless_architecture
+  relationship: linked_to
+  target_id: risk:rf_antenna_window_constraints
+- source_id: evidence:rf_wireless_architecture
+  relationship: linked_to
+  target_id: risk:thickness_stackup_margin
+- source_id: evidence:rf_wireless_architecture
+  relationship: linked_to
+  target_id: risk:wireless_charging_packaging
+- source_id: evidence:thermal_model_and_test_plan
+  relationship: depends_on
+  target_id: evidence:battery_supplier_package
+- source_id: evidence:thermal_model_and_test_plan
+  relationship: depends_on
+  target_id: evidence:compute_memory_platform_package
+- source_id: evidence:thermal_model_and_test_plan
+  relationship: depends_on
+  target_id: evidence:mechanical_cad_stackup
+- source_id: evidence:thermal_model_and_test_plan
+  relationship: depends_on
+  target_id: evidence:pcb_power_architecture
+- source_id: evidence:thermal_model_and_test_plan
+  relationship: expects
+  target_id: artifact:simulations/thermal/slate-pocket-v1r/correlation-plan.md
+- source_id: evidence:thermal_model_and_test_plan
+  relationship: expects
+  target_id: artifact:simulations/thermal/slate-pocket-v1r/model
+- source_id: evidence:thermal_model_and_test_plan
+  relationship: expects
+  target_id: artifact:simulations/thermal/slate-pocket-v1r/test-matrix.yaml
+- source_id: evidence:thermal_model_and_test_plan
+  relationship: linked_to
+  target_id: risk:battery_volume_capacity_tradeoff
+- source_id: evidence:thermal_model_and_test_plan
+  relationship: linked_to
+  target_id: risk:skin_temperature_target_43c
+- source_id: evidence:thermal_model_and_test_plan
+  relationship: linked_to
+  target_id: risk:sustained_compute_power
+- source_id: evidence:thermal_model_and_test_plan
+  relationship: linked_to
+  target_id: risk:thermal_module_effectiveness
+- source_id: risk:battery_volume_capacity_tradeoff
+  relationship: depends_on
+  target_id: assumption:battery_capacity_mah
+- source_id: risk:battery_volume_capacity_tradeoff
+  relationship: depends_on
+  target_id: assumption:battery_volume_mm3
+- source_id: risk:battery_volume_capacity_tradeoff
+  relationship: depends_on
+  target_id: assumption:internal_usable_volume_factor
+- source_id: risk:manufacturability_yield_risk
+  relationship: depends_on
+  target_id: assumption:battery_volume_mm3
+- source_id: risk:manufacturability_yield_risk
+  relationship: depends_on
+  target_id: assumption:device_thickness_mm
+- source_id: risk:manufacturability_yield_risk
+  relationship: depends_on
+  target_id: assumption:internal_usable_volume_factor
+- source_id: risk:manufacturability_yield_risk
+  relationship: depends_on
+  target_id: assumption:wireless_charging_enabled
+- source_id: risk:memory_packaging_512gb
+  relationship: depends_on
+  target_id: assumption:memory_capacity_gb
+- source_id: risk:memory_packaging_512gb
+  relationship: depends_on
+  target_id: assumption:sustained_compute_w
+- source_id: risk:npu_100_tops_sustained
+  relationship: depends_on
+  target_id: assumption:memory_capacity_gb
+- source_id: risk:npu_100_tops_sustained
+  relationship: depends_on
+  target_id: assumption:npu_tops
+- source_id: risk:npu_100_tops_sustained
+  relationship: depends_on
+  target_id: assumption:sustained_compute_w
+- source_id: risk:pcb_routing_density
+  relationship: depends_on
+  target_id: assumption:memory_capacity_gb
+- source_id: risk:pcb_routing_density
+  relationship: depends_on
+  target_id: assumption:npu_tops
+- source_id: risk:pcb_routing_density
+  relationship: depends_on
+  target_id: assumption:storage_capacity_tb
+- source_id: risk:power_delivery_transients
+  relationship: depends_on
+  target_id: assumption:battery_volume_mm3
+- source_id: risk:power_delivery_transients
+  relationship: depends_on
+  target_id: assumption:peak_compute_w
+- source_id: risk:power_delivery_transients
+  relationship: depends_on
+  target_id: assumption:sustained_compute_w
+- source_id: risk:rf_antenna_window_constraints
+  relationship: depends_on
+  target_id: assumption:device_thickness_mm
+- source_id: risk:rf_antenna_window_constraints
+  relationship: depends_on
+  target_id: assumption:wireless_charging_enabled
+- source_id: risk:skin_temperature_target_43c
+  relationship: depends_on
+  target_id: assumption:max_skin_temp_c
+- source_id: risk:skin_temperature_target_43c
+  relationship: depends_on
+  target_id: assumption:sustained_compute_w
+- source_id: risk:skin_temperature_target_43c
+  relationship: depends_on
+  target_id: assumption:thermal_module_thickness_mm
+- source_id: risk:storage_packaging_4tb
+  relationship: depends_on
+  target_id: assumption:storage_capacity_tb
+- source_id: risk:sustained_compute_power
+  relationship: depends_on
+  target_id: assumption:npu_tops
+- source_id: risk:sustained_compute_power
+  relationship: depends_on
+  target_id: assumption:peak_compute_w
+- source_id: risk:sustained_compute_power
+  relationship: depends_on
+  target_id: assumption:sustained_compute_w
+- source_id: risk:thermal_module_effectiveness
+  relationship: depends_on
+  target_id: assumption:max_skin_temp_c
+- source_id: risk:thermal_module_effectiveness
+  relationship: depends_on
+  target_id: assumption:sustained_compute_w
+- source_id: risk:thermal_module_effectiveness
+  relationship: depends_on
+  target_id: assumption:thermal_module_thickness_mm
+- source_id: risk:thickness_stackup_margin
+  relationship: depends_on
+  target_id: assumption:device_thickness_mm
+- source_id: risk:thickness_stackup_margin
+  relationship: depends_on
+  target_id: assumption:thermal_module_thickness_mm
+- source_id: risk:thickness_stackup_margin
+  relationship: depends_on
+  target_id: assumption:wireless_charging_enabled
+- source_id: risk:wireless_charging_packaging
+  relationship: depends_on
+  target_id: assumption:device_thickness_mm
+- source_id: risk:wireless_charging_packaging
+  relationship: depends_on
+  target_id: assumption:wireless_charging_enabled
+- source_id: supplier:AMD
+  relationship: candidate_for
+  target_id: evidence:compute_memory_platform_package
+- source_id: supplier:Amprius_Technologies
+  relationship: candidate_for
+  target_id: evidence:battery_supplier_package
+- source_id: supplier:BOE
+  relationship: candidate_for
+  target_id: evidence:display_storage_package
+- source_id: supplier:Enovix
+  relationship: candidate_for
+  target_id: evidence:battery_supplier_package
+- source_id: supplier:KIOXIA
+  relationship: candidate_for
+  target_id: evidence:display_storage_package
+- source_id: supplier:Micron
+  relationship: candidate_for
+  target_id: evidence:display_storage_package
+- source_id: supplier:NVIDIA
+  relationship: candidate_for
+  target_id: evidence:compute_memory_platform_package
+- source_id: supplier:Panasonic_Energy
+  relationship: candidate_for
+  target_id: evidence:battery_supplier_package
+- source_id: supplier:Qualcomm
+  relationship: candidate_for
+  target_id: evidence:compute_memory_platform_package
+- source_id: supplier:Samsung_Display
+  relationship: candidate_for
+  target_id: evidence:display_storage_package
+- source_id: supplier:Samsung_Semiconductor
+  relationship: candidate_for
+  target_id: evidence:display_storage_package
+- source_id: supplier:Tianma
+  relationship: candidate_for
+  target_id: evidence:display_storage_package
+- source_id: test:B00
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:B01
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:B40
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:B50
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:B51
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:C40
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:F00
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:M20
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:MC0
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:P00
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:P10
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:P11
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:R50
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:S30
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:T10
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:T20
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:T30
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+- source_id: test:T40
+  relationship: verifies
+  target_id: evidence:evt0_prototype_evidence
+caveat: The program graph is a traceability index, not supplier approval, verified evidence, prototype measurement, certification,
+  or production readiness.

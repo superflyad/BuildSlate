@@ -23,3 +23,9 @@ The viewer can filter, inspect, hide, explode, and rotate the assembly. It canno
 **Status:** Accepted
 
 Vite produces a static build with no server-side account or database. This keeps the engineering data reviewable from a checkout. The Python generator owns asset currency; the web build owns presentation.
+
+## ADR-005: Enforce repository wiring in CI
+
+**Status:** Accepted
+
+Every `validation/validate_*.py` script must be registered in the suite. CI also checks local documentation links, placeholder READMEs, pinned Python requirements, undefined and unused Python names, generated currency, and the viewer build. This closes a gap where three existing validators were present but not executed.

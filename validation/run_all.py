@@ -18,6 +18,9 @@ VALIDATION_CHECKS = (
     "validation/dimensional_constraints.py",
     "validation/validate_device_profiles.py",
     "validation/validate_coverage_registry.py",
+    "validation/validate_source_registry.py",
+    "validation/validate_provenance.py",
+    "validation/validate_model_paths.py",
     "validation/validate_no_merge_conflicts.py",
     "engineering/stackup/generate_stackup_report.py",
     "validation/validate_cad_envelope_volume_registry.py",
@@ -47,6 +50,7 @@ VALIDATION_CHECKS = (
     "validation/validate_dashboard_migrations.py",
     "validation/validate_ci_handoff.py",
     "validation/validate_assembly.py",
+    "validation/validate_repository.py",
 )
 
 

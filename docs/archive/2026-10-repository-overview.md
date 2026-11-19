@@ -1,4 +1,6 @@
-# BuildSlate
+# BuildSlate repository overview (October 2026 archive)
+
+This is the former root README, preserved as a historical snapshot. Some paths, commands, and status descriptions have since changed. Use the current [README](../../README.md), [documentation index](../README.md), and [program dashboard](../../reports/program/dashboard.md) for present guidance.
 
 ## Engineering Execution CLI
 

@@ -63,6 +63,11 @@ def main() -> int:
         canonical_mixed.write_bytes(b"alpha: 1\nbeta: 2\nbeta2: 3\n")
         require(lf_digest == crlf_digest, "regeneration text hashes are stable across LF and CRLF checkouts")
         require(mixed_digest == deterministic_file_digest(canonical_mixed), "regeneration text hashes canonicalize mixed line endings")
+        geometry = Path(temp_directory) / "assembly.gltf"
+        geometry.write_bytes(b'{"asset":{"version":"2.0"}}\n')
+        geometry_lf_digest = deterministic_file_digest(geometry)
+        geometry.write_bytes(b'{"asset":{"version":"2.0"}}\r\n')
+        require(geometry_lf_digest == deterministic_file_digest(geometry), "glTF text hashes are stable across LF and CRLF checkouts")
         binary = Path(temp_directory) / "evidence.bin"
         binary.write_bytes(b"raw\r\nbytes")
         binary_digest = deterministic_file_digest(binary)

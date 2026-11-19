@@ -15,6 +15,7 @@ TEXT_SUFFIXES = {
     ".cfg",
     ".csv",
     ".css",
+    ".gltf",
     ".html",
     ".ini",
     ".js",

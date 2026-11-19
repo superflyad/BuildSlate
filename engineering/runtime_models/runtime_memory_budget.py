@@ -57,7 +57,6 @@ def main() -> int:
         "runtime.safety_reserve_gb": args.safety_reserve_gb,
         "runtime.available_memory_gb": args.available_memory_gb,
     }
-    raw_model_gb = calculator.compute("runtime.model_memory_gb", raw_inputs)
     model_resident_gb = calculator.compute("runtime.model_memory_gb", core_inputs)
     kv_cache_gb = calculator.compute("runtime.kv_cache_gb", core_inputs)
     total_used_gb = calculator.compute("runtime.total_runtime_memory_gb", core_inputs)

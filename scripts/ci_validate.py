@@ -24,6 +24,7 @@ def main() -> int:
     if npm is None:
         raise SystemExit("FAIL: npm is required to validate the assembly viewer")
     run([sys.executable, "-m", "compileall", "-q", "buildslate", "engineering", "validation", "manufacturing"], "Python compilation")
+    run([sys.executable, "-m", "ruff", "check", "."], "Python static analysis")
     run(["git", "diff", "--check"], "Git whitespace check")
     run([sys.executable, "validation/run_all.py"], "Repository validation")
     run([sys.executable, "-m", "buildslate.assembly", "--check"], "Assembly export currency")

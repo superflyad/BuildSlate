@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 
 from physical_feasibility_gate import REPO_ROOT, SCREENING_CAVEAT, PhysicalFeasibilityResult, evaluate_gate
 

@@ -15,10 +15,10 @@ python -m buildslate regenerate --stale
 python scripts/ci_validate.py
 ```
 
-The CI gate compiles Python, runs the repository validation suite, checks generated state and tracked output determinism, verifies assembly export currency, and builds the viewer. On a clean branch it leaves the worktree unchanged.
+Install `requirements.txt` and `requirements-dev.txt` first. The CI gate compiles Python, checks undefined and unused names with Ruff, runs every registered repository validator, checks local documentation links and generated state, verifies assembly export currency, and builds the viewer. On a clean commit it leaves the worktree unchanged.
 
 For a viewer change, run `npm run dev` in `viewer/` and inspect a desktop and narrow layout. Confirm the model loads, part selection opens source details, filters and visibility controls work, and no control suggests that planning geometry is released CAD.
 
-## Pull requests
+## Review and publication
 
-Describe the source change, generated outputs, verification, and any new or changed evidence boundary. A report-only or viewer-only edit cannot change an engineering gate. Keep unrelated changes in separate pull requests.
+For a pull request or a directly authorized `main` change, describe the source change, generated outputs, verification, and any new or changed evidence boundary. A report-only or viewer-only edit cannot change an engineering gate. Keep unrelated changes separate.

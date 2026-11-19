@@ -11,6 +11,8 @@ BuildSlate has four kinds of content:
 
 The [program manifest](engineering/program/program_model.yaml) identifies graph authorities. The [regeneration manifest](engineering/program/regeneration.yaml) identifies generated outputs and their dependencies. The [platform architecture](docs/engineering/platform_architecture.md) explains the evidence and transaction boundaries in detail.
 
+The [repository standards](docs/standards/repository.md) define directory ownership, source and generated file classes, and change rules. Domain models remain in their existing directories until a migration has an explicit authority map and a validated replacement.
+
 ## Assembly pipeline
 
 ```text

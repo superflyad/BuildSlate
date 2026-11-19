@@ -28,7 +28,8 @@ def repository_files() -> list[Path]:
         capture_output=True,
         text=True,
     )
-    return [REPO_ROOT / line for line in result.stdout.splitlines() if line]
+    paths = [REPO_ROOT / line for line in result.stdout.splitlines() if line]
+    return [path for path in paths if path.is_file()]
 
 
 def marker_at_line(line: str) -> str | None:

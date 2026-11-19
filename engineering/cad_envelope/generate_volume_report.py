@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 
 from slate_pocket_volume_budget import REPO_ROOT, calculate_from_registry
 

@@ -19,6 +19,7 @@ Requires Python 3.12 or newer. The viewer also requires Node.js 20.19 or newer.
 
 ```bash
 python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
 python -m buildslate validate
 python -m buildslate status
 python -m buildslate.assembly --check
@@ -52,4 +53,4 @@ Open the local URL printed by Vite. The viewer loads generated `assembly.json` a
 
 The v1R assembly is provisional. The mechanical model uses planning rectangles; the PCB model uses placeholder footprints. Supplier CAD, a released enclosure, routed board, prototype measurements, and pilot evidence are not in this repository. The viewer shows those limits on each component. See the [dashboard](reports/program/dashboard.md) for current gates and external blockers.
 
-The previous detailed repository guide is preserved as the [engineering reference guide](docs/engineering/reference-guide.md).
+The earlier broad repository overview is retained in the [archive](docs/archive/2026-10-repository-overview.md). Current workflows and authority rules live in the documents linked above.

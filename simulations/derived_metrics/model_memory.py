@@ -6,7 +6,9 @@ from __future__ import annotations
 import argparse
 
 
-def estimate_memory_gb(params_billions: float, quant_bits: float, overhead: float) -> tuple[float, float]:
+def estimate_memory_gb(
+    params_billions: float, quant_bits: float, overhead: float
+) -> tuple[float, float]:
     raw_gb = params_billions * 1e9 * quant_bits / 8 / 1e9
     estimated_gb = raw_gb * overhead
     return raw_gb, estimated_gb

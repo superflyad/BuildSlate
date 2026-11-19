@@ -18,9 +18,13 @@ class WorkloadMode:
 
 DEFAULT_MODES = (
     WorkloadMode("idle", 3.2, "display on, radios associated, background services"),
-    WorkloadMode("light_inference", 8.0, "small local model bursts with UI interaction"),
+    WorkloadMode(
+        "light_inference", 8.0, "small local model bursts with UI interaction"
+    ),
     WorkloadMode("heavy_inference", 16.0, "continuous accelerator-heavy inference"),
-    WorkloadMode("sustained_workload", 22.0, "combined compute, display, storage, and radio load"),
+    WorkloadMode(
+        "sustained_workload", 22.0, "combined compute, display, storage, and radio load"
+    ),
 )
 
 
@@ -32,7 +36,12 @@ def estimate_runtime_hours(battery_wh: float, workload_watts: float) -> float:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--battery-wh", type=float, default=DEFAULT_BATTERY_WH, help="Battery capacity in watt-hours.")
+    parser.add_argument(
+        "--battery-wh",
+        type=float,
+        default=DEFAULT_BATTERY_WH,
+        help="Battery capacity in watt-hours.",
+    )
     return parser
 
 
@@ -43,7 +52,9 @@ def main() -> int:
     print("mode,watts,runtime_hours,runtime_minutes,description")
     for mode in DEFAULT_MODES:
         hours = estimate_runtime_hours(args.battery_wh, mode.watts)
-        print(f"{mode.name},{mode.watts:.1f},{hours:.2f},{hours * 60:.0f},{mode.description}")
+        print(
+            f"{mode.name},{mode.watts:.1f},{hours:.2f},{hours * 60:.0f},{mode.description}"
+        )
     return 0
 
 

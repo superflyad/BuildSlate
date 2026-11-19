@@ -26,7 +26,12 @@ def _load(path: Path) -> dict[str, Any]:
 def _inside_enclosure(rectangle: dict[str, Any], length: float, width: float) -> bool:
     x = float(rectangle["x"])
     y = float(rectangle["y"])
-    return x >= 0 and y >= 0 and x + float(rectangle["length"]) <= length and y + float(rectangle["width"]) <= width
+    return (
+        x >= 0
+        and y >= 0
+        and x + float(rectangle["length"]) <= length
+        and y + float(rectangle["width"]) <= width
+    )
 
 
 def _count_nulls(value: Any) -> int:
@@ -51,8 +56,10 @@ def build_report() -> str:
         for source_id, source in sources.items()
         if not _inside_enclosure(source["planform_mm"], length, width)
     ]
-    unset_model_values = _count_nulls(model["material_regions"]) + _count_nulls(model["interfaces"]) + _count_nulls(
-        model["boundary_conditions"]
+    unset_model_values = (
+        _count_nulls(model["material_regions"])
+        + _count_nulls(model["interfaces"])
+        + _count_nulls(model["boundary_conditions"])
     )
 
     cases = matrix["cases"]
@@ -61,7 +68,15 @@ def build_report() -> str:
         state = case["state"]
         state_counts[state] = state_counts.get(state, 0) + 1
     categories = sorted({case["category"] for case in cases.values()})
-    required_categories = {"sustained", "peak", "hot_ambient", "handheld", "pocket", "bag", "charging_overlap"}
+    required_categories = {
+        "sustained",
+        "peak",
+        "hot_ambient",
+        "handheld",
+        "pocket",
+        "bag",
+        "charging_overlap",
+    }
     missing_categories = sorted(required_categories - set(categories))
 
     lines = [

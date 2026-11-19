@@ -15,7 +15,9 @@ DEFECT_PATH = MANUFACTURING_ROOT / "defect-taxonomy.yaml"
 SUPPLIER_RESPONSE_PATH = MANUFACTURING_ROOT / "supplier-dfm-response.yaml"
 REGISTRY_PATH = REPO_ROOT / "engineering" / "evidence" / "evidence_registry.yaml"
 REPORT_PATH = REPO_ROOT / "reports" / "slate-pocket-v1r-manufacturing-readiness.txt"
-ANALYTICS_PATH = REPO_ROOT / "reports" / "program" / "manufacturing-pilot-analytics.yaml"
+ANALYTICS_PATH = (
+    REPO_ROOT / "reports" / "program" / "manufacturing-pilot-analytics.yaml"
+)
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -28,7 +30,11 @@ def _load(path: Path) -> dict[str, Any]:
 
 def _real_pilot_files() -> list[Path]:
     root = MANUFACTURING_ROOT / "pilot-results"
-    return sorted(path for path in root.rglob("*") if path.is_file() and path.name.lower() != "readme.md")
+    return sorted(
+        path
+        for path in root.rglob("*")
+        if path.is_file() and path.name.lower() != "readme.md"
+    )
 
 
 def build_report() -> str:
@@ -39,13 +45,23 @@ def build_report() -> str:
     analytics = _load(ANALYTICS_PATH)
     evt_status = registry["packages"]["evt0_prototype_evidence"]["status"]
     prerequisites = pilot["prerequisites"]
-    unmet = [field for field, value in prerequisites.items() if value is not True and field != "evt0_prototype_evidence_status"]
+    unmet = [
+        field
+        for field, value in prerequisites.items()
+        if value is not True and field != "evt0_prototype_evidence_status"
+    ]
     gates = pilot["provisional_yield_gates"]
     pilot_results = _real_pilot_files()
     analytics_gate = analytics["MANUFACTURING_ANALYTICS_GATE"]
     campaign_count = analytics["campaign_count"]
-    if evt_status != "verified" or unmet or supplier_response["review"]["status"] == "template_not_completed":
-        gate = "BLOCKED_ON_VERIFIED_EVT0_SUPPLIER_DFM_RELEASED_PROCESS_AND_PILOT_EVIDENCE"
+    if (
+        evt_status != "verified"
+        or unmet
+        or supplier_response["review"]["status"] == "template_not_completed"
+    ):
+        gate = (
+            "BLOCKED_ON_VERIFIED_EVT0_SUPPLIER_DFM_RELEASED_PROCESS_AND_PILOT_EVIDENCE"
+        )
     elif analytics_gate == "PILOT_QUALITY_REVIEW_READY":
         gate = "PILOT_QUALITY_REVIEW_READY"
     else:
@@ -62,7 +78,9 @@ def build_report() -> str:
         "quality-gate.md",
         "supplier-dfm-response.yaml",
     )
-    existing = [name for name in required_artifacts if (MANUFACTURING_ROOT / name).exists()]
+    existing = [
+        name for name in required_artifacts if (MANUFACTURING_ROOT / name).exists()
+    ]
 
     lines = [
         "Slate Pocket v1R Manufacturing Readiness Gate",

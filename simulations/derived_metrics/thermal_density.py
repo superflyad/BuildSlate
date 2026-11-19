@@ -31,7 +31,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--width-mm", type=float, default=95.0)
     parser.add_argument("--thickness-mm", type=float, default=8.8)
     parser.add_argument("--sustained-watts", type=float, default=28.0)
-    parser.add_argument("--explain", action="store_true", help="Print centralized thermal density calculation explanation")
+    parser.add_argument(
+        "--explain",
+        action="store_true",
+        help="Print centralized thermal density calculation explanation",
+    )
     return parser.parse_args()
 
 
@@ -49,7 +53,9 @@ def main() -> int:
     risk = classify_density(watts_per_cm3)
 
     print("Thermal density estimate")
-    print("  note: simple chassis-volume approximation; not a CFD or skin-temperature model")
+    print(
+        "  note: simple chassis-volume approximation; not a CFD or skin-temperature model"
+    )
     print(f"  chassis volume: {volume_cm3:.2f} cm^3")
     print(f"  sustained power: {args.sustained_watts:.2f} W")
     print(f"  heat density: {watts_per_cm3:.3f} W/cm^3")

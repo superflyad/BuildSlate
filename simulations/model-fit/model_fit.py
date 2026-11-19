@@ -7,7 +7,7 @@ import argparse
 
 SLATE_V1_MEMORY_GB = 64.0
 DEFAULT_OVERHEAD_MULTIPLIER = 1.20
-BYTES_PER_GB = 1024 ** 3
+BYTES_PER_GB = 1024**3
 
 
 def parse_parameter_count(value: str) -> float:
@@ -24,7 +24,9 @@ def parse_parameter_count(value: str) -> float:
     return float(text)
 
 
-def estimate_memory_gb(parameter_count: float, quantization_bits: float, overhead_multiplier: float) -> float:
+def estimate_memory_gb(
+    parameter_count: float, quantization_bits: float, overhead_multiplier: float
+) -> float:
     raw_bytes = parameter_count * (quantization_bits / 8.0)
     return (raw_bytes * overhead_multiplier) / BYTES_PER_GB
 
@@ -62,7 +64,9 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     args = build_parser().parse_args()
     parameter_count = parse_parameter_count(args.parameter_count)
-    required_gb = estimate_memory_gb(parameter_count, args.quantization_bits, args.overhead)
+    required_gb = estimate_memory_gb(
+        parameter_count, args.quantization_bits, args.overhead
+    )
     fits = required_gb <= args.capacity_gb
 
     print("Slate v1 model-fit estimate")

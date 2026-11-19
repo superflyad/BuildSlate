@@ -42,7 +42,9 @@ def main() -> int:
     print(f"  nominal voltage: {args.nominal_voltage:.2f} V")
     print(f"  battery energy: {battery_wh:.2f} Wh")
     for name, draw_w in workloads.items():
-        print(f"  {name}: {runtime_hours(battery_wh, draw_w):.2f} hours at {draw_w:.1f} W")
+        print(
+            f"  {name}: {runtime_hours(battery_wh, draw_w):.2f} hours at {draw_w:.1f} W"
+        )
     return 0
 
 

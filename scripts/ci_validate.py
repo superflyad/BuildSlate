@@ -33,22 +33,15 @@ def main() -> int:
             "engineering",
             "validation",
             "manufacturing",
+            "simulations",
+            "scripts",
         ],
         "Python compilation",
     )
     run([sys.executable, "-m", "ruff", "check", "."], "Python static analysis")
     run(
-        [
-            sys.executable,
-            "-m",
-            "ruff",
-            "format",
-            "--check",
-            "buildslate",
-            "scripts/ci_validate.py",
-            "validation/validate_repository.py",
-        ],
-        "Core Python formatting",
+        [sys.executable, "-m", "ruff", "format", "--check", "."],
+        "Python formatting",
     )
     run(["git", "diff", "--check"], "Git whitespace check")
     run([sys.executable, "validation/run_all.py"], "Repository validation")

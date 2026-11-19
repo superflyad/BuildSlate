@@ -28,4 +28,4 @@ Vite produces a static build with no server-side account or database. This keeps
 
 **Status:** Accepted
 
-Every `validation/validate_*.py` script must be registered in the suite. CI also checks local documentation links, placeholder READMEs, pinned Python requirements, undefined and unused Python names, maintained-package formatting, generated currency, and the viewer build. This closes a gap where three existing validators were present but not executed.
+Every `validation/validate_*.py` script must be registered in the suite. CI also checks local documentation links, placeholder READMEs, pinned Python requirements, undefined and unused Python names, repository-wide Python formatting, generated currency, and the viewer build. This closes a gap where three existing validators were present but not executed.

@@ -4,8 +4,7 @@
 
 - [x] Curated documentation index, archive boundary, and directory ownership rules
 - [x] All validators registered; local links, placeholder READMEs, and dependency pins checked in CI
-- [x] Python name analysis across the repository and formatting gate for the maintained `buildslate` package
-- [ ] Migrate legacy engineering scripts and validators to a consistent formatted style in reviewable groups
+- [x] Python name analysis and formatting gate across the repository
 - [ ] Expand static analysis beyond name errors after the legacy modules are migrated
 - [ ] Define a reviewed import contract for supplier and released CAD geometry
 

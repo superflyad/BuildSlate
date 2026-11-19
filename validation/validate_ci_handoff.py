@@ -38,7 +38,7 @@ def main() -> int:
         require(marker in ci_script, f"CI entry point includes: {marker}")
 
     workflow = (REPO_ROOT / ".github/workflows/validation.yml").read_text(encoding="utf-8")
-    for marker in ("push:", "pull_request:", "actions/checkout@v4", "actions/setup-python@v5", "requirements.txt", "scripts/ci_validate.py"):
+    for marker in ("push:", "pull_request:", "actions/checkout@v7", "actions/setup-python@v7", "actions/setup-node@v7", "requirements.txt", "requirements-dev.txt", "scripts/ci_validate.py"):
         require(marker in workflow, f"GitHub workflow includes: {marker}")
 
     architecture = (REPO_ROOT / "docs/engineering/platform_architecture.md").read_text(encoding="utf-8")

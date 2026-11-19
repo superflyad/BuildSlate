@@ -1,0 +1,28 @@
+name: Model or evidence gap
+description: Identify an unsupported claim, missing source, or incorrect engineering assumption.
+title: "[Model] "
+labels: [documentation]
+body:
+  - type: markdown
+    attributes:
+      value: "Describe the gap without posting confidential supplier data. Controlled evidence must follow the intake workflow in docs/engineering/operator_workflows.md."
+  - type: input
+    id: location
+    attributes:
+      label: Source path or generated claim
+      description: Link the specific file and field or section.
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: What is unsupported or incorrect?
+    validations:
+      required: true
+  - type: textarea
+    id: basis
+    attributes:
+      label: Public basis or missing evidence
+      description: Cite a public source, or state which drawing, test, or decision is needed.
+    validations:
+      required: true

@@ -5,6 +5,10 @@
 - [x] Curated documentation index, archive boundary, and directory ownership rules
 - [x] All validators registered; local links, placeholder READMEs, and dependency pins checked in CI
 - [x] Python name analysis and formatting gate across the repository
+- [x] Contributor issue routes, support and security policies, and editor defaults
+- [ ] Establish a package/install contract and verify commands outside the repository checkout
+- [ ] Add documentation style checks with a clean baseline for maintained guidance
+- [ ] Define versioned releases and a changelog once a supported interface is ready
 - [ ] Expand static analysis beyond name errors after the legacy modules are migrated
 - [ ] Define a reviewed import contract for supplier and released CAD geometry
 

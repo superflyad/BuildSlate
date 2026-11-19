@@ -7,6 +7,8 @@
 | [Architecture](../ARCHITECTURE.md) | Authority layers, generation, and module boundaries |
 | [Repository standards](standards/repository.md) | Directory ownership, file classes, names, and change rules |
 | [Contributing](../CONTRIBUTING.md) | Development and validation workflow |
+| [Support](../SUPPORT.md) | Issue routes and evidence boundaries |
+| [Security policy](../SECURITY.md) | Private vulnerability reporting |
 | [Design decisions](../DECISIONS.md) | Durable architecture choices |
 | [Roadmap](../ROADMAP.md) | Delivered scope and missing inputs |
 | [Engineering review standard](engineering/review_standard.md) | Claim classes and model maturity |

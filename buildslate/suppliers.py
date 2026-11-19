@@ -84,7 +84,9 @@ class SupplierResponseRepository:
 
     def _repo_path(self, value: str | Path) -> Path:
         path = Path(value)
-        candidate = path.resolve() if path.is_absolute() else (self.repo_root / path).resolve()
+        candidate = (
+            path.resolve() if path.is_absolute() else (self.repo_root / path).resolve()
+        )
         try:
             candidate.relative_to(self.repo_root)
         except ValueError as exc:
@@ -97,7 +99,9 @@ class SupplierResponseRepository:
         domains = self.manifest.get("domains")
         policy = self.manifest.get("review_policy")
         if not isinstance(metadata, dict) or metadata.get("schema_version") != 1:
-            raise ValueError("supplier ingestion manifest requires metadata.schema_version 1")
+            raise ValueError(
+                "supplier ingestion manifest requires metadata.schema_version 1"
+            )
         if not isinstance(storage, dict):
             raise ValueError("supplier ingestion manifest requires storage")
         for key in ("raw_root", "receipt_root", "review_report"):
@@ -110,7 +114,9 @@ class SupplierResponseRepository:
             raise ValueError("supplier ingestion manifest requires review_policy")
         for domain, entry in domains.items():
             if not isinstance(entry, dict) or not isinstance(entry.get("schema"), str):
-                raise ValueError(f"supplier ingestion domain {domain} requires a schema")
+                raise ValueError(
+                    f"supplier ingestion domain {domain} requires a schema"
+                )
             schema = self._load_schema(domain)
             if schema.get("domain") != domain:
                 raise ValueError(f"supplier schema domain mismatch for {domain}")
@@ -139,16 +145,32 @@ class SupplierResponseRepository:
         if schema["schema_version"] != 1:
             raise ValueError(f"supplier schema {domain} has unsupported schema_version")
         for rule in schema["contradiction_rules"]:
-            required = {"id", "field", "operator", "expected", "requirement_class", "fallback", "basis"}
+            required = {
+                "id",
+                "field",
+                "operator",
+                "expected",
+                "requirement_class",
+                "fallback",
+                "basis",
+            }
             if not isinstance(rule, dict) or not required.issubset(rule):
-                raise ValueError(f"supplier schema {domain} has an incomplete contradiction rule")
+                raise ValueError(
+                    f"supplier schema {domain} has an incomplete contradiction rule"
+                )
             basis = rule["basis"]
             if not isinstance(basis, str) or "#" not in basis:
-                raise ValueError(f"supplier schema {domain} rule {rule['id']} requires a file#field basis")
+                raise ValueError(
+                    f"supplier schema {domain} rule {rule['id']} requires a file#field basis"
+                )
             basis_file, basis_field = basis.split("#", 1)
-            authoritative_value = _value_at(load_yaml(self._repo_path(basis_file)), basis_field)
+            authoritative_value = _value_at(
+                load_yaml(self._repo_path(basis_file)), basis_field
+            )
             if authoritative_value is MISSING:
-                raise ValueError(f"supplier schema {domain} rule {rule['id']} basis field is missing")
+                raise ValueError(
+                    f"supplier schema {domain} rule {rule['id']} basis field is missing"
+                )
             if authoritative_value != rule["expected"]:
                 raise ValueError(
                     f"supplier schema {domain} rule {rule['id']} expected value is stale: "
@@ -156,15 +178,26 @@ class SupplierResponseRepository:
                 )
             effect = rule.get("configuration_effect")
             if effect is not None:
-                if not isinstance(effect, dict) or not {"authority", "value_policy"}.issubset(effect):
-                    raise ValueError(f"supplier schema {domain} rule {rule['id']} has an incomplete configuration effect")
+                if not isinstance(effect, dict) or not {
+                    "authority",
+                    "value_policy",
+                }.issubset(effect):
+                    raise ValueError(
+                        f"supplier schema {domain} rule {rule['id']} has an incomplete configuration effect"
+                    )
                 if effect["value_policy"] not in {"supplier_value", "fixed_value"}:
-                    raise ValueError(f"supplier schema {domain} rule {rule['id']} has an unsupported value policy")
+                    raise ValueError(
+                        f"supplier schema {domain} rule {rule['id']} has an unsupported value policy"
+                    )
                 if effect["value_policy"] == "fixed_value" and "value" not in effect:
-                    raise ValueError(f"supplier schema {domain} rule {rule['id']} fixed-value effect requires value")
+                    raise ValueError(
+                        f"supplier schema {domain} rule {rule['id']} fixed-value effect requires value"
+                    )
                 for bound in ("minimum", "maximum"):
                     if bound in effect and not isinstance(effect[bound], (int, float)):
-                        raise ValueError(f"supplier schema {domain} rule {rule['id']} {bound} must be numeric")
+                        raise ValueError(
+                            f"supplier schema {domain} rule {rule['id']} {bound} must be numeric"
+                        )
         return schema
 
     def validate_response(self, response_path: Path, domain: str) -> ResponseReview:
@@ -176,7 +209,9 @@ class SupplierResponseRepository:
             if not isinstance(document.get(section), dict) and not (
                 section == "comments" and isinstance(document.get(section), list)
             ):
-                schema_errors.append(f"required section {section} is missing or has the wrong type")
+                schema_errors.append(
+                    f"required section {section} is missing or has the wrong type"
+                )
 
         for path in schema["required_fields"]:
             if _value_at(document, path) is MISSING:
@@ -190,18 +225,26 @@ class SupplierResponseRepository:
                 schema_errors.append(f"{path} must be {expected!r}, got {actual!r}")
 
         missing_fields = tuple(
-            path for path in schema["required_fields"] if not _answered(_value_at(document, path))
+            path
+            for path in schema["required_fields"]
+            if not _answered(_value_at(document, path))
         )
         total = len(schema["required_fields"])
-        completeness = round(100.0 * (total - len(missing_fields)) / total, 1) if total else 100.0
+        completeness = (
+            round(100.0 * (total - len(missing_fields)) / total, 1) if total else 100.0
+        )
 
         provenance_issues: list[str] = []
         source_documents = _value_at(document, schema["source_documents_path"])
         if not isinstance(source_documents, list) or not source_documents:
-            provenance_issues.append(f"no source documents at {schema['source_documents_path']}")
+            provenance_issues.append(
+                f"no source documents at {schema['source_documents_path']}"
+            )
         for path in schema["attestation_paths"]:
             if _value_at(document, path) is not True:
-                provenance_issues.append(f"positive supplier attestation required at {path}")
+                provenance_issues.append(
+                    f"positive supplier attestation required at {path}"
+                )
 
         contradictions: list[dict[str, Any]] = []
         for rule in schema["contradiction_rules"]:
@@ -216,14 +259,23 @@ class SupplierResponseRepository:
                 elif rule["operator"] == "at_most":
                     contradicted = actual > expected
                 elif rule["operator"] == "equal":
-                    contradicted = abs(actual - expected) > tolerance if all(
-                        isinstance(value, (int, float)) for value in (actual, expected)
-                    ) else actual != expected
+                    contradicted = (
+                        abs(actual - expected) > tolerance
+                        if all(
+                            isinstance(value, (int, float))
+                            for value in (actual, expected)
+                        )
+                        else actual != expected
+                    )
                 else:
-                    schema_errors.append(f"unsupported contradiction operator: {rule['operator']}")
+                    schema_errors.append(
+                        f"unsupported contradiction operator: {rule['operator']}"
+                    )
                     continue
             except TypeError:
-                schema_errors.append(f"{rule['field']} has an incompatible value for {rule['operator']}")
+                schema_errors.append(
+                    f"{rule['field']} has an incompatible value for {rule['operator']}"
+                )
                 continue
             if contradicted:
                 contradictions.append(
@@ -239,7 +291,9 @@ class SupplierResponseRepository:
                     }
                 )
 
-        threshold = float(self.manifest["review_policy"]["ready_requires_completeness_percent"])
+        threshold = float(
+            self.manifest["review_policy"]["ready_requires_completeness_percent"]
+        )
         if schema_errors:
             disposition = "REJECTED_SCHEMA"
         elif provenance_issues:
@@ -253,7 +307,9 @@ class SupplierResponseRepository:
 
         return ResponseReview(
             domain=domain,
-            linked_evidence_package=self.manifest["domains"][domain]["linked_evidence_package"],
+            linked_evidence_package=self.manifest["domains"][domain][
+                "linked_evidence_package"
+            ],
             schema_errors=tuple(schema_errors),
             completeness_percent=completeness,
             missing_fields=missing_fields,
@@ -262,7 +318,9 @@ class SupplierResponseRepository:
             disposition=disposition,
         )
 
-    def ingest(self, response_path: Path, domain: str, received_at: str, received_by: str) -> tuple[Path, ResponseReview]:
+    def ingest(
+        self, response_path: Path, domain: str, received_at: str, received_by: str
+    ) -> tuple[Path, ResponseReview]:
         source = response_path.resolve()
         if source.suffix.lower() not in {".yaml", ".yml"}:
             raise ValueError("supplier response must be a YAML file")
@@ -276,8 +334,13 @@ class SupplierResponseRepository:
             raise ValueError("received_at must be an ISO-8601 timestamp") from exc
 
         review = self.validate_response(source, domain)
-        if review.schema_errors and self.manifest["review_policy"]["schema_errors_reject_ingestion"]:
-            raise ValueError("response rejected by schema: " + "; ".join(review.schema_errors))
+        if (
+            review.schema_errors
+            and self.manifest["review_policy"]["schema_errors_reject_ingestion"]
+        ):
+            raise ValueError(
+                "response rejected by schema: " + "; ".join(review.schema_errors)
+            )
 
         digest = _sha256(source)
         raw_root = self._repo_path(self.manifest["storage"]["raw_root"])
@@ -305,15 +368,22 @@ class SupplierResponseRepository:
             "authority_boundary": "ingested_not_verified_not_selected",
         }
         serialized = dump_yaml(receipt)
-        if receipt_path.exists() and receipt_path.read_text(encoding="utf-8") != serialized:
-            raise ValueError(f"receipt already exists with different provenance: {receipt_path}")
+        if (
+            receipt_path.exists()
+            and receipt_path.read_text(encoding="utf-8") != serialized
+        ):
+            raise ValueError(
+                f"receipt already exists with different provenance: {receipt_path}"
+            )
         receipt_path.write_text(serialized, encoding="utf-8")
         return receipt_path, review
 
     def build_review_queue(self) -> dict[str, Any]:
         receipt_root = self._repo_path(self.manifest["storage"]["receipt_root"])
         items: list[dict[str, Any]] = []
-        receipt_paths = sorted(receipt_root.glob("*.yaml")) if receipt_root.exists() else []
+        receipt_paths = (
+            sorted(receipt_root.glob("*.yaml")) if receipt_root.exists() else []
+        )
         for receipt_path in receipt_paths:
             receipt = load_yaml(receipt_path)
             item: dict[str, Any] = {
@@ -332,7 +402,9 @@ class SupplierResponseRepository:
                 elif receipt.get("domain") not in self.domains:
                     integrity_errors.append("receipt domain is unknown")
                 else:
-                    item["review"] = self.validate_response(raw_path, receipt["domain"]).to_dict()
+                    item["review"] = self.validate_response(
+                        raw_path, receipt["domain"]
+                    ).to_dict()
             except (KeyError, TypeError, ValueError) as exc:
                 integrity_errors.append(str(exc))
             item["integrity_errors"] = integrity_errors
@@ -344,12 +416,16 @@ class SupplierResponseRepository:
 
         disposition_counts: dict[str, int] = {}
         for item in items:
-            disposition_counts[item["disposition"]] = disposition_counts.get(item["disposition"], 0) + 1
+            disposition_counts[item["disposition"]] = (
+                disposition_counts.get(item["disposition"], 0) + 1
+            )
         if not items:
             gate = "EMPTY_INBOX"
         elif any(item["disposition"].startswith("REJECTED") for item in items):
             gate = "BLOCKED_BY_INVALID_RESPONSE"
-        elif all(item["disposition"] == "READY_FOR_ENGINEERING_REVIEW" for item in items):
+        elif all(
+            item["disposition"] == "READY_FOR_ENGINEERING_REVIEW" for item in items
+        ):
             gate = "ENGINEERING_REVIEW_READY"
         else:
             gate = "REVIEW_QUEUE_OPEN"
@@ -357,7 +433,10 @@ class SupplierResponseRepository:
         return {
             "SUPPLIER_RESPONSE_GATE": gate,
             "baseline_profile": self.manifest["metadata"]["baseline_profile"],
-            "summary": {"receipt_count": len(items), "disposition_counts": dict(sorted(disposition_counts.items()))},
+            "summary": {
+                "receipt_count": len(items),
+                "disposition_counts": dict(sorted(disposition_counts.items())),
+            },
             "items": items,
             "next_actions": [
                 "Ingest only authorized supplier-authored YAML responses with explicit receipt metadata.",
@@ -372,4 +451,3 @@ class SupplierResponseRepository:
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(dump_yaml(self.build_review_queue()), encoding="utf-8")
         return destination
-

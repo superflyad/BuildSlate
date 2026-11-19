@@ -4,7 +4,7 @@ manifest_sha256: ae8fe81354d8d089c119cf1e991f0cb184a3e547eb9edbf445d9eec53992f7b
 nodes:
   supplier_review:
     inputs:
-      buildslate/suppliers.py: 795a6757cd0f2baa56b07a390ef1b9ba48ff6590fc22bf9409f04a5e376dc8d1
+      buildslate/suppliers.py: b98eaa40781a56971ce6d0d4d3d8657f83de0b40f5aaae6de6d8ffa811e10462
       engineering/program/supplier-schemas/battery.schema.yaml: 217d74a01fbe3a64b3a06fba8b24deb3b30bb56b9d48f1f8b0a48d8f8143f858
       engineering/program/supplier-schemas/compute-memory.schema.yaml: 58f4d6ae8457cdb8fd042ef9ab1326427d6bac7e210e94923060985dceb0e3bc
       engineering/program/supplier-schemas/dfm.schema.yaml: d2b5b7a4fec9ee65544799b2a7e56ac50bc2c62f105e72dca748da6e4321aff4
@@ -15,7 +15,7 @@ nodes:
       reports/program/supplier-response-review.yaml: 343bb9ab70cd09224876c6ce32618b4696e0fc0b2698e5ab0c32d9e61f83eeb7
   configuration_resolution:
     inputs:
-      buildslate/configuration.py: 90f990857cfed016751cf02746a9b4616a130d05e4256deca715576f6ce60992
+      buildslate/configuration.py: 1e1e9d398c331724714fb3419a73425b736c64c00cf9b4c916d8426507e5555b
       configs/devices/slate-pocket-v1r.yaml: a0e4e3bbf41e266fd55866c1c9ad436e4f498f98edc33349e2108e4db4c67ae1
       engineering/assumptions/assumption_registry.yaml: 7d57e8745722891208e58b469854c049115a634e410ee3644e9e9ebb3124c12f
       engineering/program/configuration-change.schema.yaml: 611f68ece36428ce0c62212e5118011039a1f1146a2b1656ebf9d812d9c15790
@@ -25,7 +25,7 @@ nodes:
       reports/program/configuration-resolution.yaml: c59e257abba32ad8317027a4d02ca123689ce3e614c2fed3903d2236ed5cf598
   integration_contracts:
     inputs:
-      buildslate/contracts.py: 8e1a970f350d03465c2816dad79c7d5d7df0fe25a33cf9bc37b9eefdcf584e68
+      buildslate/contracts.py: 8ae1f322f8e189203c3038dcf6e96d48199037440ee22e3706e2f7133aabca59
       cad/slate-pocket-v1r/envelope-model/envelope.yaml: d894c1d9c0bac3ffe3f16fcb884e1a0e29d7ca33e3b331a64b1d15d561078006
       cad/slate-pocket-v1r/envelope-model/keepouts.yaml: e3dba136016905f26f50bb664e19e90e7d2eeb406355cb00b198299a24102d02
       cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml: f9a67c9ec0b46eb3d7366ca0dfda4bddfc3d5774bb2f34722eea35fc43e19eda
@@ -52,7 +52,7 @@ nodes:
       reports/program/integration-contracts.yaml: dbcc1c59c3d24d6e1b6cdf1ba76e2cf2ebfd440ae9634317decccedae5f8210f
   evt0_campaign:
     inputs:
-      buildslate/evt0.py: 97828a6dd9dca249efa86816375a8e429c03556bb8fc2271abaa275ef326b322
+      buildslate/evt0.py: 388de08c0943f5bb98caa959a470de50da5c067c0f3bc84417dbd989384a5bef
       validation/evt0/campaigns/README.md: 13b8802320a6b4cb49693c3b63aa28f7a2cfee2693fee29c7e4717dd3662a3aa
       validation/evt0/instrumentation.yaml: 47c9e8942a533cc94c919e17581315fccd3e41ed668fe7091613460afd6c3004
       validation/evt0/metric-definitions.yaml: b02a8eaa62ddbbc88520545a070a84bd400375b9f4c8c3874009b3eab8d6a22d
@@ -76,7 +76,7 @@ nodes:
       reports/slate-pocket-v1r-evt0-gate.txt: f6c1ba0db3a56b738ca66e5f7b0f059717e6548b630b576f815b0f333414ca3b
   manufacturing_analytics:
     inputs:
-      buildslate/manufacturing.py: 3da4e7d9e22fba1a5d88dab20a94c00a0cf3ef4157b8583b2094271c6febde03
+      buildslate/manufacturing.py: bcc7a31b95df53480c6537fd8e592b2f9a3c8ef5218ae57e18627d5ef8929d5d
       manufacturing/defect-taxonomy.yaml: d58ccf15116e7d8c5de8004043b4e3346ccb7ac0cdb2ccc717924f104a3adade
       manufacturing/pilot-analytics.yaml: ddd23c75a39d0ad263f3c21e225f2a65eb8bc932311aedd6e1e9b0a941af6061
       manufacturing/pilot-build-plan.yaml: 8bcc4d60a9ee710b524848eaeb4ab9646981874b67b1aafa17d50bbf8d77ebd4
@@ -96,7 +96,7 @@ nodes:
       reports/slate-pocket-v1r-manufacturing-readiness.txt: c0f01f33e718e4d97f670d613645ad5e24f99902f7a71d43ba2c5cbe7904d172
   migration_audit:
     inputs:
-      buildslate/migrations.py: b6b6a328c59d0c1cc96bcaf4924722dbc2f932e8682e5fe6ce20fc49e7db680f
+      buildslate/migrations.py: 474912ec51aad8ed2c86ff1c2507903ab7ed97d03c92042391e58131c37471d1
       configs/devices/slate-pocket-v1r.yaml: a0e4e3bbf41e266fd55866c1c9ad436e4f498f98edc33349e2108e4db4c67ae1
       engineering/assumptions/assumption_registry.yaml: 7d57e8745722891208e58b469854c049115a634e410ee3644e9e9ebb3124c12f
       engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
@@ -176,7 +176,7 @@ nodes:
       reports/slate-pocket-v1r-program-readiness.txt: 9fda9b41a525622909e44b36dd53e86b05d117d151ec70727e20605271be4242
   program_snapshot:
     inputs:
-      buildslate/program.py: 3504c3cdb2946e66e18695ee8ba32b556e862bc7c157982acd398cf7f960876a
+      buildslate/program.py: 6aa02e791222fb28963b0d246de676059da57230c8d740dae5d78ed75585aedb
       configs/devices/slate-pocket-v1r.yaml: a0e4e3bbf41e266fd55866c1c9ad436e4f498f98edc33349e2108e4db4c67ae1
       engineering/assumptions/assumption_registry.yaml: 7d57e8745722891208e58b469854c049115a634e410ee3644e9e9ebb3124c12f
       engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
@@ -203,7 +203,7 @@ nodes:
       reports/program/buildslate-program-snapshot.yaml: 31672c5115ce3ae92e4e99d563b2c91854bd8582643aaeb4a1d2ed73b4e83c3f
   dashboard:
     inputs:
-      buildslate/dashboard.py: 5cc4ed5b9497ca3567e0691f635d5c298d37a89afcb746e43cd7207e7fb55eb3
+      buildslate/dashboard.py: f208babea7ffcbe18b22f3acba924787207b853f8fa688e5e91a2e19bc1e1152
       engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
       engineering/evidence/external_blocker_registry.yaml: 7d1f9caa12b431824f418ec957128e3a47f6239eec98b758697c8775927893b8
       engineering/program/configuration_registry.yaml: e884eb94098366bc9d4fd52bf8d46195970a8b21c880823223834cb98606fbc2
@@ -219,7 +219,7 @@ nodes:
       reports/program/dashboard.yaml: 468e726c041bb4cd6873b6620508be48af193f1d90b1ce1d85e197b31989282d
   assembly_viewer:
     inputs:
-      buildslate/assembly.py: af2524c4548df96904528c03d3384c3b3b0e3f99ccb4e3d31777c59149a220d0
+      buildslate/assembly.py: f661b6e4503b23875b815fe2fda7cbaa92709efc4e70a66a1017145a6c6385ef
       cad/slate-pocket-v1r/envelope-model/envelope.yaml: d894c1d9c0bac3ffe3f16fcb884e1a0e29d7ca33e3b331a64b1d15d561078006
       cad/slate-pocket-v1r/envelope-model/keepouts.yaml: e3dba136016905f26f50bb664e19e90e7d2eeb406355cb00b198299a24102d02
       cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml: f9a67c9ec0b46eb3d7366ca0dfda4bddfc3d5774bb2f34722eea35fc43e19eda

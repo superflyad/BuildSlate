@@ -10,6 +10,7 @@ BuildSlate is a traceable engineering model for the Slate Pocket v1R device. The
 | Engineering dashboard | [Program dashboard](reports/program/dashboard.md) |
 | Provisional 3D assembly | [Assembly viewer](viewer/README.md) |
 | Data authority and generation flow | [Architecture](ARCHITECTURE.md) |
+| Repository rules | [Repository standards](docs/standards/repository.md) |
 | Contributing and validation | [Contributing](CONTRIBUTING.md) |
 | Engineering documentation | [Documentation index](docs/README.md) |
 

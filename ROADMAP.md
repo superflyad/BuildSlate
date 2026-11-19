@@ -1,5 +1,14 @@
 # Roadmap
 
+## Repository quality
+
+- [x] Curated documentation index, archive boundary, and directory ownership rules
+- [x] All validators registered; local links, placeholder READMEs, and dependency pins checked in CI
+- [x] Python name analysis across the repository and formatting gate for the maintained `buildslate` package
+- [ ] Migrate legacy engineering scripts and validators to a consistent formatted style in reviewable groups
+- [ ] Expand static analysis beyond name errors after the legacy modules are migrated
+- [ ] Define a reviewed import contract for supplier and released CAD geometry
+
 ## Current release: provisional assembly review
 
 - [x] Stable part IDs and a documented coordinate system

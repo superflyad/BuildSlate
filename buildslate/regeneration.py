@@ -45,7 +45,11 @@ def deterministic_file_digest(path: Path) -> str:
 
 
 class RegenerationEngine:
-    def __init__(self, repo_root: Path, manifest_path: str = "engineering/program/regeneration.yaml") -> None:
+    def __init__(
+        self,
+        repo_root: Path,
+        manifest_path: str = "engineering/program/regeneration.yaml",
+    ) -> None:
         self.repo_root = repo_root.resolve()
         self.manifest_path = self._repo_path(manifest_path)
         self.manifest = load_yaml(self.manifest_path)
@@ -54,7 +58,9 @@ class RegenerationEngine:
 
     def _repo_path(self, value: str | Path) -> Path:
         path = Path(value)
-        candidate = path.resolve() if path.is_absolute() else (self.repo_root / path).resolve()
+        candidate = (
+            path.resolve() if path.is_absolute() else (self.repo_root / path).resolve()
+        )
         try:
             candidate.relative_to(self.repo_root)
         except ValueError as exc:
@@ -71,12 +77,18 @@ class RegenerationEngine:
                 raise ValueError(f"regeneration node {node_id} must be a mapping")
             for field in ("depends_on", "inputs", "outputs", "command"):
                 if not isinstance(node.get(field), list):
-                    raise ValueError(f"regeneration node {node_id} requires list {field}")
+                    raise ValueError(
+                        f"regeneration node {node_id} requires list {field}"
+                    )
             unknown = set(node["depends_on"]) - set(self.nodes)
             if unknown:
-                raise ValueError(f"regeneration node {node_id} has unknown dependencies: {sorted(unknown)}")
+                raise ValueError(
+                    f"regeneration node {node_id} has unknown dependencies: {sorted(unknown)}"
+                )
             if not node["outputs"] or not node["command"]:
-                raise ValueError(f"regeneration node {node_id} requires outputs and command")
+                raise ValueError(
+                    f"regeneration node {node_id} requires outputs and command"
+                )
             for output in node["outputs"]:
                 self._repo_path(output)
         self.topological_order()
@@ -159,9 +171,13 @@ class RegenerationEngine:
             current_node = current["nodes"][node_id]
             if saved_node != current_node or not current_node["outputs"]:
                 stale.add(node_id)
-            if any(dependency in stale for dependency in self.nodes[node_id]["depends_on"]):
+            if any(
+                dependency in stale for dependency in self.nodes[node_id]["depends_on"]
+            ):
                 stale.add(node_id)
-        return tuple(node_id for node_id in self.topological_order() if node_id in stale)
+        return tuple(
+            node_id for node_id in self.topological_order() if node_id in stale
+        )
 
     def state_differences(self) -> tuple[dict[str, Any], ...]:
         """Explain exact saved/current hash differences for portable CI diagnostics."""
@@ -202,20 +218,32 @@ class RegenerationEngine:
         normalized = [Path(path).as_posix().lstrip("./") for path in changed_paths]
         impacted: set[str] = set()
         for node_id, node in self.nodes.items():
-            if any(fnmatch.fnmatch(path, pattern) for path in normalized for pattern in node["inputs"]):
+            if any(
+                fnmatch.fnmatch(path, pattern)
+                for path in normalized
+                for pattern in node["inputs"]
+            ):
                 impacted.add(node_id)
         changed = True
         while changed:
             changed = False
             for node_id, node in self.nodes.items():
-                if node_id not in impacted and any(dependency in impacted for dependency in node["depends_on"]):
+                if node_id not in impacted and any(
+                    dependency in impacted for dependency in node["depends_on"]
+                ):
                     impacted.add(node_id)
                     changed = True
-        return tuple(node_id for node_id in self.topological_order() if node_id in impacted)
+        return tuple(
+            node_id for node_id in self.topological_order() if node_id in impacted
+        )
 
-    def regenerate(self, node_ids: Iterable[str], dry_run: bool = False) -> tuple[str, ...]:
+    def regenerate(
+        self, node_ids: Iterable[str], dry_run: bool = False
+    ) -> tuple[str, ...]:
         selected = set(node_ids)
-        ordered = tuple(node_id for node_id in self.topological_order() if node_id in selected)
+        ordered = tuple(
+            node_id for node_id in self.topological_order() if node_id in selected
+        )
         if dry_run:
             return ordered
         for node_id in ordered:
@@ -229,12 +257,19 @@ class RegenerationEngine:
             )
             if result.returncode != 0:
                 detail = result.stderr.strip() or result.stdout.strip()
-                raise ValueError(f"generator {node_id} failed with exit {result.returncode}: {detail}")
-            missing = [output for output in node["outputs"] if not self._repo_path(output).is_file()]
+                raise ValueError(
+                    f"generator {node_id} failed with exit {result.returncode}: {detail}"
+                )
+            missing = [
+                output
+                for output in node["outputs"]
+                if not self._repo_path(output).is_file()
+            ]
             if missing:
-                raise ValueError(f"generator {node_id} did not create outputs: {missing}")
+                raise ValueError(
+                    f"generator {node_id} did not create outputs: {missing}"
+                )
         state_path = self._repo_path(self.manifest["state_file"])
         state_path.parent.mkdir(parents=True, exist_ok=True)
         state_path.write_text(dump_yaml(self.build_state()), encoding="utf-8")
         return ordered
-

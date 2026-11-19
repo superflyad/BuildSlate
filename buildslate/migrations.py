@@ -26,7 +26,9 @@ class MigrationRegistry:
         for artifact_id, entry in artifacts.items():
             path = self.repo_root / entry.get("path", "")
             replacement_text = entry.get("replacement")
-            replacement = self.repo_root / replacement_text if replacement_text else None
+            replacement = (
+                self.repo_root / replacement_text if replacement_text else None
+            )
             item_errors: list[str] = []
             if entry.get("role") not in roles:
                 item_errors.append("invalid role")
@@ -39,10 +41,14 @@ class MigrationRegistry:
             if entry.get("role") == "authoritative_input":
                 domain = entry.get("authority_domain")
                 if not domain or domain == "none":
-                    item_errors.append("authoritative input requires an authority_domain")
+                    item_errors.append(
+                        "authoritative input requires an authority_domain"
+                    )
                 else:
                     authoritative_domains.setdefault(domain, []).append(artifact_id)
-            if entry.get("role") == "legacy_intake" and not entry.get("migration_command"):
+            if entry.get("role") == "legacy_intake" and not entry.get(
+                "migration_command"
+            ):
                 item_errors.append("legacy intake requires a migration_command")
             errors.extend(f"{artifact_id}: {error}" for error in item_errors)
             items.append(
@@ -58,11 +64,15 @@ class MigrationRegistry:
                     "errors": item_errors,
                 }
             )
-        duplicate_authority = {domain: ids for domain, ids in authoritative_domains.items() if len(ids) > 1}
+        duplicate_authority = {
+            domain: ids for domain, ids in authoritative_domains.items() if len(ids) > 1
+        }
         for domain, ids in duplicate_authority.items():
             errors.append(f"duplicated authority for {domain}: {', '.join(ids)}")
         return {
-            "MIGRATION_GATE": "MIGRATION_MAP_VALID" if not errors else "BLOCKED_MIGRATION_MAP_ERRORS",
+            "MIGRATION_GATE": "MIGRATION_MAP_VALID"
+            if not errors
+            else "BLOCKED_MIGRATION_MAP_ERRORS",
             "artifact_count": len(items),
             "authoritative_domains": dict(sorted(authoritative_domains.items())),
             "duplicate_authority": duplicate_authority,
@@ -83,4 +93,3 @@ class MigrationRegistry:
             if item["id"] == artifact_id:
                 return item
         raise ValueError(f"unknown migration artifact: {artifact_id}")
-

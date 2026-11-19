@@ -20,12 +20,23 @@ PLACEHOLDER = "Placeholder directory for BuildSlate digital-twin artifacts."
 
 def markdown_files() -> list[Path]:
     result = subprocess.run(
-        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z", "--", "*.md"],
+        [
+            "git",
+            "ls-files",
+            "--cached",
+            "--others",
+            "--exclude-standard",
+            "-z",
+            "--",
+            "*.md",
+        ],
         cwd=REPO_ROOT,
         capture_output=True,
         check=True,
     )
-    files = {REPO_ROOT / item.decode("utf-8") for item in result.stdout.split(b"\0") if item}
+    files = {
+        REPO_ROOT / item.decode("utf-8") for item in result.stdout.split(b"\0") if item
+    }
     return sorted(path for path in files if path.is_file())
 
 
@@ -45,7 +56,9 @@ def validate_links(path: Path) -> list[str]:
         try:
             destination.relative_to(REPO_ROOT)
         except ValueError:
-            problems.append(f"{path.relative_to(REPO_ROOT)}: link escapes repository: {target}")
+            problems.append(
+                f"{path.relative_to(REPO_ROOT)}: link escapes repository: {target}"
+            )
             continue
         if not destination.exists():
             problems.append(f"{path.relative_to(REPO_ROOT)}: broken link: {target}")
@@ -53,17 +66,32 @@ def validate_links(path: Path) -> list[str]:
 
 
 def main() -> int:
-    scripts = {f"validation/{path.name}" for path in (REPO_ROOT / "validation").glob("validate_*.py")}
-    registered = {entry for entry in VALIDATION_CHECKS if entry.startswith("validation/validate_")}
-    problems = [f"unregistered validator: {path}" for path in sorted(scripts - registered)]
+    scripts = {
+        f"validation/{path.name}"
+        for path in (REPO_ROOT / "validation").glob("validate_*.py")
+    }
+    registered = {
+        entry for entry in VALIDATION_CHECKS if entry.startswith("validation/validate_")
+    }
+    problems = [
+        f"unregistered validator: {path}" for path in sorted(scripts - registered)
+    ]
     problems += [f"missing validator: {path}" for path in sorted(registered - scripts)]
 
     for requirements_file in ("requirements.txt", "requirements-dev.txt"):
-        requirements = (REPO_ROOT / requirements_file).read_text(encoding="utf-8").splitlines()
+        requirements = (
+            (REPO_ROOT / requirements_file).read_text(encoding="utf-8").splitlines()
+        )
         for requirement in requirements:
             requirement = requirement.strip()
-            if requirement and not requirement.startswith("#") and "==" not in requirement:
-                problems.append(f"unpinned Python requirement in {requirements_file}: {requirement}")
+            if (
+                requirement
+                and not requirement.startswith("#")
+                and "==" not in requirement
+            ):
+                problems.append(
+                    f"unpinned Python requirement in {requirements_file}: {requirement}"
+                )
 
     documents = markdown_files()
     for path in documents:
@@ -72,7 +100,9 @@ def main() -> int:
         for problem in problems:
             print(f"FAIL: {problem}", file=sys.stderr)
         return 1
-    print(f"PASS: {len(scripts)} registered validators, {len(documents)} Markdown files, local links, and pinned Python requirements")
+    print(
+        f"PASS: {len(scripts)} registered validators, {len(documents)} Markdown files, local links, and pinned Python requirements"
+    )
     return 0
 
 

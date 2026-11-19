@@ -23,11 +23,39 @@ def main() -> int:
     npm = shutil.which("npm")
     if npm is None:
         raise SystemExit("FAIL: npm is required to validate the assembly viewer")
-    run([sys.executable, "-m", "compileall", "-q", "buildslate", "engineering", "validation", "manufacturing"], "Python compilation")
+    run(
+        [
+            sys.executable,
+            "-m",
+            "compileall",
+            "-q",
+            "buildslate",
+            "engineering",
+            "validation",
+            "manufacturing",
+        ],
+        "Python compilation",
+    )
     run([sys.executable, "-m", "ruff", "check", "."], "Python static analysis")
+    run(
+        [
+            sys.executable,
+            "-m",
+            "ruff",
+            "format",
+            "--check",
+            "buildslate",
+            "scripts/ci_validate.py",
+            "validation/validate_repository.py",
+        ],
+        "Core Python formatting",
+    )
     run(["git", "diff", "--check"], "Git whitespace check")
     run([sys.executable, "validation/run_all.py"], "Repository validation")
-    run([sys.executable, "-m", "buildslate.assembly", "--check"], "Assembly export currency")
+    run(
+        [sys.executable, "-m", "buildslate.assembly", "--check"],
+        "Assembly export currency",
+    )
     run([npm, "ci", "--prefix", "viewer"], "Viewer dependency install")
     run([npm, "run", "format:check", "--prefix", "viewer"], "Viewer formatting")
     run([npm, "run", "check:model", "--prefix", "viewer"], "Viewer geometry load")
@@ -51,4 +79,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

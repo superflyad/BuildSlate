@@ -20,8 +20,12 @@ class ProgramDashboard:
         self.repo_root = repo_root.resolve()
 
     def build(self, assume_upstream_current: bool = False) -> dict[str, Any]:
-        evidence = load_yaml(self.repo_root / "engineering/evidence/evidence_registry.yaml")["packages"]
-        blockers = load_yaml(self.repo_root / "engineering/evidence/external_blocker_registry.yaml")["blockers"]
+        evidence = load_yaml(
+            self.repo_root / "engineering/evidence/evidence_registry.yaml"
+        )["packages"]
+        blockers = load_yaml(
+            self.repo_root / "engineering/evidence/external_blocker_registry.yaml"
+        )["blockers"]
         configuration = ConfigurationResolver(self.repo_root)
         resolution = configuration.resolve()
         supplier = SupplierResponseRepository(self.repo_root).build_review_queue()
@@ -29,18 +33,30 @@ class ProgramDashboard:
         evt0 = EVT0CampaignRepository(self.repo_root).build_campaign_report()
         manufacturing = ManufacturingAnalyticsRepository(self.repo_root).build_report()
         snapshot = ProgramRepository(self.repo_root).build_snapshot()
-        stale = [] if assume_upstream_current else [
-            node for node in RegenerationEngine(self.repo_root).stale_nodes()
-            if node not in {"dashboard", "program_snapshot"}
-        ]
+        stale = (
+            []
+            if assume_upstream_current
+            else [
+                node
+                for node in RegenerationEngine(self.repo_root).stale_nodes()
+                if node not in {"dashboard", "program_snapshot"}
+            ]
+        )
 
         verified = [
             {"id": package_id, "title": package["title"], "status": package["status"]}
-            for package_id, package in evidence.items() if package["status"] == "verified"
+            for package_id, package in evidence.items()
+            if package["status"] == "verified"
         ]
         available = [
-            {"id": package_id, "title": package["title"], "status": package["status"], "phase": package["phase"]}
-            for package_id, package in evidence.items() if package["status"] == "available"
+            {
+                "id": package_id,
+                "title": package["title"],
+                "status": package["status"],
+                "phase": package["phase"],
+            }
+            for package_id, package in evidence.items()
+            if package["status"] == "available"
         ]
         modeled = [
             {
@@ -49,26 +65,68 @@ class ProgramDashboard:
                 "evidence_status": package["status"],
                 "model_status": "planning_artifacts_present_not_verified",
             }
-            for package_id, package in evidence.items() if package["phase"] == 2
+            for package_id, package in evidence.items()
+            if package["phase"] == 2
         ]
         rejected = [
-            {"id": entry_id, "value": entry["value"], "unit": entry.get("unit"), "notes": entry.get("notes")}
-            for entry_id, entry in configuration.registry["entries"].items() if entry["state"] == "rejected_option"
+            {
+                "id": entry_id,
+                "value": entry["value"],
+                "unit": entry.get("unit"),
+                "notes": entry.get("notes"),
+            }
+            for entry_id, entry in configuration.registry["entries"].items()
+            if entry["state"] == "rejected_option"
         ]
         contradictions: list[dict[str, Any]] = []
-        contradictions.extend({"source": "configuration", **item} for item in resolution["violations"])
-        contradictions.extend({"source": "integration_contract", **item} for item in contracts["contradictions"])
+        contradictions.extend(
+            {"source": "configuration", **item} for item in resolution["violations"]
+        )
+        contradictions.extend(
+            {"source": "integration_contract", **item}
+            for item in contracts["contradictions"]
+        )
         for item in supplier["items"]:
             for contradiction in item.get("review", {}).get("contradictions", []):
-                contradictions.append({"source": "supplier_response", "receipt": item["receipt"], **contradiction})
+                contradictions.append(
+                    {
+                        "source": "supplier_response",
+                        "receipt": item["receipt"],
+                        **contradiction,
+                    }
+                )
             for error in item.get("integrity_errors", []):
-                contradictions.append({"source": "supplier_integrity", "receipt": item["receipt"], "issue": error})
+                contradictions.append(
+                    {
+                        "source": "supplier_integrity",
+                        "receipt": item["receipt"],
+                        "issue": error,
+                    }
+                )
         for run in evt0["runs"]:
-            if run["objective_disposition"] in {"REJECTED_INVALID_EVIDENCE", "ABORTED_OR_HARD_STOP"}:
-                contradictions.append({"source": "evt0", "run_id": run.get("run_id"), "issue": run["objective_disposition"]})
+            if run["objective_disposition"] in {
+                "REJECTED_INVALID_EVIDENCE",
+                "ABORTED_OR_HARD_STOP",
+            }:
+                contradictions.append(
+                    {
+                        "source": "evt0",
+                        "run_id": run.get("run_id"),
+                        "issue": run["objective_disposition"],
+                    }
+                )
         for campaign in manufacturing["campaigns"]:
-            if campaign["PILOT_GATE"] in {"REJECTED_INVALID_EVIDENCE", "STOP_QUARANTINE_AND_REVIEW"}:
-                contradictions.append({"source": "manufacturing", "campaign_id": campaign.get("campaign_id"), "issue": campaign["PILOT_GATE"]})
+            if campaign["PILOT_GATE"] in {
+                "REJECTED_INVALID_EVIDENCE",
+                "STOP_QUARANTINE_AND_REVIEW",
+            }:
+                contradictions.append(
+                    {
+                        "source": "manufacturing",
+                        "campaign_id": campaign.get("campaign_id"),
+                        "issue": campaign["PILOT_GATE"],
+                    }
+                )
 
         external = [
             {
@@ -82,8 +140,13 @@ class ProgramDashboard:
             for blocker_id, blocker in blockers.items()
         ]
         gates = [
-            {"id": entity.entity_id.removeprefix("gate:"), "status": entity.status, "source": entity.source_path}
-            for entity in snapshot.entities if entity.kind == "gate"
+            {
+                "id": entity.entity_id.removeprefix("gate:"),
+                "status": entity.status,
+                "source": entity.source_path,
+            }
+            for entity in snapshot.entities
+            if entity.kind == "gate"
         ]
         if contradictions:
             dashboard_gate = "LOCAL_CONTRADICTIONS_REQUIRE_REVIEW"
@@ -112,7 +175,11 @@ class ProgramDashboard:
             "contradictions": contradictions,
             "externally_blocked": external,
             "exact_next_actions": [
-                {"blocker": item["id"], "action": item["exact_next_action"], "authorization_required": item["authorization_required"]}
+                {
+                    "blocker": item["id"],
+                    "action": item["exact_next_action"],
+                    "authorization_required": item["authorization_required"],
+                }
                 for item in external
             ],
             "caveat": "Artifact presence, current hashes, and consistent interfaces do not convert modeled or available evidence into verified evidence.",
@@ -141,15 +208,28 @@ class ProgramDashboard:
             "## Gate status",
             "",
         ]
-        lines.extend(f"- `{item['id']}`: `{item['status']}` — `{item['source']}`" for item in dashboard["gates"])
+        lines.extend(
+            f"- `{item['id']}`: `{item['status']}` — `{item['source']}`"
+            for item in dashboard["gates"]
+        )
         lines.extend(["", "## Rejected options", ""])
-        lines.extend(f"- `{item['id']}`: {item['value']} {item.get('unit') or ''} — {item.get('notes') or 'retained as rejected'}" for item in dashboard["rejected_options"])
+        lines.extend(
+            f"- `{item['id']}`: {item['value']} {item.get('unit') or ''} — {item.get('notes') or 'retained as rejected'}"
+            for item in dashboard["rejected_options"]
+        )
         lines.extend(["", "## Stale or contradictory local state", ""])
         if not dashboard["stale_nodes"] and not dashboard["contradictions"]:
-            lines.append("- None. All tracked generated nodes are current and no contradiction queue is open.")
+            lines.append(
+                "- None. All tracked generated nodes are current and no contradiction queue is open."
+            )
         else:
-            lines.extend(f"- Stale generator: `{node}`" for node in dashboard["stale_nodes"])
-            lines.extend(f"- Contradiction: `{item.get('source')}` — `{item.get('issue', item.get('rule_id', 'review required'))}`" for item in dashboard["contradictions"])
+            lines.extend(
+                f"- Stale generator: `{node}`" for node in dashboard["stale_nodes"]
+            )
+            lines.extend(
+                f"- Contradiction: `{item.get('source')}` — `{item.get('issue', item.get('rule_id', 'review required'))}`"
+                for item in dashboard["contradictions"]
+            )
         lines.extend(["", "## Exact externally blocked next actions", ""])
         for index, item in enumerate(dashboard["externally_blocked"], start=1):
             lines.extend(
@@ -171,4 +251,3 @@ class ProgramDashboard:
         yaml_path.write_text(dump_yaml(dashboard), encoding="utf-8")
         markdown_path.write_text(self.render_markdown(dashboard), encoding="utf-8")
         return yaml_path, markdown_path
-

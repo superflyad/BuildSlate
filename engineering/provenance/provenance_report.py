@@ -51,10 +51,19 @@ def main() -> int:
     needing_citation = [
         entry
         for entry in entries
-        if "needs" in str(entry.get("source_notes", {}).get("citation_status", "")).lower()
+        if "needs"
+        in str(entry.get("source_notes", {}).get("citation_status", "")).lower()
     ]
-    conceptual = [entry for entry in entries if entry.get("category") == "conceptual_extrapolation"]
-    blockers = [entry for entry in entries if entry.get("category") == "unresolved_research_blocker"]
+    conceptual = [
+        entry
+        for entry in entries
+        if entry.get("category") == "conceptual_extrapolation"
+    ]
+    blockers = [
+        entry
+        for entry in entries
+        if entry.get("category") == "unresolved_research_blocker"
+    ]
     entries_by_id = {entry.get("id"): entry for entry in entries}
 
     print("BuildSlate constants provenance report")

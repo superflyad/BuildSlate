@@ -93,7 +93,9 @@ def load_registry(path: Path = REGISTRY_PATH) -> dict[str, Any]:
     return data
 
 
-def _require_non_empty_list(entry: dict[str, Any], field: str, assumption_id: str) -> tuple[str, ...]:
+def _require_non_empty_list(
+    entry: dict[str, Any], field: str, assumption_id: str
+) -> tuple[str, ...]:
     value = entry.get(field)
     if not isinstance(value, list) or not value:
         raise ValueError(f"{assumption_id}.{field} must be a non-empty list")
@@ -106,35 +108,65 @@ def validate_registry(registry: dict[str, Any]) -> None:
     """Validate assumption registry shape, required entries, and enums."""
     assumptions = registry.get("assumptions")
     if not isinstance(assumptions, dict) or not assumptions:
-        raise ValueError("assumption registry must define a non-empty assumptions mapping")
+        raise ValueError(
+            "assumption registry must define a non-empty assumptions mapping"
+        )
 
-    missing_assumptions = [assumption_id for assumption_id in REQUIRED_ASSUMPTIONS if assumption_id not in assumptions]
+    missing_assumptions = [
+        assumption_id
+        for assumption_id in REQUIRED_ASSUMPTIONS
+        if assumption_id not in assumptions
+    ]
     if missing_assumptions:
-        raise ValueError(f"missing required assumptions: {', '.join(missing_assumptions)}")
+        raise ValueError(
+            f"missing required assumptions: {', '.join(missing_assumptions)}"
+        )
 
     for assumption_id, entry in assumptions.items():
         if not isinstance(entry, dict):
             raise ValueError(f"{assumption_id} must be a mapping")
         missing_fields = [field for field in REQUIRED_FIELDS if field not in entry]
         if missing_fields:
-            raise ValueError(f"{assumption_id} missing required fields: {', '.join(missing_fields)}")
+            raise ValueError(
+                f"{assumption_id} missing required fields: {', '.join(missing_fields)}"
+            )
         if entry["profile_scope"] not in PROFILE_SCOPES:
-            raise ValueError(f"{assumption_id}.profile_scope must be one of: {', '.join(PROFILE_SCOPES)}")
+            raise ValueError(
+                f"{assumption_id}.profile_scope must be one of: {', '.join(PROFILE_SCOPES)}"
+            )
         if entry["confidence"] not in CONFIDENCE_VALUES:
-            raise ValueError(f"{assumption_id}.confidence must be one of: {', '.join(CONFIDENCE_VALUES)}")
+            raise ValueError(
+                f"{assumption_id}.confidence must be one of: {', '.join(CONFIDENCE_VALUES)}"
+            )
         if entry["maturity"] not in MATURITY_VALUES:
-            raise ValueError(f"{assumption_id}.maturity must be one of: {', '.join(MATURITY_VALUES)}")
+            raise ValueError(
+                f"{assumption_id}.maturity must be one of: {', '.join(MATURITY_VALUES)}"
+            )
         if not isinstance(entry["unit"], str) or not entry["unit"].strip():
             raise ValueError(f"{assumption_id}.unit must be a non-empty string")
         if not isinstance(entry["notes"], str) or not entry["notes"].strip():
             raise ValueError(f"{assumption_id}.notes must be a non-empty string")
-        for list_field in ("affected_domains", "affected_reports", "downstream_decisions", "evidence_required"):
+        for list_field in (
+            "affected_domains",
+            "affected_reports",
+            "downstream_decisions",
+            "evidence_required",
+        ):
             _require_non_empty_list(entry, list_field, assumption_id)
 
 
 def _affected_gate_decisions(decisions: tuple[str, ...]) -> tuple[str, ...]:
-    gate_terms = ("gate", "physical feasibility", "thermal consequence", "recovery planner")
-    gate_decisions = [decision for decision in decisions if any(term in decision.lower() for term in gate_terms)]
+    gate_terms = (
+        "gate",
+        "physical feasibility",
+        "thermal consequence",
+        "recovery planner",
+    )
+    gate_decisions = [
+        decision
+        for decision in decisions
+        if any(term in decision.lower() for term in gate_terms)
+    ]
     return tuple(gate_decisions)
 
 
@@ -161,16 +193,26 @@ def score_fragility(
     return FragilityRating.LOW
 
 
-def build_impacts(registry: dict[str, Any] | None = None) -> tuple[AssumptionImpact, ...]:
+def build_impacts(
+    registry: dict[str, Any] | None = None,
+) -> tuple[AssumptionImpact, ...]:
     """Build scored assumption impact rows from the static registry."""
     data = registry if registry is not None else load_registry()
     validate_registry(data)
     impacts: list[AssumptionImpact] = []
     for assumption_id, entry in data["assumptions"].items():
-        affected_domains = _require_non_empty_list(entry, "affected_domains", assumption_id)
-        affected_reports = _require_non_empty_list(entry, "affected_reports", assumption_id)
-        downstream_decisions = _require_non_empty_list(entry, "downstream_decisions", assumption_id)
-        evidence_required = _require_non_empty_list(entry, "evidence_required", assumption_id)
+        affected_domains = _require_non_empty_list(
+            entry, "affected_domains", assumption_id
+        )
+        affected_reports = _require_non_empty_list(
+            entry, "affected_reports", assumption_id
+        )
+        downstream_decisions = _require_non_empty_list(
+            entry, "downstream_decisions", assumption_id
+        )
+        evidence_required = _require_non_empty_list(
+            entry, "evidence_required", assumption_id
+        )
         affected_gate_decisions = _affected_gate_decisions(downstream_decisions)
         fragility = score_fragility(
             confidence=entry["confidence"],
@@ -200,7 +242,9 @@ def build_impacts(registry: dict[str, Any] | None = None) -> tuple[AssumptionImp
     return tuple(impacts)
 
 
-def ranked_impacts(impacts: tuple[AssumptionImpact, ...]) -> tuple[AssumptionImpact, ...]:
+def ranked_impacts(
+    impacts: tuple[AssumptionImpact, ...],
+) -> tuple[AssumptionImpact, ...]:
     """Rank assumptions by fragility and breadth of impact."""
     return tuple(
         sorted(
@@ -257,7 +301,11 @@ def render_report(impacts: tuple[AssumptionImpact, ...] | None = None) -> str:
         "Top fragile assumptions (top risks):",
     ]
     for index, impact in enumerate(ranked[:10], start=1):
-        gate_text = ", ".join(impact.affected_gate_decisions) if impact.affected_gate_decisions else "none"
+        gate_text = (
+            ", ".join(impact.affected_gate_decisions)
+            if impact.affected_gate_decisions
+            else "none"
+        )
         lines.extend(
             [
                 f"  {index}. {impact.assumption_id} - {impact.fragility.value}",

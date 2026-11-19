@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Run all first-pass manufacturing and reliability screening models."""
+
 from __future__ import annotations
 
 import subprocess

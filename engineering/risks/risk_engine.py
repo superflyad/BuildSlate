@@ -118,7 +118,9 @@ def load_registry(path: Path = REGISTRY_PATH) -> dict[str, Any]:
     return data
 
 
-def _require_non_empty_list(entry: dict[str, Any], field: str, risk_id: str) -> tuple[str, ...]:
+def _require_non_empty_list(
+    entry: dict[str, Any], field: str, risk_id: str
+) -> tuple[str, ...]:
     value = entry.get(field)
     if not isinstance(value, list) or not value:
         raise ValueError(f"{risk_id}.{field} must be a non-empty list")
@@ -146,21 +148,38 @@ def validate_registry(registry: dict[str, Any]) -> None:
             raise ValueError(f"{risk_id} must be a mapping")
         missing_fields = [field for field in REQUIRED_FIELDS if field not in entry]
         if missing_fields:
-            raise ValueError(f"{risk_id} missing required fields: {', '.join(missing_fields)}")
+            raise ValueError(
+                f"{risk_id} missing required fields: {', '.join(missing_fields)}"
+            )
         if entry["profile_scope"] not in PROFILE_SCOPES:
-            raise ValueError(f"{risk_id}.profile_scope must be one of: {', '.join(PROFILE_SCOPES)}")
+            raise ValueError(
+                f"{risk_id}.profile_scope must be one of: {', '.join(PROFILE_SCOPES)}"
+            )
         if entry["likelihood"] not in LIKELIHOOD_VALUES:
-            raise ValueError(f"{risk_id}.likelihood must be one of: {', '.join(LIKELIHOOD_VALUES)}")
+            raise ValueError(
+                f"{risk_id}.likelihood must be one of: {', '.join(LIKELIHOOD_VALUES)}"
+            )
         if entry["impact"] not in IMPACT_VALUES:
-            raise ValueError(f"{risk_id}.impact must be one of: {', '.join(IMPACT_VALUES)}")
+            raise ValueError(
+                f"{risk_id}.impact must be one of: {', '.join(IMPACT_VALUES)}"
+            )
         if entry["maturity"] not in MATURITY_VALUES:
-            raise ValueError(f"{risk_id}.maturity must be one of: {', '.join(MATURITY_VALUES)}")
+            raise ValueError(
+                f"{risk_id}.maturity must be one of: {', '.join(MATURITY_VALUES)}"
+            )
         if entry["status"] not in STATUS_VALUES:
-            raise ValueError(f"{risk_id}.status must be one of: {', '.join(STATUS_VALUES)}")
+            raise ValueError(
+                f"{risk_id}.status must be one of: {', '.join(STATUS_VALUES)}"
+            )
         for text_field in ("title", "subsystem", "notes"):
             if not isinstance(entry[text_field], str) or not entry[text_field].strip():
                 raise ValueError(f"{risk_id}.{text_field} must be a non-empty string")
-        for list_field in ("affected_reports", "related_assumptions", "mitigation", "evidence_required"):
+        for list_field in (
+            "affected_reports",
+            "related_assumptions",
+            "mitigation",
+            "evidence_required",
+        ):
             _require_non_empty_list(entry, list_field, risk_id)
 
 
@@ -195,10 +214,16 @@ def build_risks(registry: dict[str, Any] | None = None) -> tuple[RiskEntry, ...]
                 impact=entry["impact"],
                 maturity=entry["maturity"],
                 status=entry["status"],
-                affected_reports=_require_non_empty_list(entry, "affected_reports", risk_id),
-                related_assumptions=_require_non_empty_list(entry, "related_assumptions", risk_id),
+                affected_reports=_require_non_empty_list(
+                    entry, "affected_reports", risk_id
+                ),
+                related_assumptions=_require_non_empty_list(
+                    entry, "related_assumptions", risk_id
+                ),
                 mitigation=_require_non_empty_list(entry, "mitigation", risk_id),
-                evidence_required=_require_non_empty_list(entry, "evidence_required", risk_id),
+                evidence_required=_require_non_empty_list(
+                    entry, "evidence_required", risk_id
+                ),
                 notes=entry["notes"].strip(),
                 likelihood_score=likelihood_score,
                 impact_score=impact_score,
@@ -225,7 +250,9 @@ def ranked_risks(risks: tuple[RiskEntry, ...]) -> tuple[RiskEntry, ...]:
     )
 
 
-def risks_by_subsystem(risks: tuple[RiskEntry, ...]) -> dict[str, tuple[RiskEntry, ...]]:
+def risks_by_subsystem(
+    risks: tuple[RiskEntry, ...],
+) -> dict[str, tuple[RiskEntry, ...]]:
     """Group risks by subsystem with ranked entries in each group."""
     grouped: dict[str, list[RiskEntry]] = {}
     for risk in ranked_risks(risks):

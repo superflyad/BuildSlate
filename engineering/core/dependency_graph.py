@@ -49,7 +49,9 @@ class DependencyGraph:
         def visit(current: str) -> None:
             if current in visiting:
                 cycle = " -> ".join([*visiting, current])
-                raise ValueError(f"dependency cycle detected while resolving {variable}: {cycle}")
+                raise ValueError(
+                    f"dependency cycle detected while resolving {variable}: {cycle}"
+                )
             if current in visited:
                 return
             visiting.add(current)

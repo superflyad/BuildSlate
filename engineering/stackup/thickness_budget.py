@@ -87,7 +87,9 @@ def _load_stackup_yaml(path: Path) -> dict[str, Any]:
     current_section: str | None = None
     current_component: dict[str, Any] | None = None
 
-    for line_number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+    for line_number, raw_line in enumerate(
+        path.read_text(encoding="utf-8").splitlines(), start=1
+    ):
         line_without_comment = raw_line.split("#", 1)[0].rstrip()
         if not line_without_comment.strip():
             continue
@@ -111,7 +113,11 @@ def _load_stackup_yaml(path: Path) -> dict[str, Any]:
             registry["device"][key.strip()] = _parse_scalar(value)
             continue
 
-        if current_section == "components" and indent == 2 and stripped.startswith("- "):
+        if (
+            current_section == "components"
+            and indent == 2
+            and stripped.startswith("- ")
+        ):
             current_component = {}
             registry["components"].append(current_component)
             item = stripped[2:]
@@ -120,7 +126,12 @@ def _load_stackup_yaml(path: Path) -> dict[str, Any]:
                 current_component[key.strip()] = _parse_scalar(value)
             continue
 
-        if current_section == "components" and indent == 4 and current_component is not None and ":" in stripped:
+        if (
+            current_section == "components"
+            and indent == 4
+            and current_component is not None
+            and ":" in stripped
+        ):
             key, value = stripped.split(":", 1)
             current_component[key.strip()] = _parse_scalar(value)
             continue
@@ -142,11 +153,19 @@ def validate_registry(registry: dict[str, Any]) -> None:
     device = _require_mapping(registry.get("device"), "device")
     _require_non_empty_string(device.get("name"), "device.name")
     _require_non_empty_string(device.get("version"), "device.version")
-    _require_positive_number(device.get("thickness_budget_mm"), "device.thickness_budget_mm")
-    pass_threshold = _require_positive_number(device.get("pass_threshold_percent"), "device.pass_threshold_percent")
-    warning_threshold = _require_positive_number(device.get("warning_threshold_percent"), "device.warning_threshold_percent")
+    _require_positive_number(
+        device.get("thickness_budget_mm"), "device.thickness_budget_mm"
+    )
+    pass_threshold = _require_positive_number(
+        device.get("pass_threshold_percent"), "device.pass_threshold_percent"
+    )
+    warning_threshold = _require_positive_number(
+        device.get("warning_threshold_percent"), "device.warning_threshold_percent"
+    )
     if pass_threshold >= warning_threshold:
-        raise ValueError("device.pass_threshold_percent must be less than device.warning_threshold_percent")
+        raise ValueError(
+            "device.pass_threshold_percent must be less than device.warning_threshold_percent"
+        )
 
     components = registry.get("components")
     if not isinstance(components, list) or not components:
@@ -155,13 +174,19 @@ def validate_registry(registry: dict[str, Any]) -> None:
     seen_ids: set[str] = set()
     for index, component in enumerate(components):
         entry = _require_mapping(component, f"components[{index}]")
-        component_id = _require_non_empty_string(entry.get("id"), f"components[{index}].id")
+        component_id = _require_non_empty_string(
+            entry.get("id"), f"components[{index}].id"
+        )
         if component_id in seen_ids:
             raise ValueError(f"duplicate component id: {component_id}")
         seen_ids.add(component_id)
         _require_non_empty_string(entry.get("name"), f"components[{index}].name")
-        _require_positive_number(entry.get("thickness_mm"), f"components[{index}].thickness_mm")
-        _require_non_empty_string(entry.get("rationale"), f"components[{index}].rationale")
+        _require_positive_number(
+            entry.get("thickness_mm"), f"components[{index}].thickness_mm"
+        )
+        _require_non_empty_string(
+            entry.get("rationale"), f"components[{index}].rationale"
+        )
 
     missing = sorted(REQUIRED_COMPONENT_IDS - seen_ids)
     if missing:

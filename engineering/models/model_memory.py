@@ -39,14 +39,22 @@ def parse_args() -> argparse.Namespace:
     constants = load_constants()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--params-billions", type=positive_float, default=70.0)
-    parser.add_argument("--quantization", choices=sorted(constants["bytes_per_parameter"].keys()), default="int4")
+    parser.add_argument(
+        "--quantization",
+        choices=sorted(constants["bytes_per_parameter"].keys()),
+        default="int4",
+    )
     parser.add_argument(
         "--overhead-profile",
         choices=sorted(constants["quantization_overhead_factor"].keys()),
         default="nominal",
     )
     parser.add_argument("--available-memory-gb", type=positive_float, default=512.0)
-    parser.add_argument("--explain", action="store_true", help="Print centralized model memory calculation explanation")
+    parser.add_argument(
+        "--explain",
+        action="store_true",
+        help="Print centralized model memory calculation explanation",
+    )
     return parser.parse_args()
 
 
@@ -75,8 +83,12 @@ def main() -> int:
     print(f"  available_memory_gb: {args.available_memory_gb:.1f}")
     print("assumptions:")
     print("  constants_source: engineering/constants/compute.yaml")
-    print("  overhead factor represents runtime metadata, quantization scales, allocator reserve, and implementation overhead")
-    print("  estimate does not prove memory bandwidth, latency, KV-cache capacity, or sustained thermal behavior")
+    print(
+        "  overhead factor represents runtime metadata, quantization scales, allocator reserve, and implementation overhead"
+    )
+    print(
+        "  estimate does not prove memory bandwidth, latency, KV-cache capacity, or sustained thermal behavior"
+    )
     print("formulas:")
     print("  raw_GB = params_billions * 1e9 * bytes_per_parameter / 1e9")
     print("  estimated_GB = raw_GB * overhead_factor")
@@ -90,9 +102,13 @@ def main() -> int:
     if args.explain:
         print("explanation:")
         print(ExplanationEngine().explain("runtime.model_memory_gb", estimated_inputs))
-    print("confidence: medium for parameter storage arithmetic; low for full runtime feasibility")
+    print(
+        "confidence: medium for parameter storage arithmetic; low for full runtime feasibility"
+    )
     print("basis: estimated")
-    print("primary blocker: package availability, bandwidth, KV cache, NPU throughput, software stack, and thermals")
+    print(
+        "primary blocker: package availability, bandwidth, KV cache, NPU throughput, software stack, and thermals"
+    )
     return 0
 
 

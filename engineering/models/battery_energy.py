@@ -72,7 +72,9 @@ def main() -> int:
     print("assumptions:")
     print("  constants_source: engineering/constants/battery.yaml")
     print("  battery chemistry represented as nominal lithium-ion voltage")
-    print("  usable capacity varies by reserve margin, discharge rate, temperature, and aging")
+    print(
+        "  usable capacity varies by reserve margin, discharge rate, temperature, and aging"
+    )
     print("formulas:")
     print("  Ah = mAh / 1000")
     print("  Wh = Ah * V")
@@ -85,8 +87,12 @@ def main() -> int:
 
     for profile in PROFILES:
         usable_factor = constants["usable_capacity_factor"][profile]
-        volumetric_density = constants["battery_volumetric_energy_density_wh_per_l"][profile]
-        gravimetric_density = constants["battery_gravimetric_energy_density_wh_per_kg"][profile]
+        volumetric_density = constants["battery_volumetric_energy_density_wh_per_l"][
+            profile
+        ]
+        gravimetric_density = constants["battery_gravimetric_energy_density_wh_per_kg"][
+            profile
+        ]
         profile_inputs = {
             **core_inputs,
             "battery.usable_factor": usable_factor,

@@ -9,7 +9,9 @@ from pathlib import Path
 from thickness_budget import calculate_thickness_budget, load_registry
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_REGISTRY = REPO_ROOT / "engineering" / "stackup" / "thickness_stack_registry.yaml"
+DEFAULT_REGISTRY = (
+    REPO_ROOT / "engineering" / "stackup" / "thickness_stack_registry.yaml"
+)
 DEFAULT_REPORT = REPO_ROOT / "reports" / "slate-pocket-thickness-budget.txt"
 
 
@@ -41,19 +43,23 @@ def render_report(result) -> str:
         "Component stack:",
     ]
     for component in result.components:
-        lines.append(f"  - {component.name}: {component.thickness_mm:.2f} mm ({component.component_id})")
+        lines.append(
+            f"  - {component.name}: {component.thickness_mm:.2f} mm ({component.component_id})"
+        )
         lines.append(f"    basis: {component.rationale}")
-    lines.extend([
-        "",
-        "Validation:",
-        "  registry_schema: PASS",
-        "  required_component_coverage: PASS",
-        "  positive_thickness_values: PASS",
-        "",
-        "Notes:",
-        "  This is a first-pass arithmetic screen, not a CAD packaging signoff.",
-        "  Local overlaps, shielding cans, connector keepouts, compression, and camera bumps require follow-up mechanical CAD.",
-    ])
+    lines.extend(
+        [
+            "",
+            "Validation:",
+            "  registry_schema: PASS",
+            "  required_component_coverage: PASS",
+            "  positive_thickness_values: PASS",
+            "",
+            "Notes:",
+            "  This is a first-pass arithmetic screen, not a CAD packaging signoff.",
+            "  Local overlaps, shielding cans, connector keepouts, compression, and camera bumps require follow-up mechanical CAD.",
+        ]
+    )
     return "\n".join(lines) + "\n"
 
 

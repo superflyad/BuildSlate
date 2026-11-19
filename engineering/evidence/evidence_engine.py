@@ -88,10 +88,16 @@ def _require_string_list(
 def _validate_dependency_graph(packages: dict[str, Any]) -> None:
     """Reject unknown dependencies and dependency cycles."""
     for package_id, entry in packages.items():
-        dependencies = _require_string_list(entry, "depends_on", package_id, allow_empty=True)
-        unknown = [dependency for dependency in dependencies if dependency not in packages]
+        dependencies = _require_string_list(
+            entry, "depends_on", package_id, allow_empty=True
+        )
+        unknown = [
+            dependency for dependency in dependencies if dependency not in packages
+        ]
         if unknown:
-            raise ValueError(f"{package_id}.depends_on contains unknown packages: {', '.join(unknown)}")
+            raise ValueError(
+                f"{package_id}.depends_on contains unknown packages: {', '.join(unknown)}"
+            )
         if package_id in dependencies:
             raise ValueError(f"{package_id}.depends_on may not reference itself")
 
@@ -131,25 +137,42 @@ def validate_registry(registry: dict[str, Any]) -> None:
             raise ValueError(f"{package_id} must be a mapping")
         missing = [field for field in REQUIRED_FIELDS if field not in entry]
         if missing:
-            raise ValueError(f"{package_id} missing required fields: {', '.join(missing)}")
+            raise ValueError(
+                f"{package_id} missing required fields: {', '.join(missing)}"
+            )
         if not isinstance(entry["phase"], int) or entry["phase"] < 0:
             raise ValueError(f"{package_id}.phase must be a non-negative integer")
         if entry["priority"] not in PRIORITY_VALUES:
-            raise ValueError(f"{package_id}.priority must be one of: {', '.join(PRIORITY_VALUES)}")
+            raise ValueError(
+                f"{package_id}.priority must be one of: {', '.join(PRIORITY_VALUES)}"
+            )
         if entry["status"] not in STATUS_VALUES:
-            raise ValueError(f"{package_id}.status must be one of: {', '.join(STATUS_VALUES)}")
+            raise ValueError(
+                f"{package_id}.status must be one of: {', '.join(STATUS_VALUES)}"
+            )
         for text_field in ("title", "owner", "notes"):
             if not isinstance(entry[text_field], str) or not entry[text_field].strip():
-                raise ValueError(f"{package_id}.{text_field} must be a non-empty string")
-        if entry["status"] in {"in_progress", "available", "verified"} and entry["owner"] == "unassigned":
-            raise ValueError(f"{package_id} must have an owner before status {entry['status']}")
+                raise ValueError(
+                    f"{package_id}.{text_field} must be a non-empty string"
+                )
+        if (
+            entry["status"] in {"in_progress", "available", "verified"}
+            and entry["owner"] == "unassigned"
+        ):
+            raise ValueError(
+                f"{package_id} must have an owner before status {entry['status']}"
+            )
         _require_string_list(entry, "depends_on", package_id, allow_empty=True)
         linked_risks = _require_string_list(entry, "linked_risks", package_id)
         _require_string_list(entry, "acceptance_criteria", package_id)
         _require_string_list(entry, "expected_artifacts", package_id)
-        unknown_risks = [risk_id for risk_id in linked_risks if risk_id not in known_risks]
+        unknown_risks = [
+            risk_id for risk_id in linked_risks if risk_id not in known_risks
+        ]
         if unknown_risks:
-            raise ValueError(f"{package_id}.linked_risks contains unknown risks: {', '.join(unknown_risks)}")
+            raise ValueError(
+                f"{package_id}.linked_risks contains unknown risks: {', '.join(unknown_risks)}"
+            )
 
     _validate_dependency_graph(packages)
 
@@ -167,9 +190,13 @@ def validate_registry(registry: dict[str, Any]) -> None:
                 f"{', '.join(incomplete_dependencies)}"
             )
         if entry["status"] in {"available", "verified"}:
-            expected_artifacts = _require_string_list(entry, "expected_artifacts", package_id)
+            expected_artifacts = _require_string_list(
+                entry, "expected_artifacts", package_id
+            )
             missing_artifacts = [
-                artifact for artifact in expected_artifacts if not (REPO_ROOT / artifact).exists()
+                artifact
+                for artifact in expected_artifacts
+                if not (REPO_ROOT / artifact).exists()
             ]
             if missing_artifacts:
                 raise ValueError(
@@ -178,7 +205,9 @@ def validate_registry(registry: dict[str, Any]) -> None:
                 )
 
 
-def build_packages(registry: dict[str, Any] | None = None) -> tuple[EvidencePackage, ...]:
+def build_packages(
+    registry: dict[str, Any] | None = None,
+) -> tuple[EvidencePackage, ...]:
     """Build ordered evidence-package rows."""
     data = registry if registry is not None else load_registry()
     validate_registry(data)
@@ -192,10 +221,16 @@ def build_packages(registry: dict[str, Any] | None = None) -> tuple[EvidencePack
                 priority=entry["priority"],
                 status=entry["status"],
                 owner=entry["owner"].strip(),
-                depends_on=_require_string_list(entry, "depends_on", package_id, allow_empty=True),
+                depends_on=_require_string_list(
+                    entry, "depends_on", package_id, allow_empty=True
+                ),
                 linked_risks=_require_string_list(entry, "linked_risks", package_id),
-                acceptance_criteria=_require_string_list(entry, "acceptance_criteria", package_id),
-                expected_artifacts=_require_string_list(entry, "expected_artifacts", package_id),
+                acceptance_criteria=_require_string_list(
+                    entry, "acceptance_criteria", package_id
+                ),
+                expected_artifacts=_require_string_list(
+                    entry, "expected_artifacts", package_id
+                ),
                 notes=entry["notes"].strip(),
             )
         )
@@ -221,7 +256,9 @@ def status_counts(packages: tuple[EvidencePackage, ...]) -> Counter[str]:
     return Counter(package.status for package in packages)
 
 
-def unblocked_packages(packages: tuple[EvidencePackage, ...]) -> tuple[EvidencePackage, ...]:
+def unblocked_packages(
+    packages: tuple[EvidencePackage, ...],
+) -> tuple[EvidencePackage, ...]:
     """Return unfinished packages whose dependencies are verified."""
     by_id = {package.package_id: package for package in packages}
     return tuple(

@@ -17,7 +17,9 @@ except ImportError:  # pragma: no cover - package import path
     from engineering.core.formula_registry import FormulaRegistry
     from engineering.core.variable_registry import VariableRegistry
 
-VARIABLE_TOKEN_RE = re.compile(r"\b[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)+\b")
+VARIABLE_TOKEN_RE = re.compile(
+    r"\b[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)+\b"
+)
 
 
 class CalculationError(ValueError):
@@ -37,10 +39,14 @@ def parse_set(assignments: list[str]) -> dict[str, float | str]:
     values: dict[str, float | str] = {}
     for assignment in assignments:
         if "=" not in assignment:
-            raise argparse.ArgumentTypeError(f"expected variable=value, got: {assignment}")
+            raise argparse.ArgumentTypeError(
+                f"expected variable=value, got: {assignment}"
+            )
         variable_id, raw_value = assignment.split("=", 1)
         if not variable_id.strip():
-            raise argparse.ArgumentTypeError(f"missing variable id in assignment: {assignment}")
+            raise argparse.ArgumentTypeError(
+                f"missing variable id in assignment: {assignment}"
+            )
         values[variable_id.strip()] = parse_value(raw_value.strip())
     return values
 
@@ -76,8 +82,12 @@ def safe_eval(expression: str, values: dict[str, Any]) -> float:
     )
     for node in ast.walk(parsed):
         if not isinstance(node, allowed_nodes):
-            raise CalculationError(f"unsupported expression element: {type(node).__name__}")
-    result = eval(compile(parsed, "<formula>", "eval"), {"__builtins__": {}}, local_values)
+            raise CalculationError(
+                f"unsupported expression element: {type(node).__name__}"
+            )
+    result = eval(
+        compile(parsed, "<formula>", "eval"), {"__builtins__": {}}, local_values
+    )
     if not isinstance(result, (int, float)) or isinstance(result, bool):
         raise CalculationError("formula result must be numeric")
     return float(result)
@@ -91,11 +101,15 @@ class Calculator:
         self.formulas = FormulaRegistry()
         self.graph = DependencyGraph(self.formulas)
 
-    def compute(self, variable_id: str, known_values: dict[str, Any] | None = None) -> float:
+    def compute(
+        self, variable_id: str, known_values: dict[str, Any] | None = None
+    ) -> float:
         values = dict(known_values or {})
         return self._compute(variable_id, values, stack=[])
 
-    def _compute(self, variable_id: str, values: dict[str, Any], stack: list[str]) -> float:
+    def _compute(
+        self, variable_id: str, values: dict[str, Any], stack: list[str]
+    ) -> float:
         if variable_id in values:
             return float(values[variable_id])
         if variable_id in stack:
@@ -133,7 +147,9 @@ def format_number(value: float) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--set", action="append", default=[], help="Known input as variable=value")
+    parser.add_argument(
+        "--set", action="append", default=[], help="Known input as variable=value"
+    )
     parser.add_argument("--compute", required=True, help="Variable id to compute")
     return parser.parse_args()
 

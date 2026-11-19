@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """First-pass repairability pressure screen."""
+
 from __future__ import annotations
 
 import argparse
@@ -47,28 +48,40 @@ def main() -> int:
     if args.battery_removability == "low":
         blockers.append("battery difficult to replace")
     if args.internal_layer_complexity == "high":
-        blockers.append("stacked thermal assembly may require destructive or high-risk disassembly")
+        blockers.append(
+            "stacked thermal assembly may require destructive or high-risk disassembly"
+        )
     if args.adhesive_level == "high" or args.screen_removal_risk == "high":
         blockers.append("bonded glass/frame complexity raises breakage risk")
     if args.modular_component_count <= 2:
         blockers.append("few modular replaceable subassemblies")
 
     print("Repairability pressure screening model")
-    print_section("inputs", [
-        f"adhesive_level: {args.adhesive_level}",
-        f"battery_removability: {args.battery_removability}",
-        f"screen_removal_risk: {args.screen_removal_risk}",
-        f"modular_component_count: {args.modular_component_count}",
-        f"internal_layer_complexity: {args.internal_layer_complexity}",
-    ])
-    print_section("formulas", [
-        "score increases with adhesive, low battery removability, screen removal risk, and layer complexity",
-        "score decreases with modular replaceable component count",
-    ])
-    print_section("outputs", [f"repairability_pressure_score: {repairability_pressure_score}"])
+    print_section(
+        "inputs",
+        [
+            f"adhesive_level: {args.adhesive_level}",
+            f"battery_removability: {args.battery_removability}",
+            f"screen_removal_risk: {args.screen_removal_risk}",
+            f"modular_component_count: {args.modular_component_count}",
+            f"internal_layer_complexity: {args.internal_layer_complexity}",
+        ],
+    )
+    print_section(
+        "formulas",
+        [
+            "score increases with adhesive, low battery removability, screen removal risk, and layer complexity",
+            "score decreases with modular replaceable component count",
+        ],
+    )
+    print_section(
+        "outputs", [f"repairability_pressure_score: {repairability_pressure_score}"]
+    )
     print_section("likely repair blockers", blockers or ["none"])
     print_section("warnings", blockers or ["none"])
-    print("confidence: low; service procedure design and teardown validation are required")
+    print(
+        "confidence: low; service procedure design and teardown validation are required"
+    )
     print("basis: first-pass repairability pressure screen")
     return 0
 

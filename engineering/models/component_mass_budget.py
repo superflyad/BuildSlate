@@ -10,7 +10,9 @@ from typing import Any
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-COMPONENT_LIBRARY_PATH = REPO_ROOT / "engineering" / "components" / "component_library.yaml"
+COMPONENT_LIBRARY_PATH = (
+    REPO_ROOT / "engineering" / "components" / "component_library.yaml"
+)
 PROFILES = ("conservative", "nominal", "aggressive")
 
 
@@ -46,7 +48,10 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     components = load_components()
-    masses = {name: profile_value(component, "mass_g", args.profile) for name, component in components.items()}
+    masses = {
+        name: profile_value(component, "mass_g", args.profile)
+        for name, component in components.items()
+    }
     total_mass_g = sum(masses.values())
     margin_g = args.target_mass_g - total_mass_g
     top_drivers = sorted(masses.items(), key=lambda item: item[1], reverse=True)[:5]
@@ -58,7 +63,9 @@ def main() -> int:
     print(f"  component_library: {COMPONENT_LIBRARY_PATH.relative_to(REPO_ROOT)}")
     print("assumptions:")
     print("  mass values are placeholder screening ranges, not measured part masses")
-    print("  conservative profile represents heavier packaging burden; aggressive is optimistic")
+    print(
+        "  conservative profile represents heavier packaging burden; aggressive is optimistic"
+    )
     print("formulas:")
     print("  component_mass_g = component.mass_g[profile]")
     print("  total_mass_g = sum(component_mass_g)")
@@ -78,8 +85,12 @@ def main() -> int:
     else:
         print("  - none for this screening profile")
     print("confidence: low")
-    print("basis: placeholder component masses in engineering/components/component_library.yaml")
-    print("primary_blocker: vendor part masses, CAD-derived mechanical allowances, and battery pack selection")
+    print(
+        "basis: placeholder component masses in engineering/components/component_library.yaml"
+    )
+    print(
+        "primary_blocker: vendor part masses, CAD-derived mechanical allowances, and battery pack selection"
+    )
     return 0
 
 

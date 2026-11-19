@@ -9,7 +9,9 @@ from typing import Any
 try:
     import yaml
 except ImportError as exc:  # pragma: no cover - dependency guidance path
-    raise SystemExit("PyYAML is required. Install dependencies with: pip install -r requirements.txt") from exc
+    raise SystemExit(
+        "PyYAML is required. Install dependencies with: pip install -r requirements.txt"
+    ) from exc
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 REGISTRY_DIR = REPO_ROOT / "engineering" / "registry"

@@ -60,19 +60,48 @@ CORE_MODEL_CHECKS = (
         "engineering/models/composite_chassis.py",
         ("--preset", "aluminum_heat_frame_glass_windows"),
     ),
-    Check("Component Packaging", "engineering/component_models/run_all_component_models.py"),
-    Check("Interconnect and Power Delivery", "engineering/interconnect_models/run_all_interconnect_models.py"),
+    Check(
+        "Component Packaging",
+        "engineering/component_models/run_all_component_models.py",
+    ),
+    Check(
+        "Interconnect and Power Delivery",
+        "engineering/interconnect_models/run_all_interconnect_models.py",
+    ),
     Check("AI Runtime Memory", "engineering/runtime_models/run_all_runtime_models.py"),
-    Check("Manufacturing and Reliability", "engineering/manufacturing_models/run_all_manufacturing_models.py"),
-    Check("Environmental Conditions", "engineering/environment_models/run_all_environment_models.py"),
-    Check("Provenance and Assumption Confidence", "engineering/provenance/provenance_report.py"),
+    Check(
+        "Manufacturing and Reliability",
+        "engineering/manufacturing_models/run_all_manufacturing_models.py",
+    ),
+    Check(
+        "Environmental Conditions",
+        "engineering/environment_models/run_all_environment_models.py",
+    ),
+    Check(
+        "Provenance and Assumption Confidence",
+        "engineering/provenance/provenance_report.py",
+    ),
 )
 
 OPTIONAL_CHECKS = (
-    Check("Thermal Risk", "engineering/component_models/thermal_resistance_network.py", required=False),
-    Check("Local Stackup", "engineering/component_models/zone_stackup.py", required=False),
-    Check("Component Packaging", "engineering/models/component_packaging.py", required=False),
-    Check("AI Runtime Memory", "engineering/runtime_models/runtime_memory_budget.py", required=False),
+    Check(
+        "Thermal Risk",
+        "engineering/component_models/thermal_resistance_network.py",
+        required=False,
+    ),
+    Check(
+        "Local Stackup", "engineering/component_models/zone_stackup.py", required=False
+    ),
+    Check(
+        "Component Packaging",
+        "engineering/models/component_packaging.py",
+        required=False,
+    ),
+    Check(
+        "AI Runtime Memory",
+        "engineering/runtime_models/runtime_memory_budget.py",
+        required=False,
+    ),
 )
 
 CHECKS = (*REQUIRED_CHECKS, *CORE_MODEL_CHECKS, *OPTIONAL_CHECKS)
@@ -103,10 +132,18 @@ def run_check(check: Check) -> CheckResult:
         if check.required:
             message = f"FAIL: required path missing for {command}"
             print(message)
-            return CheckResult(check=check, status="failed", command=command, returncode=1, output=message)
+            return CheckResult(
+                check=check,
+                status="failed",
+                command=command,
+                returncode=1,
+                output=message,
+            )
         message = f"SKIP: optional path missing for {command}"
         print(message)
-        return CheckResult(check=check, status="skipped", command=command, output=message)
+        return CheckResult(
+            check=check, status="skipped", command=command, output=message
+        )
 
     completed = subprocess.run(
         [sys.executable, str(script_path), *check.args],
@@ -115,7 +152,9 @@ def run_check(check: Check) -> CheckResult:
         text=True,
         check=False,
     )
-    output = "\n".join(part.rstrip() for part in (completed.stdout, completed.stderr) if part.strip())
+    output = "\n".join(
+        part.rstrip() for part in (completed.stdout, completed.stderr) if part.strip()
+    )
     if completed.returncode == 0:
         print(f"PASS: {command}")
         status = "passed"
@@ -164,7 +203,9 @@ def render_report(results: list[CheckResult]) -> str:
     skipped = [result for result in results if result.status == "skipped"]
     failed = [result for result in results if result.status == "failed"]
 
-    by_section: dict[str, list[CheckResult]] = {section: [] for section in REPORT_SECTIONS}
+    by_section: dict[str, list[CheckResult]] = {
+        section: [] for section in REPORT_SECTIONS
+    }
     for result in results:
         by_section.setdefault(result.check.section, []).append(result)
 

@@ -88,7 +88,9 @@ ZONES: dict[str, OrderedDict[str, float]] = {
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--target-thickness-mm", type=positive_float, default=8.8)
-    parser.add_argument("--zone", choices=sorted(ZONES), help="Analyze one zone instead of all zones")
+    parser.add_argument(
+        "--zone", choices=sorted(ZONES), help="Analyze one zone instead of all zones"
+    )
     parser.add_argument("--profile", choices=("nominal",), default="nominal")
     return parser.parse_args()
 
@@ -99,7 +101,9 @@ def warning_rows(warnings: list[str]) -> list[str]:
     return [f"- {warning}" for warning in warnings]
 
 
-def analyze_zone(zone_name: str, layers: OrderedDict[str, float], target_thickness_mm: float) -> dict[str, object]:
+def analyze_zone(
+    zone_name: str, layers: OrderedDict[str, float], target_thickness_mm: float
+) -> dict[str, object]:
     total_thickness_mm = sum(layers.values())
     margin_mm = target_thickness_mm - total_thickness_mm
     warnings = []
@@ -112,7 +116,9 @@ def analyze_zone(zone_name: str, layers: OrderedDict[str, float], target_thickne
     if zone_name == "soc_memory_zone" and 0 <= margin_mm < 0.5:
         warnings.append("soc_memory zone margin is below 0.5 mm")
     if zone_name == "wireless_charging_zone" and margin_mm < 0.8:
-        warnings.append("wireless charging zone overlaps battery zone with limited clearance")
+        warnings.append(
+            "wireless charging zone overlaps battery zone with limited clearance"
+        )
     return {
         "zone_name": zone_name,
         "layers": layers,
@@ -134,7 +140,10 @@ def print_zone_result(result: dict[str, object], target_thickness_mm: float) -> 
     assert isinstance(warnings, list)
 
     print(f"zone name: {zone_name}")
-    print_section("layer list", [f"{name}: {thickness:.2f} mm" for name, thickness in layers.items()])
+    print_section(
+        "layer list",
+        [f"{name}: {thickness:.2f} mm" for name, thickness in layers.items()],
+    )
     print_section(
         "outputs",
         [
@@ -150,7 +159,10 @@ def print_zone_result(result: dict[str, object], target_thickness_mm: float) -> 
 def main() -> int:
     args = parse_args()
     selected_zones = {args.zone: ZONES[args.zone]} if args.zone else ZONES
-    results = [analyze_zone(name, layers, args.target_thickness_mm) for name, layers in selected_zones.items()]
+    results = [
+        analyze_zone(name, layers, args.target_thickness_mm)
+        for name, layers in selected_zones.items()
+    ]
     worst_zone = min(results, key=lambda item: float(item["margin_mm"]))
     primary_blocker = (
         f"{worst_zone['zone_name']} has negative z-height margin"
@@ -202,7 +214,9 @@ def main() -> int:
     )
     all_warnings = [warning for result in results for warning in result["warnings"]]
     print_section("warnings", warning_rows(all_warnings))
-    print("confidence: medium for arithmetic; low to medium for layer placeholders before CAD and supplier stackups")
+    print(
+        "confidence: medium for arithmetic; low to medium for layer placeholders before CAD and supplier stackups"
+    )
     print("basis: modeled estimate using nominal local z-height stacks")
     print(f"primary blocker: {primary_blocker}")
     return 0

@@ -22,7 +22,14 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
 
-    kv_bytes = 2 * args.layers * args.hidden_size * args.context_tokens * args.batch_size * args.kv_bytes_per_element
+    kv_bytes = (
+        2
+        * args.layers
+        * args.hidden_size
+        * args.context_tokens
+        * args.batch_size
+        * args.kv_bytes_per_element
+    )
     kv_gb = kv_bytes / 1e9
     percent_available = kv_gb / args.available_memory_gb * 100.0
 
@@ -30,7 +37,9 @@ def main() -> int:
     if percent_available > 25.0:
         warnings.append("KV cache exceeds 25% of available memory")
     if args.context_tokens > 32768:
-        warnings.append("context length exceeds 32768 tokens; long-context residency pressure is high")
+        warnings.append(
+            "context length exceeds 32768 tokens; long-context residency pressure is high"
+        )
     if args.batch_size > 1:
         warnings.append("batch size above 1 linearly increases KV cache memory")
 
@@ -43,31 +52,45 @@ def main() -> int:
         primary_blocker = "batch-size-driven KV cache growth"
 
     print("KV cache memory estimate")
-    print_section("inputs", [
-        f"layers: {args.layers}",
-        f"hidden_size: {args.hidden_size}",
-        f"context_tokens: {args.context_tokens}",
-        f"batch_size: {args.batch_size}",
-        f"kv_bytes_per_element: {args.kv_bytes_per_element:.1f}",
-        f"available_memory_gb: {args.available_memory_gb:.1f}",
-    ])
-    print_section("assumptions", [
-        "factor 2 represents keys and values",
-        "KV cache sizing is architecture-dependent",
-        "grouped-query attention and implementation details can reduce KV size",
-        "this model estimates memory pressure only and does not predict real tokens/sec",
-    ])
-    print_section("formulas", [
-        "kv_bytes = 2 * layers * hidden_size * context_tokens * batch_size * kv_bytes_per_element",
-        "kv_gb = kv_bytes / 1e9",
-        "percent_available_memory = kv_gb / available_memory_gb * 100",
-    ])
-    print_section("outputs", [
-        f"kv_cache_gb: {kv_gb:.2f}",
-        f"percent_available_memory: {percent_available:.2f}",
-    ])
+    print_section(
+        "inputs",
+        [
+            f"layers: {args.layers}",
+            f"hidden_size: {args.hidden_size}",
+            f"context_tokens: {args.context_tokens}",
+            f"batch_size: {args.batch_size}",
+            f"kv_bytes_per_element: {args.kv_bytes_per_element:.1f}",
+            f"available_memory_gb: {args.available_memory_gb:.1f}",
+        ],
+    )
+    print_section(
+        "assumptions",
+        [
+            "factor 2 represents keys and values",
+            "KV cache sizing is architecture-dependent",
+            "grouped-query attention and implementation details can reduce KV size",
+            "this model estimates memory pressure only and does not predict real tokens/sec",
+        ],
+    )
+    print_section(
+        "formulas",
+        [
+            "kv_bytes = 2 * layers * hidden_size * context_tokens * batch_size * kv_bytes_per_element",
+            "kv_gb = kv_bytes / 1e9",
+            "percent_available_memory = kv_gb / available_memory_gb * 100",
+        ],
+    )
+    print_section(
+        "outputs",
+        [
+            f"kv_cache_gb: {kv_gb:.2f}",
+            f"percent_available_memory: {percent_available:.2f}",
+        ],
+    )
     print_section("warnings", warnings)
-    print("confidence: medium for dense KV arithmetic; low for architecture-specific runtime residency")
+    print(
+        "confidence: medium for dense KV arithmetic; low for architecture-specific runtime residency"
+    )
     print("basis: standard first-pass keys-plus-values cache capacity estimate")
     print(f"primary blocker: {primary_blocker}")
     return 0

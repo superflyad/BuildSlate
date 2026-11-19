@@ -56,7 +56,9 @@ def main() -> int:
     print(f"  battery_wh: {args.battery_wh:.1f}")
     print("assumptions:")
     print("  constants_source: engineering/constants/battery.yaml")
-    print("  component masses are rough placeholders until CAD, BOM, and vendor data replace them")
+    print(
+        "  component masses are rough placeholders until CAD, BOM, and vendor data replace them"
+    )
     print("  battery mass uses pack-level gravimetric density as a screening range")
     print("formulas:")
     print("  battery_mass_g = battery_wh / Wh_per_kg * 1000")
@@ -78,11 +80,15 @@ def main() -> int:
         print(f"    battery_mass_g: {battery_mass_g:.1f}")
         print(f"    total_mass_g: {total_mass_g:.1f}")
         print(f"    margin_vs_target_g: {margin_g:.1f}")
-        print(f"    target_status: {'within target' if margin_g >= 0 else 'over target'}")
+        print(
+            f"    target_status: {'within target' if margin_g >= 0 else 'over target'}"
+        )
 
     print("confidence: low")
     print("basis: estimated")
-    print("primary blocker: CAD-derived part masses, vendor component masses, battery packaging, and thermal-module design")
+    print(
+        "primary blocker: CAD-derived part masses, vendor component masses, battery packaging, and thermal-module design"
+    )
     return 0
 
 

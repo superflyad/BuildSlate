@@ -98,19 +98,27 @@ def build_engineering_intelligence() -> EngineeringIntelligence:
     thermal = compare_v1_to_v1r()
     v1r_profile = _load_yaml(V1R_PROFILE_PATH)
 
-    recovery_status = "SUFFICIENT" if recovery_plan.recommendation_is_sufficient else "INSUFFICIENT"
+    recovery_status = (
+        "SUFFICIENT" if recovery_plan.recommendation_is_sufficient else "INSUFFICIENT"
+    )
     return EngineeringIntelligence(
         v1_gate_decision=v1_gate.decision.value,
         v1r_gate_decision=v1r_gate.decision.value,
         recovery_path=_scenario_label(recovery_plan.recommendation.scenario_ids),
         recovery_status=recovery_status,
         thermal_decision=thermal.decision.value,
-        v1_volume_allocation_percent=float(v1_gate.volume_budget["allocation_percentage"]),
-        v1r_volume_allocation_percent=float(v1r_gate.volume_budget["allocation_percentage"]),
+        v1_volume_allocation_percent=float(
+            v1_gate.volume_budget["allocation_percentage"]
+        ),
+        v1r_volume_allocation_percent=float(
+            v1r_gate.volume_budget["allocation_percentage"]
+        ),
         v1_thickness_mm=float(v1_gate.targets["thickness_mm"]),
         v1r_thickness_mm=float(v1r_gate.targets["thickness_mm"]),
         v1_thickness_consumed_percent=float(v1_gate.thickness_budget.consumed_percent),
-        v1r_thickness_consumed_percent=float(v1r_gate.thickness_budget.consumed_percent),
+        v1r_thickness_consumed_percent=float(
+            v1r_gate.thickness_budget.consumed_percent
+        ),
         v1r_profile=v1r_profile,
         source_reports=SOURCE_REPORTS,
     )

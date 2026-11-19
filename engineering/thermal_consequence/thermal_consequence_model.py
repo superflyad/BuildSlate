@@ -118,7 +118,9 @@ def _profile_identity(gate_result: PhysicalFeasibilityResult) -> tuple[str, str,
     )
 
 
-def _profile_value(profile: dict[str, Any], section: str, key: str, default: float) -> float:
+def _profile_value(
+    profile: dict[str, Any], section: str, key: str, default: float
+) -> float:
     value = profile.get(section, {}).get(key, default)
     return float(value)
 
@@ -130,7 +132,9 @@ def _battery_component_volume_mm3(gate_result: PhysicalFeasibilityResult) -> flo
     return 0.0
 
 
-def _battery_density_wh_per_l(capacity_mah: float, voltage_v: float, volume_mm3: float) -> float:
+def _battery_density_wh_per_l(
+    capacity_mah: float, voltage_v: float, volume_mm3: float
+) -> float:
     if volume_mm3 <= 0.0:
         return 0.0
     energy_wh = capacity_mah * voltage_v / 1000.0
@@ -151,9 +155,15 @@ def _screen_profile(profile_path: Path | None) -> ThermalProfileScreen:
     geometry = profile.get("geometry", {})
     length_mm = float(geometry.get("length_mm", 180.0))
     width_mm = float(geometry.get("width_mm", 95.0))
-    thickness_mm = float(geometry.get("thickness_mm", gate_result.targets["thickness_mm"]))
+    thickness_mm = float(
+        geometry.get("thickness_mm", gate_result.targets["thickness_mm"])
+    )
     thermal = profile.get("thermal", {})
-    sustained_w = float(thermal.get("sustained_w", profile.get("compute", {}).get("sustained_power_w", 28.0)))
+    sustained_w = float(
+        thermal.get(
+            "sustained_w", profile.get("compute", {}).get("sustained_power_w", 28.0)
+        )
+    )
 
     calculator = Calculator()
     inputs = {
@@ -167,7 +177,9 @@ def _screen_profile(profile_path: Path | None) -> ThermalProfileScreen:
     heat_density_w_cm3 = calculator.compute("thermal.heat_density_w_cm3", inputs)
     heat_flux_w_cm2 = calculator.compute("thermal.heat_flux_w_cm2", inputs)
 
-    battery_capacity_mah = _profile_value(profile, "battery", "capacity_mah", gate_result.targets["battery_capacity_mah"])
+    battery_capacity_mah = _profile_value(
+        profile, "battery", "capacity_mah", gate_result.targets["battery_capacity_mah"]
+    )
     battery_voltage_v = _profile_value(profile, "battery", "nominal_voltage_v", 3.85)
     battery_volume_mm3 = _battery_component_volume_mm3(gate_result)
 
@@ -176,23 +188,35 @@ def _screen_profile(profile_path: Path | None) -> ThermalProfileScreen:
         profile_name=profile_name,
         profile_label=profile_label,
         gate_decision=gate_result.decision.value,
-        volume_allocation_percent=float(gate_result.volume_budget["allocation_percentage"]),
+        volume_allocation_percent=float(
+            gate_result.volume_budget["allocation_percentage"]
+        ),
         thickness_consumed_percent=float(gate_result.thickness_budget.consumed_percent),
         thickness_budget_mm=float(gate_result.thickness_budget.budget_mm),
         thickness_stackup_mm=float(gate_result.thickness_budget.total_thickness_mm),
         thickness_margin_mm=float(gate_result.thickness_budget.remaining_margin_mm),
-        usable_internal_volume_mm3=float(gate_result.volume_budget["usable_volume_mm3"]),
-        allocated_component_volume_mm3=float(gate_result.volume_budget["total_allocated_mm3"]),
+        usable_internal_volume_mm3=float(
+            gate_result.volume_budget["usable_volume_mm3"]
+        ),
+        allocated_component_volume_mm3=float(
+            gate_result.volume_budget["total_allocated_mm3"]
+        ),
         external_volume_cm3=external_volume_cm3,
         external_surface_area_cm2=external_surface_area_cm2,
         thickness_mm=thickness_mm,
-        sustained_compute_w=_profile_value(profile, "compute", "sustained_power_w", sustained_w),
+        sustained_compute_w=_profile_value(
+            profile, "compute", "sustained_power_w", sustained_w
+        ),
         peak_compute_w=_profile_value(profile, "compute", "peak_power_w", 45.0),
-        npu_tops=_profile_value(profile, "compute", "npu_tops", gate_result.targets["npu_tops"]),
+        npu_tops=_profile_value(
+            profile, "compute", "npu_tops", gate_result.targets["npu_tops"]
+        ),
         battery_capacity_mah=battery_capacity_mah,
         battery_nominal_voltage_v=battery_voltage_v,
         battery_physical_volume_mm3=battery_volume_mm3,
-        battery_recovery_volume_delta_mm3=float(profile.get("battery", {}).get("recovery_volume_delta_mm3", 0.0)),
+        battery_recovery_volume_delta_mm3=float(
+            profile.get("battery", {}).get("recovery_volume_delta_mm3", 0.0)
+        ),
         battery_required_density_wh_per_l=_battery_density_wh_per_l(
             battery_capacity_mah,
             battery_voltage_v,
@@ -200,7 +224,11 @@ def _screen_profile(profile_path: Path | None) -> ThermalProfileScreen:
         ),
         heat_density_w_cm3=heat_density_w_cm3,
         heat_flux_w_cm2=heat_flux_w_cm2,
-        cooling_strategy=str(profile.get("component_assumptions", {}).get("cooling_strategy", "not specified")),
+        cooling_strategy=str(
+            profile.get("component_assumptions", {}).get(
+                "cooling_strategy", "not specified"
+            )
+        ),
     )
 
 
@@ -214,8 +242,12 @@ def _classify_decision(
     )
     heat_density_decreased = recovery.heat_density_w_cm3 < baseline.heat_density_w_cm3
     heat_flux_decreased = recovery.heat_flux_w_cm2 <= baseline.heat_flux_w_cm2
-    thickness_margin_improved = recovery.thickness_margin_mm > baseline.thickness_margin_mm
-    battery_volume_reduced = recovery.battery_physical_volume_mm3 < baseline.battery_physical_volume_mm3
+    thickness_margin_improved = (
+        recovery.thickness_margin_mm > baseline.thickness_margin_mm
+    )
+    battery_volume_reduced = (
+        recovery.battery_physical_volume_mm3 < baseline.battery_physical_volume_mm3
+    )
 
     basis = [
         "Increased thickness with unchanged compute target can improve spreading volume, but does not prove lower skin temperature.",
@@ -227,24 +259,36 @@ def _classify_decision(
             "Heat density decreases and thickness margin improves, so the screening-level posture is improved before validation."
         )
         if heat_flux_decreased:
-            basis.append("Estimated heat flux also decreases slightly because external surface area increases.")
+            basis.append(
+                "Estimated heat flux also decreases slightly because external surface area increases."
+            )
         if battery_volume_reduced:
-            basis.append("Battery-volume reduction remains a major unresolved tradeoff rather than a validated thermal benefit.")
+            basis.append(
+                "Battery-volume reduction remains a major unresolved tradeoff rather than a validated thermal benefit."
+            )
         return (
             ThermalPostureDecision.THERMAL_POSTURE_IMPROVED,
             SkinTemperatureRiskDirection.IMPROVED,
             tuple(basis),
         )
 
-    if recovery.heat_density_w_cm3 > baseline.heat_density_w_cm3 or recovery.heat_flux_w_cm2 > baseline.heat_flux_w_cm2:
-        basis.append("Estimated heat density or heat flux increases from the baseline profile.")
+    if (
+        recovery.heat_density_w_cm3 > baseline.heat_density_w_cm3
+        or recovery.heat_flux_w_cm2 > baseline.heat_flux_w_cm2
+    ):
+        basis.append(
+            "Estimated heat density or heat flux increases from the baseline profile."
+        )
         return (
             ThermalPostureDecision.THERMAL_POSTURE_DEGRADED,
             SkinTemperatureRiskDirection.DEGRADED,
             tuple(basis),
         )
 
-    if recovery.heat_density_w_cm3 == baseline.heat_density_w_cm3 and recovery.heat_flux_w_cm2 == baseline.heat_flux_w_cm2:
+    if (
+        recovery.heat_density_w_cm3 == baseline.heat_density_w_cm3
+        and recovery.heat_flux_w_cm2 == baseline.heat_flux_w_cm2
+    ):
         basis.append("Estimated heat density and heat flux do not change.")
         return (
             ThermalPostureDecision.THERMAL_POSTURE_UNCHANGED,
@@ -252,7 +296,9 @@ def _classify_decision(
             tuple(basis),
         )
 
-    basis.append("Available data is insufficient to assign an improved or degraded thermal posture.")
+    basis.append(
+        "Available data is insufficient to assign an improved or degraded thermal posture."
+    )
     return (
         ThermalPostureDecision.THERMAL_POSTURE_UNKNOWN,
         SkinTemperatureRiskDirection.UNKNOWN,
@@ -262,7 +308,9 @@ def _classify_decision(
 
 def compare_v1_to_v1r() -> ThermalConsequenceComparison:
     """Build the Slate Pocket v1 vs v1R thermal consequence comparison."""
-    baseline = _screen_profile(DEFAULT_PROFILE_PATH if DEFAULT_PROFILE_PATH.exists() else V1_PROFILE_PATH)
+    baseline = _screen_profile(
+        DEFAULT_PROFILE_PATH if DEFAULT_PROFILE_PATH.exists() else V1_PROFILE_PATH
+    )
     recovery = _screen_profile(V1R_PROFILE_PATH)
     decision, skin_direction, decision_basis = _classify_decision(baseline, recovery)
     capacity_if_same_density_mah = baseline.battery_capacity_mah
@@ -274,17 +322,24 @@ def compare_v1_to_v1r() -> ThermalConsequenceComparison:
     return ThermalConsequenceComparison(
         baseline=baseline,
         recovery=recovery,
-        internal_volume_change_mm3=recovery.usable_internal_volume_mm3 - baseline.usable_internal_volume_mm3,
+        internal_volume_change_mm3=recovery.usable_internal_volume_mm3
+        - baseline.usable_internal_volume_mm3,
         internal_volume_change_percent=_percent_change(
             recovery.usable_internal_volume_mm3,
             baseline.usable_internal_volume_mm3,
         ),
         thickness_change_mm=recovery.thickness_mm - baseline.thickness_mm,
-        heat_density_change_w_cm3=recovery.heat_density_w_cm3 - baseline.heat_density_w_cm3,
-        heat_density_change_percent=_percent_change(recovery.heat_density_w_cm3, baseline.heat_density_w_cm3),
+        heat_density_change_w_cm3=recovery.heat_density_w_cm3
+        - baseline.heat_density_w_cm3,
+        heat_density_change_percent=_percent_change(
+            recovery.heat_density_w_cm3, baseline.heat_density_w_cm3
+        ),
         heat_flux_change_w_cm2=recovery.heat_flux_w_cm2 - baseline.heat_flux_w_cm2,
-        heat_flux_change_percent=_percent_change(recovery.heat_flux_w_cm2, baseline.heat_flux_w_cm2),
-        battery_volume_change_mm3=recovery.battery_physical_volume_mm3 - baseline.battery_physical_volume_mm3,
+        heat_flux_change_percent=_percent_change(
+            recovery.heat_flux_w_cm2, baseline.heat_flux_w_cm2
+        ),
+        battery_volume_change_mm3=recovery.battery_physical_volume_mm3
+        - baseline.battery_physical_volume_mm3,
         battery_volume_change_percent=_percent_change(
             recovery.battery_physical_volume_mm3,
             baseline.battery_physical_volume_mm3,

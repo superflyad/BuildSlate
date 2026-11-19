@@ -14,7 +14,9 @@ from typing import Any
 try:
     import yaml
 except ImportError as exc:  # pragma: no cover - dependency guidance path
-    raise SystemExit("PyYAML is required. Install dependencies with: pip install -r requirements.txt") from exc
+    raise SystemExit(
+        "PyYAML is required. Install dependencies with: pip install -r requirements.txt"
+    ) from exc
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_PROFILE = REPO_ROOT / "configs" / "devices" / "slate-pocket-v1.yaml"
@@ -101,8 +103,16 @@ class ModelResult:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--profile", default=str(DEFAULT_PROFILE.relative_to(REPO_ROOT)), help="Device profile YAML path")
-    parser.add_argument("--output", default=str(DEFAULT_OUTPUT.relative_to(REPO_ROOT)), help="Report output path")
+    parser.add_argument(
+        "--profile",
+        default=str(DEFAULT_PROFILE.relative_to(REPO_ROOT)),
+        help="Device profile YAML path",
+    )
+    parser.add_argument(
+        "--output",
+        default=str(DEFAULT_OUTPUT.relative_to(REPO_ROOT)),
+        help="Report output path",
+    )
     return parser.parse_args()
 
 
@@ -141,7 +151,9 @@ def require_path(profile: dict[str, Any], section_name: str, field_name: str) ->
 
 
 def validate_required_sections(profile: dict[str, Any]) -> None:
-    missing = [section for section in REQUIRED_TOP_LEVEL_SECTIONS if section not in profile]
+    missing = [
+        section for section in REQUIRED_TOP_LEVEL_SECTIONS if section not in profile
+    ]
     if missing:
         raise ValueError(f"missing required top-level sections: {', '.join(missing)}")
     for section in REQUIRED_TOP_LEVEL_SECTIONS:
@@ -154,14 +166,22 @@ def value(profile: dict[str, Any], section_name: str, field_name: str) -> str:
 
 
 def build_model_commands(profile: dict[str, Any]) -> list[ModelCommand]:
-    battery_wh = float(require_path(profile, "battery", "capacity_mah")) / 1000.0 * float(
-        require_path(profile, "battery", "nominal_voltage_v")
+    battery_wh = (
+        float(require_path(profile, "battery", "capacity_mah"))
+        / 1000.0
+        * float(require_path(profile, "battery", "nominal_voltage_v"))
     )
 
     return [
         ModelCommand("validation", "Spec validation", "validation/validate_specs.py"),
-        ModelCommand("validation", "Source registry validation", "validation/validate_source_registry.py"),
-        ModelCommand("validation", "Provenance validation", "validation/validate_provenance.py"),
+        ModelCommand(
+            "validation",
+            "Source registry validation",
+            "validation/validate_source_registry.py",
+        ),
+        ModelCommand(
+            "validation", "Provenance validation", "validation/validate_provenance.py"
+        ),
         ModelCommand(
             "battery",
             "Battery energy model",
@@ -375,7 +395,13 @@ def run_model_command(command: ModelCommand) -> ModelResult:
     if not script_path.exists():
         output = f"FAIL: required path missing for {text}"
         print(output)
-        return ModelResult(command=command, status="failed", command_text=text, returncode=1, output=output)
+        return ModelResult(
+            command=command,
+            status="failed",
+            command_text=text,
+            returncode=1,
+            output=output,
+        )
 
     completed = subprocess.run(
         [sys.executable, str(script_path), *command.args],
@@ -384,10 +410,18 @@ def run_model_command(command: ModelCommand) -> ModelResult:
         text=True,
         check=False,
     )
-    output = "\n".join(part.rstrip() for part in (completed.stdout, completed.stderr) if part.strip())
+    output = "\n".join(
+        part.rstrip() for part in (completed.stdout, completed.stderr) if part.strip()
+    )
     status = "passed" if completed.returncode == 0 else "failed"
     print(f"{status.upper()}: {text}")
-    return ModelResult(command=command, status=status, command_text=text, returncode=completed.returncode, output=output)
+    return ModelResult(
+        command=command,
+        status=status,
+        command_text=text,
+        returncode=completed.returncode,
+        output=output,
+    )
 
 
 def render_scalar_mapping(mapping: dict[str, Any], indent: str = "  ") -> list[str]:
@@ -417,15 +451,25 @@ def extract_warning_lines(results: list[ModelResult]) -> list[str]:
 
 
 def render_result(result: ModelResult) -> str:
-    lines = [f"### {result.command.title}", f"Command: {result.command_text}", f"Status: {result.status.upper()} (exit code {result.returncode})"]
-    lines.append(result.output.rstrip() if result.output.strip() else "No output captured.")
+    lines = [
+        f"### {result.command.title}",
+        f"Command: {result.command_text}",
+        f"Status: {result.status.upper()} (exit code {result.returncode})",
+    ]
+    lines.append(
+        result.output.rstrip() if result.output.strip() else "No output captured."
+    )
     return "\n".join(lines)
 
 
-def render_report(profile: dict[str, Any], profile_path: Path, results: list[ModelResult]) -> str:
+def render_report(
+    profile: dict[str, Any], profile_path: Path, results: list[ModelResult]
+) -> str:
     identity = require_mapping(profile, "identity")
     profile_sha256 = hashlib.sha256(profile_path.read_bytes()).hexdigest()
-    by_section: dict[str, list[ModelResult]] = {section: [] for section in REPORT_SECTIONS}
+    by_section: dict[str, list[ModelResult]] = {
+        section: [] for section in REPORT_SECTIONS
+    }
     for result in results:
         by_section.setdefault(result.command.section, []).append(result)
 
@@ -460,7 +504,9 @@ def render_report(profile: dict[str, Any], profile_path: Path, results: list[Mod
 
     for section_name in SUMMARY_SECTIONS:
         report.append(f"- {section_name}:")
-        report.extend(render_scalar_mapping(require_mapping(profile, section_name), indent="    "))
+        report.extend(
+            render_scalar_mapping(require_mapping(profile, section_name), indent="    ")
+        )
     report.append("")
 
     if profile.get("profile_type") == "recovery":
@@ -487,19 +533,30 @@ def render_report(profile: dict[str, Any], profile_path: Path, results: list[Mod
     report.append("Warnings and Blockers:")
     if failed:
         report.append("Failed commands:")
-        report.extend(f"- {result.command_text} (exit code {result.returncode})" for result in failed)
+        report.extend(
+            f"- {result.command_text} (exit code {result.returncode})"
+            for result in failed
+        )
     if warning_lines:
         report.append("Warning/risk lines:")
         report.extend(f"- {line}" for line in warning_lines)
     if not failed and not warning_lines:
-        report.append("No warning or blocker keywords were detected in captured model output.")
+        report.append(
+            "No warning or blocker keywords were detected in captured model output."
+        )
     report.append("")
 
     report.append("Conclusion:")
-    report.append("- This profile report is a screening evaluation, not production validation.")
+    report.append(
+        "- This profile report is a screening evaluation, not production validation."
+    )
     report.append("- No optimization or automatic target adjustment was performed.")
-    report.append("- Failures and warnings are engineering information, not defects in the profile system.")
-    report.append("- Manufacturability, safety, certification, and supplier feasibility remain unproven until validated with detailed design data and prototypes.")
+    report.append(
+        "- Failures and warnings are engineering information, not defects in the profile system."
+    )
+    report.append(
+        "- Manufacturability, safety, certification, and supplier feasibility remain unproven until validated with detailed design data and prototypes."
+    )
 
     return "\n".join(report) + "\n"
 

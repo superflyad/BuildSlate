@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """First-pass reliability hotspot identification for thin AI-device architectures."""
+
 from __future__ import annotations
 
 import argparse
@@ -39,36 +40,59 @@ def main() -> int:
     }
 
     if args.sustained_power_w >= 20:
-        hotspots["thermal hotspot zones"].append("SoC/NPU, memory packages, vapor chamber interface, and exterior skin above compute region")
+        hotspots["thermal hotspot zones"].append(
+            "SoC/NPU, memory packages, vapor chamber interface, and exterior skin above compute region"
+        )
     if args.wireless_charging_w >= 30:
-        hotspots["thermal hotspot zones"].append("wireless charging coil, ferrite stack, rear glass, and adjacent battery face")
+        hotspots["thermal hotspot zones"].append(
+            "wireless charging coil, ferrite stack, rear glass, and adjacent battery face"
+        )
     if args.device_thickness_mm <= 9.0:
-        hotspots["structural weak zones"].append("thin midframe rails, antenna window breaks, button cutouts, and large glass spans")
+        hotspots["structural weak zones"].append(
+            "thin midframe rails, antenna window breaks, button cutouts, and large glass spans"
+        )
     if args.battery_thickness_mm / args.device_thickness_mm >= 0.45:
-        hotspots["battery pressure zones"].append("battery-to-display and battery-to-rear-housing clearance stack")
-    hotspots["connector stress zones"].append("flex tails crossing hinge-like bend regions, board-to-board connectors, and charging port anchors")
+        hotspots["battery pressure zones"].append(
+            "battery-to-display and battery-to-rear-housing clearance stack"
+        )
+    hotspots["connector stress zones"].append(
+        "flex tails crossing hinge-like bend regions, board-to-board connectors, and charging port anchors"
+    )
     if args.camera_module_depth_mm / args.device_thickness_mm >= 0.50:
-        hotspots["camera island stress zones"].append("camera bump perimeter, lens stack adhesive, OIS module mounts, and local frame step")
+        hotspots["camera island stress zones"].append(
+            "camera bump perimeter, lens stack adhesive, OIS module mounts, and local frame step"
+        )
 
     print("Reliability hotspot screening model")
-    print_section("inputs", [
-        f"sustained_power_w: {args.sustained_power_w:.0f}",
-        f"device_thickness_mm: {args.device_thickness_mm:.1f}",
-        f"battery_thickness_mm: {args.battery_thickness_mm:.1f}",
-        f"camera_module_depth_mm: {args.camera_module_depth_mm:.1f}",
-        f"wireless_charging_w: {args.wireless_charging_w:.0f}",
-    ])
-    print_section("assumptions", [
-        "hotspots are qualitative screens from concentration of heat, load paths, z-height, or repeated assembly stress",
-        "drop, vibration, thermal cycling, corrosion, ingress, and connector life are not quantified",
-    ])
+    print_section(
+        "inputs",
+        [
+            f"sustained_power_w: {args.sustained_power_w:.0f}",
+            f"device_thickness_mm: {args.device_thickness_mm:.1f}",
+            f"battery_thickness_mm: {args.battery_thickness_mm:.1f}",
+            f"camera_module_depth_mm: {args.camera_module_depth_mm:.1f}",
+            f"wireless_charging_w: {args.wireless_charging_w:.0f}",
+        ],
+    )
+    print_section(
+        "assumptions",
+        [
+            "hotspots are qualitative screens from concentration of heat, load paths, z-height, or repeated assembly stress",
+            "drop, vibration, thermal cycling, corrosion, ingress, and connector life are not quantified",
+        ],
+    )
     for category, rows in hotspots.items():
         print_section(category, rows or ["not triggered by default thresholds"])
-    print_section("warnings", [
-        "thermal, structural, battery, connector, and camera concentrations should be reviewed together, not independently",
-        "hotspot list is not a durability prediction or qualification result",
-    ])
-    print("confidence: low; physical prototypes, FEA, thermal tests, and reliability qualification are required")
+    print_section(
+        "warnings",
+        [
+            "thermal, structural, battery, connector, and camera concentrations should be reviewed together, not independently",
+            "hotspot list is not a durability prediction or qualification result",
+        ],
+    )
+    print(
+        "confidence: low; physical prototypes, FEA, thermal tests, and reliability qualification are required"
+    )
     print("basis: first-pass reliability-critical region screen")
     return 0
 

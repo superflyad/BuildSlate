@@ -5,7 +5,12 @@ from __future__ import annotations
 
 import argparse
 
-from physical_feasibility_gate import REPO_ROOT, SCREENING_CAVEAT, PhysicalFeasibilityResult, evaluate_gate
+from physical_feasibility_gate import (
+    REPO_ROOT,
+    SCREENING_CAVEAT,
+    PhysicalFeasibilityResult,
+    evaluate_gate,
+)
 
 REPORT_PATH = REPO_ROOT / "reports" / "slate-pocket-physical-feasibility-gate.txt"
 
@@ -155,8 +160,15 @@ def build_report() -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--profile", help="Optional device profile YAML path for profile-specific gate inputs")
-    parser.add_argument("--output", default=str(REPORT_PATH.relative_to(REPO_ROOT)), help="Report output path")
+    parser.add_argument(
+        "--profile",
+        help="Optional device profile YAML path for profile-specific gate inputs",
+    )
+    parser.add_argument(
+        "--output",
+        default=str(REPORT_PATH.relative_to(REPO_ROOT)),
+        help="Report output path",
+    )
     return parser.parse_args()
 
 

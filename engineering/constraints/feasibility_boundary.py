@@ -41,11 +41,22 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", required=True, help="Device profile YAML path")
     parser.add_argument("--vary", required=True, help="Dot-path parameter to mutate")
-    parser.add_argument("--min", required=True, type=float, dest="min_value", help="Minimum scan value")
-    parser.add_argument("--max", required=True, type=float, dest="max_value", help="Maximum scan value")
+    parser.add_argument(
+        "--min", required=True, type=float, dest="min_value", help="Minimum scan value"
+    )
+    parser.add_argument(
+        "--max", required=True, type=float, dest="max_value", help="Maximum scan value"
+    )
     parser.add_argument("--step", required=True, type=float, help="Positive scan step")
-    parser.add_argument("--constraint", required=True, choices=sorted(SUPPORTED_CONSTRAINTS))
-    parser.add_argument("--target-runtime-h", type=float, default=1.0, help="Target runtime for runtime_minimum")
+    parser.add_argument(
+        "--constraint", required=True, choices=sorted(SUPPORTED_CONSTRAINTS)
+    )
+    parser.add_argument(
+        "--target-runtime-h",
+        type=float,
+        default=1.0,
+        help="Target runtime for runtime_minimum",
+    )
     parser.add_argument(
         "--output",
         default=str(DEFAULT_OUTPUT.relative_to(REPO_ROOT)),
@@ -85,9 +96,16 @@ def scan_values(min_value: float, max_value: float, step: float) -> list[float]:
 def estimated_mass_g(profile: dict[str, Any], base_profile: dict[str, Any]) -> float:
     mass_targets = sweep_runner.require_mapping(profile, "mass_targets")
     base_mass_targets = sweep_runner.require_mapping(base_profile, "mass_targets")
-    base_estimate = float(mass_targets.get("engineering_estimate_g", base_mass_targets.get("engineering_estimate_g", 0.0)))
+    base_estimate = float(
+        mass_targets.get(
+            "engineering_estimate_g",
+            base_mass_targets.get("engineering_estimate_g", 0.0),
+        )
+    )
     if base_estimate <= 0:
-        raise ValueError("mass_targets.engineering_estimate_g is required for mass constraint")
+        raise ValueError(
+            "mass_targets.engineering_estimate_g is required for mass constraint"
+        )
 
     # Keep the profile estimate as the anchor, but adjust for battery-capacity changes so
     # capacity boundary checks reflect the largest mass driver available in the profile.
@@ -103,56 +121,84 @@ def evaluate_constraint(
     target_runtime_h: float,
 ) -> tuple[bool, str, dict[str, str]]:
     if constraint == "zone_stackup_pass":
-        margin = sweep_runner.zone_stackup_margin_mm(sweep_runner.numeric(profile, "geometry", "thickness_mm"))
-        return margin >= 0.0, f"worst zone margin {margin:.2f} mm", {"zone_margin_mm": f"{margin:.2f}"}
+        margin = sweep_runner.zone_stackup_margin_mm(
+            sweep_runner.numeric(profile, "geometry", "thickness_mm")
+        )
+        return (
+            margin >= 0.0,
+            f"worst zone margin {margin:.2f} mm",
+            {"zone_margin_mm": f"{margin:.2f}"},
+        )
 
     if constraint == "thermal_risk_not_extreme":
         heat_w = sweep_runner.numeric(profile, "compute", "sustained_power_w")
         thermal = sweep_runner.thermal_metrics(profile, sustained_w=heat_w)
         risk = str(thermal["thermal_risk"])
-        return risk != "extreme", f"thermal risk {risk}", {
-            "thermal_risk": risk,
-            "heat_density_w_cm3": f"{float(thermal['heat_density_w_cm3']):.3f}",
-        }
+        return (
+            risk != "extreme",
+            f"thermal risk {risk}",
+            {
+                "thermal_risk": risk,
+                "heat_density_w_cm3": f"{float(thermal['heat_density_w_cm3']):.3f}",
+            },
+        )
 
     if constraint == "skin_temp_pass":
         ambient = sweep_runner.ambient_metrics(profile)
         estimated_skin = float(ambient["estimated_skin_c"])
         max_skin = sweep_runner.numeric(profile, "thermal", "max_skin_c")
-        return estimated_skin <= max_skin, f"skin {estimated_skin:.1f} C <= max {max_skin:.1f} C", {
-            "estimated_skin_c": f"{estimated_skin:.1f}",
-            "max_skin_c": f"{max_skin:.1f}",
-            "skin_margin_c": f"{float(ambient['skin_margin_c']):.1f}",
-        }
+        return (
+            estimated_skin <= max_skin,
+            f"skin {estimated_skin:.1f} C <= max {max_skin:.1f} C",
+            {
+                "estimated_skin_c": f"{estimated_skin:.1f}",
+                "max_skin_c": f"{max_skin:.1f}",
+                "skin_margin_c": f"{float(ambient['skin_margin_c']):.1f}",
+            },
+        )
 
     if constraint == "runtime_minimum":
         runtime = sweep_runner.battery_metrics(profile)["battery_runtime_h"]
-        return runtime >= target_runtime_h, f"runtime {runtime:.2f} h >= target {target_runtime_h:.2f} h", {
-            "battery_runtime_h": f"{runtime:.2f}",
-            "target_runtime_h": f"{target_runtime_h:.2f}",
-        }
+        return (
+            runtime >= target_runtime_h,
+            f"runtime {runtime:.2f} h >= target {target_runtime_h:.2f} h",
+            {
+                "battery_runtime_h": f"{runtime:.2f}",
+                "target_runtime_h": f"{target_runtime_h:.2f}",
+            },
+        )
 
     if constraint == "mass_within_engineering_range":
         mass_targets = sweep_runner.require_mapping(profile, "mass_targets")
         acceptable_range = mass_targets.get("acceptable_range_g")
         if not isinstance(acceptable_range, dict) or "max" not in acceptable_range:
-            raise ValueError("mass_targets.acceptable_range_g.max is required for mass constraint")
+            raise ValueError(
+                "mass_targets.acceptable_range_g.max is required for mass constraint"
+            )
         mass_g = estimated_mass_g(profile, base_profile)
         max_mass_g = float(acceptable_range["max"])
-        return mass_g <= max_mass_g, f"estimated mass {mass_g:.1f} g <= max {max_mass_g:.1f} g", {
-            "estimated_mass_g": f"{mass_g:.1f}",
-            "max_mass_g": f"{max_mass_g:.1f}",
-        }
+        return (
+            mass_g <= max_mass_g,
+            f"estimated mass {mass_g:.1f} g <= max {max_mass_g:.1f} g",
+            {
+                "estimated_mass_g": f"{mass_g:.1f}",
+                "max_mass_g": f"{max_mass_g:.1f}",
+            },
+        )
 
     if constraint == "memory_runtime_pass":
         memory = sweep_runner.memory_metrics(profile)
         used = float(memory["runtime_used_gb"])
         available = sweep_runner.numeric(profile, "memory", "capacity_gb")
-        return used <= available, f"runtime memory {used:.1f} GB <= available {available:.1f} GB", {
-            "runtime_used_gb": f"{used:.1f}",
-            "available_memory_gb": f"{available:.1f}",
-            "runtime_remaining_gb": f"{float(memory['runtime_remaining_gb']):.1f}",
-        }
+        return (
+            used <= available,
+            f"runtime memory {used:.1f} GB <= available {available:.1f} GB",
+            {
+                "runtime_used_gb": f"{used:.1f}",
+                "available_memory_gb": f"{available:.1f}",
+                "runtime_remaining_gb": f"{float(memory['runtime_remaining_gb']):.1f}",
+            },
+        )
 
     raise ValueError(f"unsupported constraint: {constraint}")
 
@@ -175,15 +221,31 @@ def run_boundary(
         if isinstance(reference_value, bool):
             value = sweep_runner.coerce_value(str(raw_value), reference_value)
         elif isinstance(reference_value, (int, float)):
-            value = int(raw_value) if float(raw_value).is_integer() else float(raw_value)
+            value = (
+                int(raw_value) if float(raw_value).is_integer() else float(raw_value)
+            )
         else:
             value = sweep_runner.coerce_value(str(raw_value), reference_value)
         sweep_runner.set_path(mutated_profile, parameter_path, value)
-        sweep_row = sweep_runner.evaluate_profile(mutated_profile, parameter_path, value)
-        passed, reason, constraint_outputs = evaluate_constraint(mutated_profile, base_profile, constraint, target_runtime_h)
+        sweep_row = sweep_runner.evaluate_profile(
+            mutated_profile, parameter_path, value
+        )
+        passed, reason, constraint_outputs = evaluate_constraint(
+            mutated_profile, base_profile, constraint, target_runtime_h
+        )
         outputs = {**sweep_row.outputs, **constraint_outputs}
-        warnings = list(dict.fromkeys(sweep_row.warnings if sweep_row.warnings else ["none"]))
-        rows.append(BoundaryRow(value=value, passed=passed, reason=reason, outputs=outputs, warnings=warnings))
+        warnings = list(
+            dict.fromkeys(sweep_row.warnings if sweep_row.warnings else ["none"])
+        )
+        rows.append(
+            BoundaryRow(
+                value=value,
+                passed=passed,
+                reason=reason,
+                outputs=outputs,
+                warnings=warnings,
+            )
+        )
     return base_profile, rows
 
 

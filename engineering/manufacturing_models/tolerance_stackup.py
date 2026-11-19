@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """First-pass tolerance stackup screening for thin device assemblies."""
+
 from __future__ import annotations
 
 import argparse
@@ -44,32 +45,47 @@ def main() -> int:
 
     warnings: list[str] = []
     if remaining_clearance_mm < 0.2:
-        warnings.append("remaining clearance is below 0.2 mm; tolerance stack should be reviewed before packaging claims")
+        warnings.append(
+            "remaining clearance is below 0.2 mm; tolerance stack should be reviewed before packaging claims"
+        )
     if worst_case_mm > args.target_clearance_mm:
         warnings.append("worst-case tolerance exceeds target clearance")
     if args.target_thickness_mm <= 9.0 and args.target_clearance_mm <= 0.4:
-        warnings.append("thin-device assembly risk: small z-height reserve amplifies every tolerance contributor")
+        warnings.append(
+            "thin-device assembly risk: small z-height reserve amplifies every tolerance contributor"
+        )
 
     print("Tolerance stackup screening model")
-    print_section("inputs", [
-        f"component_count: {args.component_count}",
-        f"avg_tolerance_mm: {args.avg_tolerance_mm:.2f}",
-        f"target_clearance_mm: {args.target_clearance_mm:.2f}",
-        f"target_thickness_mm: {args.target_thickness_mm:.1f}",
-    ])
-    print_section("formulas", [
-        "worst_case_mm = component_count * avg_tolerance_mm",
-        "rss_mm = sqrt(component_count) * avg_tolerance_mm",
-        "remaining_clearance_mm = target_clearance_mm - worst_case_mm",
-    ])
-    print_section("outputs", [
-        f"worst_case_tolerance_mm: {worst_case_mm:.2f}",
-        f"rss_tolerance_mm: {rss_mm:.2f}",
-        f"remaining_clearance_mm: {remaining_clearance_mm:.2f}",
-        f"screening_result: {'pass' if passes else 'fail'}",
-    ])
+    print_section(
+        "inputs",
+        [
+            f"component_count: {args.component_count}",
+            f"avg_tolerance_mm: {args.avg_tolerance_mm:.2f}",
+            f"target_clearance_mm: {args.target_clearance_mm:.2f}",
+            f"target_thickness_mm: {args.target_thickness_mm:.1f}",
+        ],
+    )
+    print_section(
+        "formulas",
+        [
+            "worst_case_mm = component_count * avg_tolerance_mm",
+            "rss_mm = sqrt(component_count) * avg_tolerance_mm",
+            "remaining_clearance_mm = target_clearance_mm - worst_case_mm",
+        ],
+    )
+    print_section(
+        "outputs",
+        [
+            f"worst_case_tolerance_mm: {worst_case_mm:.2f}",
+            f"rss_tolerance_mm: {rss_mm:.2f}",
+            f"remaining_clearance_mm: {remaining_clearance_mm:.2f}",
+            f"screening_result: {'pass' if passes else 'fail'}",
+        ],
+    )
     print_section("warnings", warnings or ["none"])
-    print("confidence: medium for arithmetic; low for real assembly without measured part distributions")
+    print(
+        "confidence: medium for arithmetic; low for real assembly without measured part distributions"
+    )
     print("basis: conservative first-order tolerance stackup screen")
     return 0
 

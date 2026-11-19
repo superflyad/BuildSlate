@@ -56,14 +56,22 @@ def component_from_entry(name: str, entry: dict[str, Any]) -> ComponentVolume:
 
 def calculate_volume_budget(registry: dict[str, Any]) -> dict[str, Any]:
     components_raw = registry["components"]
-    components = [component_from_entry(name, entry) for name, entry in components_raw.items()]
-    device = next(component for component in components if component.name == DEVICE_ENVELOPE_KEY)
-    allocated_components = [component for component in components if component.name != DEVICE_ENVELOPE_KEY]
+    components = [
+        component_from_entry(name, entry) for name, entry in components_raw.items()
+    ]
+    device = next(
+        component for component in components if component.name == DEVICE_ENVELOPE_KEY
+    )
+    allocated_components = [
+        component for component in components if component.name != DEVICE_ENVELOPE_KEY
+    ]
 
     external_volume_mm3 = device.total_volume_mm3
     usable_factor = float(registry["internal_usable_volume_factor"])
     usable_volume_mm3 = external_volume_mm3 * usable_factor
-    total_allocated_mm3 = sum(component.total_volume_mm3 for component in allocated_components)
+    total_allocated_mm3 = sum(
+        component.total_volume_mm3 for component in allocated_components
+    )
     remaining_mm3 = usable_volume_mm3 - total_allocated_mm3
     allocation_percentage = (total_allocated_mm3 / usable_volume_mm3) * 100.0
 

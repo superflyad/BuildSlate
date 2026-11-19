@@ -28,8 +28,16 @@ def build_report() -> str:
     blockers = _load(BLOCKER_PATH)["blockers"]
     profile = _load(PROFILE_PATH)
     packages = registry["packages"]
-    verified = [package_id for package_id, package in packages.items() if package["status"] == "verified"]
-    available = [package_id for package_id, package in packages.items() if package["status"] == "available"]
+    verified = [
+        package_id
+        for package_id, package in packages.items()
+        if package["status"] == "verified"
+    ]
+    available = [
+        package_id
+        for package_id, package in packages.items()
+        if package["status"] == "available"
+    ]
     modeled = [
         package_id
         for package_id, package in packages.items()
@@ -40,16 +48,38 @@ def build_report() -> str:
         for package_id, package in packages.items()
         if package["status"] == "planned" and int(package["phase"]) >= 3
     ]
-    nonverified = [package_id for package_id, package in packages.items() if package["status"] != "verified"]
+    nonverified = [
+        package_id
+        for package_id, package in packages.items()
+        if package["status"] != "verified"
+    ]
 
     integration = profile["integration_configuration"]
     rejected = (
-        ("512 GB memory first-build configuration", "unsupported by reviewed platform limits; 128 GB fallback modeled"),
-        ("4 TB internal storage first-build configuration", "unsupported by reviewed embedded packages; 1 TB internal reference modeled"),
-        ("100 TOPS sustained requirement", "headline TOPS does not substitute for measured workload performance per watt"),
-        ("50 W wireless charging in EVT0", "local stack exceeds envelope and certification path is unestablished"),
-        ("optional 5G in EVT0", "market, bands, operators, antenna topology, SAR, and certification scope are unset"),
-        ("100 W charging as an authorized EVT0 mode", "battery/charger limits and thermal evidence are absent; planning cap is 30 W input"),
+        (
+            "512 GB memory first-build configuration",
+            "unsupported by reviewed platform limits; 128 GB fallback modeled",
+        ),
+        (
+            "4 TB internal storage first-build configuration",
+            "unsupported by reviewed embedded packages; 1 TB internal reference modeled",
+        ),
+        (
+            "100 TOPS sustained requirement",
+            "headline TOPS does not substitute for measured workload performance per watt",
+        ),
+        (
+            "50 W wireless charging in EVT0",
+            "local stack exceeds envelope and certification path is unestablished",
+        ),
+        (
+            "optional 5G in EVT0",
+            "market, bands, operators, antenna topology, SAR, and certification scope are unset",
+        ),
+        (
+            "100 W charging as an authorized EVT0 mode",
+            "battery/charger limits and thermal evidence are absent; planning cap is 30 W input",
+        ),
     )
 
     lines = [
@@ -73,15 +103,33 @@ def build_report() -> str:
         "",
         f"Verified evidence ({len(verified)}):",
     ]
-    lines.extend(f"  - {package_id}: {packages[package_id]['title']}" for package_id in verified)
+    lines.extend(
+        f"  - {package_id}: {packages[package_id]['title']}" for package_id in verified
+    )
     lines.extend(["", f"Available public evidence ({len(available)}; not verified):"])
-    lines.extend(f"  - {package_id}: {packages[package_id]['title']}" for package_id in available)
-    lines.extend(["", f"Modeled Phase 2 planning evidence ({len(modeled)}; not verified):"])
-    lines.extend(f"  - {package_id}: {packages[package_id]['title']}" for package_id in modeled)
-    lines.extend(["", f"Prepared execution packages ({len(execution_prepared)}; no physical evidence):"])
-    lines.extend(f"  - {package_id}: {packages[package_id]['title']}" for package_id in execution_prepared)
+    lines.extend(
+        f"  - {package_id}: {packages[package_id]['title']}" for package_id in available
+    )
+    lines.extend(
+        ["", f"Modeled Phase 2 planning evidence ({len(modeled)}; not verified):"]
+    )
+    lines.extend(
+        f"  - {package_id}: {packages[package_id]['title']}" for package_id in modeled
+    )
+    lines.extend(
+        [
+            "",
+            f"Prepared execution packages ({len(execution_prepared)}; no physical evidence):",
+        ]
+    )
+    lines.extend(
+        f"  - {package_id}: {packages[package_id]['title']}"
+        for package_id in execution_prepared
+    )
 
-    lines.extend(["", f"Rejected, removed, or unsupported configurations ({len(rejected)}):"])
+    lines.extend(
+        ["", f"Rejected, removed, or unsupported configurations ({len(rejected)}):"]
+    )
     for item, reason in rejected:
         lines.append(f"  - {item}: {reason}")
 

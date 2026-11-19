@@ -12,7 +12,9 @@ try:
 except ImportError:  # pragma: no cover - package import path
     from engineering.core.calculator import Calculator, format_number, parse_set
 
-VARIABLE_TOKEN_RE = re.compile(r"\b[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)+\b")
+VARIABLE_TOKEN_RE = re.compile(
+    r"\b[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)+\b"
+)
 
 
 class ExplanationEngine:
@@ -21,7 +23,9 @@ class ExplanationEngine:
     def __init__(self) -> None:
         self.calculator = Calculator()
 
-    def explain(self, variable_id: str, known_values: dict[str, Any] | None = None) -> str:
+    def explain(
+        self, variable_id: str, known_values: dict[str, Any] | None = None
+    ) -> str:
         values = dict(known_values or {})
         value = self.calculator._compute(variable_id, values, stack=[])
         formula = self.calculator.graph.get_formula(variable_id)
@@ -51,7 +55,9 @@ class ExplanationEngine:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--set", action="append", default=[], help="Known input as variable=value")
+    parser.add_argument(
+        "--set", action="append", default=[], help="Known input as variable=value"
+    )
     parser.add_argument("--compute", required=True, help="Variable id to explain")
     return parser.parse_args()
 

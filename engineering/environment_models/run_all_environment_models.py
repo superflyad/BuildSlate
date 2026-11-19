@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Run all environmental operating condition models with default and stress-case inputs."""
+
 from __future__ import annotations
 
 import subprocess

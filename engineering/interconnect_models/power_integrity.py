@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """First-pass power integrity and transient droop risk screen."""
+
 from __future__ import annotations
 
 import argparse
@@ -27,38 +28,55 @@ def main() -> int:
     if droop_percent > 5.0:
         warnings.append("estimated voltage droop exceeds 5% of rail voltage")
     if args.transient_current_factor > 1.5:
-        warnings.append("transient current spikes require close VRM, capacitor, package, and workload-step review")
+        warnings.append(
+            "transient current spikes require close VRM, capacitor, package, and workload-step review"
+        )
     if transient_current_a > 75.0:
-        warnings.append("thin-device capacitor/VRM constraint risk is high at this transient current")
+        warnings.append(
+            "thin-device capacitor/VRM constraint risk is high at this transient current"
+        )
 
     print("Power integrity screening model")
-    print_section("assumptions", [
-        "peak power is applied to a low-voltage compute rail for worst-case current screening",
-        "PDN resistance is a lumped effective resistance placeholder",
-        "transient current factor approximates fast workload steps and simultaneous switching demand",
-        "inductance, capacitor ESR/ESL, control-loop response, package parasitics, and board layout are not modeled",
-    ])
-    print_section("formulas", [
-        "peak_current_A = peak_power_W / voltage_V",
-        "transient_current_A = peak_current_A * transient_current_factor",
-        "pdn_resistance_ohm = pdn_resistance_mohm / 1000",
-        "estimated_voltage_droop_V = transient_current_A * pdn_resistance_ohm",
-        "droop_percent = estimated_voltage_droop_V / voltage_V * 100",
-    ])
-    print_section("outputs", [
-        f"peak_power_w: {args.peak_power_w:.1f}",
-        f"voltage_v: {args.voltage_v:.2f}",
-        f"pdn_resistance_mohm: {args.pdn_resistance_mohm:.2f}",
-        f"transient_current_factor: {args.transient_current_factor:.1f}",
-        f"peak_current_a: {peak_current_a:.1f}",
-        f"transient_current_a: {transient_current_a:.1f}",
-        f"estimated_voltage_droop_v: {estimated_droop_v:.3f}",
-        f"droop_percent: {droop_percent:.1f}",
-    ])
+    print_section(
+        "assumptions",
+        [
+            "peak power is applied to a low-voltage compute rail for worst-case current screening",
+            "PDN resistance is a lumped effective resistance placeholder",
+            "transient current factor approximates fast workload steps and simultaneous switching demand",
+            "inductance, capacitor ESR/ESL, control-loop response, package parasitics, and board layout are not modeled",
+        ],
+    )
+    print_section(
+        "formulas",
+        [
+            "peak_current_A = peak_power_W / voltage_V",
+            "transient_current_A = peak_current_A * transient_current_factor",
+            "pdn_resistance_ohm = pdn_resistance_mohm / 1000",
+            "estimated_voltage_droop_V = transient_current_A * pdn_resistance_ohm",
+            "droop_percent = estimated_voltage_droop_V / voltage_V * 100",
+        ],
+    )
+    print_section(
+        "outputs",
+        [
+            f"peak_power_w: {args.peak_power_w:.1f}",
+            f"voltage_v: {args.voltage_v:.2f}",
+            f"pdn_resistance_mohm: {args.pdn_resistance_mohm:.2f}",
+            f"transient_current_factor: {args.transient_current_factor:.1f}",
+            f"peak_current_a: {peak_current_a:.1f}",
+            f"transient_current_a: {transient_current_a:.1f}",
+            f"estimated_voltage_droop_v: {estimated_droop_v:.3f}",
+            f"droop_percent: {droop_percent:.1f}",
+        ],
+    )
     print_section("warnings", warnings)
-    print("confidence: low; real power integrity depends on impedance versus frequency and layout")
+    print(
+        "confidence: low; real power integrity depends on impedance versus frequency and layout"
+    )
     print("basis: conservative Ohm-law transient droop screen for low-voltage AI rails")
-    print("primary blocker: transient current delivery with limited decoupling and VRM area in a thin device")
+    print(
+        "primary blocker: transient current delivery with limited decoupling and VRM area in a thin device"
+    )
     return 0
 
 

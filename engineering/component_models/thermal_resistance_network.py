@@ -33,7 +33,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--vapor-thickness-mm", type=positive_float, default=0.8)
     parser.add_argument("--vapor-k-effective-w-mk", type=positive_float, default=5000.0)
     parser.add_argument("--graphite-thickness-mm", type=positive_float, default=0.1)
-    parser.add_argument("--graphite-k-in-plane-w-mk", type=positive_float, default=900.0)
+    parser.add_argument(
+        "--graphite-k-in-plane-w-mk", type=positive_float, default=900.0
+    )
     parser.add_argument("--frame-thickness-mm", type=positive_float, default=0.8)
     parser.add_argument("--frame-k-w-mk", type=positive_float, default=170.0)
     parser.add_argument("--contact-resistance-cm2k-w", type=positive_float, default=1.0)
@@ -53,7 +55,12 @@ def main() -> int:
     skin_heat_flux_w_cm2 = args.heat_w / args.skin_area_cm2
 
     layers = [
-        ThermalLayer("TIM", args.tim_thickness_mm, args.tim_k_w_mk, "through-thickness interface layer"),
+        ThermalLayer(
+            "TIM",
+            args.tim_thickness_mm,
+            args.tim_k_w_mk,
+            "through-thickness interface layer",
+        ),
         ThermalLayer(
             "copper_vapor_chamber",
             args.vapor_thickness_mm,
@@ -66,7 +73,12 @@ def main() -> int:
             args.graphite_k_in_plane_w_mk,
             "anisotropic in-plane spreading approximation",
         ),
-        ThermalLayer("aluminum_magnesium_frame", args.frame_thickness_mm, args.frame_k_w_mk, "frame conduction path"),
+        ThermalLayer(
+            "aluminum_magnesium_frame",
+            args.frame_thickness_mm,
+            args.frame_k_w_mk,
+            "frame conduction path",
+        ),
     ]
 
     layer_results = []
@@ -90,17 +102,26 @@ def main() -> int:
     if skin_heat_flux_w_cm2 > 0.05:
         warnings.append("skin heat flux exceeds 0.05 W/cm2 comfort screening threshold")
     if total_resistance_c_per_w > 0.6:
-        warnings.append("total thermal resistance is too high for sustained AI-class heat without throttling")
+        warnings.append(
+            "total thermal resistance is too high for sustained AI-class heat without throttling"
+        )
     if args.heat_w >= 28.0 and args.hotspot_area_mm2 < 400.0:
         warnings.append("hotspot area is small for a 28 W-class load")
-    if contact_resistance_c_per_w > max(resistance for _, resistance, _ in layer_results):
+    if contact_resistance_c_per_w > max(
+        resistance for _, resistance, _ in layer_results
+    ):
         warnings.append("contact resistance dominates the modeled layer stack")
 
     per_layer_resistance_rows = [
-        f"{layer.name}: {resistance:.4f} C/W ({layer.note})" for layer, resistance, _ in layer_results
+        f"{layer.name}: {resistance:.4f} C/W ({layer.note})"
+        for layer, resistance, _ in layer_results
     ]
-    per_layer_resistance_rows.append(f"contact_interfaces: {contact_resistance_c_per_w:.4f} C/W")
-    per_layer_delta_rows = [f"{layer.name}: {delta_t:.2f} C" for layer, _, delta_t in layer_results]
+    per_layer_resistance_rows.append(
+        f"contact_interfaces: {contact_resistance_c_per_w:.4f} C/W"
+    )
+    per_layer_delta_rows = [
+        f"{layer.name}: {delta_t:.2f} C" for layer, _, delta_t in layer_results
+    ]
     per_layer_delta_rows.append(f"contact_interfaces: {contact_delta_t_c:.2f} C")
 
     print("Thermal resistance network model")
@@ -158,9 +179,15 @@ def main() -> int:
         ],
     )
     print_section("warnings", warning_rows(warnings))
-    print("confidence: low to medium; suitable for first-pass heat-path risk ranking only")
-    print("basis: modeled estimate using 1D conduction, effective spreading conductivities, and assumed contact resistance")
-    print("primary blocker: sustained high-power hotspot rejection while keeping exterior skin touch-safe")
+    print(
+        "confidence: low to medium; suitable for first-pass heat-path risk ranking only"
+    )
+    print(
+        "basis: modeled estimate using 1D conduction, effective spreading conductivities, and assumed contact resistance"
+    )
+    print(
+        "primary blocker: sustained high-power hotspot rejection while keeping exterior skin touch-safe"
+    )
     return 0
 
 

@@ -145,7 +145,9 @@ def render_report(comparison: ThermalConsequenceComparison) -> str:
     lines.extend(["", "Major unknowns:"])
     lines.extend(f"  - {unknown}" for unknown in comparison.major_unknowns)
     lines.extend(["", "Required evidence before thermal validation:"])
-    lines.extend(f"  - {item}" for item in comparison.required_evidence_before_validation)
+    lines.extend(
+        f"  - {item}" for item in comparison.required_evidence_before_validation
+    )
     lines.extend(["", "Caveat:", f"  {SCREENING_CAVEAT}", ""])
     return "\n".join(lines)
 

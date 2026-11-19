@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Shared helpers for first-pass interconnect screening scripts."""
+
 from __future__ import annotations
 
 import argparse

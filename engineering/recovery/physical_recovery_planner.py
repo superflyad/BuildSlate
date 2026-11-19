@@ -108,12 +108,16 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 def validate_scenario_registry(path: Path = SCENARIO_PATH) -> None:
     """Validate scenario registry shape and enums."""
     if not path.exists():
-        raise ValueError(f"recovery scenario registry missing: {path.relative_to(REPO_ROOT)}")
+        raise ValueError(
+            f"recovery scenario registry missing: {path.relative_to(REPO_ROOT)}"
+        )
 
     data = _load_yaml(path)
     scenarios = data.get("scenarios")
     if not isinstance(scenarios, dict) or not scenarios:
-        raise ValueError("recovery_scenarios.yaml must define a non-empty scenarios mapping")
+        raise ValueError(
+            "recovery_scenarios.yaml must define a non-empty scenarios mapping"
+        )
 
     for scenario_id, entry in scenarios.items():
         if not isinstance(scenario_id, str) or not scenario_id.strip():
@@ -123,26 +127,49 @@ def validate_scenario_registry(path: Path = SCENARIO_PATH) -> None:
 
         missing = [field for field in REQUIRED_SCENARIO_FIELDS if field not in entry]
         if missing:
-            raise ValueError(f"{scenario_id} missing required fields: {', '.join(missing)}")
+            raise ValueError(
+                f"{scenario_id} missing required fields: {', '.join(missing)}"
+            )
 
-        if not isinstance(entry["description"], str) or not entry["description"].strip():
+        if (
+            not isinstance(entry["description"], str)
+            or not entry["description"].strip()
+        ):
             raise ValueError(f"{scenario_id}.description must be a non-empty string")
-        if not isinstance(entry["affected_components"], list) or not entry["affected_components"]:
-            raise ValueError(f"{scenario_id}.affected_components must be a non-empty list")
-        if not all(isinstance(component, str) and component.strip() for component in entry["affected_components"]):
-            raise ValueError(f"{scenario_id}.affected_components values must be non-empty strings")
-        if not isinstance(entry["estimated_volume_delta_mm3"], int | float) or isinstance(
-            entry["estimated_volume_delta_mm3"], bool
+        if (
+            not isinstance(entry["affected_components"], list)
+            or not entry["affected_components"]
         ):
-            raise ValueError(f"{scenario_id}.estimated_volume_delta_mm3 must be numeric")
-        if not isinstance(entry["estimated_thickness_delta_mm"], int | float) or isinstance(
-            entry["estimated_thickness_delta_mm"], bool
+            raise ValueError(
+                f"{scenario_id}.affected_components must be a non-empty list"
+            )
+        if not all(
+            isinstance(component, str) and component.strip()
+            for component in entry["affected_components"]
         ):
-            raise ValueError(f"{scenario_id}.estimated_thickness_delta_mm must be numeric")
+            raise ValueError(
+                f"{scenario_id}.affected_components values must be non-empty strings"
+            )
+        if not isinstance(
+            entry["estimated_volume_delta_mm3"], int | float
+        ) or isinstance(entry["estimated_volume_delta_mm3"], bool):
+            raise ValueError(
+                f"{scenario_id}.estimated_volume_delta_mm3 must be numeric"
+            )
+        if not isinstance(
+            entry["estimated_thickness_delta_mm"], int | float
+        ) or isinstance(entry["estimated_thickness_delta_mm"], bool):
+            raise ValueError(
+                f"{scenario_id}.estimated_thickness_delta_mm must be numeric"
+            )
         if entry["engineering_cost"] not in ENGINEERING_COST_VALUES:
-            raise ValueError(f"{scenario_id}.engineering_cost must be one of {ENGINEERING_COST_VALUES}")
+            raise ValueError(
+                f"{scenario_id}.engineering_cost must be one of {ENGINEERING_COST_VALUES}"
+            )
         if entry["product_impact"] not in PRODUCT_IMPACT_VALUES:
-            raise ValueError(f"{scenario_id}.product_impact must be one of {PRODUCT_IMPACT_VALUES}")
+            raise ValueError(
+                f"{scenario_id}.product_impact must be one of {PRODUCT_IMPACT_VALUES}"
+            )
         if entry["maturity"] not in MATURITY_VALUES:
             raise ValueError(f"{scenario_id}.maturity must be one of {MATURITY_VALUES}")
         if not isinstance(entry["notes"], str) or not entry["notes"].strip():
@@ -159,9 +186,13 @@ def load_scenarios(path: Path = SCENARIO_PATH) -> tuple[RecoveryScenario, ...]:
             RecoveryScenario(
                 scenario_id=scenario_id,
                 description=entry["description"].strip(),
-                affected_components=tuple(component.strip() for component in entry["affected_components"]),
+                affected_components=tuple(
+                    component.strip() for component in entry["affected_components"]
+                ),
                 estimated_volume_delta_mm3=float(entry["estimated_volume_delta_mm3"]),
-                estimated_thickness_delta_mm=float(entry["estimated_thickness_delta_mm"]),
+                estimated_thickness_delta_mm=float(
+                    entry["estimated_thickness_delta_mm"]
+                ),
                 engineering_cost=entry["engineering_cost"],
                 product_impact=entry["product_impact"],
                 maturity=entry["maturity"],
@@ -253,18 +284,33 @@ def _evaluate_scenario_set(
         volume_status=volume_status,
         thickness_status=thickness_status,
         fix_classification=_fix_classification(volume_fixed, thickness_fixed),
-        total_product_impact_score=sum(_impact_score(scenario.product_impact) for scenario in scenarios),
-        total_engineering_cost_score=sum(_cost_score(scenario.engineering_cost) for scenario in scenarios),
-        total_maturity_score=sum(_maturity_score(scenario.maturity) for scenario in scenarios),
-        volume_gap_to_conditional_mm3=max(0.0, allocated_volume_mm3 - volume_target_mm3),
+        total_product_impact_score=sum(
+            _impact_score(scenario.product_impact) for scenario in scenarios
+        ),
+        total_engineering_cost_score=sum(
+            _cost_score(scenario.engineering_cost) for scenario in scenarios
+        ),
+        total_maturity_score=sum(
+            _maturity_score(scenario.maturity) for scenario in scenarios
+        ),
+        volume_gap_to_conditional_mm3=max(
+            0.0, allocated_volume_mm3 - volume_target_mm3
+        ),
         thickness_gap_to_conditional_mm=max(0.0, stackup_mm - thickness_budget_mm),
     )
 
 
 def _sort_key(evaluation: RecoveryEvaluation) -> tuple[float, ...]:
     fixes_both_rank = 0 if evaluation.fix_classification == "both" else 1
-    mutually_exclusive_rank = 1 if sum(scenario.increases_envelope for scenario in evaluation.scenarios) > 1 else 0
-    closeness_gap = evaluation.volume_gap_to_conditional_mm3 / 1000.0 + evaluation.thickness_gap_to_conditional_mm * 100.0
+    mutually_exclusive_rank = (
+        1
+        if sum(scenario.increases_envelope for scenario in evaluation.scenarios) > 1
+        else 0
+    )
+    closeness_gap = (
+        evaluation.volume_gap_to_conditional_mm3 / 1000.0
+        + evaluation.thickness_gap_to_conditional_mm * 100.0
+    )
     return (
         fixes_both_rank,
         mutually_exclusive_rank,
@@ -282,7 +328,9 @@ def build_recovery_plan() -> RecoveryPlan:
     """Evaluate single and combined recovery scenarios from the current gate result."""
     gate_result = evaluate_gate()
     scenarios = load_scenarios()
-    single_results = tuple(_evaluate_scenario_set(gate_result, (scenario,)) for scenario in scenarios)
+    single_results = tuple(
+        _evaluate_scenario_set(gate_result, (scenario,)) for scenario in scenarios
+    )
 
     combined: list[RecoveryEvaluation] = []
     for combination_size in (2, 3):
@@ -299,8 +347,12 @@ def build_recovery_plan() -> RecoveryPlan:
             float(gate_result.volume_budget["total_allocated_mm3"])
             - float(gate_result.volume_budget["usable_volume_mm3"]) * 0.85,
         ),
-        current_thickness_margin_mm=float(gate_result.thickness_budget.remaining_margin_mm),
-        current_thickness_gap_to_conditional_mm=max(0.0, -float(gate_result.thickness_budget.remaining_margin_mm)),
+        current_thickness_margin_mm=float(
+            gate_result.thickness_budget.remaining_margin_mm
+        ),
+        current_thickness_gap_to_conditional_mm=max(
+            0.0, -float(gate_result.thickness_budget.remaining_margin_mm)
+        ),
         scenarios=scenarios,
         single_scenario_results=single_results,
         combined_results=tuple(combined),

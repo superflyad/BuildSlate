@@ -24,7 +24,12 @@ def _load(path: Path) -> dict[str, Any]:
 def _inside(rectangle: dict[str, Any], length: float, width: float) -> bool:
     x = float(rectangle["x"])
     y = float(rectangle["y"])
-    return x >= 0 and y >= 0 and x + float(rectangle["length"]) <= length and y + float(rectangle["width"]) <= width
+    return (
+        x >= 0
+        and y >= 0
+        and x + float(rectangle["length"]) <= length
+        and y + float(rectangle["width"]) <= width
+    )
 
 
 def build_report() -> str:

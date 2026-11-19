@@ -54,7 +54,9 @@ def render_report(plan: RecoveryPlan) -> str:
     gate = plan.gate_result
     volume = gate.volume_budget
     thickness = gate.thickness_budget
-    recommendation_status = "SUFFICIENT" if plan.recommendation_is_sufficient else "INSUFFICIENT"
+    recommendation_status = (
+        "SUFFICIENT" if plan.recommendation_is_sufficient else "INSUFFICIENT"
+    )
 
     lines = [
         "Slate Pocket v1 Physical Recovery Planner v1",

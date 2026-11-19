@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Run all first-pass interconnect and power delivery models with default inputs."""
+
 from __future__ import annotations
 
 import subprocess

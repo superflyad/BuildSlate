@@ -31,7 +31,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--multimodal-overhead-gb", type=positive_float, default=30.0)
     parser.add_argument("--os-reserve-gb", type=positive_float, default=16.0)
     parser.add_argument("--safety-reserve-gb", type=positive_float, default=32.0)
-    parser.add_argument("--explain", action="store_true", help="Print centralized runtime memory calculation explanations")
+    parser.add_argument(
+        "--explain",
+        action="store_true",
+        help="Print centralized runtime memory calculation explanations",
+    )
     return parser.parse_args()
 
 
@@ -71,7 +75,9 @@ def main() -> int:
     if total_used_gb > args.available_memory_gb:
         warnings.append("total used memory exceeds available memory")
     if args.context_tokens > 32768:
-        warnings.append("context length exceeds 32768 tokens; memory use scales linearly")
+        warnings.append(
+            "context length exceeds 32768 tokens; memory use scales linearly"
+        )
     if args.batch_size > 1:
         warnings.append("batch size above 1 linearly increases KV cache memory")
 
@@ -84,52 +90,72 @@ def main() -> int:
         primary_blocker = "KV cache dominates resident model weights"
 
     print("Runtime memory budget estimate")
-    print_section("inputs", [
-        f"available_memory_gb: {args.available_memory_gb:.2f}",
-        f"params_billions: {args.params_billions:.1f}",
-        f"quantization_bits: {args.quantization_bits:.1f}",
-        f"model_overhead_factor: {args.model_overhead_factor:.2f}",
-        f"layers: {args.layers}",
-        f"hidden_size: {args.hidden_size}",
-        f"context_tokens: {args.context_tokens}",
-        f"batch_size: {args.batch_size}",
-        f"kv_bytes_per_element: {args.kv_bytes_per_element:.1f}",
-        f"multimodal_overhead_gb: {args.multimodal_overhead_gb:.2f}",
-        f"os_reserve_gb: {args.os_reserve_gb:.2f}",
-        f"safety_reserve_gb: {args.safety_reserve_gb:.2f}",
-    ])
-    print_section("assumptions", [
-        "model residency uses quantized weight storage plus a conservative runtime overhead factor",
-        "KV cache scales linearly with context length, layers, hidden size, and batch size",
-        "multimodal overhead, OS reserve, and safety reserve are additive placeholders",
-        "this combined memory budget does not predict real tokens/sec",
-    ])
-    print_section("formulas", [
-        "raw_model_gb = params_billions * 1e9 * quantization_bits / 8 / 1e9",
-        "model_resident_gb = raw_model_gb * model_overhead_factor",
-        "kv_cache_gb = 2 * layers * hidden_size * context_tokens * batch_size * kv_bytes_per_element / 1e9",
-        "total_used_gb = model_resident_gb + kv_cache_gb + multimodal_overhead_gb + os_reserve_gb + safety_reserve_gb",
-        "remaining_gb = available_memory_gb - total_used_gb",
-    ])
-    print_section("outputs", [
-        f"model_resident_gb: {model_resident_gb:.2f}",
-        f"kv_cache_gb: {kv_cache_gb:.2f}",
-        f"multimodal_overhead_gb: {args.multimodal_overhead_gb:.2f}",
-        f"os_reserve_gb: {args.os_reserve_gb:.2f}",
-        f"safety_reserve_gb: {args.safety_reserve_gb:.2f}",
-        f"total_used_gb: {total_used_gb:.2f}",
-        f"remaining_gb: {remaining_gb:.2f}",
-        f"pass_fail: {'pass' if passes else 'fail'}",
-    ])
+    print_section(
+        "inputs",
+        [
+            f"available_memory_gb: {args.available_memory_gb:.2f}",
+            f"params_billions: {args.params_billions:.1f}",
+            f"quantization_bits: {args.quantization_bits:.1f}",
+            f"model_overhead_factor: {args.model_overhead_factor:.2f}",
+            f"layers: {args.layers}",
+            f"hidden_size: {args.hidden_size}",
+            f"context_tokens: {args.context_tokens}",
+            f"batch_size: {args.batch_size}",
+            f"kv_bytes_per_element: {args.kv_bytes_per_element:.1f}",
+            f"multimodal_overhead_gb: {args.multimodal_overhead_gb:.2f}",
+            f"os_reserve_gb: {args.os_reserve_gb:.2f}",
+            f"safety_reserve_gb: {args.safety_reserve_gb:.2f}",
+        ],
+    )
+    print_section(
+        "assumptions",
+        [
+            "model residency uses quantized weight storage plus a conservative runtime overhead factor",
+            "KV cache scales linearly with context length, layers, hidden size, and batch size",
+            "multimodal overhead, OS reserve, and safety reserve are additive placeholders",
+            "this combined memory budget does not predict real tokens/sec",
+        ],
+    )
+    print_section(
+        "formulas",
+        [
+            "raw_model_gb = params_billions * 1e9 * quantization_bits / 8 / 1e9",
+            "model_resident_gb = raw_model_gb * model_overhead_factor",
+            "kv_cache_gb = 2 * layers * hidden_size * context_tokens * batch_size * kv_bytes_per_element / 1e9",
+            "total_used_gb = model_resident_gb + kv_cache_gb + multimodal_overhead_gb + os_reserve_gb + safety_reserve_gb",
+            "remaining_gb = available_memory_gb - total_used_gb",
+        ],
+    )
+    print_section(
+        "outputs",
+        [
+            f"model_resident_gb: {model_resident_gb:.2f}",
+            f"kv_cache_gb: {kv_cache_gb:.2f}",
+            f"multimodal_overhead_gb: {args.multimodal_overhead_gb:.2f}",
+            f"os_reserve_gb: {args.os_reserve_gb:.2f}",
+            f"safety_reserve_gb: {args.safety_reserve_gb:.2f}",
+            f"total_used_gb: {total_used_gb:.2f}",
+            f"remaining_gb: {remaining_gb:.2f}",
+            f"pass_fail: {'pass' if passes else 'fail'}",
+        ],
+    )
     print_section("warnings", warnings)
     if args.explain:
         explanation_engine = ExplanationEngine()
         print("explanation:")
         print(explanation_engine.explain("runtime.model_memory_gb", core_inputs))
         print(explanation_engine.explain("runtime.kv_cache_gb", core_inputs))
-        print(explanation_engine.explain("runtime.total_runtime_memory_gb", core_inputs))
-        print(explanation_engine.explain("runtime.available_memory_margin_gb", core_inputs))
-    print("confidence: low for complete runtime feasibility; medium for combined memory arithmetic")
+        print(
+            explanation_engine.explain("runtime.total_runtime_memory_gb", core_inputs)
+        )
+        print(
+            explanation_engine.explain(
+                "runtime.available_memory_margin_gb", core_inputs
+            )
+        )
+    print(
+        "confidence: low for complete runtime feasibility; medium for combined memory arithmetic"
+    )
     print("basis: additive first-pass local AI runtime memory budget")
     print(f"primary blocker: {primary_blocker}")
     return 0

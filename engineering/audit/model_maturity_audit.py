@@ -43,15 +43,27 @@ def main() -> int:
 
     coverage_counts = Counter(entry["coverage_status"] for entry in entries)
     maturity_counts = Counter(entry["maturity_level"] for entry in entries)
-    critical_high = [entry for entry in entries if entry["review_priority"] in {"critical", "high"}]
-    missing_weak = [entry for entry in entries if entry["coverage_status"] in {"missing", "weak"}]
+    critical_high = [
+        entry for entry in entries if entry["review_priority"] in {"critical", "high"}
+    ]
+    missing_weak = [
+        entry for entry in entries if entry["coverage_status"] in {"missing", "weak"}
+    ]
     screening = [entry for entry in entries if entry["maturity_level"] == "screening"]
 
     print("BuildSlate Engineering Coverage and Maturity Audit")
     print("==================================================")
     print(f"Total domains: {len(entries)}")
-    print_counter("Count by coverage_status:", coverage_counts, ("covered", "partial", "weak", "missing"))
-    print_counter("Count by maturity_level:", maturity_counts, ("screening", "first_order", "calibrated", "validated"))
+    print_counter(
+        "Count by coverage_status:",
+        coverage_counts,
+        ("covered", "partial", "weak", "missing"),
+    )
+    print_counter(
+        "Count by maturity_level:",
+        maturity_counts,
+        ("screening", "first_order", "calibrated", "validated"),
+    )
     print_domains("Critical/high review items:", critical_high)
     print_domains("Missing/weak domains:", missing_weak)
     print_domains("Domains still at screening maturity:", screening)

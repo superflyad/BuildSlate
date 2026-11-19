@@ -47,7 +47,9 @@ def render_report(packages: tuple[EvidencePackage, ...], caveat: str) -> str:
     counts = status_counts(packages)
     verified_count = counts["verified"]
     critical_open = [
-        package for package in packages if package.priority == "critical" and not package.is_verified
+        package
+        for package in packages
+        if package.priority == "critical" and not package.is_verified
     ]
     ready_now = unblocked_packages(packages)
 
@@ -61,7 +63,16 @@ def render_report(packages: tuple[EvidencePackage, ...], caveat: str) -> str:
         f"  verified packages: {verified_count}/{len(packages)}",
         (
             "  status counts: "
-            + ", ".join(f"{status}={counts[status]}" for status in ("missing", "planned", "in_progress", "available", "verified"))
+            + ", ".join(
+                f"{status}={counts[status]}"
+                for status in (
+                    "missing",
+                    "planned",
+                    "in_progress",
+                    "available",
+                    "verified",
+                )
+            )
         ),
         f"  open critical packages: {len(critical_open)}",
         f"  EVIDENCE_DECISION: {decision.value}",

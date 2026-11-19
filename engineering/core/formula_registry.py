@@ -9,7 +9,11 @@ from typing import Any
 try:
     from registry_loader import FORMULAS_PATH, index_by_id, load_yaml_list
 except ImportError:  # pragma: no cover - package import path
-    from engineering.core.registry_loader import FORMULAS_PATH, index_by_id, load_yaml_list
+    from engineering.core.registry_loader import (
+        FORMULAS_PATH,
+        index_by_id,
+        load_yaml_list,
+    )
 
 
 class FormulaRegistry:
@@ -25,9 +29,13 @@ class FormulaRegistry:
         for formula in self.formulas.values():
             output = formula.get("output")
             if not isinstance(output, str) or not output.strip():
-                raise ValueError(f"{self.path} formula {formula.get('id')} is missing output")
+                raise ValueError(
+                    f"{self.path} formula {formula.get('id')} is missing output"
+                )
             if output in indexed:
-                raise ValueError(f"{self.path} contains multiple formulas for output: {output}")
+                raise ValueError(
+                    f"{self.path} contains multiple formulas for output: {output}"
+                )
             indexed[output] = formula
         return indexed
 

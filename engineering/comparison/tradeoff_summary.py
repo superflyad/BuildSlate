@@ -11,7 +11,12 @@ COMPARISON_DIR = Path(__file__).resolve().parent
 if str(COMPARISON_DIR) not in sys.path:
     sys.path.insert(0, str(COMPARISON_DIR))
 
-from compare_profiles import DEFAULT_PROFILES, REPO_ROOT, ProfileComparison, load_comparison  # noqa: E402
+from compare_profiles import (
+    DEFAULT_PROFILES,
+    REPO_ROOT,
+    ProfileComparison,
+    load_comparison,
+)  # noqa: E402
 
 
 def parse_args() -> argparse.Namespace:
@@ -25,7 +30,9 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def by_class_or_id(comparisons: list[ProfileComparison], token: str) -> ProfileComparison | None:
+def by_class_or_id(
+    comparisons: list[ProfileComparison], token: str
+) -> ProfileComparison | None:
     for item in comparisons:
         haystack = f"{item.profile_id} {item.profile_class}".lower()
         if token in haystack:
@@ -50,7 +57,10 @@ def build_tradeoff_summary(comparisons: list[ProfileComparison]) -> str:
             f"- {aggressive.profile_id} improves compute ambition by {compute_delta:+.0f}W sustained and {npu_delta:+.0f} NPU TOPS versus {canonical.profile_id}, "
             f"but keeps thermal risk at {aggressive.thermal_risk} and manufacturing pressure at {aggressive.manufacturing_pressure}."
         )
-        if aggressive.ambient_assumption_c > canonical.ambient_assumption_c or aggressive.brightness_mode != canonical.brightness_mode:
+        if (
+            aggressive.ambient_assumption_c > canonical.ambient_assumption_c
+            or aggressive.brightness_mode != canonical.brightness_mode
+        ):
             lines.append(
                 f"- {aggressive.profile_id} also raises environmental sensitivity through {aggressive.ambient_assumption_c:.0f}C ambient and {aggressive.brightness_mode} brightness assumptions."
             )
@@ -70,7 +80,11 @@ def build_tradeoff_summary(comparisons: list[ProfileComparison]) -> str:
     thinnest = min(comparisons, key=lambda item: item.thickness_mm)
     thickest = max(comparisons, key=lambda item: item.thickness_mm)
     if thinnest.thickness_mm < 9.0:
-        thin_group = ", ".join(item.profile_id for item in comparisons if item.thickness_mm == thinnest.thickness_mm)
+        thin_group = ", ".join(
+            item.profile_id
+            for item in comparisons
+            if item.thickness_mm == thinnest.thickness_mm
+        )
         lines.append(
             f"- The {thinnest.thickness_mm:.1f}mm chassis group ({thin_group}) strongly correlates with stackup, manufacturing, and thermal pressure in this screening model."
         )
@@ -89,13 +103,21 @@ def build_tradeoff_summary(comparisons: list[ProfileComparison]) -> str:
 
     for item in comparisons:
         if item.blockers:
-            lines.append(f"- {item.profile_id} explicit blockers: {', '.join(item.blockers)}.")
+            lines.append(
+                f"- {item.profile_id} explicit blockers: {', '.join(item.blockers)}."
+            )
         elif item.warnings:
-            lines.append(f"- {item.profile_id} warnings remain visible: {'; '.join(item.warnings)}.")
+            lines.append(
+                f"- {item.profile_id} warnings remain visible: {'; '.join(item.warnings)}."
+            )
         else:
-            lines.append(f"- {item.profile_id} has no HIGH/EXTREME screening categories, but still requires validation before feasibility claims.")
+            lines.append(
+                f"- {item.profile_id} has no HIGH/EXTREME screening categories, but still requires validation before feasibility claims."
+            )
 
-    lines.append("- No optimization, auto-solving, or best-profile declaration is performed by this summary.")
+    lines.append(
+        "- No optimization, auto-solving, or best-profile declaration is performed by this summary."
+    )
     return "\n".join(lines)
 
 

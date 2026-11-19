@@ -37,10 +37,20 @@ class Rectangle:
         return self.length * self.width
 
     def contains(self, other: "Rectangle") -> bool:
-        return self.x <= other.x and self.y <= other.y and self.right >= other.right and self.top >= other.top
+        return (
+            self.x <= other.x
+            and self.y <= other.y
+            and self.right >= other.right
+            and self.top >= other.top
+        )
 
     def overlaps(self, other: "Rectangle") -> bool:
-        return self.x < other.right and self.right > other.x and self.y < other.top and self.top > other.y
+        return (
+            self.x < other.right
+            and self.right > other.x
+            and self.y < other.top
+            and self.top > other.y
+        )
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -52,13 +62,17 @@ def _load(path: Path) -> dict[str, Any]:
 
 
 def _rect(data: dict[str, Any]) -> Rectangle:
-    return Rectangle(float(data["x"]), float(data["y"]), float(data["length"]), float(data["width"]))
+    return Rectangle(
+        float(data["x"]), float(data["y"]), float(data["length"]), float(data["width"])
+    )
 
 
 def _zone_layers(zone_id: str, zones: dict[str, Any]) -> list[dict[str, Any]]:
     zone = zones[zone_id]
     if "inherits" in zone:
-        return _zone_layers(zone["inherits"], zones) + list(zone.get("additional_layers", []))
+        return _zone_layers(zone["inherits"], zones) + list(
+            zone.get("additional_layers", [])
+        )
     return list(zone["layers"])
 
 
@@ -69,8 +83,14 @@ def build_report() -> str:
 
     boundary = _rect(envelope["device"]["internal_boundary_mm"])
     placements = envelope["placements"]
-    placement_rects = {item_id: _rect(item["rectangle_mm"]) for item_id, item in placements.items()}
-    containment_failures = [item_id for item_id, rect in placement_rects.items() if not boundary.contains(rect)]
+    placement_rects = {
+        item_id: _rect(item["rectangle_mm"]) for item_id, item in placements.items()
+    }
+    containment_failures = [
+        item_id
+        for item_id, rect in placement_rects.items()
+        if not boundary.contains(rect)
+    ]
 
     same_layer_overlaps: list[tuple[str, str, str]] = []
     placement_ids = list(placements)
@@ -78,7 +98,9 @@ def build_report() -> str:
         for second_id in placement_ids[index + 1 :]:
             first = placements[first_id]
             second = placements[second_id]
-            if first["layer"] == second["layer"] and placement_rects[first_id].overlaps(placement_rects[second_id]):
+            if first["layer"] == second["layer"] and placement_rects[first_id].overlaps(
+                placement_rects[second_id]
+            ):
                 same_layer_overlaps.append((first["layer"], first_id, second_id))
 
     keepout_conflicts: list[tuple[str, str, str]] = []
@@ -86,10 +108,15 @@ def build_report() -> str:
         allowed = set(keepout.get("allowed_placements", []))
         keepout_rect = _rect(keepout["rectangle_mm"])
         for placement_id, placement in placements.items():
-            if placement_id in allowed or placement["layer"] not in keepout["applies_to_layers"]:
+            if (
+                placement_id in allowed
+                or placement["layer"] not in keepout["applies_to_layers"]
+            ):
                 continue
             if placement_rects[placement_id].overlaps(keepout_rect):
-                keepout_conflicts.append((keepout_id, keepout["category"], placement_id))
+                keepout_conflicts.append(
+                    (keepout_id, keepout["category"], placement_id)
+                )
 
     component_layer_area = sum(
         placement_rects[item_id].area
@@ -112,7 +139,12 @@ def build_report() -> str:
             status = "WARNING"
         else:
             status = "FAIL"
-        weak_layers = [layer["id"] for layer in layers if layer["evidence_class"] not in {"public_supplier", "measured", "validated"}]
+        weak_layers = [
+            layer["id"]
+            for layer in layers
+            if layer["evidence_class"]
+            not in {"public_supplier", "measured", "validated"}
+        ]
         zone_results.append((zone_id, total, margin, status, weak_layers))
 
     lines = [
@@ -137,7 +169,9 @@ def build_report() -> str:
     for layer, first_id, second_id in same_layer_overlaps:
         lines.append(f"  - overlap on {layer}: {first_id} with {second_id}")
     for keepout_id, category, placement_id in keepout_conflicts:
-        lines.append(f"  - {category} keepout conflict: {placement_id} intersects {keepout_id}")
+        lines.append(
+            f"  - {category} keepout conflict: {placement_id} intersects {keepout_id}"
+        )
 
     lines.extend(["", "Local z-height screen:"])
     for zone_id, total, margin, status, weak_layers in zone_results:

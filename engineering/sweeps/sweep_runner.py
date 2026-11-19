@@ -14,7 +14,9 @@ from typing import Any
 try:
     import yaml
 except ImportError as exc:  # pragma: no cover - dependency guidance path
-    raise SystemExit("PyYAML is required. Install dependencies with: pip install -r requirements.txt") from exc
+    raise SystemExit(
+        "PyYAML is required. Install dependencies with: pip install -r requirements.txt"
+    ) from exc
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT = REPO_ROOT / "reports" / "sweeps" / "sweep-report.txt"
@@ -57,7 +59,11 @@ SUPPORTED_PARAMETER_PATHS = {
     "environment.brightness_mode",
 }
 
-THICKNESS_PARAMETERS = {"geometry.thickness_mm", "geometry.length_mm", "geometry.width_mm"}
+THICKNESS_PARAMETERS = {
+    "geometry.thickness_mm",
+    "geometry.length_mm",
+    "geometry.width_mm",
+}
 SUSTAINED_POWER_PARAMETERS = {"compute.sustained_power_w", "thermal.sustained_w"}
 MEMORY_PARAMETERS = {"memory.capacity_gb", "memory.gb_per_package"}
 BATTERY_PARAMETERS = {"battery.capacity_mah"}
@@ -74,7 +80,9 @@ class SweepRow:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", required=True, help="Device profile YAML path")
-    parser.add_argument("--parameter", required=True, help="Dot-path parameter to mutate")
+    parser.add_argument(
+        "--parameter", required=True, help="Dot-path parameter to mutate"
+    )
     parser.add_argument("--values", required=True, nargs="+", help="Sweep values")
     parser.add_argument(
         "--output",
@@ -113,7 +121,9 @@ def require_mapping(profile: dict[str, Any], section_name: str) -> dict[str, Any
 
 def validate_profile_basic(profile: dict[str, Any]) -> list[str]:
     warnings: list[str] = []
-    missing = [section for section in REQUIRED_TOP_LEVEL_SECTIONS if section not in profile]
+    missing = [
+        section for section in REQUIRED_TOP_LEVEL_SECTIONS if section not in profile
+    ]
     if missing:
         warnings.append("validation_fail")
         return warnings
@@ -128,7 +138,9 @@ def get_path(profile: dict[str, Any], parameter_path: str) -> Any:
     current: Any = profile
     for part in parameter_path.split("."):
         if not isinstance(current, dict) or part not in current:
-            raise ValueError(f"parameter path does not exist in profile: {parameter_path}")
+            raise ValueError(
+                f"parameter path does not exist in profile: {parameter_path}"
+            )
         current = current[part]
     return current
 
@@ -144,7 +156,9 @@ def coerce_value(raw_value: str, reference_value: Any) -> Any:
     if isinstance(reference_value, int) and not isinstance(reference_value, bool):
         parsed = float(raw_value)
         if not parsed.is_integer():
-            raise ValueError(f"expected integer-like value for this parameter: {raw_value}")
+            raise ValueError(
+                f"expected integer-like value for this parameter: {raw_value}"
+            )
         return int(parsed)
     if isinstance(reference_value, float):
         return float(raw_value)
@@ -156,7 +170,9 @@ def set_path(profile: dict[str, Any], parameter_path: str, value: Any) -> None:
     current: Any = profile
     for part in parts[:-1]:
         if not isinstance(current, dict) or part not in current:
-            raise ValueError(f"parameter path does not exist in profile: {parameter_path}")
+            raise ValueError(
+                f"parameter path does not exist in profile: {parameter_path}"
+            )
         current = current[part]
     if not isinstance(current, dict) or parts[-1] not in current:
         raise ValueError(f"parameter path does not exist in profile: {parameter_path}")
@@ -171,12 +187,20 @@ def text_value(profile: dict[str, Any], section: str, key: str) -> str:
     return str(require_mapping(profile, section).get(key, "unknown"))
 
 
-def rectangular_volume_cm3(length_mm: float, width_mm: float, thickness_mm: float) -> float:
+def rectangular_volume_cm3(
+    length_mm: float, width_mm: float, thickness_mm: float
+) -> float:
     return length_mm * width_mm * thickness_mm / 1000.0
 
 
-def rectangular_surface_area_cm2(length_mm: float, width_mm: float, thickness_mm: float) -> float:
-    return 2.0 * (length_mm * width_mm + length_mm * thickness_mm + width_mm * thickness_mm) / 100.0
+def rectangular_surface_area_cm2(
+    length_mm: float, width_mm: float, thickness_mm: float
+) -> float:
+    return (
+        2.0
+        * (length_mm * width_mm + length_mm * thickness_mm + width_mm * thickness_mm)
+        / 100.0
+    )
 
 
 def classify_thermal_risk(heat_density_w_cm3: float) -> str:
@@ -196,10 +220,16 @@ def zone_stackup_margin_mm(thickness_mm: float) -> float:
     return thickness_mm - worst_nominal_zone_mm
 
 
-def battery_metrics(profile: dict[str, Any], workload_w: float | None = None) -> dict[str, float]:
+def battery_metrics(
+    profile: dict[str, Any], workload_w: float | None = None
+) -> dict[str, float]:
     capacity_mah = numeric(profile, "battery", "capacity_mah")
     nominal_voltage_v = numeric(profile, "battery", "nominal_voltage_v")
-    workload = workload_w if workload_w is not None else numeric(profile, "compute", "sustained_power_w")
+    workload = (
+        workload_w
+        if workload_w is not None
+        else numeric(profile, "compute", "sustained_power_w")
+    )
     wh = capacity_mah / 1000.0 * nominal_voltage_v
     usable_wh = wh * 0.86
     runtime_h = usable_wh / workload
@@ -214,11 +244,17 @@ def battery_metrics(profile: dict[str, Any], workload_w: float | None = None) ->
     }
 
 
-def thermal_metrics(profile: dict[str, Any], sustained_w: float | None = None) -> dict[str, Any]:
+def thermal_metrics(
+    profile: dict[str, Any], sustained_w: float | None = None
+) -> dict[str, Any]:
     length_mm = numeric(profile, "geometry", "length_mm")
     width_mm = numeric(profile, "geometry", "width_mm")
     thickness_mm = numeric(profile, "geometry", "thickness_mm")
-    heat_w = sustained_w if sustained_w is not None else numeric(profile, "thermal", "sustained_w")
+    heat_w = (
+        sustained_w
+        if sustained_w is not None
+        else numeric(profile, "thermal", "sustained_w")
+    )
     volume_cm3 = rectangular_volume_cm3(length_mm, width_mm, thickness_mm)
     surface_area_cm2 = rectangular_surface_area_cm2(length_mm, width_mm, thickness_mm)
     heat_density = heat_w / volume_cm3
@@ -285,7 +321,10 @@ def add_common_warnings(row: SweepRow, outputs: dict[str, str]) -> None:
         row.warnings.append("runtime_low")
     if "zone_margin_mm" in outputs and float(outputs["zone_margin_mm"]) < 0.0:
         row.warnings.append("stackup_fail")
-    if "runtime_remaining_gb" in outputs and float(outputs["runtime_remaining_gb"]) < 64.0:
+    if (
+        "runtime_remaining_gb" in outputs
+        and float(outputs["runtime_remaining_gb"]) < 64.0
+    ):
         row.warnings.append("memory_pressure")
     if "memory_package_count" in outputs and int(outputs["memory_package_count"]) > 8:
         row.warnings.append("memory_pressure")
@@ -299,7 +338,9 @@ def format_float(value: float, digits: int = 2) -> str:
     return f"{value:.{digits}f}"
 
 
-def evaluate_profile(profile: dict[str, Any], parameter_path: str, value: Any) -> SweepRow:
+def evaluate_profile(
+    profile: dict[str, Any], parameter_path: str, value: Any
+) -> SweepRow:
     row = SweepRow(value=value)
     row.warnings.extend(validate_profile_basic(profile))
 
@@ -310,24 +351,43 @@ def evaluate_profile(profile: dict[str, Any], parameter_path: str, value: Any) -
         base_volume = rectangular_volume_cm3(180.0, 95.0, 8.8)
         outputs.update(
             {
-                "battery_runtime_h": format_float(battery_metrics(profile)["battery_runtime_h"]),
+                "battery_runtime_h": format_float(
+                    battery_metrics(profile)["battery_runtime_h"]
+                ),
                 "thermal_risk": str(thermal["thermal_risk"]),
-                "zone_margin_mm": format_float(zone_stackup_margin_mm(numeric(profile, "geometry", "thickness_mm")), 1),
+                "zone_margin_mm": format_float(
+                    zone_stackup_margin_mm(
+                        numeric(profile, "geometry", "thickness_mm")
+                    ),
+                    1,
+                ),
                 "volume_cm3": format_float(float(thermal["volume_cm3"]), 1),
-                "volume_delta_cm3": format_float(float(thermal["volume_cm3"]) - base_volume, 1),
+                "volume_delta_cm3": format_float(
+                    float(thermal["volume_cm3"]) - base_volume, 1
+                ),
             }
         )
     elif parameter_path in SUSTAINED_POWER_PARAMETERS:
-        heat_w = numeric(profile, "compute", "sustained_power_w") if parameter_path == "compute.sustained_power_w" else numeric(profile, "thermal", "sustained_w")
+        heat_w = (
+            numeric(profile, "compute", "sustained_power_w")
+            if parameter_path == "compute.sustained_power_w"
+            else numeric(profile, "thermal", "sustained_w")
+        )
         thermal = thermal_metrics(profile, sustained_w=heat_w)
         battery = battery_metrics(profile, workload_w=heat_w)
-        combined_overlap_heat_w = heat_w + numeric(profile, "battery", "charging_wired_w") * (1 - 0.88) + numeric(profile, "battery", "charging_wired_w") * 0.08
+        combined_overlap_heat_w = (
+            heat_w
+            + numeric(profile, "battery", "charging_wired_w") * (1 - 0.88)
+            + numeric(profile, "battery", "charging_wired_w") * 0.08
+        )
         charging_overlap_risk = "high" if combined_overlap_heat_w > 35 else "moderate"
         outputs.update(
             {
                 "battery_runtime_h": format_float(battery["battery_runtime_h"]),
                 "thermal_risk": str(thermal["thermal_risk"]),
-                "heat_density_w_cm3": format_float(float(thermal["heat_density_w_cm3"]), 3),
+                "heat_density_w_cm3": format_float(
+                    float(thermal["heat_density_w_cm3"]), 3
+                ),
                 "charging_overlap_risk": charging_overlap_risk,
             }
         )
@@ -337,9 +397,13 @@ def evaluate_profile(profile: dict[str, Any], parameter_path: str, value: Any) -
             {
                 "memory_package_count": str(memory["memory_package_count"]),
                 "memory_area_mm2": format_float(float(memory["memory_area_mm2"]), 0),
-                "active_memory_power_w": format_float(float(memory["active_memory_power_w"]), 1),
+                "active_memory_power_w": format_float(
+                    float(memory["active_memory_power_w"]), 1
+                ),
                 "runtime_used_gb": format_float(float(memory["runtime_used_gb"]), 1),
-                "runtime_remaining_gb": format_float(float(memory["runtime_remaining_gb"]), 1),
+                "runtime_remaining_gb": format_float(
+                    float(memory["runtime_remaining_gb"]), 1
+                ),
                 "runtime_pass": "pass" if memory["runtime_pass"] else "fail",
             }
         )
@@ -408,18 +472,30 @@ def render_table(headers: list[str], rows: list[list[str]]) -> list[str]:
         widths = [max(width, len(cell)) for width, cell in zip(widths, row)]
     lines = [" | ".join(header.ljust(width) for header, width in zip(headers, widths))]
     lines.append(" | ".join("-" * width for width in widths))
-    lines.extend(" | ".join(cell.ljust(width) for cell, width in zip(row, widths)) for row in rows)
+    lines.extend(
+        " | ".join(cell.ljust(width) for cell, width in zip(row, widths))
+        for row in rows
+    )
     return lines
 
 
-def render_report(profile: dict[str, Any], profile_path: Path, parameter_path: str, rows: list[SweepRow]) -> str:
+def render_report(
+    profile: dict[str, Any],
+    profile_path: Path,
+    parameter_path: str,
+    rows: list[SweepRow],
+) -> str:
     identity = require_mapping(profile, "identity")
     profile_label = identity.get("profile_id") or identity.get("name", "unknown")
     generated = datetime.now(UTC).isoformat(timespec="seconds")
     columns = select_columns(rows)
     headers = ["value", *columns, "warnings"]
     table_rows = [
-        [str(row.value), *[row.outputs.get(column, "") for column in columns], ",".join(row.warnings)]
+        [
+            str(row.value),
+            *[row.outputs.get(column, "") for column in columns],
+            ",".join(row.warnings),
+        ]
         for row in rows
     ]
 
@@ -439,11 +515,15 @@ def render_report(profile: dict[str, Any], profile_path: Path, parameter_path: s
         "- Warning labels are engineering information for follow-up review.",
     ]
     if parameter_path not in SUPPORTED_PARAMETER_PATHS:
-        report_lines.append("- Parameter is outside the documented sweep path list; basic validation only was applied.")
+        report_lines.append(
+            "- Parameter is outside the documented sweep path list; basic validation only was applied."
+        )
     return "\n".join(report_lines) + "\n"
 
 
-def run_sweep(profile_path: Path, parameter_path: str, raw_values: list[str]) -> tuple[dict[str, Any], list[SweepRow]]:
+def run_sweep(
+    profile_path: Path, parameter_path: str, raw_values: list[str]
+) -> tuple[dict[str, Any], list[SweepRow]]:
     base_profile = load_profile(profile_path)
     reference_value = get_path(base_profile, parameter_path)
     rows: list[SweepRow] = []

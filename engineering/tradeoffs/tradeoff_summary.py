@@ -25,8 +25,12 @@ def pressure_counts(grid: list[list[tradeoff_map.TradeoffPoint]]) -> dict[str, i
     return counts
 
 
-def first_pressure_point(grid: list[list[tradeoff_map.TradeoffPoint]], pressures: set[str]) -> tradeoff_map.TradeoffPoint | None:
-    return next((point for row in grid for point in row if point.pressure in pressures), None)
+def first_pressure_point(
+    grid: list[list[tradeoff_map.TradeoffPoint]], pressures: set[str]
+) -> tradeoff_map.TradeoffPoint | None:
+    return next(
+        (point for row in grid for point in row if point.pressure in pressures), None
+    )
 
 
 def summarize_map(default_map: tradeoff_matrix.DefaultMap) -> list[str]:

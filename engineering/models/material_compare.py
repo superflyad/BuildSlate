@@ -30,7 +30,9 @@ def load_materials() -> dict[str, Any]:
     with MATERIAL_CONSTANTS_PATH.open("r", encoding="utf-8") as constants_file:
         data = yaml.safe_load(constants_file)
     if not isinstance(data, dict) or not isinstance(data.get("materials"), dict):
-        raise ValueError("materials constants must contain a top-level 'materials' mapping")
+        raise ValueError(
+            "materials constants must contain a top-level 'materials' mapping"
+        )
     return data["materials"]
 
 
@@ -43,7 +45,11 @@ def positive_float(value: str) -> float:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--material", required=True, help="Material key from engineering/constants/materials.yaml")
+    parser.add_argument(
+        "--material",
+        required=True,
+        help="Material key from engineering/constants/materials.yaml",
+    )
     parser.add_argument("--chassis-volume-cm3", type=positive_float, default=20.0)
     parser.add_argument("--heat-path-length-mm", type=positive_float, default=80.0)
     parser.add_argument("--cross-section-area-mm2", type=positive_float, default=150.0)
@@ -65,7 +71,9 @@ def main() -> int:
     materials = load_materials()
     if args.material not in materials:
         available = ", ".join(sorted(materials))
-        raise SystemExit(f"Unknown material '{args.material}'. Available materials: {available}")
+        raise SystemExit(
+            f"Unknown material '{args.material}'. Available materials: {available}"
+        )
 
     material = materials[args.material]
     density = range_values(material, "density_g_cm3")
@@ -88,9 +96,13 @@ def main() -> int:
     print(f"  delta_temp_c: {delta_t:.1f}")
     print("assumptions:")
     print("  constants_source: engineering/constants/materials.yaml")
-    print("  material properties are conservative screening ranges, not vendor-certified values")
+    print(
+        "  material properties are conservative screening ranges, not vendor-certified values"
+    )
     print("  chassis mass is estimated as density * chassis_volume")
-    print("  heat conduction is one-dimensional and ignores contact resistance, anisotropy, heat spreading geometry, and skin limits")
+    print(
+        "  heat conduction is one-dimensional and ignores contact resistance, anisotropy, heat spreading geometry, and skin limits"
+    )
     print("formulas:")
     print("  chassis_mass_g = density_g_cm3 * chassis_volume_cm3")
     print("  Q = k * A * deltaT / L")
@@ -104,7 +116,9 @@ def main() -> int:
     print(f"  simplified_heat_conduction_range_w: {fmt_range(heat_range_w, 'W')}")
     print("confidence: low")
     print("basis: first-order screening from conservative material property ranges")
-    print(f"primary blocker: {BLOCKERS.get(args.material, 'vendor material grade, geometry, RF, manufacturing, and measured thermal interfaces')}")
+    print(
+        f"primary blocker: {BLOCKERS.get(args.material, 'vendor material grade, geometry, RF, manufacturing, and measured thermal interfaces')}"
+    )
     return 0
 
 

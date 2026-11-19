@@ -52,7 +52,9 @@ def render_report(risks: tuple[RiskEntry, ...] | None = None) -> str:
     severity_counts = Counter(risk.severity.value for risk in risk_rows)
     status_counts = Counter(risk.status for risk in risk_rows)
     blocked_or_critical = [
-        risk for risk in ranked if risk.status == "blocked" or risk.severity.value == "CRITICAL"
+        risk
+        for risk in ranked
+        if risk.status == "blocked" or risk.severity.value == "CRITICAL"
     ]
 
     lines = [

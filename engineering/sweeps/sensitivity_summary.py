@@ -49,8 +49,12 @@ def range_for(rows: list[SweepRow], key: str) -> float | None:
     return max(values) - min(values)
 
 
-def categorical_range(rows: list[SweepRow], key: str, score_map: dict[str, int]) -> int | None:
-    values = [score_map[value] for row in rows if (value := row.outputs.get(key)) in score_map]
+def categorical_range(
+    rows: list[SweepRow], key: str, score_map: dict[str, int]
+) -> int | None:
+    values = [
+        score_map[value] for row in rows if (value := row.outputs.get(key)) in score_map
+    ]
     if not values:
         return None
     return max(values) - min(values)
@@ -100,8 +104,12 @@ def main() -> int:
     summaries: list[dict[str, Any]] = []
 
     print("Scenario Sweep Sensitivity Summary")
-    print(f"profile: {profile_path.relative_to(REPO_ROOT) if profile_path.is_relative_to(REPO_ROOT) else profile_path}")
-    print("scope: one-parameter screening sweeps; no optimization or automatic target solving")
+    print(
+        f"profile: {profile_path.relative_to(REPO_ROOT) if profile_path.is_relative_to(REPO_ROOT) else profile_path}"
+    )
+    print(
+        "scope: one-parameter screening sweeps; no optimization or automatic target solving"
+    )
     print("")
 
     for parameter, values in DEFAULT_SWEEPS:
@@ -126,31 +134,56 @@ def main() -> int:
         for summary in summaries
     ]
     print("Default sweep metrics:")
-    print("\n".join(render_table([
-        "parameter",
-        "thermal_risk_range",
-        "throttle_range",
-        "runtime_range_h",
-        "stackup_range_mm",
-        "runtime_low_rate",
-        "stackup_fail_rate",
-        "memory_pressure_rate",
-    ], table_rows)))
+    print(
+        "\n".join(
+            render_table(
+                [
+                    "parameter",
+                    "thermal_risk_range",
+                    "throttle_range",
+                    "runtime_range_h",
+                    "stackup_range_mm",
+                    "runtime_low_rate",
+                    "stackup_fail_rate",
+                    "memory_pressure_rate",
+                ],
+                table_rows,
+            )
+        )
+    )
     print("")
 
     thermal_scores = [
-        (str(summary["parameter"]), max(summary["thermal_risk_range"] or 0, summary["throttle_range"] or 0))
+        (
+            str(summary["parameter"]),
+            max(summary["thermal_risk_range"] or 0, summary["throttle_range"] or 0),
+        )
         for summary in summaries
     ]
-    runtime_scores = [(str(summary["parameter"]), summary["runtime_range_h"]) for summary in summaries]
-    stackup_scores = [(str(summary["parameter"]), summary["stackup_range_mm"]) for summary in summaries]
+    runtime_scores = [
+        (str(summary["parameter"]), summary["runtime_range_h"]) for summary in summaries
+    ]
+    stackup_scores = [
+        (str(summary["parameter"]), summary["stackup_range_mm"])
+        for summary in summaries
+    ]
 
     print("Summary recommendations:")
-    print(f"- Parameters most affecting thermal risk in this first-pass set: {label_top(thermal_scores)}.")
-    print(f"- Parameters most affecting runtime in this first-pass set: {label_top(runtime_scores)}.")
-    print(f"- Parameters most affecting stackup in this first-pass set: {label_top(stackup_scores)}.")
-    print("- Treat warning labels as screening signals for engineering review, not pass/fail optimization targets.")
-    print("- No optimization claim is made; these sweeps only show response direction and relative sensitivity.")
+    print(
+        f"- Parameters most affecting thermal risk in this first-pass set: {label_top(thermal_scores)}."
+    )
+    print(
+        f"- Parameters most affecting runtime in this first-pass set: {label_top(runtime_scores)}."
+    )
+    print(
+        f"- Parameters most affecting stackup in this first-pass set: {label_top(stackup_scores)}."
+    )
+    print(
+        "- Treat warning labels as screening signals for engineering review, not pass/fail optimization targets."
+    )
+    print(
+        "- No optimization claim is made; these sweeps only show response direction and relative sensitivity."
+    )
     return 0
 
 

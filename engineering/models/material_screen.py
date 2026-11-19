@@ -48,7 +48,9 @@ def load_materials() -> dict[str, Any]:
     with MATERIAL_CONSTANTS_PATH.open("r", encoding="utf-8") as constants_file:
         data = yaml.safe_load(constants_file)
     if not isinstance(data, dict) or not isinstance(data.get("materials"), dict):
-        raise ValueError("materials constants must contain a top-level 'materials' mapping")
+        raise ValueError(
+            "materials constants must contain a top-level 'materials' mapping"
+        )
     return data["materials"]
 
 
@@ -81,15 +83,23 @@ def main() -> int:
     print(f"  candidates: {', '.join(CANDIDATES)}")
     print("assumptions:")
     print("  constants_source: engineering/constants/materials.yaml")
-    print("  ranking is a coarse screen by lower mass, higher thermal conductivity, RF risk, and manufacturability risk")
-    print("  no universal winner is implied; final selection depends on antenna layout, thermal architecture, durability target, cosmetics, cost, and supply chain")
+    print(
+        "  ranking is a coarse screen by lower mass, higher thermal conductivity, RF risk, and manufacturability risk"
+    )
+    print(
+        "  no universal winner is implied; final selection depends on antenna layout, thermal architecture, durability target, cosmetics, cost, and supply chain"
+    )
     print("formulas:")
     print("  mass_proxy = typical density_g_cm3")
     print("  thermal_proxy = typical thermal_conductivity_w_mk")
-    print("  screen_score = density - thermal_conductivity/100 + rf_risk + manufacturability_risk")
+    print(
+        "  screen_score = density - thermal_conductivity/100 + rf_risk + manufacturability_risk"
+    )
     print("  lower screen_score prints earlier as a tradeoff aid, not a recommendation")
     print("outputs:")
-    print("  rank | material | density_typ_g_cm3 | k_typ_w_mk | rf_risk | manufacturability_risk | screen_score")
+    print(
+        "  rank | material | density_typ_g_cm3 | k_typ_w_mk | rf_risk | manufacturability_risk | screen_score"
+    )
     for idx, (score, name, density, conductivity, rf, mfg) in enumerate(rows, start=1):
         print(
             f"  {idx:>4} | {name:<16} | {density:>17.2f} | {conductivity:>10.1f} | "
@@ -99,8 +109,12 @@ def main() -> int:
     for _, name, *_ in rows:
         print(f"  - {name}: {NOTES[name]}")
     print("confidence: low")
-    print("basis: first-order screening from conservative property ranges and qualitative RF/manufacturing risk labels")
-    print("primary blocker: material choice cannot be finalized without antenna design, CAD stackup, measured thermal contacts, drop targets, cosmetic requirements, and vendor process data")
+    print(
+        "basis: first-order screening from conservative property ranges and qualitative RF/manufacturing risk labels"
+    )
+    print(
+        "primary blocker: material choice cannot be finalized without antenna design, CAD stackup, measured thermal contacts, drop targets, cosmetic requirements, and vendor process data"
+    )
     return 0
 
 

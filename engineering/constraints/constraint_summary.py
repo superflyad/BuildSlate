@@ -49,10 +49,18 @@ def summarize_default_boundaries() -> str:
 
     thickness = finding_value(check_rows["zone_stackup_pass"], "first_passing")
     runtime_capacity = finding_value(check_rows["runtime_minimum"], "first_passing")
-    sustained_power = finding_value(check_rows["thermal_risk_not_extreme"], "last_passing_before_fail")
-    first_extreme_power = finding_value(check_rows["thermal_risk_not_extreme"], "first_failing_after_pass")
-    ambient_last_pass = finding_value(check_rows["skin_temp_pass"], "last_passing_before_fail")
-    ambient_first_fail = finding_value(check_rows["skin_temp_pass"], "first_failing_after_pass")
+    sustained_power = finding_value(
+        check_rows["thermal_risk_not_extreme"], "last_passing_before_fail"
+    )
+    first_extreme_power = finding_value(
+        check_rows["thermal_risk_not_extreme"], "first_failing_after_pass"
+    )
+    ambient_last_pass = finding_value(
+        check_rows["skin_temp_pass"], "last_passing_before_fail"
+    )
+    ambient_first_fail = finding_value(
+        check_rows["skin_temp_pass"], "first_failing_after_pass"
+    )
     memory_capacity = finding_value(check_rows["memory_runtime_pass"], "first_passing")
 
     lines.extend(

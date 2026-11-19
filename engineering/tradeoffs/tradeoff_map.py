@@ -67,10 +67,21 @@ class TradeoffPoint:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", required=True, help="Device profile YAML path")
-    parser.add_argument("--x", required=True, nargs=4, metavar=("PARAMETER", "MIN", "MAX", "STEP"))
-    parser.add_argument("--y", required=True, nargs=4, metavar=("PARAMETER", "MIN", "MAX", "STEP"))
-    parser.add_argument("--constraint", required=True, choices=sorted(boundary.SUPPORTED_CONSTRAINTS))
-    parser.add_argument("--target-runtime-h", type=float, default=1.0, help="Target runtime for runtime_minimum")
+    parser.add_argument(
+        "--x", required=True, nargs=4, metavar=("PARAMETER", "MIN", "MAX", "STEP")
+    )
+    parser.add_argument(
+        "--y", required=True, nargs=4, metavar=("PARAMETER", "MIN", "MAX", "STEP")
+    )
+    parser.add_argument(
+        "--constraint", required=True, choices=sorted(boundary.SUPPORTED_CONSTRAINTS)
+    )
+    parser.add_argument(
+        "--target-runtime-h",
+        type=float,
+        default=1.0,
+        help="Target runtime for runtime_minimum",
+    )
     parser.add_argument(
         "--output",
         default=str(DEFAULT_OUTPUT.relative_to(REPO_ROOT)),
@@ -95,10 +106,18 @@ def parse_axis(raw_axis: list[str]) -> AxisSpec:
     return AxisSpec(parameter_path, float(min_text), float(max_text), float(step_text))
 
 
-def coerce_axis_value(base_profile: dict[str, Any], parameter_path: str, raw_value: float) -> Any:
+def coerce_axis_value(
+    base_profile: dict[str, Any], parameter_path: str, raw_value: float
+) -> Any:
     reference_value = sweep_runner.get_path(base_profile, parameter_path)
-    if isinstance(reference_value, (int, float)) and not isinstance(reference_value, bool):
-        return int(raw_value) if float(raw_value).is_integer() and isinstance(reference_value, int) else raw_value
+    if isinstance(reference_value, (int, float)) and not isinstance(
+        reference_value, bool
+    ):
+        return (
+            int(raw_value)
+            if float(raw_value).is_integer() and isinstance(reference_value, int)
+            else raw_value
+        )
     return sweep_runner.coerce_value(str(raw_value), reference_value)
 
 
@@ -107,7 +126,9 @@ def clean_warnings(warnings: list[str]) -> list[str]:
     return list(dict.fromkeys(cleaned)) or ["none"]
 
 
-def combined_sweep_outputs(profile: dict[str, Any], x_path: str, x_value: Any, y_path: str, y_value: Any) -> tuple[dict[str, str], list[str]]:
+def combined_sweep_outputs(
+    profile: dict[str, Any], x_path: str, x_value: Any, y_path: str, y_value: Any
+) -> tuple[dict[str, str], list[str]]:
     outputs: dict[str, str] = {}
     warnings: list[str] = []
     mapped_by_constraint = {
@@ -125,7 +146,9 @@ def combined_sweep_outputs(profile: dict[str, Any], x_path: str, x_value: Any, y
                 outputs[key] = output_value
         row_warnings = row.warnings
         if parameter_path in mapped_by_constraint:
-            row_warnings = [warning for warning in row_warnings if warning != "not_mapped"]
+            row_warnings = [
+                warning for warning in row_warnings if warning != "not_mapped"
+            ]
         warnings.extend(row_warnings)
     return outputs, clean_warnings(warnings)
 
@@ -140,10 +163,18 @@ def numeric_output(outputs: dict[str, str], key: str) -> float | None:
         return None
 
 
-def classify_pressure(passed: bool, outputs: dict[str, str], warnings: list[str], constraint: str) -> tuple[str, str]:
+def classify_pressure(
+    passed: bool, outputs: dict[str, str], warnings: list[str], constraint: str
+) -> tuple[str, str]:
     """Classify a point with explicit first-pass screening heuristics."""
     active_warnings = [warning for warning in warnings if warning != "none"]
-    severe_warnings = {"stackup_fail", "high_thermal_risk", "runtime_low", "throttle_pressure", "memory_pressure"}
+    severe_warnings = {
+        "stackup_fail",
+        "high_thermal_risk",
+        "runtime_low",
+        "throttle_pressure",
+        "memory_pressure",
+    }
 
     if not passed:
         return "FAIL", "explicit constraint failure from selected constraint check"
@@ -152,9 +183,15 @@ def classify_pressure(passed: bool, outputs: dict[str, str], warnings: list[str]
         risk = outputs.get("thermal_risk")
         heat_density = numeric_output(outputs, "heat_density_w_cm3")
         if risk == "high" or (heat_density is not None and heat_density >= 0.22):
-            return "EXTREME", "thermal risk is high or heat density is near the extreme threshold"
+            return (
+                "EXTREME",
+                "thermal risk is high or heat density is near the extreme threshold",
+            )
         if risk == "moderate" or (heat_density is not None and heat_density >= 0.15):
-            return "HIGH", "thermal margin is low under the screening heat-density bands"
+            return (
+                "HIGH",
+                "thermal margin is low under the screening heat-density bands",
+            )
         if active_warnings:
             return "MODERATE", "constraint passes but warnings are active"
         return "PASS", "constraint passes with no active warnings"
@@ -167,7 +204,10 @@ def classify_pressure(passed: bool, outputs: dict[str, str], warnings: list[str]
             if margin < 0.75:
                 return "HIGH", "stackup margin is below 0.75 mm"
             if margin < 1.5 or active_warnings:
-                return "MODERATE", "stackup passes but margin is modest or warnings are active"
+                return (
+                    "MODERATE",
+                    "stackup passes but margin is modest or warnings are active",
+                )
         return "PASS", "constraint passes with comfortable stackup margin"
 
     if constraint == "skin_temp_pass":
@@ -175,11 +215,17 @@ def classify_pressure(passed: bool, outputs: dict[str, str], warnings: list[str]
         throttle_pressure = outputs.get("throttle_pressure")
         if margin is not None:
             if margin <= 1.0 or throttle_pressure in {"limit", "critical"}:
-                return "EXTREME", "skin-temperature margin is within 1 C or throttle pressure is severe"
+                return (
+                    "EXTREME",
+                    "skin-temperature margin is within 1 C or throttle pressure is severe",
+                )
             if margin <= 3.0:
                 return "HIGH", "skin-temperature margin is 3 C or less"
             if margin <= 6.0 or active_warnings:
-                return "MODERATE", "skin-temperature margin is modest or warnings are active"
+                return (
+                    "MODERATE",
+                    "skin-temperature margin is modest or warnings are active",
+                )
         return "PASS", "constraint passes with no active skin-temperature warnings"
 
     if constraint == "runtime_minimum":
@@ -192,7 +238,10 @@ def classify_pressure(passed: bool, outputs: dict[str, str], warnings: list[str]
             if ratio <= 1.20:
                 return "HIGH", "runtime margin is 20% or less"
             if ratio <= 1.50 or active_warnings:
-                return "MODERATE", "runtime passes but margin is limited or warnings are active"
+                return (
+                    "MODERATE",
+                    "runtime passes but margin is limited or warnings are active",
+                )
         return "PASS", "runtime passes with comfortable margin"
 
     if constraint == "mass_within_engineering_range":
@@ -201,11 +250,20 @@ def classify_pressure(passed: bool, outputs: dict[str, str], warnings: list[str]
         if mass is not None and max_mass is not None and max_mass > 0:
             ratio = mass / max_mass
             if ratio >= 0.98:
-                return "EXTREME", "estimated mass is within 2% of the engineering maximum"
+                return (
+                    "EXTREME",
+                    "estimated mass is within 2% of the engineering maximum",
+                )
             if ratio >= 0.90:
-                return "HIGH", "estimated mass uses at least 90% of the engineering maximum"
+                return (
+                    "HIGH",
+                    "estimated mass uses at least 90% of the engineering maximum",
+                )
             if ratio >= 0.80 or active_warnings:
-                return "MODERATE", "mass passes but uses at least 80% of the engineering maximum or warnings are active"
+                return (
+                    "MODERATE",
+                    "mass passes but uses at least 80% of the engineering maximum or warnings are active",
+                )
         return "PASS", "mass passes with comfortable screening margin"
 
     if constraint == "memory_runtime_pass":
@@ -214,14 +272,25 @@ def classify_pressure(passed: bool, outputs: dict[str, str], warnings: list[str]
         if remaining is not None and available is not None and available > 0:
             ratio = remaining / available
             if ratio <= 0.05:
-                return "EXTREME", "runtime memory remaining is 5% or less of installed memory"
+                return (
+                    "EXTREME",
+                    "runtime memory remaining is 5% or less of installed memory",
+                )
             if ratio <= 0.15:
-                return "HIGH", "runtime memory remaining is 15% or less of installed memory"
+                return (
+                    "HIGH",
+                    "runtime memory remaining is 15% or less of installed memory",
+                )
             if ratio <= 0.25 or active_warnings:
-                return "MODERATE", "runtime memory passes but remaining headroom is limited or warnings are active"
+                return (
+                    "MODERATE",
+                    "runtime memory passes but remaining headroom is limited or warnings are active",
+                )
         return "PASS", "memory runtime passes with comfortable headroom"
 
-    if len(active_warnings) >= 2 or any(warning in severe_warnings for warning in active_warnings):
+    if len(active_warnings) >= 2 or any(
+        warning in severe_warnings for warning in active_warnings
+    ):
         return "HIGH", "constraint passes with multiple or severe warnings"
     if active_warnings:
         return "MODERATE", "constraint passes but warnings are active"
@@ -240,8 +309,18 @@ def evaluate_tradeoff_grid(
     sweep_runner.get_path(base_profile, x_axis.parameter_path)
     sweep_runner.get_path(base_profile, y_axis.parameter_path)
 
-    x_values = [coerce_axis_value(base_profile, x_axis.parameter_path, value) for value in boundary.scan_values(x_axis.min_value, x_axis.max_value, x_axis.step)]
-    y_values = [coerce_axis_value(base_profile, y_axis.parameter_path, value) for value in boundary.scan_values(y_axis.min_value, y_axis.max_value, y_axis.step)]
+    x_values = [
+        coerce_axis_value(base_profile, x_axis.parameter_path, value)
+        for value in boundary.scan_values(
+            x_axis.min_value, x_axis.max_value, x_axis.step
+        )
+    ]
+    y_values = [
+        coerce_axis_value(base_profile, y_axis.parameter_path, value)
+        for value in boundary.scan_values(
+            y_axis.min_value, y_axis.max_value, y_axis.step
+        )
+    ]
 
     grid: list[list[TradeoffPoint]] = []
     for x_value in x_values:
@@ -250,11 +329,21 @@ def evaluate_tradeoff_grid(
             mutated_profile = copy.deepcopy(base_profile)
             sweep_runner.set_path(mutated_profile, x_axis.parameter_path, x_value)
             sweep_runner.set_path(mutated_profile, y_axis.parameter_path, y_value)
-            outputs, warnings = combined_sweep_outputs(mutated_profile, x_axis.parameter_path, x_value, y_axis.parameter_path, y_value)
-            passed, reason, constraint_outputs = boundary.evaluate_constraint(mutated_profile, base_profile, constraint, target_runtime_h)
+            outputs, warnings = combined_sweep_outputs(
+                mutated_profile,
+                x_axis.parameter_path,
+                x_value,
+                y_axis.parameter_path,
+                y_value,
+            )
+            passed, reason, constraint_outputs = boundary.evaluate_constraint(
+                mutated_profile, base_profile, constraint, target_runtime_h
+            )
             outputs.update(constraint_outputs)
             warnings = clean_warnings(warnings)
-            pressure, explanation = classify_pressure(passed, outputs, warnings, constraint)
+            pressure, explanation = classify_pressure(
+                passed, outputs, warnings, constraint
+            )
             row.append(
                 TradeoffPoint(
                     x_value=x_value,
@@ -305,10 +394,15 @@ def render_tradeoff_map(
     generated = datetime.now(UTC).isoformat(timespec="seconds")
     y_headers = [format_axis_value(y_axis.parameter_path, value) for value in y_values]
     x_labels = [format_axis_value(x_axis.parameter_path, value) for value in x_values]
-    row_label_width = max(len(x_axis.parameter_path), *(len(label) for label in x_labels)) + 2
+    row_label_width = (
+        max(len(x_axis.parameter_path), *(len(label) for label in x_labels)) + 2
+    )
     cell_width = max(3, *(len(header) for header in y_headers))
 
-    matrix_lines = [" " * row_label_width + " ".join(header.rjust(cell_width) for header in y_headers)]
+    matrix_lines = [
+        " " * row_label_width
+        + " ".join(header.rjust(cell_width) for header in y_headers)
+    ]
     for label, points in zip(x_labels, grid):
         codes = [PRESSURE_CODES[point.pressure].rjust(cell_width) for point in points]
         matrix_lines.append(label.ljust(row_label_width) + " ".join(codes))
@@ -320,7 +414,9 @@ def render_tradeoff_map(
 
     sample_lines = []
     for pressure in PRESSURE_ORDER:
-        sample = next((point for row in grid for point in row if point.pressure == pressure), None)
+        sample = next(
+            (point for row in grid for point in row if point.pressure == pressure), None
+        )
         if sample is not None:
             sample_lines.append(
                 f"- {pressure}: x={format_axis_value(x_axis.parameter_path, sample.x_value)}, "
@@ -380,8 +476,12 @@ def generate_tradeoff_report(
     constraint: str,
     target_runtime_h: float = 1.0,
 ) -> str:
-    profile, x_values, y_values, grid = evaluate_tradeoff_grid(profile_path, x_axis, y_axis, constraint, target_runtime_h)
-    return render_tradeoff_map(profile, profile_path, x_axis, y_axis, constraint, x_values, y_values, grid)
+    profile, x_values, y_values, grid = evaluate_tradeoff_grid(
+        profile_path, x_axis, y_axis, constraint, target_runtime_h
+    )
+    return render_tradeoff_map(
+        profile, profile_path, x_axis, y_axis, constraint, x_values, y_values, grid
+    )
 
 
 def main() -> int:
@@ -392,7 +492,9 @@ def main() -> int:
     try:
         x_axis = parse_axis(args.x)
         y_axis = parse_axis(args.y)
-        report = generate_tradeoff_report(profile_path, x_axis, y_axis, args.constraint, args.target_runtime_h)
+        report = generate_tradeoff_report(
+            profile_path, x_axis, y_axis, args.constraint, args.target_runtime_h
+        )
     except (OSError, ValueError, KeyError) as exc:
         print(f"FAIL: {exc}")
         return 1

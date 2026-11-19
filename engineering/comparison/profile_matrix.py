@@ -11,7 +11,14 @@ COMPARISON_DIR = Path(__file__).resolve().parent
 if str(COMPARISON_DIR) not in sys.path:
     sys.path.insert(0, str(COMPARISON_DIR))
 
-from compare_profiles import DEFAULT_PROFILES, REPO_ROOT, ProfileComparison, load_comparison, repo_relative, table  # noqa: E402
+from compare_profiles import (
+    DEFAULT_PROFILES,
+    REPO_ROOT,
+    ProfileComparison,
+    load_comparison,
+    repo_relative,
+    table,
+)  # noqa: E402
 
 
 def parse_args() -> argparse.Namespace:
@@ -74,10 +81,14 @@ def build_matrix(profile_paths: list[str]) -> str:
 def main() -> int:
     args = parse_args()
     print(build_matrix(args.profiles))
-    print("\nLegend: LOW, MODERATE, HIGH, and EXTREME are qualitative screening categories, not optimization scores.")
+    print(
+        "\nLegend: LOW, MODERATE, HIGH, and EXTREME are qualitative screening categories, not optimization scores."
+    )
     print("Profiles compared:")
     for path_text in args.profiles:
-        print(f"- {repo_relative((REPO_ROOT / path_text).resolve()) if not Path(path_text).is_absolute() else path_text}")
+        print(
+            f"- {repo_relative((REPO_ROOT / path_text).resolve()) if not Path(path_text).is_absolute() else path_text}"
+        )
     return 0
 
 

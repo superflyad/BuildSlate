@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """First-pass thermal expansion mismatch screen for bonded material pairs."""
+
 from __future__ import annotations
 
 import argparse
@@ -71,32 +72,54 @@ def main() -> int:
     warnings: list[str] = []
 
     for material_a, material_b in PAIRS:
-        expansion_a = expansion_mm(args.bond_length_mm, cte_values[material_a], args.delta_temp_c)
-        expansion_b = expansion_mm(args.bond_length_mm, cte_values[material_b], args.delta_temp_c)
+        expansion_a = expansion_mm(
+            args.bond_length_mm, cte_values[material_a], args.delta_temp_c
+        )
+        expansion_b = expansion_mm(
+            args.bond_length_mm, cte_values[material_b], args.delta_temp_c
+        )
         mismatch = abs(expansion_a - expansion_b)
         rows.append(
             f"{material_a}/{material_b}: expansion_a_mm={expansion_a:.3f}, "
             f"expansion_b_mm={expansion_b:.3f}, mismatch_mm={mismatch:.3f}"
         )
         if mismatch >= 0.05:
-            warnings.append(f"high mismatch for {material_a}/{material_b}; bonded interface stress risk")
+            warnings.append(
+                f"high mismatch for {material_a}/{material_b}; bonded interface stress risk"
+            )
         if mismatch >= 0.03:
-            warnings.append(f"thermal cycling fatigue risk for {material_a}/{material_b} over long bonded surfaces")
+            warnings.append(
+                f"thermal cycling fatigue risk for {material_a}/{material_b} over long bonded surfaces"
+            )
 
     print("Thermal expansion mismatch screening model")
-    print_section("inputs", [
-        f"delta_temp_c: {args.delta_temp_c:.0f}",
-        f"bond_length_mm: {args.bond_length_mm:.0f}",
-    ])
-    print_section("assumptions", [
-        "CTE values use typical screening constants from engineering/constants/materials.yaml",
-        "bonded interfaces are treated as straight free-expansion lengths before constraint effects",
-        "adhesive compliance, part geometry, creep, and local features are not modeled",
-    ])
-    print_section("formulas", ["expansion_mm = length_mm * cte_per_c * delta_temp_c", "mismatch_mm = abs(expansion_a_mm - expansion_b_mm)"])
+    print_section(
+        "inputs",
+        [
+            f"delta_temp_c: {args.delta_temp_c:.0f}",
+            f"bond_length_mm: {args.bond_length_mm:.0f}",
+        ],
+    )
+    print_section(
+        "assumptions",
+        [
+            "CTE values use typical screening constants from engineering/constants/materials.yaml",
+            "bonded interfaces are treated as straight free-expansion lengths before constraint effects",
+            "adhesive compliance, part geometry, creep, and local features are not modeled",
+        ],
+    )
+    print_section(
+        "formulas",
+        [
+            "expansion_mm = length_mm * cte_per_c * delta_temp_c",
+            "mismatch_mm = abs(expansion_a_mm - expansion_b_mm)",
+        ],
+    )
     print_section("outputs", rows)
     print_section("warnings", warnings or ["none"])
-    print("confidence: low; use FEA and measured materials for bonded-stack reliability decisions")
+    print(
+        "confidence: low; use FEA and measured materials for bonded-stack reliability decisions"
+    )
     print("basis: first-pass CTE mismatch screen")
     return 0
 

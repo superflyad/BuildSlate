@@ -15,7 +15,9 @@ REPORT_PATH = REPO_ROOT / "reports" / "slate-pocket-supplier-rfq-readiness.txt"
 
 def _load_registry() -> dict[str, Any]:
     if not REGISTRY_PATH.exists():
-        raise ValueError(f"RFQ registry missing: {REGISTRY_PATH.relative_to(REPO_ROOT)}")
+        raise ValueError(
+            f"RFQ registry missing: {REGISTRY_PATH.relative_to(REPO_ROOT)}"
+        )
     with REGISTRY_PATH.open("r", encoding="utf-8") as input_file:
         data = yaml.safe_load(input_file)
     if not isinstance(data, dict) or not isinstance(data.get("packets"), dict):
@@ -77,7 +79,9 @@ def build_report() -> str:
         ]
     )
     if missing:
-        lines.extend(["Missing packet artifacts:", *[f"  - {path}" for path in missing], ""])
+        lines.extend(
+            ["Missing packet artifacts:", *[f"  - {path}" for path in missing], ""]
+        )
         decision = "PACKETS_INCOMPLETE"
     elif all(packet["status"] == "prepared_not_sent" for packet in packets.values()):
         decision = "PREPARED_AWAITING_AUTHORIZATION"

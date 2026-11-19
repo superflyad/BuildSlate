@@ -9,20 +9,36 @@ from typing import Any
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-BATTERY_PATH = REPO_ROOT / "research" / "evidence" / "battery" / "supplier-source-index.yaml"
-BATTERY_ENVELOPE_PATH = REPO_ROOT / "research" / "evidence" / "battery" / "pack-envelope.yaml"
-COMPUTE_PATH = REPO_ROOT / "research" / "evidence" / "compute" / "platform-comparison.yaml"
-DISPLAY_STORAGE_PATH = REPO_ROOT / "research" / "evidence" / "display-storage" / "candidate-comparison.yaml"
+BATTERY_PATH = (
+    REPO_ROOT / "research" / "evidence" / "battery" / "supplier-source-index.yaml"
+)
+BATTERY_ENVELOPE_PATH = (
+    REPO_ROOT / "research" / "evidence" / "battery" / "pack-envelope.yaml"
+)
+COMPUTE_PATH = (
+    REPO_ROOT / "research" / "evidence" / "compute" / "platform-comparison.yaml"
+)
+DISPLAY_STORAGE_PATH = (
+    REPO_ROOT
+    / "research"
+    / "evidence"
+    / "display-storage"
+    / "candidate-comparison.yaml"
+)
 REPORT_PATH = REPO_ROOT / "reports" / "slate-pocket-phase1-candidate-screen.txt"
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
     if not path.exists():
-        raise ValueError(f"Phase 1 evidence file missing: {path.relative_to(REPO_ROOT)}")
+        raise ValueError(
+            f"Phase 1 evidence file missing: {path.relative_to(REPO_ROOT)}"
+        )
     with path.open("r", encoding="utf-8") as input_file:
         data = yaml.safe_load(input_file)
     if not isinstance(data, dict):
-        raise ValueError(f"Phase 1 evidence root must be a mapping: {path.relative_to(REPO_ROOT)}")
+        raise ValueError(
+            f"Phase 1 evidence root must be a mapping: {path.relative_to(REPO_ROOT)}"
+        )
     return data
 
 
@@ -70,7 +86,9 @@ def build_report() -> str:
     for candidate_id, candidate in battery["candidates"].items():
         fit = candidate.get("target_fit", {})
         fit_summary = ", ".join(f"{key}={value}" for key, value in fit.items())
-        lines.append(f"  - {candidate_id}: {fit_summary or candidate.get('public_status', 'unclassified')}")
+        lines.append(
+            f"  - {candidate_id}: {fit_summary or candidate.get('public_status', 'unclassified')}"
+        )
     lines.extend(
         [
             f"  pack decision: capacity={battery_decision['capacity_target']}; charge={battery_decision['charge_target']}",
@@ -79,8 +97,18 @@ def build_report() -> str:
         ]
     )
     for candidate_id, candidate in compute["candidates"].items():
-        memory = candidate.get("maximum_memory_gb", candidate.get("maximum_unified_memory_gb", candidate.get("memory_gb", "not_public")))
-        npu = candidate.get("npu_tops_int8", candidate.get("npu_tops", candidate.get("ai_compute_fp4_tflops", "not_public")))
+        memory = candidate.get(
+            "maximum_memory_gb",
+            candidate.get(
+                "maximum_unified_memory_gb", candidate.get("memory_gb", "not_public")
+            ),
+        )
+        npu = candidate.get(
+            "npu_tops_int8",
+            candidate.get(
+                "npu_tops", candidate.get("ai_compute_fp4_tflops", "not_public")
+            ),
+        )
         lines.append(
             f"  - {candidate_id}: memory={memory} GB; AI metric={npu}; disposition={candidate['disposition']}"
         )
@@ -89,7 +117,10 @@ def build_report() -> str:
             f"  preferred product RFQ: {compute_conclusion['preferred_product_rfq']}",
             f"  preferred RFQ memory tier: {compute_conclusion['preferred_memory_tier_for_rfq_gb']} GB",
             "  unsupported by reviewed candidates:",
-            *[f"    - {item}" for item in compute_conclusion["unsupported_by_reviewed_candidates"]],
+            *[
+                f"    - {item}"
+                for item in compute_conclusion["unsupported_by_reviewed_candidates"]
+            ],
             "",
             "Display screen:",
         ]

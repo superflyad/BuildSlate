@@ -11,7 +11,9 @@ from typing import Any, Iterable
 try:
     import yaml
 except ImportError as exc:  # pragma: no cover - dependency guidance path
-    raise SystemExit("PyYAML is required. Install dependencies with: pip install -r requirements.txt") from exc
+    raise SystemExit(
+        "PyYAML is required. Install dependencies with: pip install -r requirements.txt"
+    ) from exc
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PROFILES = (
@@ -82,7 +84,11 @@ def parse_args() -> argparse.Namespace:
         default=str(DEFAULT_REPORT.relative_to(REPO_ROOT)),
         help="Report output path. Use --no-save to print only.",
     )
-    parser.add_argument("--no-save", action="store_true", help="Do not write the comparison report to disk.")
+    parser.add_argument(
+        "--no-save",
+        action="store_true",
+        help="Do not write the comparison report to disk.",
+    )
     return parser.parse_args()
 
 
@@ -113,7 +119,9 @@ def mapping(profile: dict[str, Any], section: str) -> dict[str, Any]:
     return value
 
 
-def numeric(profile: dict[str, Any], section: str, field: str, default: float | None = None) -> float:
+def numeric(
+    profile: dict[str, Any], section: str, field: str, default: float | None = None
+) -> float:
     section_data = mapping(profile, section)
     if field not in section_data:
         if default is None:
@@ -125,13 +133,17 @@ def numeric(profile: dict[str, Any], section: str, field: str, default: float | 
     return float(value)
 
 
-def text(profile: dict[str, Any], section: str, field: str, default: str = "unspecified") -> str:
+def text(
+    profile: dict[str, Any], section: str, field: str, default: str = "unspecified"
+) -> str:
     section_data = mapping(profile, section)
     value = section_data.get(field, default)
     return str(value) if value not in (None, "") else default
 
 
-def optional_text(profile: dict[str, Any], field: str, default: str = "unspecified") -> str:
+def optional_text(
+    profile: dict[str, Any], field: str, default: str = "unspecified"
+) -> str:
     value = profile.get(field, default)
     return str(value) if value not in (None, "") else default
 
@@ -149,7 +161,9 @@ def level_from_score(score: int) -> str:
     return RISK_LEVELS[max(0, min(score, len(RISK_LEVELS) - 1))]
 
 
-def required_model_memory_gb(params_billions: float, quantization_bits: float, context_tokens: float) -> float:
+def required_model_memory_gb(
+    params_billions: float, quantization_bits: float, context_tokens: float
+) -> float:
     weight_memory_gb = params_billions * quantization_bits / 8.0
     # Conservative compact KV/cache and runtime overhead allowance for first-pass comparison.
     context_memory_gb = params_billions * context_tokens / 131_072.0 * 0.16
@@ -206,7 +220,9 @@ def stackup_pressure(thickness_mm: float, memory_gb: float, storage_tb: float) -
     return level_from_score(score)
 
 
-def manufacturing_pressure(thickness_mm: float, memory_gb: float, charging_w: float, thermal_level: str) -> str:
+def manufacturing_pressure(
+    thickness_mm: float, memory_gb: float, charging_w: float, thermal_level: str
+) -> str:
     score = 0
     if thickness_mm < 9.0:
         score += 1
@@ -219,7 +235,9 @@ def manufacturing_pressure(thickness_mm: float, memory_gb: float, charging_w: fl
     return level_from_score(score)
 
 
-def environmental_sensitivity(ambient_c: float, brightness_mode: str, condition: str) -> str:
+def environmental_sensitivity(
+    ambient_c: float, brightness_mode: str, condition: str
+) -> str:
     score = 0
     if ambient_c >= 30:
         score += 1
@@ -250,7 +268,11 @@ def collect_warnings_and_blockers(
         "environmental sensitivity": environmental_level,
     }
     blockers = tuple(name for name, level in categories.items() if level == "EXTREME")
-    warnings = tuple(f"{name}: {level}" for name, level in categories.items() if level in {"HIGH", "EXTREME"})
+    warnings = tuple(
+        f"{name}: {level}"
+        for name, level in categories.items()
+        if level in {"HIGH", "EXTREME"}
+    )
     return blockers, warnings
 
 
@@ -260,14 +282,21 @@ def normalize_profile(path: Path) -> ProfileComparison:
     profile_id = str(identity.get("profile_id") or path.stem)
 
     thickness_mm = numeric(profile, "geometry", "thickness_mm")
-    display_diagonal_in = numeric(profile, "display", "diagonal_in", numeric(profile, "geometry", "display_diagonal_in", 0.0))
+    display_diagonal_in = numeric(
+        profile,
+        "display",
+        "diagonal_in",
+        numeric(profile, "geometry", "display_diagonal_in", 0.0),
+    )
     target_mass_g = numeric(profile, "mass_targets", "aspirational_target_g")
     estimate_mass_g = numeric(profile, "mass_targets", "engineering_estimate_g")
     acceptable_range = mapping(mapping(profile, "mass_targets"), "acceptable_range_g")
     acceptable_min = float(acceptable_range["min"])
     acceptable_max = float(acceptable_range["max"])
     battery_capacity_mah = numeric(profile, "battery", "capacity_mah")
-    battery_wh = battery_capacity_mah / 1000.0 * numeric(profile, "battery", "nominal_voltage_v")
+    battery_wh = (
+        battery_capacity_mah / 1000.0 * numeric(profile, "battery", "nominal_voltage_v")
+    )
     compute_sustained_w = numeric(profile, "compute", "sustained_power_w")
     thermal_sustained_w = numeric(profile, "thermal", "sustained_w")
     ambient_c = numeric(profile, "thermal", "ambient_c", 25.0)
@@ -276,22 +305,32 @@ def normalize_profile(path: Path) -> ProfileComparison:
     model_params_billions = numeric(profile, "runtime", "model_params_billions")
     quantization_bits = numeric(profile, "runtime", "quantization_bits")
     context_tokens = numeric(profile, "runtime", "context_tokens")
-    available_memory_gb = numeric(profile, "runtime", "available_memory_gb", memory_capacity_gb)
-    required_memory_gb = required_model_memory_gb(model_params_billions, quantization_bits, context_tokens)
+    available_memory_gb = numeric(
+        profile, "runtime", "available_memory_gb", memory_capacity_gb
+    )
+    required_memory_gb = required_model_memory_gb(
+        model_params_billions, quantization_bits, context_tokens
+    )
     memory_reserve_gb = available_memory_gb - required_memory_gb
-    runtime_pressure = pressure_level_for_reserve(memory_reserve_gb, available_memory_gb)
+    runtime_pressure = pressure_level_for_reserve(
+        memory_reserve_gb, available_memory_gb
+    )
     brightness_mode = text(profile, "environment", "brightness_mode", "normal")
     condition = text(profile, "environment", "condition", "open_air")
     thermal_level = thermal_risk(thermal_sustained_w, thickness_mm, ambient_c)
     mass_level = mass_pressure(estimate_mass_g, target_mass_g, acceptable_max)
-    stackup_level = stackup_pressure(thickness_mm, memory_capacity_gb, storage_capacity_tb)
+    stackup_level = stackup_pressure(
+        thickness_mm, memory_capacity_gb, storage_capacity_tb
+    )
     manufacturing_level = manufacturing_pressure(
         thickness_mm,
         memory_capacity_gb,
         numeric(profile, "battery", "charging_wired_w"),
         thermal_level,
     )
-    environmental_level = environmental_sensitivity(ambient_c, brightness_mode, condition)
+    environmental_level = environmental_sensitivity(
+        ambient_c, brightness_mode, condition
+    )
     blockers, warnings = collect_warnings_and_blockers(
         thermal_level=thermal_level,
         mass_level=mass_level,
@@ -304,7 +343,9 @@ def normalize_profile(path: Path) -> ProfileComparison:
     return ProfileComparison(
         path=path,
         profile_id=profile_id,
-        profile_class=optional_text(profile, "profile_class", str(identity.get("label", "unspecified"))),
+        profile_class=optional_text(
+            profile, "profile_class", str(identity.get("label", "unspecified"))
+        ),
         feasibility_status=optional_text(profile, "feasibility_status", "conceptual"),
         review_notes=optional_notes(profile),
         thickness_mm=thickness_mm,
@@ -317,7 +358,9 @@ def normalize_profile(path: Path) -> ProfileComparison:
         battery_wh=battery_wh,
         charging_wired_w=numeric(profile, "battery", "charging_wired_w"),
         charging_wireless_w=numeric(profile, "battery", "charging_wireless_w", 0.0),
-        estimated_runtime_h=battery_wh / compute_sustained_w if compute_sustained_w else 0.0,
+        estimated_runtime_h=battery_wh / compute_sustained_w
+        if compute_sustained_w
+        else 0.0,
         compute_sustained_w=compute_sustained_w,
         compute_peak_w=numeric(profile, "compute", "peak_power_w"),
         npu_tops=numeric(profile, "compute", "npu_tops"),
@@ -359,10 +402,17 @@ def fmt_number(value: float, suffix: str = "", decimals: int = 0) -> str:
 def table(title: str, headers: list[str], rows: list[list[str]]) -> str:
     widths = [len(header) for header in headers]
     for row in rows:
-        widths = [max(width, len(cell)) for width, cell in zip(widths, row, strict=True)]
+        widths = [
+            max(width, len(cell)) for width, cell in zip(widths, row, strict=True)
+        ]
     divider = "  ".join("-" * width for width in widths)
-    header_line = "  ".join(header.ljust(width) for header, width in zip(headers, widths, strict=True))
-    row_lines = ["  ".join(cell.ljust(width) for cell, width in zip(row, widths, strict=True)) for row in rows]
+    header_line = "  ".join(
+        header.ljust(width) for header, width in zip(headers, widths, strict=True)
+    )
+    row_lines = [
+        "  ".join(cell.ljust(width) for cell, width in zip(row, widths, strict=True))
+        for row in rows
+    ]
     return "\n".join([title, divider, header_line, divider, *row_lines])
 
 
@@ -416,7 +466,16 @@ def build_report(comparisons: list[ProfileComparison]) -> str:
         ),
         table(
             "Memory, Storage, and Runtime",
-            ["profile", "memory", "bandwidth", "package", "storage", "storage_power", "model/context", "reserve"],
+            [
+                "profile",
+                "memory",
+                "bandwidth",
+                "package",
+                "storage",
+                "storage_power",
+                "model/context",
+                "reserve",
+            ],
             [
                 [
                     item.profile_id,
@@ -433,7 +492,15 @@ def build_report(comparisons: list[ProfileComparison]) -> str:
         ),
         table(
             "Thermal and Environment",
-            ["profile", "sustained", "thermal_risk", "ambient", "condition", "brightness", "environment"],
+            [
+                "profile",
+                "sustained",
+                "thermal_risk",
+                "ambient",
+                "condition",
+                "brightness",
+                "environment",
+            ],
             [
                 [
                     item.profile_id,
@@ -449,7 +516,16 @@ def build_report(comparisons: list[ProfileComparison]) -> str:
         ),
         table(
             "Engineering Pressure Matrix",
-            ["profile", "thermal", "mass", "stackup", "runtime", "manufacturing", "environment", "blockers"],
+            [
+                "profile",
+                "thermal",
+                "mass",
+                "stackup",
+                "runtime",
+                "manufacturing",
+                "environment",
+                "blockers",
+            ],
             [
                 [
                     item.profile_id,
@@ -465,7 +541,12 @@ def build_report(comparisons: list[ProfileComparison]) -> str:
             ],
         ),
     ]
-    notes = ["", "Notes", "-----", "Comparison is exploratory: no profile is selected as best and no auto-solving is performed."]
+    notes = [
+        "",
+        "Notes",
+        "-----",
+        "Comparison is exploratory: no profile is selected as best and no auto-solving is performed.",
+    ]
     for item in comparisons:
         if item.review_notes:
             notes.append(f"{item.profile_id}: " + " | ".join(item.review_notes))

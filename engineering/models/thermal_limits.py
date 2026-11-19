@@ -41,7 +41,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--width-mm", type=positive_float, default=95.0)
     parser.add_argument("--thickness-mm", type=positive_float, default=8.8)
     parser.add_argument("--sustained-w", type=positive_float, default=28.0)
-    parser.add_argument("--explain", action="store_true", help="Print centralized thermal calculation explanations")
+    parser.add_argument(
+        "--explain",
+        action="store_true",
+        help="Print centralized thermal calculation explanations",
+    )
     return parser.parse_args()
 
 
@@ -88,7 +92,9 @@ def main() -> int:
     print("  constants_source: engineering/constants/thermal.yaml")
     print("  rectangular geometry is a screening approximation, not CAD or CFD")
     print("  all sustained electrical power is treated as heat inside the chassis")
-    print("  passive references are conservative screening values, not device-specific limits")
+    print(
+        "  passive references are conservative screening values, not device-specific limits"
+    )
     print("formulas:")
     print("  volume_cm3 = L*W*T / 1000")
     print("  heat_density_w_cm3 = sustained_w / volume_cm3")
@@ -110,7 +116,9 @@ def main() -> int:
         print(explanation_engine.explain("thermal.heat_flux_w_cm2", inputs))
     print("confidence: low")
     print("basis: estimated")
-    print("primary blocker: thermal stack design, contact conditions, ambient temperature, controls, and measured skin temperature")
+    print(
+        "primary blocker: thermal stack design, contact conditions, ambient temperature, controls, and measured skin temperature"
+    )
     return 0
 
 

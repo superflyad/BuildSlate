@@ -22,7 +22,10 @@ def backend_readiness_verdict(entries: list[dict[str, Any]]) -> str:
     maturity = Counter(entry["maturity_level"] for entry in entries)
     critical_open = any(
         entry["review_priority"] == "critical"
-        and (entry["coverage_status"] in {"weak", "missing"} or entry["maturity_level"] == "screening")
+        and (
+            entry["coverage_status"] in {"weak", "missing"}
+            or entry["maturity_level"] == "screening"
+        )
         for entry in entries
     )
 
@@ -40,7 +43,10 @@ def backend_readiness_verdict(entries: list[dict[str, Any]]) -> str:
 def domain_table(entries: list[dict[str, Any]]) -> list[str]:
     if not entries:
         return ["No domains in this section.", ""]
-    lines = ["| Domain | Maturity | Priority | Known gaps |", "| --- | --- | --- | --- |"]
+    lines = [
+        "| Domain | Maturity | Priority | Known gaps |",
+        "| --- | --- | --- | --- |",
+    ]
     for entry in entries:
         gaps = "; ".join(entry["known_gaps"])
         lines.append(
@@ -52,11 +58,16 @@ def domain_table(entries: list[dict[str, Any]]) -> list[str]:
 
 def evidence_lines(entries: list[dict[str, Any]]) -> list[str]:
     priority_order = {"critical": 0, "high": 1, "medium": 2, "low": 3}
-    sorted_entries = sorted(entries, key=lambda entry: (priority_order[entry["review_priority"]], entry["domain"]))
+    sorted_entries = sorted(
+        entries,
+        key=lambda entry: (priority_order[entry["review_priority"]], entry["domain"]),
+    )
     lines: list[str] = []
     for entry in sorted_entries:
         evidence = "; ".join(entry["required_next_evidence"])
-        lines.append(f"- **{entry['domain']}** ({entry['review_priority']}): {evidence}")
+        lines.append(
+            f"- **{entry['domain']}** ({entry['review_priority']}): {evidence}"
+        )
     lines.append("")
     return lines
 
@@ -85,9 +96,15 @@ def build_report(entries: list[dict[str, Any]]) -> str:
         ("Missing Domains", "missing"),
     ):
         sections.extend([f"## {title}", ""])
-        sections.extend(domain_table([entry for entry in entries if entry["coverage_status"] == status]))
+        sections.extend(
+            domain_table(
+                [entry for entry in entries if entry["coverage_status"] == status]
+            )
+        )
 
-    critical_entries = [entry for entry in entries if entry["review_priority"] == "critical"]
+    critical_entries = [
+        entry for entry in entries if entry["review_priority"] == "critical"
+    ]
     sections.extend(["## Critical Review Priorities", ""])
     sections.extend(domain_table(critical_entries))
 

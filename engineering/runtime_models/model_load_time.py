@@ -19,7 +19,12 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    load_seconds = args.model_size_gb / args.storage_bandwidth_gbps * args.load_overhead_factor * args.decompression_factor
+    load_seconds = (
+        args.model_size_gb
+        / args.storage_bandwidth_gbps
+        * args.load_overhead_factor
+        * args.decompression_factor
+    )
 
     warnings = ["storage bandwidth value is theoretical, not guaranteed sustained"]
     if load_seconds > 30.0:
@@ -34,27 +39,43 @@ def main() -> int:
         primary_blocker = "cold model load latency"
 
     print("Model load time estimate")
-    print_section("inputs", [
-        f"model_size_gb: {args.model_size_gb:.2f}",
-        f"storage_bandwidth_gbps: {args.storage_bandwidth_gbps:.2f}",
-        f"decompression_factor: {args.decompression_factor:.2f}",
-        f"load_overhead_factor: {args.load_overhead_factor:.2f}",
-    ])
-    print_section("assumptions", [
-        "model size is the local weight payload to read from storage",
-        "storage bandwidth is treated as GB/s and as a theoretical upper bound rather than guaranteed sustained throughput",
-        "load overhead covers filesystem, runtime initialization, allocation, and staging costs",
-        "this model estimates cold-load latency only and does not predict real tokens/sec",
-    ])
-    print_section("formulas", [
-        "load_seconds = model_size_gb / storage_bandwidth_gbps * load_overhead_factor * decompression_factor",
-    ])
-    print_section("outputs", [
-        f"load_seconds: {load_seconds:.2f}",
-    ])
+    print_section(
+        "inputs",
+        [
+            f"model_size_gb: {args.model_size_gb:.2f}",
+            f"storage_bandwidth_gbps: {args.storage_bandwidth_gbps:.2f}",
+            f"decompression_factor: {args.decompression_factor:.2f}",
+            f"load_overhead_factor: {args.load_overhead_factor:.2f}",
+        ],
+    )
+    print_section(
+        "assumptions",
+        [
+            "model size is the local weight payload to read from storage",
+            "storage bandwidth is treated as GB/s and as a theoretical upper bound rather than guaranteed sustained throughput",
+            "load overhead covers filesystem, runtime initialization, allocation, and staging costs",
+            "this model estimates cold-load latency only and does not predict real tokens/sec",
+        ],
+    )
+    print_section(
+        "formulas",
+        [
+            "load_seconds = model_size_gb / storage_bandwidth_gbps * load_overhead_factor * decompression_factor",
+        ],
+    )
+    print_section(
+        "outputs",
+        [
+            f"load_seconds: {load_seconds:.2f}",
+        ],
+    )
     print_section("warnings", warnings)
-    print("confidence: medium for arithmetic; low for real sustained storage/runtime behavior")
-    print("basis: first-pass sequential read time with runtime and decompression multipliers")
+    print(
+        "confidence: medium for arithmetic; low for real sustained storage/runtime behavior"
+    )
+    print(
+        "basis: first-pass sequential read time with runtime and decompression multipliers"
+    )
     print(f"primary blocker: {primary_blocker}")
     return 0
 

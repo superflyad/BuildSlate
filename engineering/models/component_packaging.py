@@ -10,7 +10,9 @@ from typing import Any
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-COMPONENT_LIBRARY_PATH = REPO_ROOT / "engineering" / "components" / "component_library.yaml"
+COMPONENT_LIBRARY_PATH = (
+    REPO_ROOT / "engineering" / "components" / "component_library.yaml"
+)
 PROFILES = ("conservative", "nominal", "aggressive")
 DEVICE_LENGTH_MM = 180.0
 DEVICE_WIDTH_MM = 95.0
@@ -72,7 +74,9 @@ def thermal_hotspots(components: dict[str, dict[str, Any]]) -> list[str]:
     return hotspots
 
 
-def placement_constraints(components: dict[str, dict[str, Any]]) -> dict[str, list[str]]:
+def placement_constraints(
+    components: dict[str, dict[str, Any]],
+) -> dict[str, list[str]]:
     constraints: dict[str, list[str]] = {}
     for name in PLACEMENT_COMPONENTS:
         component = components.get(name, {})
@@ -81,7 +85,9 @@ def placement_constraints(components: dict[str, dict[str, Any]]) -> dict[str, li
     return constraints
 
 
-def z_height_warnings(components: dict[str, dict[str, Any]], profile: str, z_stack_mm: float) -> list[str]:
+def z_height_warnings(
+    components: dict[str, dict[str, Any]], profile: str, z_stack_mm: float
+) -> list[str]:
     warnings: list[str] = []
     for name in RIGID_COMPONENTS:
         component = components[name]
@@ -115,10 +121,18 @@ def main() -> int:
     profile = args.profile
 
     total_mass_g = sum(profile_value(c, "mass_g", profile) for c in components.values())
-    total_volume_cm3 = sum(profile_value(c, "volume_cm3", profile) for c in components.values())
-    total_idle_power_w = sum(profile_value(c, "idle_power_w", profile) for c in components.values())
-    total_active_power_w = sum(profile_value(c, "active_power_w", profile) for c in components.values())
-    pcb_area_used_mm2 = sum(profile_value(c, "pcb_area_mm2", profile) for c in components.values())
+    total_volume_cm3 = sum(
+        profile_value(c, "volume_cm3", profile) for c in components.values()
+    )
+    total_idle_power_w = sum(
+        profile_value(c, "idle_power_w", profile) for c in components.values()
+    )
+    total_active_power_w = sum(
+        profile_value(c, "active_power_w", profile) for c in components.values()
+    )
+    pcb_area_used_mm2 = sum(
+        profile_value(c, "pcb_area_mm2", profile) for c in components.values()
+    )
     available_pcb_area_mm2 = DEVICE_LENGTH_MM * DEVICE_WIDTH_MM * PCB_AREA_FRACTION
     pcb_utilization_percent = pcb_area_used_mm2 / available_pcb_area_mm2 * 100
     z_stack_mm = sum(
@@ -127,30 +141,44 @@ def main() -> int:
     )
     warnings = z_height_warnings(components, profile, z_stack_mm)
     if pcb_utilization_percent > 85:
-        warnings.append("PCB utilization exceeds 85%; routing, shielding, and rework margin are likely constrained")
+        warnings.append(
+            "PCB utilization exceeds 85%; routing, shielding, and rework margin are likely constrained"
+        )
     if total_active_power_w > 25:
-        warnings.append("Total active component power exceeds 25 W placeholder handheld thermal screening level")
+        warnings.append(
+            "Total active component power exceeds 25 W placeholder handheld thermal screening level"
+        )
 
     print("Component packaging model")
     print("inputs:")
     print(f"  profile: {profile}")
     print(f"  component_library: {COMPONENT_LIBRARY_PATH.relative_to(REPO_ROOT)}")
     print("assumptions:")
-    print("  component values are placeholder screening ranges, not vendor-certified values")
+    print(
+        "  component values are placeholder screening ranges, not vendor-certified values"
+    )
     print(f"  device_length_mm: {DEVICE_LENGTH_MM:.1f}")
     print(f"  device_width_mm: {DEVICE_WIDTH_MM:.1f}")
     print(f"  pcb_area_fraction: {PCB_AREA_FRACTION:.2f}")
     print(f"  target_thickness_mm: {TARGET_THICKNESS_MM:.1f}")
-    print("  z_height_stack includes battery_pack + vapor_chamber + display_module only")
+    print(
+        "  z_height_stack includes battery_pack + vapor_chamber + display_module only"
+    )
     print("formulas:")
     print("  total_component_mass_g = sum(component.mass_g[profile])")
     print("  total_component_volume_cm3 = sum(component.volume_cm3[profile])")
     print("  total_idle_power_w = sum(component.idle_power_w[profile])")
     print("  total_active_power_w = sum(component.active_power_w[profile])")
     print("  pcb_area_used_mm2 = sum(component.pcb_area_mm2[profile])")
-    print("  available_pcb_area_mm2 = device_length_mm * device_width_mm * pcb_area_fraction")
-    print("  pcb_utilization_percent = pcb_area_used_mm2 / available_pcb_area_mm2 * 100")
-    print("  z_height_stack_mm = battery_pack + vapor_chamber + display_module thickness")
+    print(
+        "  available_pcb_area_mm2 = device_length_mm * device_width_mm * pcb_area_fraction"
+    )
+    print(
+        "  pcb_utilization_percent = pcb_area_used_mm2 / available_pcb_area_mm2 * 100"
+    )
+    print(
+        "  z_height_stack_mm = battery_pack + vapor_chamber + display_module thickness"
+    )
     print("outputs:")
     print(f"  profile: {profile}")
     print(f"  total_component_mass_g: {total_mass_g:.1f}")
@@ -173,8 +201,12 @@ def main() -> int:
     else:
         print("  - none for this screening profile")
     print("confidence: low")
-    print("basis: placeholder component ranges in engineering/components/component_library.yaml")
-    print("primary_blocker: vendor package data, ECAD placement, CAD stackups, thermal validation, and measured power")
+    print(
+        "basis: placeholder component ranges in engineering/components/component_library.yaml"
+    )
+    print(
+        "primary_blocker: vendor package data, ECAD placement, CAD stackups, thermal validation, and measured power"
+    )
     return 0
 
 

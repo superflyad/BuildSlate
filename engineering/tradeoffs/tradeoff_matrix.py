@@ -36,7 +36,9 @@ DEFAULT_MAPS = (
     DefaultMap(
         label="B. Battery capacity vs mass estimate",
         x=tradeoff_map.AxisSpec("battery.capacity_mah", 4000.0, 10000.0, 1000.0),
-        y=tradeoff_map.AxisSpec("mass_targets.engineering_estimate_g", 180.0, 260.0, 20.0),
+        y=tradeoff_map.AxisSpec(
+            "mass_targets.engineering_estimate_g", 180.0, 260.0, 20.0
+        ),
         constraint="mass_within_engineering_range",
     ),
     DefaultMap(

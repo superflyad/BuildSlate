@@ -9,7 +9,11 @@ from typing import Any
 try:
     from registry_loader import VARIABLES_PATH, index_by_id, load_yaml_list
 except ImportError:  # pragma: no cover - package import path
-    from engineering.core.registry_loader import VARIABLES_PATH, index_by_id, load_yaml_list
+    from engineering.core.registry_loader import (
+        VARIABLES_PATH,
+        index_by_id,
+        load_yaml_list,
+    )
 
 
 class VariableRegistry:
@@ -39,4 +43,8 @@ class VariableRegistry:
         return list(self.variables.values())
 
     def by_category(self, category: str) -> list[dict[str, Any]]:
-        return [variable for variable in self.variables.values() if variable.get("category") == category]
+        return [
+            variable
+            for variable in self.variables.values()
+            if variable.get("category") == category
+        ]

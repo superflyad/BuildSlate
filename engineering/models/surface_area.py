@@ -27,11 +27,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--length-mm", type=positive_float, default=180.0)
     parser.add_argument("--width-mm", type=positive_float, default=95.0)
     parser.add_argument("--thickness-mm", type=positive_float, default=8.8)
-    parser.add_argument("--explain", action="store_true", help="Print centralized geometry calculation explanations")
+    parser.add_argument(
+        "--explain",
+        action="store_true",
+        help="Print centralized geometry calculation explanations",
+    )
     return parser.parse_args()
 
 
-def core_inputs(length_mm: float, width_mm: float, thickness_mm: float) -> dict[str, float]:
+def core_inputs(
+    length_mm: float, width_mm: float, thickness_mm: float
+) -> dict[str, float]:
     return {
         "geometry.length_mm": length_mm,
         "geometry.width_mm": width_mm,
@@ -52,8 +58,12 @@ def main() -> int:
     print(f"  width_mm: {args.width_mm:.1f}")
     print(f"  thickness_mm: {args.thickness_mm:.1f}")
     print("assumptions:")
-    print("  rectangular approximation ignores rounded corners, camera plateau, buttons, ports, display curvature, and internal voids")
-    print("  external surface area is not equivalent to effective radiating or user-safe heat-transfer area")
+    print(
+        "  rectangular approximation ignores rounded corners, camera plateau, buttons, ports, display curvature, and internal voids"
+    )
+    print(
+        "  external surface area is not equivalent to effective radiating or user-safe heat-transfer area"
+    )
     print("formulas:")
     print("  surface_area_cm2 = 2 * (L*W + L*T + W*T) / 100")
     print("  volume_cm3 = L*W*T / 1000")
@@ -65,9 +75,13 @@ def main() -> int:
         print("explanation:")
         print(explanation_engine.explain("geometry.surface_area_cm2", inputs))
         print(explanation_engine.explain("geometry.volume_cm3", inputs))
-    print("confidence: medium for rectangular geometry; low for actual usable thermal surface")
+    print(
+        "confidence: medium for rectangular geometry; low for actual usable thermal surface"
+    )
     print("basis: estimated")
-    print("primary blocker: CAD-derived enclosure geometry and validated effective heat-spreading area")
+    print(
+        "primary blocker: CAD-derived enclosure geometry and validated effective heat-spreading area"
+    )
     return 0
 
 

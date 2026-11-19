@@ -10,7 +10,9 @@ from typing import Any
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-FLOORPLAN_PATH = REPO_ROOT / "engineering" / "pcb" / "slate-pocket-v1r-floorplan" / "floorplan.yaml"
+FLOORPLAN_PATH = (
+    REPO_ROOT / "engineering" / "pcb" / "slate-pocket-v1r-floorplan" / "floorplan.yaml"
+)
 POWER_TREE_PATH = REPO_ROOT / "engineering" / "pcb" / "power-tree.yaml"
 REPORT_PATH = REPO_ROOT / "reports" / "slate-pocket-v1r-pcb-power-architecture.txt"
 
@@ -35,10 +37,20 @@ class Rectangle:
         return self.length * self.width
 
     def contains(self, other: "Rectangle") -> bool:
-        return self.x <= other.x and self.y <= other.y and self.right >= other.right and self.top >= other.top
+        return (
+            self.x <= other.x
+            and self.y <= other.y
+            and self.right >= other.right
+            and self.top >= other.top
+        )
 
     def overlaps(self, other: "Rectangle") -> bool:
-        return self.x < other.right and self.right > other.x and self.y < other.top and self.top > other.y
+        return (
+            self.x < other.right
+            and self.right > other.x
+            and self.y < other.top
+            and self.top > other.y
+        )
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -50,7 +62,9 @@ def _load(path: Path) -> dict[str, Any]:
 
 
 def _rect(data: dict[str, Any]) -> Rectangle:
-    return Rectangle(float(data["x"]), float(data["y"]), float(data["length"]), float(data["width"]))
+    return Rectangle(
+        float(data["x"]), float(data["y"]), float(data["length"]), float(data["width"])
+    )
 
 
 def _scenario_power(scenario: dict[str, Any], loads: dict[str, Any]) -> float:
@@ -64,8 +78,14 @@ def build_report() -> str:
 
     boundary = _rect(floorplan["board"]["component_side_boundary_mm"])
     placements = floorplan["placements"]
-    rectangles = {item_id: _rect(item["rectangle_mm"]) for item_id, item in placements.items()}
-    outside = [item_id for item_id, rectangle in rectangles.items() if not boundary.contains(rectangle)]
+    rectangles = {
+        item_id: _rect(item["rectangle_mm"]) for item_id, item in placements.items()
+    }
+    outside = [
+        item_id
+        for item_id, rectangle in rectangles.items()
+        if not boundary.contains(rectangle)
+    ]
     overlaps: list[tuple[str, str]] = []
     placement_ids = list(placements)
     for index, first_id in enumerate(placement_ids):
@@ -75,7 +95,11 @@ def build_report() -> str:
 
     occupied_area = sum(rectangle.area for rectangle in rectangles.values())
     occupancy_percent = occupied_area / boundary.area * 100.0
-    memory_sites = [item_id for item_id, item in placements.items() if item["function"] == "lpddr5x_32gb_planning_site"]
+    memory_sites = [
+        item_id
+        for item_id, item in placements.items()
+        if item["function"] == "lpddr5x_32gb_planning_site"
+    ]
 
     constraints = power_tree["source_constraints"]
     nominal_voltage = float(constraints["battery_nominal_voltage_v"])
@@ -87,8 +111,12 @@ def build_report() -> str:
         scenario_results.append((scenario_id, load_power, battery_current))
 
     charge_voltage = float(constraints["battery_charge_voltage_screen_v"])
-    wired_pack_power = float(constraints["wired_input_target_w"]) * float(constraints["wired_path_efficiency"])
-    wireless_pack_power = float(constraints["wireless_input_target_w"]) * float(constraints["wireless_path_efficiency"])
+    wired_pack_power = float(constraints["wired_input_target_w"]) * float(
+        constraints["wired_path_efficiency"]
+    )
+    wireless_pack_power = float(constraints["wireless_input_target_w"]) * float(
+        constraints["wireless_path_efficiency"]
+    )
     wired_charge_current = wired_pack_power / charge_voltage
     wireless_charge_current = wireless_pack_power / charge_voltage
 
@@ -96,7 +124,9 @@ def build_report() -> str:
     rail_voltage = float(compute_rail["nominal_voltage_v"])
     rail_peak_power = float(compute_rail["peak_power_w"])
     rail_peak_current = rail_peak_power / rail_voltage
-    maximum_droop_v = rail_voltage * float(compute_rail["maximum_droop_percent"]) / 100.0
+    maximum_droop_v = (
+        rail_voltage * float(compute_rail["maximum_droop_percent"]) / 100.0
+    )
     target_impedance_mohm = maximum_droop_v / rail_peak_current * 1000.0
 
     lines = [

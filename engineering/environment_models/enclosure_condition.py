@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Model device thermal risk for open-air, handheld, pocket, bag, and car-console conditions."""
+
 from __future__ import annotations
 
 import argparse
@@ -49,38 +50,60 @@ def main() -> int:
 
     warnings: list[str] = []
     if args.condition in {"pocket", "bag"}:
-        warnings.append("pocket/bag sustained AI should be disallowed or aggressively throttled")
+        warnings.append(
+            "pocket/bag sustained AI should be disallowed or aggressively throttled"
+        )
     if args.condition == "car_console_sun":
-        warnings.append("car console sun condition is high risk and should force cooldown or shutdown behavior")
+        warnings.append(
+            "car console sun condition is high risk and should force cooldown or shutdown behavior"
+        )
     if args.condition in {"pocket", "bag", "car_console_sun"}:
-        warnings.append("charging under enclosed conditions is unsafe without throttling")
+        warnings.append(
+            "charging under enclosed conditions is unsafe without throttling"
+        )
     if args.ambient_c >= 35:
         warnings.append("hot ambient temperature compounds enclosure risk")
 
     print("Enclosure condition thermal-risk model")
-    print_section("inputs", [
-        f"condition: {args.condition}",
-        f"sustained_w: {args.sustained_w:.1f}",
-        f"ambient_c: {args.ambient_c:.1f}",
-    ])
-    print_section("assumptions", [
-        f"heat_escape_factor: {heat_escape_factor:.2f}",
-        f"risk_multiplier: {risk_multiplier:.2f}",
-        "enclosed conditions reduce convection and trap heat around the device",
-        "risk score is a relative screening metric, not a calibrated temperature prediction",
-    ])
-    print_section("formulas", [
-        "effective_dissipation_w = sustained_w * heat_escape_factor",
-        "thermal_risk_score = sustained_w * risk_multiplier",
-    ])
-    print_section("outputs", [
-        f"effective_dissipation_w: {effective_dissipation_w:.1f}",
-        f"thermal_risk_score: {thermal_risk_score:.1f}",
-    ])
+    print_section(
+        "inputs",
+        [
+            f"condition: {args.condition}",
+            f"sustained_w: {args.sustained_w:.1f}",
+            f"ambient_c: {args.ambient_c:.1f}",
+        ],
+    )
+    print_section(
+        "assumptions",
+        [
+            f"heat_escape_factor: {heat_escape_factor:.2f}",
+            f"risk_multiplier: {risk_multiplier:.2f}",
+            "enclosed conditions reduce convection and trap heat around the device",
+            "risk score is a relative screening metric, not a calibrated temperature prediction",
+        ],
+    )
+    print_section(
+        "formulas",
+        [
+            "effective_dissipation_w = sustained_w * heat_escape_factor",
+            "thermal_risk_score = sustained_w * risk_multiplier",
+        ],
+    )
+    print_section(
+        "outputs",
+        [
+            f"effective_dissipation_w: {effective_dissipation_w:.1f}",
+            f"thermal_risk_score: {thermal_risk_score:.1f}",
+        ],
+    )
     print_section("warnings", warnings)
-    print("confidence: low; enclosure, textile, bag, sunlight, and airflow measurements are required")
+    print(
+        "confidence: low; enclosure, textile, bag, sunlight, and airflow measurements are required"
+    )
     print("basis: first-pass heat-escape derating by operating condition")
-    print("primary blocker: real enclosure thermal impedance depends on fabric, orientation, airflow, and solar loading")
+    print(
+        "primary blocker: real enclosure thermal impedance depends on fabric, orientation, airflow, and solar loading"
+    )
     return 0
 
 

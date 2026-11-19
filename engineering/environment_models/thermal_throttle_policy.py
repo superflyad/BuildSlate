@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Create first-pass throttle policy recommendations from skin temperature and workload."""
+
 from __future__ import annotations
 
 import argparse
@@ -69,38 +70,59 @@ def main() -> int:
         recommended_mode = "stop_charging"
     elif skin_level == "limit" or soc_level == "limit":
         recommended_mode = "burst_only"
-    elif skin_level == "caution" or battery_level == "caution" or soc_level == "caution" or args.ai_workload_w >= 28:
+    elif (
+        skin_level == "caution"
+        or battery_level == "caution"
+        or soc_level == "caution"
+        or args.ai_workload_w >= 28
+    ):
         recommended_mode = "reduce_ai_power"
     else:
         recommended_mode = "unrestricted"
 
     print("Thermal throttle policy model")
-    print_section("inputs", [
-        f"skin_temp_c: {args.skin_temp_c:.1f}",
-        f"battery_temp_c: {args.battery_temp_c:.1f}",
-        f"soc_temp_c: {args.soc_temp_c:.1f}",
-        f"ai_workload_w: {args.ai_workload_w:.1f}",
-    ])
-    print_section("assumptions", [
-        "skin thresholds: caution >= 40 C, limit >= 43 C, critical >= 45 C",
-        "battery thresholds: caution >= 40 C, limit >= 45 C",
-        "SoC thresholds: caution >= 80 C, limit >= 90 C",
-        "policy recommends the most conservative mode triggered by measured thermal state",
-    ])
-    print_section("formulas", [
-        "threshold comparisons assign skin, battery, and SoC thermal levels",
-        "recommended_mode is selected from unrestricted, reduce_ai_power, burst_only, stop_charging, emergency_cooldown",
-    ])
-    print_section("outputs", [
-        f"skin_level: {skin_level}",
-        f"battery_level: {battery_level}",
-        f"soc_level: {soc_level}",
-        f"recommended_mode: {recommended_mode}",
-    ])
+    print_section(
+        "inputs",
+        [
+            f"skin_temp_c: {args.skin_temp_c:.1f}",
+            f"battery_temp_c: {args.battery_temp_c:.1f}",
+            f"soc_temp_c: {args.soc_temp_c:.1f}",
+            f"ai_workload_w: {args.ai_workload_w:.1f}",
+        ],
+    )
+    print_section(
+        "assumptions",
+        [
+            "skin thresholds: caution >= 40 C, limit >= 43 C, critical >= 45 C",
+            "battery thresholds: caution >= 40 C, limit >= 45 C",
+            "SoC thresholds: caution >= 80 C, limit >= 90 C",
+            "policy recommends the most conservative mode triggered by measured thermal state",
+        ],
+    )
+    print_section(
+        "formulas",
+        [
+            "threshold comparisons assign skin, battery, and SoC thermal levels",
+            "recommended_mode is selected from unrestricted, reduce_ai_power, burst_only, stop_charging, emergency_cooldown",
+        ],
+    )
+    print_section(
+        "outputs",
+        [
+            f"skin_level: {skin_level}",
+            f"battery_level: {battery_level}",
+            f"soc_level: {soc_level}",
+            f"recommended_mode: {recommended_mode}",
+        ],
+    )
     print_section("warnings", warnings)
-    print("confidence: low; firmware policy must be validated against sensors, user comfort, safety, and workload behavior")
+    print(
+        "confidence: low; firmware policy must be validated against sensors, user comfort, safety, and workload behavior"
+    )
     print("basis: first-pass threshold policy for thermal screening and control intent")
-    print("primary blocker: thresholds are placeholder engineering assumptions, not certified safety limits or product firmware")
+    print(
+        "primary blocker: thresholds are placeholder engineering assumptions, not certified safety limits or product firmware"
+    )
     return 0
 
 

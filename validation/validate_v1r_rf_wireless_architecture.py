@@ -46,26 +46,45 @@ def main() -> int:
             if wireless["stack_height_mm"] != 0.8:
                 failures.append("wireless planning stack changed unexpectedly")
             architecture = ARCHITECTURE_PATH.read_text(encoding="utf-8")
-            required_sources = ("docs.fcc.gov", "eur-lex.europa.eu", "ptcrb.com", "wirelesspowerconsortium.com")
-            missing_sources = [source for source in required_sources if source not in architecture]
+            required_sources = (
+                "docs.fcc.gov",
+                "eur-lex.europa.eu",
+                "ptcrb.com",
+                "wirelesspowerconsortium.com",
+            )
+            missing_sources = [
+                source for source in required_sources if source not in architecture
+            ]
             if missing_sources:
-                failures.append(f"RF architecture missing primary compliance anchors: {', '.join(missing_sources)}")
+                failures.append(
+                    f"RF architecture missing primary compliance anchors: {', '.join(missing_sources)}"
+                )
             if "Optional 5G cellular is deferred" not in architecture:
-                failures.append("RF architecture must defer cellular until market and band scope exists")
+                failures.append(
+                    "RF architecture must defer cellular until market and band scope exists"
+                )
         except (KeyError, TypeError, ValueError) as exc:
             failures.append(str(exc))
         else:
             if not failures:
-                print("PASS: v1R RF reservations, wireless fallback, cellular deferral, and compliance anchors are valid")
+                print(
+                    "PASS: v1R RF reservations, wireless fallback, cellular deferral, and compliance anchors are valid"
+                )
 
     if not failures:
         result = subprocess.run(
-            [sys.executable, str(GENERATOR_PATH)], cwd=REPO_ROOT, capture_output=True, text=True, check=False
+            [sys.executable, str(GENERATOR_PATH)],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
         )
         if result.returncode == 0:
             print("PASS: v1R RF architecture report generator runs")
         else:
-            failures.append(f"v1R RF generator failed: {result.stderr.strip() or result.stdout.strip()}")
+            failures.append(
+                f"v1R RF generator failed: {result.stderr.strip() or result.stdout.strip()}"
+            )
 
     if REPORT_PATH.exists():
         report = REPORT_PATH.read_text(encoding="utf-8")
@@ -80,7 +99,9 @@ def main() -> int:
         if missing:
             failures.append(f"v1R RF report missing markers: {', '.join(missing)}")
         else:
-            print("PASS: v1R RF report preserves unset bands, fallbacks, decision, and caveat")
+            print(
+                "PASS: v1R RF report preserves unset bands, fallbacks, decision, and caveat"
+            )
     else:
         failures.append(f"v1R RF report missing: {REPORT_PATH.relative_to(REPO_ROOT)}")
 

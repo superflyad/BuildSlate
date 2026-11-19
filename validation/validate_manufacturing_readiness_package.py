@@ -43,7 +43,9 @@ def main() -> int:
         if path.exists():
             print(f"PASS: manufacturing artifact exists: {path.relative_to(REPO_ROOT)}")
         else:
-            failures.append(f"manufacturing artifact missing: {path.relative_to(REPO_ROOT)}")
+            failures.append(
+                f"manufacturing artifact missing: {path.relative_to(REPO_ROOT)}"
+            )
 
     if not failures:
         try:
@@ -53,39 +55,61 @@ def main() -> int:
             if pilot["metadata"]["status"] != "proposed_not_authorized":
                 failures.append("pilot plan must remain proposed and unauthorized")
             if pilot["lot"]["proposed_input_units"] != 100:
-                failures.append("pilot plan must preserve its declared 100-unit denominator")
+                failures.append(
+                    "pilot plan must preserve its declared 100-unit denominator"
+                )
             gates = pilot["provisional_yield_gates"]
             if gates["critical_safety_or_regulatory_defects"]["maximum_count"] != 0:
-                failures.append("pilot gate must allow zero critical safety/regulatory defects")
-            if gates["first_pass_yield_percent"]["minimum"] != 90.0 or gates["final_yield_percent"]["minimum"] != 95.0:
+                failures.append(
+                    "pilot gate must allow zero critical safety/regulatory defects"
+                )
+            if (
+                gates["first_pass_yield_percent"]["minimum"] != 90.0
+                or gates["final_yield_percent"]["minimum"] != 95.0
+            ):
                 failures.append("pilot yield thresholds changed unexpectedly")
             if gates["traceability_completeness_percent"]["minimum"] != 100.0:
                 failures.append("pilot traceability must be complete")
-            if len(defects["codes"]) < 10 or len(defects["required_record_fields"]) < 10:
+            if (
+                len(defects["codes"]) < 10
+                or len(defects["required_record_fields"]) < 10
+            ):
                 failures.append("defect taxonomy lacks code or record-field coverage")
             if response["review"]["status"] != "template_not_completed":
-                failures.append("supplier DFM template must not imply a completed review")
+                failures.append(
+                    "supplier DFM template must not imply a completed review"
+                )
             real_results = [
                 path
                 for path in (MFG_ROOT / "pilot-results").rglob("*")
                 if path.is_file() and path.name.lower() != "readme.md"
             ]
             if real_results:
-                failures.append("manufacturing package contains unvalidated files presented as pilot results")
+                failures.append(
+                    "manufacturing package contains unvalidated files presented as pilot results"
+                )
         except (KeyError, TypeError, ValueError) as exc:
             failures.append(str(exc))
         else:
             if not failures:
-                print("PASS: pilot authorization, lot, yield gates, traceability, defect taxonomy, supplier template, and empty evidence state are valid")
+                print(
+                    "PASS: pilot authorization, lot, yield gates, traceability, defect taxonomy, supplier template, and empty evidence state are valid"
+                )
 
     if not failures:
         result = subprocess.run(
-            [sys.executable, str(GENERATOR_PATH)], cwd=REPO_ROOT, capture_output=True, text=True, check=False
+            [sys.executable, str(GENERATOR_PATH)],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
         )
         if result.returncode == 0:
             print("PASS: manufacturing readiness report generator runs")
         else:
-            failures.append(f"manufacturing generator failed: {result.stderr.strip() or result.stdout.strip()}")
+            failures.append(
+                f"manufacturing generator failed: {result.stderr.strip() or result.stdout.strip()}"
+            )
 
     if REPORT_PATH.exists():
         report = REPORT_PATH.read_text(encoding="utf-8")
@@ -93,18 +117,24 @@ def main() -> int:
             "supplier DFM response status: template_not_completed",
             "pilot authorized: no",
             "pilot result files excluding instructions: 0",
-        "manufacturing analytics gate: EMPTY_PILOT_EVIDENCE",
+            "manufacturing analytics gate: EMPTY_PILOT_EVIDENCE",
             "measured yield: no evidence",
             "MANUFACTURING_GATE: BLOCKED_ON_VERIFIED_EVT0_SUPPLIER_DFM_RELEASED_PROCESS_AND_PILOT_EVIDENCE",
             "does not prove manufacturability",
         )
         missing = [marker for marker in markers if marker not in report]
         if missing:
-            failures.append(f"manufacturing report missing markers: {', '.join(missing)}")
+            failures.append(
+                f"manufacturing report missing markers: {', '.join(missing)}"
+            )
         else:
-            print("PASS: manufacturing report preserves supplier, authorization, evidence, gate, and caveat states")
+            print(
+                "PASS: manufacturing report preserves supplier, authorization, evidence, gate, and caveat states"
+            )
     else:
-        failures.append(f"manufacturing report missing: {REPORT_PATH.relative_to(REPO_ROOT)}")
+        failures.append(
+            f"manufacturing report missing: {REPORT_PATH.relative_to(REPO_ROOT)}"
+        )
 
     if failures:
         for failure in failures:

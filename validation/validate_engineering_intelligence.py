@@ -8,7 +8,12 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-GENERATOR_PATH = REPO_ROOT / "engineering" / "intelligence" / "generate_engineering_intelligence_report.py"
+GENERATOR_PATH = (
+    REPO_ROOT
+    / "engineering"
+    / "intelligence"
+    / "generate_engineering_intelligence_report.py"
+)
 REPORT_PATH = REPO_ROOT / "reports" / "slate-pocket-v1r-engineering-intelligence.txt"
 
 
@@ -16,7 +21,9 @@ def main() -> int:
     failures: list[str] = []
 
     if GENERATOR_PATH.exists():
-        print(f"PASS: engineering intelligence report generator exists: {GENERATOR_PATH.relative_to(REPO_ROOT)}")
+        print(
+            f"PASS: engineering intelligence report generator exists: {GENERATOR_PATH.relative_to(REPO_ROOT)}"
+        )
     else:
         failures.append(f"generator missing: {GENERATOR_PATH.relative_to(REPO_ROOT)}")
 
@@ -31,7 +38,9 @@ def main() -> int:
         if result.returncode == 0:
             print("PASS: engineering intelligence report generator runs")
         else:
-            failures.append(f"generator exited with code {result.returncode}: {result.stderr.strip()}")
+            failures.append(
+                f"generator exited with code {result.returncode}: {result.stderr.strip()}"
+            )
 
     if REPORT_PATH.exists():
         report = REPORT_PATH.read_text(encoding="utf-8")
@@ -42,21 +51,32 @@ def main() -> int:
             "Fragile assumptions",
             "Evidence required",
         )
-        missing_markers = [marker for marker in required_markers if marker not in report]
+        missing_markers = [
+            marker for marker in required_markers if marker not in report
+        ]
         if not missing_markers:
             print("PASS: report contains required intelligence sections")
         else:
-            failures.append(f"report missing required sections: {', '.join(missing_markers)}")
+            failures.append(
+                f"report missing required sections: {', '.join(missing_markers)}"
+            )
 
         if "slate-pocket-v1" in report and "slate-pocket-v1r" in report:
             print("PASS: report mentions both slate-pocket-v1 and slate-pocket-v1r")
         else:
-            failures.append("report does not mention both slate-pocket-v1 and slate-pocket-v1r")
+            failures.append(
+                "report does not mention both slate-pocket-v1 and slate-pocket-v1r"
+            )
 
-        if "not validated engineering proof" in report and "does not claim manufacturability" in report:
+        if (
+            "not validated engineering proof" in report
+            and "does not claim manufacturability" in report
+        ):
             print("PASS: report contains explicit non-validation caveat")
         else:
-            failures.append("report does not contain the explicit non-validation caveat")
+            failures.append(
+                "report does not contain the explicit non-validation caveat"
+            )
 
         required_assumptions = (
             "battery energy density",
@@ -68,11 +88,17 @@ def main() -> int:
             "512 GB memory packaging",
             "4 TB storage packaging",
         )
-        missing_assumptions = [assumption for assumption in required_assumptions if assumption not in report]
+        missing_assumptions = [
+            assumption
+            for assumption in required_assumptions
+            if assumption not in report
+        ]
         if not missing_assumptions:
             print("PASS: report lists required fragile assumptions")
         else:
-            failures.append(f"report missing fragile assumptions: {', '.join(missing_assumptions)}")
+            failures.append(
+                f"report missing fragile assumptions: {', '.join(missing_assumptions)}"
+            )
 
         required_evidence = (
             "battery cell datasheet",
@@ -83,11 +109,15 @@ def main() -> int:
             "thermocouple map",
             "supplier DFM review",
         )
-        missing_evidence = [evidence for evidence in required_evidence if evidence not in report]
+        missing_evidence = [
+            evidence for evidence in required_evidence if evidence not in report
+        ]
         if not missing_evidence:
             print("PASS: report lists required next evidence")
         else:
-            failures.append(f"report missing required evidence: {', '.join(missing_evidence)}")
+            failures.append(
+                f"report missing required evidence: {', '.join(missing_evidence)}"
+            )
     else:
         failures.append(f"report missing: {REPORT_PATH.relative_to(REPO_ROOT)}")
 

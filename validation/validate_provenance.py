@@ -37,7 +37,9 @@ ALLOWED_CONFIDENCE = {"low", "medium", "high"}
 
 def load_registry() -> dict[str, Any]:
     if not PROVENANCE_PATH.exists():
-        raise ValueError(f"file does not exist: {PROVENANCE_PATH.relative_to(REPO_ROOT)}")
+        raise ValueError(
+            f"file does not exist: {PROVENANCE_PATH.relative_to(REPO_ROOT)}"
+        )
     with PROVENANCE_PATH.open("r", encoding="utf-8") as provenance_file:
         registry = yaml.safe_load(provenance_file)
     if not isinstance(registry, dict):
@@ -55,13 +57,19 @@ def validate_source_notes(source_notes: Any, index: int) -> None:
         raise ValueError(f"entries[{index}].source_notes must be a mapping/object")
     missing = [field for field in SOURCE_NOTE_FIELDS if field not in source_notes]
     if missing:
-        raise ValueError(f"entries[{index}].source_notes missing required fields: {', '.join(missing)}")
+        raise ValueError(
+            f"entries[{index}].source_notes missing required fields: {', '.join(missing)}"
+        )
     for field in ("source_type", "citation_status"):
         if not isinstance(source_notes[field], str) or not source_notes[field].strip():
-            raise ValueError(f"entries[{index}].source_notes.{field} must be a non-empty string")
+            raise ValueError(
+                f"entries[{index}].source_notes.{field} must be a non-empty string"
+            )
     notes = source_notes["notes"]
     if not isinstance(notes, list) or not notes:
-        raise ValueError(f"entries[{index}].source_notes.notes must be a non-empty list")
+        raise ValueError(
+            f"entries[{index}].source_notes.notes must be a non-empty list"
+        )
     for note_index, note in enumerate(notes):
         if not isinstance(note, str) or not note.strip():
             raise ValueError(
@@ -74,9 +82,20 @@ def validate_entry(entry: Any, index: int) -> None:
         raise ValueError(f"entries[{index}] must be a mapping/object")
     missing = [field for field in REQUIRED_FIELDS if field not in entry]
     if missing:
-        raise ValueError(f"entries[{index}] missing required fields: {', '.join(missing)}")
+        raise ValueError(
+            f"entries[{index}] missing required fields: {', '.join(missing)}"
+        )
 
-    for field in ("id", "name", "units", "category", "confidence", "rationale", "limitations", "future_validation"):
+    for field in (
+        "id",
+        "name",
+        "units",
+        "category",
+        "confidence",
+        "rationale",
+        "limitations",
+        "future_validation",
+    ):
         require_non_empty_string(entry, field, index)
     if entry["value_or_range"] is None or entry["value_or_range"] == "":
         raise ValueError(f"entries[{index}].value_or_range must be present")
@@ -90,7 +109,9 @@ def validate_entry(entry: Any, index: int) -> None:
         raise ValueError(f"entries[{index}].used_by must be a non-empty list")
     for used_by_index, used_by in enumerate(entry["used_by"]):
         if not isinstance(used_by, str) or not used_by.strip():
-            raise ValueError(f"entries[{index}].used_by[{used_by_index}] must be a non-empty string")
+            raise ValueError(
+                f"entries[{index}].used_by[{used_by_index}] must be a non-empty string"
+            )
     validate_source_notes(entry["source_notes"], index)
 
 

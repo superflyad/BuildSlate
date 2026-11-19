@@ -9,13 +9,22 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-GENERATOR_PATH = REPO_ROOT / "engineering" / "physical_feasibility" / "generate_physical_feasibility_report.py"
-GATE_PATH = REPO_ROOT / "engineering" / "physical_feasibility" / "physical_feasibility_gate.py"
+GENERATOR_PATH = (
+    REPO_ROOT
+    / "engineering"
+    / "physical_feasibility"
+    / "generate_physical_feasibility_report.py"
+)
+GATE_PATH = (
+    REPO_ROOT / "engineering" / "physical_feasibility" / "physical_feasibility_gate.py"
+)
 REPORT_PATH = REPO_ROOT / "reports" / "slate-pocket-physical-feasibility-gate.txt"
 
 sys.path.insert(0, str(REPO_ROOT))
 
-from engineering.physical_feasibility.physical_feasibility_gate import approved_decision_values  # noqa: E402
+from engineering.physical_feasibility.physical_feasibility_gate import (
+    approved_decision_values,
+)  # noqa: E402
 
 
 def main() -> int:
@@ -42,11 +51,15 @@ def main() -> int:
         if result.returncode == 0:
             print("PASS: physical feasibility report generator runs")
         else:
-            failures.append(f"generator exited with code {result.returncode}: {result.stderr.strip()}")
+            failures.append(
+                f"generator exited with code {result.returncode}: {result.stderr.strip()}"
+            )
 
     if REPORT_PATH.exists():
         report = REPORT_PATH.read_text(encoding="utf-8")
-        match = re.search(r"^\s*GATE_DECISION:\s*([A-Z_]+)\s*$", report, flags=re.MULTILINE)
+        match = re.search(
+            r"^\s*GATE_DECISION:\s*([A-Z_]+)\s*$", report, flags=re.MULTILINE
+        )
         if match:
             decision = match.group(1)
             print(f"PASS: report contains gate decision: {decision}")

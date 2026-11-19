@@ -29,7 +29,11 @@ def _load(path: Path) -> dict[str, Any]:
 
 def _real_result_files() -> list[Path]:
     result_root = EVT_ROOT / "test-results"
-    return sorted(path for path in result_root.rglob("*") if path.is_file() and path.name.lower() != "readme.md")
+    return sorted(
+        path
+        for path in result_root.rglob("*")
+        if path.is_file() and path.name.lower() != "readme.md"
+    )
 
 
 def build_report() -> str:
@@ -44,18 +48,33 @@ def build_report() -> str:
     for gate in spec["prerequisite_gates"].values():
         if isinstance(gate, dict) and "packages" in gate:
             prerequisite_ids.extend(gate["packages"])
-    package_statuses = {package_id: registry["packages"][package_id]["status"] for package_id in prerequisite_ids}
-    unverified = [package_id for package_id, status in package_statuses.items() if status != "verified"]
+    package_statuses = {
+        package_id: registry["packages"][package_id]["status"]
+        for package_id in prerequisite_ids
+    }
+    unverified = [
+        package_id
+        for package_id, status in package_statuses.items()
+        if status != "verified"
+    ]
 
     authorization = spec["prerequisite_gates"]["authorization"]
     safety = spec["prerequisite_gates"]["safety"]
-    false_authorizations = [field for field, value in authorization.items() if field.endswith("_authorized") and value is not True]
+    false_authorizations = [
+        field
+        for field, value in authorization.items()
+        if field.endswith("_authorized") and value is not True
+    ]
     false_safety_gates = [field for field, value in safety.items() if value is not True]
 
     roles = bom["roles"]
-    selected_roles = [role_id for role_id, role in roles.items() if role["status"] == "selected"]
+    selected_roles = [
+        role_id for role_id, role in roles.items() if role["status"] == "selected"
+    ]
     removed_or_deferred = [
-        role_id for role_id, role in roles.items() if role["status"] in {"removed_from_EVT0", "deferred_from_EVT0"}
+        role_id
+        for role_id, role in roles.items()
+        if role["status"] in {"removed_from_EVT0", "deferred_from_EVT0"}
     ]
     real_results = _real_result_files()
     tests = matrix["sequence"]

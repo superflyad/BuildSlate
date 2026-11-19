@@ -9,7 +9,9 @@ from typing import Any
 try:
     import yaml
 except ImportError as exc:  # pragma: no cover - dependency guidance path
-    raise SystemExit("PyYAML is required. Install dependencies with: pip install -r requirements.txt") from exc
+    raise SystemExit(
+        "PyYAML is required. Install dependencies with: pip install -r requirements.txt"
+    ) from exc
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 NORMALIZED_SPEC_PATH = REPO_ROOT / "specs" / "slate-pocket-v1.yaml"
@@ -106,13 +108,17 @@ def validate_feasibility(section_name: str, section: dict[str, Any]) -> None:
         raise ValueError(f"{section_name}.feasibility.status must be one of: {allowed}")
 
     if not isinstance(metadata["rationale"], str) or not metadata["rationale"].strip():
-        raise ValueError(f"{section_name}.feasibility.rationale must be a non-empty string")
+        raise ValueError(
+            f"{section_name}.feasibility.rationale must be a non-empty string"
+        )
     if not isinstance(metadata["blockers"], list):
         raise ValueError(f"{section_name}.feasibility.blockers must be a list")
 
 
 def validate_normalized_spec(spec: dict[str, Any]) -> None:
-    missing = [section for section in REQUIRED_TOP_LEVEL_SECTIONS if section not in spec]
+    missing = [
+        section for section in REQUIRED_TOP_LEVEL_SECTIONS if section not in spec
+    ]
     if missing:
         raise ValueError(f"missing required top-level sections: {', '.join(missing)}")
 

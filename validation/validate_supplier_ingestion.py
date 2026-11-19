@@ -65,7 +65,11 @@ def complete_battery_response() -> dict[str, Any]:
 
 def main() -> int:
     repository = SupplierResponseRepository(REPO_ROOT)
-    require(repository.domains == ("battery", "compute_memory", "dfm", "display", "storage"), "all five supplier domains are registered")
+    require(
+        repository.domains
+        == ("battery", "compute_memory", "dfm", "display", "storage"),
+        "all five supplier domains are registered",
+    )
 
     expected_artifacts = [
         REPO_ROOT / "engineering/program/supplier_ingestion.yaml",
@@ -78,20 +82,37 @@ def main() -> int:
         for name in ("battery", "compute-memory", "display", "storage", "dfm")
     )
     for path in expected_artifacts:
-        require(path.is_file(), f"supplier ingestion artifact exists: {path.relative_to(REPO_ROOT)}")
+        require(
+            path.is_file(),
+            f"supplier ingestion artifact exists: {path.relative_to(REPO_ROOT)}",
+        )
 
     empty_queue = repository.build_review_queue()
-    require(empty_queue["SUPPLIER_RESPONSE_GATE"] == "EMPTY_INBOX", "empty supplier inbox remains explicit")
-    require(empty_queue["summary"]["receipt_count"] == 0, "no supplier response or receipt is invented")
+    require(
+        empty_queue["SUPPLIER_RESPONSE_GATE"] == "EMPTY_INBOX",
+        "empty supplier inbox remains explicit",
+    )
+    require(
+        empty_queue["summary"]["receipt_count"] == 0,
+        "no supplier response or receipt is invented",
+    )
     generated = load_yaml(REPO_ROOT / "reports/program/supplier-response-review.yaml")
-    require(generated == empty_queue, "generated supplier review queue is deterministic and current")
+    require(
+        generated == empty_queue,
+        "generated supplier review queue is deterministic and current",
+    )
 
     with tempfile.TemporaryDirectory() as temp_directory:
         temporary_root = Path(temp_directory)
         schema_target = temporary_root / "engineering/program/supplier-schemas"
         schema_target.parent.mkdir(parents=True)
-        shutil.copytree(REPO_ROOT / "engineering/program/supplier-schemas", schema_target)
-        shutil.copy2(REPO_ROOT / "engineering/program/supplier_ingestion.yaml", schema_target.parent / "supplier_ingestion.yaml")
+        shutil.copytree(
+            REPO_ROOT / "engineering/program/supplier-schemas", schema_target
+        )
+        shutil.copy2(
+            REPO_ROOT / "engineering/program/supplier_ingestion.yaml",
+            schema_target.parent / "supplier_ingestion.yaml",
+        )
         for source in (
             "configs/devices/slate-pocket-v1r.yaml",
             "research/evidence/battery/pack-envelope.yaml",
@@ -106,33 +127,73 @@ def main() -> int:
 
         temporary_repository = SupplierResponseRepository(temporary_root)
         review = temporary_repository.validate_response(response_path, "battery")
-        require(not review.schema_errors, "complete synthetic fixture satisfies structural schema")
-        require(review.completeness_percent == 100.0, "completeness scoring reaches 100 percent only when required fields are answered")
-        require(review.disposition == "CONTRADICTION_REVIEW_REQUIRED", "target and fallback contradictions enter review instead of changing configuration")
-        require(len(review.contradictions) == 3, "battery target, allocation, and EVT0 cap contradictions are detected")
+        require(
+            not review.schema_errors,
+            "complete synthetic fixture satisfies structural schema",
+        )
+        require(
+            review.completeness_percent == 100.0,
+            "completeness scoring reaches 100 percent only when required fields are answered",
+        )
+        require(
+            review.disposition == "CONTRADICTION_REVIEW_REQUIRED",
+            "target and fallback contradictions enter review instead of changing configuration",
+        )
+        require(
+            len(review.contradictions) == 3,
+            "battery target, allocation, and EVT0 cap contradictions are detected",
+        )
 
         receipt_path, ingested_review = temporary_repository.ingest(
             response_path, "battery", "2026-11-01T12:00:00-05:00", "validation-operator"
         )
         receipt = load_yaml(receipt_path)
         raw_path = temporary_root / receipt["raw_path"]
-        require(raw_path.read_bytes() == response_bytes, "ingestion preserves exact raw supplier bytes")
-        require(receipt["sha256"] == hashlib.sha256(response_bytes).hexdigest(), "receipt hash matches raw response")
-        require(receipt["authority_boundary"] == "ingested_not_verified_not_selected", "receipt preserves the evidence authority boundary")
-        require(ingested_review.disposition == "CONTRADICTION_REVIEW_REQUIRED", "ingestion preserves review disposition")
+        require(
+            raw_path.read_bytes() == response_bytes,
+            "ingestion preserves exact raw supplier bytes",
+        )
+        require(
+            receipt["sha256"] == hashlib.sha256(response_bytes).hexdigest(),
+            "receipt hash matches raw response",
+        )
+        require(
+            receipt["authority_boundary"] == "ingested_not_verified_not_selected",
+            "receipt preserves the evidence authority boundary",
+        )
+        require(
+            ingested_review.disposition == "CONTRADICTION_REVIEW_REQUIRED",
+            "ingestion preserves review disposition",
+        )
 
         queue = temporary_repository.build_review_queue()
-        require(queue["SUPPLIER_RESPONSE_GATE"] == "REVIEW_QUEUE_OPEN", "contradictory response opens the review queue")
-        require(queue["items"][0]["integrity_errors"] == [], "review queue verifies raw-file integrity")
+        require(
+            queue["SUPPLIER_RESPONSE_GATE"] == "REVIEW_QUEUE_OPEN",
+            "contradictory response opens the review queue",
+        )
+        require(
+            queue["items"][0]["integrity_errors"] == [],
+            "review queue verifies raw-file integrity",
+        )
 
         raw_path.write_text("tampered: true\n", encoding="utf-8")
         tampered_queue = temporary_repository.build_review_queue()
-        require(tampered_queue["SUPPLIER_RESPONSE_GATE"] == "BLOCKED_BY_INVALID_RESPONSE", "hash mismatch blocks the supplier gate")
+        require(
+            tampered_queue["SUPPLIER_RESPONSE_GATE"] == "BLOCKED_BY_INVALID_RESPONSE",
+            "hash mismatch blocks the supplier gate",
+        )
 
         malformed_path = temporary_root / "malformed.yaml"
-        malformed_path.write_text(yaml.safe_dump({"request": {"packet": "wrong"}}), encoding="utf-8")
-        malformed_review = temporary_repository.validate_response(malformed_path, "battery")
-        require(bool(malformed_review.schema_errors), "malformed response is rejected by structural schema")
+        malformed_path.write_text(
+            yaml.safe_dump({"request": {"packet": "wrong"}}), encoding="utf-8"
+        )
+        malformed_review = temporary_repository.validate_response(
+            malformed_path, "battery"
+        )
+        require(
+            bool(malformed_review.schema_errors),
+            "malformed response is rejected by structural schema",
+        )
 
     cli = subprocess.run(
         [sys.executable, "-m", "buildslate", "suppliers", "queue", "--format", "json"],
@@ -141,7 +202,10 @@ def main() -> int:
         text=True,
         check=False,
     )
-    require(cli.returncode == 0 and '"SUPPLIER_RESPONSE_GATE": "EMPTY_INBOX"' in cli.stdout, "CLI exposes the supplier review queue")
+    require(
+        cli.returncode == 0 and '"SUPPLIER_RESPONSE_GATE": "EMPTY_INBOX"' in cli.stdout,
+        "CLI exposes the supplier review queue",
+    )
     passed("supplier-response ingestion validation")
     return 0
 
@@ -152,4 +216,3 @@ if __name__ == "__main__":
     except (AssertionError, OSError, ValueError, KeyError, TypeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         raise SystemExit(1)
-

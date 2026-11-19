@@ -9,7 +9,9 @@ from typing import Any
 try:
     import yaml
 except ImportError as exc:  # pragma: no cover - dependency guidance path
-    raise SystemExit("PyYAML is required. Install dependencies with: pip install -r requirements.txt") from exc
+    raise SystemExit(
+        "PyYAML is required. Install dependencies with: pip install -r requirements.txt"
+    ) from exc
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SPEC_PATH = REPO_ROOT / "specs" / "slate-pocket-v1.yaml"
@@ -50,7 +52,10 @@ def get_required_number(spec: dict[str, Any], section: str, key: str) -> float:
 def main() -> int:
     try:
         spec = load_spec()
-        values = {f"{section}.{key}": get_required_number(spec, section, key) for section, key in REQUIRED_FIELDS}
+        values = {
+            f"{section}.{key}": get_required_number(spec, section, key)
+            for section, key in REQUIRED_FIELDS
+        }
     except Exception as exc:  # noqa: BLE001 - CLI reports validation failure directly.
         print(f"FAIL: {exc}")
         return 1
@@ -80,11 +85,17 @@ def main() -> int:
 
     warnings = []
     if thickness_mm < 9 and memory_gb >= 512:
-        warnings.append("8.x mm chassis with >=512GB memory requires aggressive package and thermal validation")
+        warnings.append(
+            "8.x mm chassis with >=512GB memory requires aggressive package and thermal validation"
+        )
     if target_g <= 250 and capacity_mah >= 6000:
-        warnings.append("<=250g target with >=6000mAh battery leaves limited mass for chassis and thermal stack")
+        warnings.append(
+            "<=250g target with >=6000mAh battery leaves limited mass for chassis and thermal stack"
+        )
     if storage_tb >= 4 and thickness_mm < 9:
-        warnings.append(">=4TB storage in <9mm chassis may conflict with package thickness and heat spreading")
+        warnings.append(
+            ">=4TB storage in <9mm chassis may conflict with package thickness and heat spreading"
+        )
 
     if warnings:
         print("  warnings:")

@@ -33,7 +33,9 @@ def main() -> int:
         if path.exists():
             print(f"PASS: v1R thermal artifact exists: {path.relative_to(REPO_ROOT)}")
         else:
-            failures.append(f"v1R thermal artifact missing: {path.relative_to(REPO_ROOT)}")
+            failures.append(
+                f"v1R thermal artifact missing: {path.relative_to(REPO_ROOT)}"
+            )
 
     if not failures:
         try:
@@ -42,13 +44,30 @@ def main() -> int:
             if model["metadata"]["solver_status"] != "not_built":
                 failures.append("thermal model must not imply a solver build exists")
             if len(model["heat_sources"]) < 6 or len(model["sensor_map"]) < 9:
-                failures.append("thermal model lacks required source or sensor coverage")
+                failures.append(
+                    "thermal model lacks required source or sensor coverage"
+                )
             categories = {case["category"] for case in matrix["cases"].values()}
-            required_categories = {"sustained", "peak", "hot_ambient", "handheld", "pocket", "bag", "charging_overlap"}
+            required_categories = {
+                "sustained",
+                "peak",
+                "hot_ambient",
+                "handheld",
+                "pocket",
+                "bag",
+                "charging_overlap",
+            }
             if not required_categories.issubset(categories):
-                failures.append("thermal test matrix lacks required operating-condition coverage")
-            if matrix["cases"]["T06_pocket_fault_containment"]["state"] != "prohibited_until_controls_validated":
-                failures.append("pocket high-power case must remain prohibited until controls are validated")
+                failures.append(
+                    "thermal test matrix lacks required operating-condition coverage"
+                )
+            if (
+                matrix["cases"]["T06_pocket_fault_containment"]["state"]
+                != "prohibited_until_controls_validated"
+            ):
+                failures.append(
+                    "pocket high-power case must remain prohibited until controls are validated"
+                )
             if matrix["cases"]["T10_wireless_charge"]["charging"] != "disabled":
                 failures.append("wireless charging must remain disabled for EVT0")
             if matrix["screening_limits"]["maximum_skin_c"] != 43.0:
@@ -57,16 +76,24 @@ def main() -> int:
             failures.append(str(exc))
         else:
             if not failures:
-                print("PASS: v1R thermal geometry, sensor map, cases, and safety posture are valid")
+                print(
+                    "PASS: v1R thermal geometry, sensor map, cases, and safety posture are valid"
+                )
 
     if not failures:
         result = subprocess.run(
-            [sys.executable, str(GENERATOR_PATH)], cwd=REPO_ROOT, capture_output=True, text=True, check=False
+            [sys.executable, str(GENERATOR_PATH)],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
         )
         if result.returncode == 0:
             print("PASS: v1R thermal readiness report generator runs")
         else:
-            failures.append(f"v1R thermal generator failed: {result.stderr.strip() or result.stdout.strip()}")
+            failures.append(
+                f"v1R thermal generator failed: {result.stderr.strip() or result.stdout.strip()}"
+            )
 
     if REPORT_PATH.exists():
         report = REPORT_PATH.read_text(encoding="utf-8")
@@ -81,9 +108,13 @@ def main() -> int:
         if missing:
             failures.append(f"v1R thermal report missing markers: {', '.join(missing)}")
         else:
-            print("PASS: v1R thermal report preserves model status, prohibitions, decision, and caveat")
+            print(
+                "PASS: v1R thermal report preserves model status, prohibitions, decision, and caveat"
+            )
     else:
-        failures.append(f"v1R thermal report missing: {REPORT_PATH.relative_to(REPO_ROOT)}")
+        failures.append(
+            f"v1R thermal report missing: {REPORT_PATH.relative_to(REPO_ROOT)}"
+        )
 
     if failures:
         for failure in failures:

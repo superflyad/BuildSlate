@@ -10,7 +10,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = REPO_ROOT / "engineering" / "evidence" / "evidence_registry.yaml"
 ENGINE_PATH = REPO_ROOT / "engineering" / "evidence" / "evidence_engine.py"
-GENERATOR_PATH = REPO_ROOT / "engineering" / "evidence" / "generate_evidence_readiness_report.py"
+GENERATOR_PATH = (
+    REPO_ROOT / "engineering" / "evidence" / "generate_evidence_readiness_report.py"
+)
 REPORT_PATH = REPO_ROOT / "reports" / "slate-pocket-evidence-readiness.txt"
 
 sys.path.insert(0, str(REPO_ROOT))
@@ -43,7 +45,9 @@ def main() -> int:
             registry = load_registry(REGISTRY_PATH)
             validate_registry(registry)
             packages = build_packages(registry)
-            print("PASS: evidence registry shape, dependencies, risk links, ownership rules, and artifact states are valid")
+            print(
+                "PASS: evidence registry shape, dependencies, risk links, ownership rules, and artifact states are valid"
+            )
         except ValueError as exc:
             failures.append(str(exc))
 
@@ -52,10 +56,14 @@ def main() -> int:
         if phases == {0, 1, 2, 3, 4}:
             print("PASS: evidence roadmap covers phases 0 through 4")
         else:
-            failures.append(f"evidence phases must cover 0 through 4; found {sorted(phases)}")
+            failures.append(
+                f"evidence phases must cover 0 through 4; found {sorted(phases)}"
+            )
         decision = readiness_decision(packages)
         if decision in set(EvidenceDecision):
-            print(f"PASS: evidence decision is an approved enum value: {decision.value}")
+            print(
+                f"PASS: evidence decision is an approved enum value: {decision.value}"
+            )
         else:
             failures.append(f"invalid evidence decision: {decision}")
 
@@ -70,7 +78,9 @@ def main() -> int:
         if result.returncode == 0:
             print("PASS: evidence readiness report generator runs")
         else:
-            failures.append(f"generator exited with code {result.returncode}: {result.stderr.strip()}")
+            failures.append(
+                f"generator exited with code {result.returncode}: {result.stderr.strip()}"
+            )
 
     if REPORT_PATH.exists():
         report = REPORT_PATH.read_text(encoding="utf-8")
@@ -85,11 +95,17 @@ def main() -> int:
         )
         missing = [marker for marker in markers if marker not in report]
         if missing:
-            failures.append(f"evidence report missing required sections: {', '.join(missing)}")
+            failures.append(
+                f"evidence report missing required sections: {', '.join(missing)}"
+            )
         else:
-            print("PASS: evidence readiness report contains required sections and caveat")
+            print(
+                "PASS: evidence readiness report contains required sections and caveat"
+            )
     else:
-        failures.append(f"evidence report missing: {REPORT_PATH.relative_to(REPO_ROOT)}")
+        failures.append(
+            f"evidence report missing: {REPORT_PATH.relative_to(REPO_ROOT)}"
+        )
 
     if failures:
         for failure in failures:

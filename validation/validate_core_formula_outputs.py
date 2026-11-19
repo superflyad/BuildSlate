@@ -13,7 +13,9 @@ sys.path.insert(0, str(REPO_ROOT))
 from engineering.core.calculator import Calculator  # noqa: E402
 
 
-def assert_close(label: str, actual: float, expected: float, tolerance: float = 1e-6) -> None:
+def assert_close(
+    label: str, actual: float, expected: float, tolerance: float = 1e-6
+) -> None:
     if not math.isclose(actual, expected, rel_tol=tolerance, abs_tol=tolerance):
         raise AssertionError(f"{label}: expected {expected}, got {actual}")
     print(f"PASS: {label} = {actual:.6g}")
@@ -34,7 +36,11 @@ def main() -> int:
         "geometry.volume_cm3",
         calculator.compute(
             "geometry.volume_cm3",
-            {"geometry.length_mm": 180, "geometry.width_mm": 95, "geometry.thickness_mm": 8.8},
+            {
+                "geometry.length_mm": 180,
+                "geometry.width_mm": 95,
+                "geometry.thickness_mm": 8.8,
+            },
         ),
         150.48,
     )
@@ -42,7 +48,11 @@ def main() -> int:
         "geometry.surface_area_cm2",
         calculator.compute(
             "geometry.surface_area_cm2",
-            {"geometry.length_mm": 180, "geometry.width_mm": 95, "geometry.thickness_mm": 8.8},
+            {
+                "geometry.length_mm": 180,
+                "geometry.width_mm": 95,
+                "geometry.thickness_mm": 8.8,
+            },
         ),
         390.37,
         tolerance=0.005,
@@ -70,7 +80,11 @@ def main() -> int:
     )
 
     expected_kv_cache_gb = (2 * 32 * 4096 * 8192 * 1 * 2) / 1_000_000_000
-    assert_close("runtime.kv_cache_gb", calculator.compute("runtime.kv_cache_gb"), expected_kv_cache_gb)
+    assert_close(
+        "runtime.kv_cache_gb",
+        calculator.compute("runtime.kv_cache_gb"),
+        expected_kv_cache_gb,
+    )
 
     print("All deterministic core formula output checks passed.")
     return 0

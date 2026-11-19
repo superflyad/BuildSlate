@@ -27,7 +27,9 @@ def run_command(command: list[str]) -> str:
     return completed.stdout
 
 
-def require_contains(output: str, expected_values: tuple[str, ...], context: str) -> None:
+def require_contains(
+    output: str, expected_values: tuple[str, ...], context: str
+) -> None:
     missing = [expected for expected in expected_values if expected not in output]
     if missing:
         raise AssertionError(f"{context} missing {missing!r}\noutput:\n{output}")
@@ -40,7 +42,11 @@ def validate_dependency_graph() -> None:
 
     calculator = Calculator()
     checks = {
-        "geometry.volume_cm3": {"geometry.length_mm", "geometry.width_mm", "geometry.thickness_mm"},
+        "geometry.volume_cm3": {
+            "geometry.length_mm",
+            "geometry.width_mm",
+            "geometry.thickness_mm",
+        },
         "thermal.heat_flux_w_cm2": {"thermal.sustained_w", "geometry.surface_area_cm2"},
         "runtime.available_memory_margin_gb": {
             "runtime.available_memory_gb",
@@ -54,17 +60,43 @@ def validate_dependency_graph() -> None:
         resolved = set(graph.resolve_dependencies(variable_id))
         missing = expected - resolved
         if missing:
-            raise AssertionError(f"{variable_id} dependency graph missing: {sorted(missing)}")
+            raise AssertionError(
+                f"{variable_id} dependency graph missing: {sorted(missing)}"
+            )
 
 
 def main() -> int:
     command_checks = (
-        ([sys.executable, "engineering/models/surface_area.py"], ("Surface area estimate", "surface_area_cm2:", "volume_cm3:"), "surface area model"),
-        ([sys.executable, "engineering/models/surface_area.py", "--explain"], ("geometry.surface_area_cm2", "geometry.volume_cm3"), "surface area explanation"),
-        ([sys.executable, "engineering/models/thermal_limits.py"], ("Thermal limits estimate", "heat_density_w_cm3:", "heat_flux_w_cm2:"), "thermal limits model"),
-        ([sys.executable, "engineering/models/thermal_limits.py", "--explain"], ("thermal.heat_density_w_cm3", "thermal.heat_flux_w_cm2"), "thermal limits explanation"),
-        ([sys.executable, "engineering/models/model_memory.py"], ("Model memory estimate", "estimated_memory_gb:", "pass_fail:"), "model memory model"),
-        ([sys.executable, "engineering/models/model_memory.py", "--explain"], ("runtime.model_memory_gb", "runtime.model_overhead_factor"), "model memory explanation"),
+        (
+            [sys.executable, "engineering/models/surface_area.py"],
+            ("Surface area estimate", "surface_area_cm2:", "volume_cm3:"),
+            "surface area model",
+        ),
+        (
+            [sys.executable, "engineering/models/surface_area.py", "--explain"],
+            ("geometry.surface_area_cm2", "geometry.volume_cm3"),
+            "surface area explanation",
+        ),
+        (
+            [sys.executable, "engineering/models/thermal_limits.py"],
+            ("Thermal limits estimate", "heat_density_w_cm3:", "heat_flux_w_cm2:"),
+            "thermal limits model",
+        ),
+        (
+            [sys.executable, "engineering/models/thermal_limits.py", "--explain"],
+            ("thermal.heat_density_w_cm3", "thermal.heat_flux_w_cm2"),
+            "thermal limits explanation",
+        ),
+        (
+            [sys.executable, "engineering/models/model_memory.py"],
+            ("Model memory estimate", "estimated_memory_gb:", "pass_fail:"),
+            "model memory model",
+        ),
+        (
+            [sys.executable, "engineering/models/model_memory.py", "--explain"],
+            ("runtime.model_memory_gb", "runtime.model_overhead_factor"),
+            "model memory explanation",
+        ),
         (
             [
                 sys.executable,

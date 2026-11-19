@@ -29,30 +29,54 @@ def _load(path: Path) -> dict[str, Any]:
 
 def main() -> int:
     failures: list[str] = []
-    required = (FLOORPLAN_ROOT / "README.md", FLOORPLAN_PATH, POWER_TREE_PATH, REVIEW_PATH, GENERATOR_PATH)
+    required = (
+        FLOORPLAN_ROOT / "README.md",
+        FLOORPLAN_PATH,
+        POWER_TREE_PATH,
+        REVIEW_PATH,
+        GENERATOR_PATH,
+    )
     for path in required:
         if path.exists():
             print(f"PASS: v1R PCB/power artifact exists: {path.relative_to(REPO_ROOT)}")
         else:
-            failures.append(f"v1R PCB/power artifact missing: {path.relative_to(REPO_ROOT)}")
+            failures.append(
+                f"v1R PCB/power artifact missing: {path.relative_to(REPO_ROOT)}"
+            )
 
     if not failures:
         try:
             floorplan = _load(FLOORPLAN_PATH)
             power_tree = _load(POWER_TREE_PATH)
             if floorplan["metadata"]["modeled_memory_tier_gb"] != 128:
-                failures.append("provisional floorplan must model the locked 128 GB fallback")
+                failures.append(
+                    "provisional floorplan must model the locked 128 GB fallback"
+                )
             memory_sites = [
-                item for item in floorplan["placements"].values() if item["function"] == "lpddr5x_32gb_planning_site"
+                item
+                for item in floorplan["placements"].values()
+                if item["function"] == "lpddr5x_32gb_planning_site"
             ]
             if len(memory_sites) != 4:
-                failures.append("128 GB fallback must have exactly four 32 GB planning sites")
-            if floorplan["layer_stack"]["assumed_total_layers"] != len(floorplan["layer_stack"]["layers"]):
+                failures.append(
+                    "128 GB fallback must have exactly four 32 GB planning sites"
+                )
+            if floorplan["layer_stack"]["assumed_total_layers"] != len(
+                floorplan["layer_stack"]["layers"]
+            ):
                 failures.append("PCB layer count does not match layer role inventory")
             policy = power_tree["charging_policy"]
-            if policy["full_power_wired_overlap_with_sustained_ai"] != "prohibited_until_validated":
-                failures.append("full-power wired charging overlap must remain prohibited")
-            if policy["wireless_overlap_with_sustained_ai"] != "prohibited_until_validated":
+            if (
+                policy["full_power_wired_overlap_with_sustained_ai"]
+                != "prohibited_until_validated"
+            ):
+                failures.append(
+                    "full-power wired charging overlap must remain prohibited"
+                )
+            if (
+                policy["wireless_overlap_with_sustained_ai"]
+                != "prohibited_until_validated"
+            ):
                 failures.append("wireless charging overlap must remain prohibited")
             if policy["evt0_wireless_enabled"] is not False:
                 failures.append("wireless charging must remain disabled for EVT0")
@@ -62,16 +86,24 @@ def main() -> int:
             failures.append(str(exc))
         else:
             if not failures:
-                print("PASS: v1R floorplan, fallback topology, layer stack, and charging policy are valid")
+                print(
+                    "PASS: v1R floorplan, fallback topology, layer stack, and charging policy are valid"
+                )
 
     if not failures:
         result = subprocess.run(
-            [sys.executable, str(GENERATOR_PATH)], cwd=REPO_ROOT, capture_output=True, text=True, check=False
+            [sys.executable, str(GENERATOR_PATH)],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
         )
         if result.returncode == 0:
             print("PASS: v1R PCB/power report generator runs")
         else:
-            failures.append(f"v1R PCB/power generator failed: {result.stderr.strip() or result.stdout.strip()}")
+            failures.append(
+                f"v1R PCB/power generator failed: {result.stderr.strip() or result.stdout.strip()}"
+            )
 
     if REPORT_PATH.exists():
         report = REPORT_PATH.read_text(encoding="utf-8")
@@ -85,11 +117,17 @@ def main() -> int:
         )
         missing = [marker for marker in markers if marker not in report]
         if missing:
-            failures.append(f"v1R PCB/power report missing markers: {', '.join(missing)}")
+            failures.append(
+                f"v1R PCB/power report missing markers: {', '.join(missing)}"
+            )
         else:
-            print("PASS: v1R PCB/power report preserves fallbacks, prohibitions, decision, and caveat")
+            print(
+                "PASS: v1R PCB/power report preserves fallbacks, prohibitions, decision, and caveat"
+            )
     else:
-        failures.append(f"v1R PCB/power report missing: {REPORT_PATH.relative_to(REPO_ROOT)}")
+        failures.append(
+            f"v1R PCB/power report missing: {REPORT_PATH.relative_to(REPO_ROOT)}"
+        )
 
     if failures:
         for failure in failures:

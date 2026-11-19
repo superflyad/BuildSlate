@@ -62,19 +62,29 @@ def main() -> int:
             entry = risks[risk_id]
             missing_fields = [field for field in REQUIRED_FIELDS if field not in entry]
             if missing_fields:
-                failures.append(f"{risk_id} missing fields: {', '.join(missing_fields)}")
+                failures.append(
+                    f"{risk_id} missing fields: {', '.join(missing_fields)}"
+                )
             if entry.get("profile_scope") not in PROFILE_SCOPES:
-                failures.append(f"{risk_id} has invalid profile_scope: {entry.get('profile_scope')}")
+                failures.append(
+                    f"{risk_id} has invalid profile_scope: {entry.get('profile_scope')}"
+                )
             if entry.get("likelihood") not in LIKELIHOOD_VALUES:
-                failures.append(f"{risk_id} has invalid likelihood: {entry.get('likelihood')}")
+                failures.append(
+                    f"{risk_id} has invalid likelihood: {entry.get('likelihood')}"
+                )
             if entry.get("impact") not in IMPACT_VALUES:
                 failures.append(f"{risk_id} has invalid impact: {entry.get('impact')}")
             if entry.get("maturity") not in MATURITY_VALUES:
-                failures.append(f"{risk_id} has invalid maturity: {entry.get('maturity')}")
+                failures.append(
+                    f"{risk_id} has invalid maturity: {entry.get('maturity')}"
+                )
             if entry.get("status") not in STATUS_VALUES:
                 failures.append(f"{risk_id} has invalid status: {entry.get('status')}")
         if not failures:
-            print("PASS: required fields and enum values are present for required risks")
+            print(
+                "PASS: required fields and enum values are present for required risks"
+            )
 
     if not failures:
         scored_risks = build_risks(registry)
@@ -94,7 +104,9 @@ def main() -> int:
         if result.returncode == 0:
             print("PASS: risk report generator runs")
         else:
-            failures.append(f"generator exited with code {result.returncode}: {result.stderr.strip()}")
+            failures.append(
+                f"generator exited with code {result.returncode}: {result.stderr.strip()}"
+            )
 
     if REPORT_PATH.exists():
         report = REPORT_PATH.read_text(encoding="utf-8")
@@ -105,11 +117,15 @@ def main() -> int:
             "Evidence required",
             "screening-level risk register, not formal FMEA",
         )
-        missing_markers = [marker for marker in required_markers if marker not in report]
+        missing_markers = [
+            marker for marker in required_markers if marker not in report
+        ]
         if not missing_markers:
             print("PASS: report contains required sections and caveat")
         else:
-            failures.append(f"report missing required sections: {', '.join(missing_markers)}")
+            failures.append(
+                f"report missing required sections: {', '.join(missing_markers)}"
+            )
         if "HIGH" in report or "CRITICAL" in report:
             print("PASS: report contains at least one HIGH or CRITICAL risk")
         else:

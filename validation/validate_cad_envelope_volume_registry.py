@@ -9,7 +9,9 @@ from typing import Any
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-REGISTRY_PATH = REPO_ROOT / "engineering" / "cad_envelope" / "component_volume_registry.yaml"
+REGISTRY_PATH = (
+    REPO_ROOT / "engineering" / "cad_envelope" / "component_volume_registry.yaml"
+)
 
 REQUIRED_COMPONENTS = (
     "device_envelope",
@@ -53,7 +55,9 @@ def validate_component(name: str, entry: Any) -> None:
         raise ValueError(f"components.{name} must be a mapping/object")
     missing = [field for field in REQUIRED_FIELDS if field not in entry]
     if missing:
-        raise ValueError(f"components.{name} missing required fields: {', '.join(missing)}")
+        raise ValueError(
+            f"components.{name} missing required fields: {', '.join(missing)}"
+        )
 
     for field in ("length_mm", "width_mm", "height_mm"):
         require_positive_number(entry, name, field)
@@ -75,15 +79,21 @@ def validate_component(name: str, entry: Any) -> None:
 def validate_registry(registry: dict[str, Any]) -> None:
     factor = registry.get("internal_usable_volume_factor")
     if not isinstance(factor, (int, float)) or not 0.3 <= factor <= 0.95:
-        raise ValueError("internal_usable_volume_factor must exist and be between 0.3 and 0.95")
+        raise ValueError(
+            "internal_usable_volume_factor must exist and be between 0.3 and 0.95"
+        )
 
     components = registry.get("components")
     if not isinstance(components, dict):
         raise ValueError("components must be a mapping/object")
 
-    missing_components = [name for name in REQUIRED_COMPONENTS if name not in components]
+    missing_components = [
+        name for name in REQUIRED_COMPONENTS if name not in components
+    ]
     if missing_components:
-        raise ValueError(f"missing required components: {', '.join(missing_components)}")
+        raise ValueError(
+            f"missing required components: {', '.join(missing_components)}"
+        )
 
     for name in REQUIRED_COMPONENTS:
         validate_component(name, components[name])

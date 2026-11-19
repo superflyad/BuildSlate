@@ -49,7 +49,9 @@ def require_string_list(entry: dict[str, Any], field: str, index: int) -> None:
         raise ValueError(f"entries[{index}].{field} must be a list")
     for item_index, item in enumerate(value):
         if not isinstance(item, str) or not item.strip():
-            raise ValueError(f"entries[{index}].{field}[{item_index}] must be a non-empty string")
+            raise ValueError(
+                f"entries[{index}].{field}[{item_index}] must be a non-empty string"
+            )
 
 
 def validate_entry(entry: Any, index: int) -> None:
@@ -58,9 +60,18 @@ def validate_entry(entry: Any, index: int) -> None:
 
     missing = [field for field in REQUIRED_FIELDS if field not in entry]
     if missing:
-        raise ValueError(f"entries[{index}] missing required fields: {', '.join(missing)}")
+        raise ValueError(
+            f"entries[{index}] missing required fields: {', '.join(missing)}"
+        )
 
-    for field in ("domain", "coverage_status", "maturity_level", "key_assumptions", "risk_if_wrong", "review_priority"):
+    for field in (
+        "domain",
+        "coverage_status",
+        "maturity_level",
+        "key_assumptions",
+        "risk_if_wrong",
+        "review_priority",
+    ):
         require_non_empty_string(entry, field, index)
     for field in ("models", "data_sources", "known_gaps", "required_next_evidence"):
         require_string_list(entry, field, index)

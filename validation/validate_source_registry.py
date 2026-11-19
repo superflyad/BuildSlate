@@ -9,7 +9,9 @@ from typing import Any
 try:
     import yaml
 except ImportError as exc:  # pragma: no cover - dependency guidance path
-    raise SystemExit("PyYAML is required. Install dependencies with: pip install -r requirements.txt") from exc
+    raise SystemExit(
+        "PyYAML is required. Install dependencies with: pip install -r requirements.txt"
+    ) from exc
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = REPO_ROOT / "engineering" / "assumptions" / "source_registry.yaml"
@@ -39,7 +41,9 @@ def validate_entry(entry: Any, index: int) -> None:
         raise ValueError(f"entries[{index}] must be a mapping/object")
     missing = [field for field in REQUIRED_FIELDS if field not in entry]
     if missing:
-        raise ValueError(f"entries[{index}] missing required fields: {', '.join(missing)}")
+        raise ValueError(
+            f"entries[{index}] missing required fields: {', '.join(missing)}"
+        )
     if entry["category"] not in ALLOWED_CATEGORIES:
         allowed = ", ".join(sorted(ALLOWED_CATEGORIES))
         raise ValueError(f"entries[{index}].category must be one of: {allowed}")

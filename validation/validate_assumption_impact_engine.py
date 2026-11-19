@@ -10,7 +10,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = REPO_ROOT / "engineering" / "assumptions" / "assumption_registry.yaml"
 ENGINE_PATH = REPO_ROOT / "engineering" / "assumptions" / "assumption_impact_engine.py"
-GENERATOR_PATH = REPO_ROOT / "engineering" / "assumptions" / "generate_assumption_impact_report.py"
+GENERATOR_PATH = (
+    REPO_ROOT / "engineering" / "assumptions" / "generate_assumption_impact_report.py"
+)
 REPORT_PATH = REPO_ROOT / "reports" / "slate-pocket-assumption-impact-report.txt"
 
 sys.path.insert(0, str(REPO_ROOT))
@@ -50,7 +52,11 @@ def main() -> int:
 
     if not failures:
         assumptions = registry["assumptions"]
-        missing = [assumption_id for assumption_id in REQUIRED_ASSUMPTIONS if assumption_id not in assumptions]
+        missing = [
+            assumption_id
+            for assumption_id in REQUIRED_ASSUMPTIONS
+            if assumption_id not in assumptions
+        ]
         if not missing:
             print("PASS: required assumptions exist")
         else:
@@ -60,15 +66,25 @@ def main() -> int:
             entry = assumptions[assumption_id]
             missing_fields = [field for field in REQUIRED_FIELDS if field not in entry]
             if missing_fields:
-                failures.append(f"{assumption_id} missing fields: {', '.join(missing_fields)}")
+                failures.append(
+                    f"{assumption_id} missing fields: {', '.join(missing_fields)}"
+                )
             if entry.get("confidence") not in CONFIDENCE_VALUES:
-                failures.append(f"{assumption_id} has invalid confidence: {entry.get('confidence')}")
+                failures.append(
+                    f"{assumption_id} has invalid confidence: {entry.get('confidence')}"
+                )
             if entry.get("maturity") not in MATURITY_VALUES:
-                failures.append(f"{assumption_id} has invalid maturity: {entry.get('maturity')}")
+                failures.append(
+                    f"{assumption_id} has invalid maturity: {entry.get('maturity')}"
+                )
             if entry.get("profile_scope") not in PROFILE_SCOPES:
-                failures.append(f"{assumption_id} has invalid profile_scope: {entry.get('profile_scope')}")
+                failures.append(
+                    f"{assumption_id} has invalid profile_scope: {entry.get('profile_scope')}"
+                )
         if not failures:
-            print("PASS: required fields and enum values are present for required assumptions")
+            print(
+                "PASS: required fields and enum values are present for required assumptions"
+            )
 
     if not failures:
         impacts = build_impacts(registry)
@@ -88,7 +104,9 @@ def main() -> int:
         if result.returncode == 0:
             print("PASS: assumption impact report generator runs")
         else:
-            failures.append(f"generator exited with code {result.returncode}: {result.stderr.strip()}")
+            failures.append(
+                f"generator exited with code {result.returncode}: {result.stderr.strip()}"
+            )
 
     if REPORT_PATH.exists():
         report = REPORT_PATH.read_text(encoding="utf-8")
@@ -97,16 +115,23 @@ def main() -> int:
             "What breaks first",
             "Evidence required",
         )
-        missing_markers = [marker for marker in required_markers if marker not in report]
+        missing_markers = [
+            marker for marker in required_markers if marker not in report
+        ]
         if not missing_markers:
             print("PASS: report contains required sections")
         else:
-            failures.append(f"report missing required sections: {', '.join(missing_markers)}")
+            failures.append(
+                f"report missing required sections: {', '.join(missing_markers)}"
+            )
         if "CRITICAL" in report or "HIGH" in report:
             print("PASS: report contains at least one CRITICAL or HIGH item")
         else:
             failures.append("report does not contain a CRITICAL or HIGH item")
-        if "static traceability layer" in report and "does not validate assumptions" in report:
+        if (
+            "static traceability layer" in report
+            and "does not validate assumptions" in report
+        ):
             print("PASS: report contains static-traceability caveat")
         else:
             failures.append("report does not contain the static-traceability caveat")

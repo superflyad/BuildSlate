@@ -58,8 +58,14 @@ def main() -> int:
             if spec["metadata"]["status"] != "planned_not_authorized":
                 failures.append("EVT0 spec must remain planned and unauthorized")
             authorization = spec["prerequisite_gates"]["authorization"]
-            if any(value is True for field, value in authorization.items() if field.endswith("_authorized")):
-                failures.append("EVT0 package may not imply purchase, build, or test authorization")
+            if any(
+                value is True
+                for field, value in authorization.items()
+                if field.endswith("_authorized")
+            ):
+                failures.append(
+                    "EVT0 package may not imply purchase, build, or test authorization"
+                )
             if spec["configuration_rules"]["memory_tier_gb"] != 128:
                 failures.append("EVT0 must use the locked 128 GB fallback")
             if spec["configuration_rules"]["wireless_charging"] != "removed":
@@ -74,30 +80,49 @@ def main() -> int:
                 failures.append("EVT0 test gate lacks required test coverage")
             if matrix["global_pass_fail"]["hard_stops"]["maximum_skin_c"] != 43.0:
                 failures.append("EVT0 locked 43 C skin hard stop changed unexpectedly")
-            for schema, name in ((manifest_schema, "manifest"), (result_schema, "result")):
-                if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema" or not schema.get("required"):
-                    failures.append(f"EVT0 {name} schema lacks Draft 2020-12 identity or required fields")
+            for schema, name in (
+                (manifest_schema, "manifest"),
+                (result_schema, "result"),
+            ):
+                if schema.get(
+                    "$schema"
+                ) != "https://json-schema.org/draft/2020-12/schema" or not schema.get(
+                    "required"
+                ):
+                    failures.append(
+                        f"EVT0 {name} schema lacks Draft 2020-12 identity or required fields"
+                    )
             real_results = [
                 path
                 for path in (EVT_ROOT / "test-results").rglob("*")
                 if path.is_file() and path.name.lower() != "readme.md"
             ]
             if real_results:
-                failures.append("EVT0 package contains unvalidated files presented as test results")
+                failures.append(
+                    "EVT0 package contains unvalidated files presented as test results"
+                )
         except (KeyError, TypeError, ValueError) as exc:
             failures.append(str(exc))
         else:
             if not failures:
-                print("PASS: EVT0 fallbacks, authorization, BOM, instrumentation, workloads, tests, schemas, and empty evidence state are valid")
+                print(
+                    "PASS: EVT0 fallbacks, authorization, BOM, instrumentation, workloads, tests, schemas, and empty evidence state are valid"
+                )
 
     if not failures:
         result = subprocess.run(
-            [sys.executable, str(GENERATOR_PATH)], cwd=REPO_ROOT, capture_output=True, text=True, check=False
+            [sys.executable, str(GENERATOR_PATH)],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
         )
         if result.returncode == 0:
             print("PASS: EVT0 gate report generator runs")
         else:
-            failures.append(f"EVT0 gate generator failed: {result.stderr.strip() or result.stdout.strip()}")
+            failures.append(
+                f"EVT0 gate generator failed: {result.stderr.strip() or result.stdout.strip()}"
+            )
 
     if REPORT_PATH.exists():
         report = REPORT_PATH.read_text(encoding="utf-8")
@@ -114,9 +139,13 @@ def main() -> int:
         if missing:
             failures.append(f"EVT0 gate report missing markers: {', '.join(missing)}")
         else:
-            print("PASS: EVT0 gate report preserves readiness blockers and non-evidence caveat")
+            print(
+                "PASS: EVT0 gate report preserves readiness blockers and non-evidence caveat"
+            )
     else:
-        failures.append(f"EVT0 gate report missing: {REPORT_PATH.relative_to(REPO_ROOT)}")
+        failures.append(
+            f"EVT0 gate report missing: {REPORT_PATH.relative_to(REPO_ROOT)}"
+        )
 
     if failures:
         for failure in failures:

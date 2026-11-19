@@ -36,7 +36,9 @@ def marker_at_line(line: str) -> str | None:
     """Return the conflict marker prefix when a line is an unresolved marker."""
     stripped = line.strip()
     for marker in CONFLICT_MARKERS:
-        if stripped.startswith(marker) and (len(stripped) == len(marker) or stripped[len(marker)].isspace()):
+        if stripped.startswith(marker) and (
+            len(stripped) == len(marker) or stripped[len(marker)].isspace()
+        ):
             return marker
     return None
 
@@ -53,7 +55,9 @@ def main() -> int:
         for line_number, line in enumerate(contents.splitlines(), start=1):
             marker = marker_at_line(line)
             if marker is not None:
-                findings.append(f"{path.relative_to(REPO_ROOT)}:{line_number}: {marker}")
+                findings.append(
+                    f"{path.relative_to(REPO_ROOT)}:{line_number}: {marker}"
+                )
 
     if findings:
         print("FAIL: unresolved merge conflict markers found")

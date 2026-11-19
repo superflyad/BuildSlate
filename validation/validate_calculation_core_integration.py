@@ -27,7 +27,9 @@ def run_command(command: list[str]) -> str:
     return completed.stdout
 
 
-def require_contains(output: str, expected_values: tuple[str, ...], context: str) -> None:
+def require_contains(
+    output: str, expected_values: tuple[str, ...], context: str
+) -> None:
     if not any(expected in output for expected in expected_values):
         expected = " or ".join(repr(value) for value in expected_values)
         raise AssertionError(f"{context} did not contain {expected}\noutput:\n{output}")

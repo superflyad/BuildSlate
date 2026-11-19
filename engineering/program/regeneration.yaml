@@ -208,4 +208,16 @@ nodes:
       - engineering/program/configuration_registry.yaml
     outputs: [reports/program/dashboard.yaml, reports/program/dashboard.md]
     command: [python, -m, buildslate, dashboard, --generate, --regeneration-context]
+  assembly_viewer:
+    depends_on: [dashboard]
+    inputs:
+      - engineering/assembly/assembly.yaml
+      - buildslate/assembly.py
+      - cad/slate-pocket-v1r/envelope-model/*.yaml
+      - engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml
+      - engineering/components/component_library.yaml
+      - reports/program/dashboard.yaml
+      - reports/program/buildslate-program-snapshot.yaml
+    outputs: [viewer/public/assembly.json, viewer/public/assembly.gltf]
+    command: [python, -m, buildslate.assembly]
 

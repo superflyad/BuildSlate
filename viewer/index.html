@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0c1523" />
+    <meta
+      name="description"
+      content="Traceable provisional assembly viewer for Slate Pocket v1R."
+    />
+    <title>BuildSlate | Assembly Viewer</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">B</span
+          ><span>BuildSlate</span><span class="brand-divider"></span
+          ><span class="brand-subtitle">Assembly viewer</span>
+        </div>
+        <div class="topbar-right">
+          <span class="status-dot"></span><span>Slate Pocket v1R</span
+          ><span class="topbar-pill">PROVISIONAL MODEL</span>
+        </div>
+      </header>
+      <main class="workspace">
+        <aside class="left-panel">
+          <div class="panel-heading">
+            <div class="eyebrow">MODEL INDEX</div>
+            <h1>Device assembly</h1>
+            <p>Explore the current mechanical and board planning model.</p>
+          </div>
+          <div class="search-wrap">
+            <label for="part-search" class="sr-only">Search parts</label
+            ><span aria-hidden="true">⌕</span
+            ><input
+              id="part-search"
+              type="search"
+              placeholder="Find a part or system"
+            />
+          </div>
+          <div class="group-header">
+            <span>Systems</span
+            ><button id="show-all" type="button">Show all</button>
+          </div>
+          <div id="groups" class="groups"></div>
+          <div class="section-heading">
+            <span>Components</span><span id="part-count"></span>
+          </div>
+          <div id="parts" class="parts" aria-label="Components"></div>
+          <div class="left-footer">
+            <span class="tiny-square"></span
+            ><span>All dimensions in millimeters</span>
+          </div>
+        </aside>
+        <section class="stage" aria-label="Interactive 3D assembly">
+          <div class="stage-top">
+            <div>
+              <span class="stage-kicker">INTERACTIVE MODEL</span>
+              <div class="stage-title">Slate Pocket <span>v1R</span></div>
+            </div>
+            <div class="stage-metrics">
+              <div>
+                <strong id="model-part-count">—</strong
+                ><small>modeled parts</small>
+              </div>
+              <div>
+                <strong id="extent">—</strong><small>outer envelope</small>
+              </div>
+            </div>
+          </div>
+          <div
+            id="viewport"
+            class="viewport"
+            role="img"
+            aria-label="Interactive 3D provisional phone assembly"
+          ></div>
+          <div class="stage-actions">
+            <div class="view-buttons" role="group" aria-label="Camera view">
+              <button data-view="iso" class="active">3D</button
+              ><button data-view="front">Front</button
+              ><button data-view="rear">Rear</button
+              ><button data-view="side">Side</button>
+            </div>
+            <span class="stage-hint"
+              >Drag to rotate · Scroll to zoom · Click a part to inspect</span
+            >
+          </div>
+          <div class="stage-bottom">
+            <div class="control-row">
+              <label for="explode">Explode assembly</label
+              ><input
+                id="explode"
+                type="range"
+                min="0"
+                max="100"
+                value="0"
+              /><output id="explode-value" for="explode">0%</output>
+            </div>
+            <div class="toggles">
+              <label
+                ><input id="shell-toggle" type="checkbox" checked /><span
+                  >Exterior</span
+                ></label
+              ><label
+                ><input id="keepouts-toggle" type="checkbox" /><span
+                  >Keepouts</span
+                ></label
+              ><label
+                ><input id="deferred-toggle" type="checkbox" /><span
+                  >Deferred concepts</span
+                ></label
+              >
+            </div>
+          </div>
+        </section>
+        <aside class="right-panel">
+          <div class="right-tabs" role="tablist" aria-label="Information">
+            <button
+              id="tab-inspect"
+              class="active"
+              role="tab"
+              aria-selected="true"
+            >
+              Inspect</button
+            ><button id="tab-program" role="tab" aria-selected="false">
+              Program
+            </button>
+          </div>
+          <div id="inspect-panel" role="tabpanel">
+            <div id="part-detail" class="detail-placeholder">
+              <div class="detail-icon">◇</div>
+              <h2>Select a component</h2>
+              <p>
+                Choose a part in the model or component list to inspect
+                geometry, evidence, and its source.
+              </p>
+            </div>
+          </div>
+          <div id="program-panel" class="hidden" role="tabpanel">
+            <div class="detail-body">
+              <div class="eyebrow">PROGRAM STATUS</div>
+              <h2 id="program-title">Engineering readiness</h2>
+              <p class="muted">
+                These are repository gate states, not physical approval.
+              </p>
+              <div id="program-summary" class="summary-grid"></div>
+              <div class="section-heading">Component coverage</div>
+              <div id="coverage" class="coverage-list"></div>
+              <div class="section-heading">Local stack screens</div>
+              <div id="zones" class="zone-list"></div>
+              <div class="section-heading">Gates</div>
+              <div id="gates" class="gate-list"></div>
+              <div class="section-heading">External blockers</div>
+              <div id="blockers" class="blocker-list"></div>
+            </div>
+          </div>
+          <div class="evidence-note">
+            <span aria-hidden="true">ⓘ</span>
+            <p>
+              Geometry is a planning representation. It does not establish
+              component selection, fit, thermal performance, or build readiness.
+            </p>
+          </div>
+        </aside>
+      </main>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

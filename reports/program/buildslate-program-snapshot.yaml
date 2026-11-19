@@ -2,8 +2,8 @@ schema_version: 1
 program_id: slate-pocket-v1r
 title: Slate Pocket v1R Engineering Execution Program
 summary:
-  entity_count: 264
-  relation_count: 307
+  entity_count: 267
+  relation_count: 310
   entity_kind_counts:
     artifact: 35
     assumption: 12
@@ -14,13 +14,13 @@ summary:
     defect_code: 14
     evidence_package: 10
     gate: 9
-    generated_output: 18
+    generated_output: 20
     provenance: 57
     requirement: 14
     risk: 13
     supplier: 12
     test: 18
-    workflow: 17
+    workflow: 18
   evidence_status_counts:
     available: 3
     planned: 6
@@ -1327,6 +1327,20 @@ entities:
   source_path: engineering/program/regeneration.yaml
   attributes:
     generator: thermal_readiness
+- entity_id: generated_output:viewer/public/assembly.gltf
+  kind: generated_output
+  title: viewer/public/assembly.gltf
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: assembly_viewer
+- entity_id: generated_output:viewer/public/assembly.json
+  kind: generated_output
+  title: viewer/public/assembly.json
+  status: present
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    generator: assembly_viewer
 - entity_id: provenance:aluminum_alloy_density_g_cm3
   kind: provenance
   title: Aluminum alloy density
@@ -2845,6 +2859,27 @@ entities:
   attributes:
     workload: none
     purpose: verify_high_power_and_charging_inhibition_only
+- entity_id: workflow:assembly_viewer
+  kind: workflow
+  title: assembly viewer
+  status: tracked_generator
+  source_path: engineering/program/regeneration.yaml
+  attributes:
+    command:
+    - python
+    - -m
+    - buildslate.assembly
+    inputs:
+    - engineering/assembly/assembly.yaml
+    - buildslate/assembly.py
+    - cad/slate-pocket-v1r/envelope-model/*.yaml
+    - engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml
+    - engineering/components/component_library.yaml
+    - reports/program/dashboard.yaml
+    - reports/program/buildslate-program-snapshot.yaml
+    outputs:
+    - viewer/public/assembly.json
+    - viewer/public/assembly.gltf
 - entity_id: workflow:cad_budget
   kind: workflow
   title: cad budget
@@ -3952,6 +3987,15 @@ relations:
 - source_id: test:T40
   relationship: verifies
   target_id: evidence:evt0_prototype_evidence
+- source_id: workflow:assembly_viewer
+  relationship: depends_on
+  target_id: workflow:dashboard
+- source_id: workflow:assembly_viewer
+  relationship: produces
+  target_id: generated_output:viewer/public/assembly.gltf
+- source_id: workflow:assembly_viewer
+  relationship: produces
+  target_id: generated_output:viewer/public/assembly.json
 - source_id: workflow:cad_budget
   relationship: depends_on
   target_id: workflow:integration_contracts

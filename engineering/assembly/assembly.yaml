@@ -1,0 +1,60 @@
+schema_version: 1
+device: slate-pocket-v1r
+status: provisional_pre_supplier_cad
+description: Visual assembly contract for the existing mechanical and ECAD planning models.
+coordinate_system: Origin at the lower-left of the rear view; x follows length, y width, z thickness; units are millimeters.
+sources:
+  envelope: cad/slate-pocket-v1r/envelope-model/envelope.yaml
+  keepouts: cad/slate-pocket-v1r/envelope-model/keepouts.yaml
+  stackups: cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml
+  pcb: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml
+  dashboard: reports/program/dashboard.yaml
+  program: reports/program/buildslate-program-snapshot.yaml
+  component_library: engineering/components/component_library.yaml
+component_representations:
+  display_module: {kind: aggregate, part_ids: [display_stack]}
+  cover_glass: {kind: box, part_ids: [cover_glass]}
+  touch_digitizer: {kind: aggregate, part_ids: [display_stack]}
+  main_pcb: {kind: box, part_ids: [main_pcb_placeholder]}
+  soc_package: {kind: box, part_ids: [compute_soc]}
+  memory_packages: {kind: box, part_ids: [memory_a_32gb, memory_b_32gb, memory_c_32gb, memory_d_32gb]}
+  storage_package: {kind: box, part_ids: [storage_ufs_1tb_reference]}
+  battery_pack: {kind: aggregate, part_ids: [battery_reference]}
+  vapor_chamber: {kind: aggregate, part_ids: [thermal_spreader_placeholder]}
+  rear_camera_module: {kind: aggregate, part_ids: [rear_camera_placeholder]}
+  wireless_charging_coil: {kind: deferred, part_ids: [wireless_charging_placeholder]}
+  speakers: {kind: box, part_ids: [speaker_a_placeholder, speaker_b_placeholder]}
+  tpm_or_security_chip: {kind: box, part_ids: [security_controller]}
+parts:
+  enclosure:
+    rear_cover: {label: Rear cover, group: exterior, box_mm: [0, 0, 0, 180, 95, 0.55], evidence_class: estimate, source: cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.battery_without_wireless_charging.layers.rear_cover}
+    frame_left: {label: Left frame, group: exterior, box_mm: [0, 0, 0.55, 3, 95, 8.4], evidence_class: placeholder, source: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.perimeter_inset_mm}
+    frame_right: {label: Right frame, group: exterior, box_mm: [177, 0, 0.55, 3, 95, 8.4], evidence_class: placeholder, source: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.perimeter_inset_mm}
+    frame_top: {label: Top frame, group: exterior, box_mm: [3, 92, 0.55, 174, 3, 8.4], evidence_class: placeholder, source: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.perimeter_inset_mm}
+    frame_bottom: {label: Bottom frame, group: exterior, box_mm: [3, 0, 0.55, 174, 3, 8.4], evidence_class: placeholder, source: cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.perimeter_inset_mm}
+    display_stack: {label: Display stack, group: display, box_mm: [3, 3, 8.1, 174, 89, 0.85], evidence_class: placeholder, source: cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.battery_without_wireless_charging}
+    cover_glass: {label: Cover glass, group: exterior, box_mm: [0, 0, 8.95, 180, 95, 0.55], evidence_class: estimate, source: cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.battery_without_wireless_charging.layers.cover_glass}
+  mechanical:
+    battery_reference: {label: Battery reference, group: power, z_mm: 1.5}
+    main_pcb_placeholder: {label: Main PCB, group: pcb, z_mm: 2.8}
+    rear_camera_placeholder: {label: Rear camera envelope, group: camera, z_mm: 1.2}
+    speaker_a_placeholder: {label: Speaker A, group: audio, z_mm: 1.2}
+    speaker_b_placeholder: {label: Speaker B, group: audio, z_mm: 1.2}
+    wireless_charging_placeholder: {label: Wireless charging reserve, group: deferred, z_mm: 0.8, active: false}
+    thermal_spreader_placeholder: {label: Thermal spreader, group: thermal, z_mm: 5.2}
+  pcb:
+    default_height_mm: 1.0
+    z_mm: 4.0
+    parts:
+      compute_soc: {label: Compute package, group: compute, height_mm: 1.2}
+      memory_a_32gb: {label: Memory A, group: memory}
+      memory_b_32gb: {label: Memory B, group: memory}
+      memory_c_32gb: {label: Memory C, group: memory}
+      memory_d_32gb: {label: Memory D, group: memory}
+      storage_ufs_1tb_reference: {label: Storage reference, group: storage}
+      platform_pmic: {label: Platform PMIC, group: power}
+      battery_charger: {label: Battery charger, group: power}
+      usb_pd_controller: {label: USB PD controller, group: power}
+      wireless_charge_controller: {label: Wireless charge controller reserve, group: deferred, active: false}
+      wifi_bluetooth: {label: Wi-Fi and Bluetooth, group: radio}
+      security_controller: {label: Security controller, group: compute}

@@ -1,6 +1,6 @@
 state_version: 2
 hash_policy: utf8_text_lf_binary_exact_sha256_v1
-manifest_sha256: 873f4bd3ea37e4ec57140048509abff014710c38140f5c8e56b5cd599838c209
+manifest_sha256: ae8fe81354d8d089c119cf1e991f0cb184a3e547eb9edbf445d9eec53992f7b0
 nodes:
   supplier_review:
     inputs:
@@ -183,7 +183,7 @@ nodes:
       engineering/evidence/external_blocker_registry.yaml: 7d1f9caa12b431824f418ec957128e3a47f6239eec98b758697c8775927893b8
       engineering/program/configuration_registry.yaml: e884eb94098366bc9d4fd52bf8d46195970a8b21c880823223834cb98606fbc2
       engineering/program/program_model.yaml: 5a699f96bdf516994f43172650f8508af6f14fb122cc4701c4a526a7c0231725
-      engineering/program/regeneration.yaml: 873f4bd3ea37e4ec57140048509abff014710c38140f5c8e56b5cd599838c209
+      engineering/program/regeneration.yaml: ae8fe81354d8d089c119cf1e991f0cb184a3e547eb9edbf445d9eec53992f7b0
       engineering/provenance/constants_provenance.yaml: fedf8b5b753a77d53ad35cb00a3c4bab8b548b4d3ccc17c077ccce6ffc737aff
       engineering/risks/risk_register.yaml: eae86e2b4c61d57e0a09e4310a3d7873c10d2af8945a7f84e493ac31a70751e9
       manufacturing/defect-taxonomy.yaml: d58ccf15116e7d8c5de8004043b4e3346ccb7ac0cdb2ccc717924f104a3adade
@@ -200,14 +200,14 @@ nodes:
       validation/evt0/bom-strategy.yaml: 4efe93039fe301aaa34b26999e332f9d559ad6a05153bbcf79223bfcd48b4d6d
       validation/evt0/test-matrix.yaml: 0250480061bc8751c180f86901b0335f64e497038b24aa04d9c91876fa04ddf6
     outputs:
-      reports/program/buildslate-program-snapshot.yaml: 070222cda61057386aec6282164597f4e46d11ec21ec016a8a1d05399d87918f
+      reports/program/buildslate-program-snapshot.yaml: 31672c5115ce3ae92e4e99d563b2c91854bd8582643aaeb4a1d2ed73b4e83c3f
   dashboard:
     inputs:
       buildslate/dashboard.py: 5cc4ed5b9497ca3567e0691f635d5c298d37a89afcb746e43cd7207e7fb55eb3
       engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
       engineering/evidence/external_blocker_registry.yaml: 7d1f9caa12b431824f418ec957128e3a47f6239eec98b758697c8775927893b8
       engineering/program/configuration_registry.yaml: e884eb94098366bc9d4fd52bf8d46195970a8b21c880823223834cb98606fbc2
-      reports/program/buildslate-program-snapshot.yaml: 070222cda61057386aec6282164597f4e46d11ec21ec016a8a1d05399d87918f
+      reports/program/buildslate-program-snapshot.yaml: 31672c5115ce3ae92e4e99d563b2c91854bd8582643aaeb4a1d2ed73b4e83c3f
       reports/program/configuration-resolution.yaml: c59e257abba32ad8317027a4d02ca123689ce3e614c2fed3903d2236ed5cf598
       reports/program/evt0-campaign.yaml: 41195f94f22764c3667131144f84c94d89d7b2150c66f01261e753c36322f90d
       reports/program/integration-contracts.yaml: dbcc1c59c3d24d6e1b6cdf1ba76e2cf2ebfd440ae9634317decccedae5f8210f
@@ -217,5 +217,19 @@ nodes:
     outputs:
       reports/program/dashboard.md: 31d306c375a8b25899dfd4cda6cd0d031238eca21ec94909112e21a1cabef50b
       reports/program/dashboard.yaml: 468e726c041bb4cd6873b6620508be48af193f1d90b1ce1d85e197b31989282d
+  assembly_viewer:
+    inputs:
+      buildslate/assembly.py: af2524c4548df96904528c03d3384c3b3b0e3f99ccb4e3d31777c59149a220d0
+      cad/slate-pocket-v1r/envelope-model/envelope.yaml: d894c1d9c0bac3ffe3f16fcb884e1a0e29d7ca33e3b331a64b1d15d561078006
+      cad/slate-pocket-v1r/envelope-model/keepouts.yaml: e3dba136016905f26f50bb664e19e90e7d2eeb406355cb00b198299a24102d02
+      cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml: f9a67c9ec0b46eb3d7366ca0dfda4bddfc3d5774bb2f34722eea35fc43e19eda
+      engineering/assembly/assembly.yaml: 1fdc005034419d3aa2a0ef88aeda700ac33ac7910f4ba9315d9a532f22c91912
+      engineering/components/component_library.yaml: f5e18ac5d498f5f3f303080452a6340d9930ed830dbf87031fca780b221f8672
+      engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml: 8d97cf5d635e423a5fea7d90b9c52b815be67d807ce5490016bc0784eb18d58b
+      reports/program/buildslate-program-snapshot.yaml: 31672c5115ce3ae92e4e99d563b2c91854bd8582643aaeb4a1d2ed73b4e83c3f
+      reports/program/dashboard.yaml: 468e726c041bb4cd6873b6620508be48af193f1d90b1ce1d85e197b31989282d
+    outputs:
+      viewer/public/assembly.gltf: f76ed4f3524f31d9868267ab6a448cf6d17e9c0ee715b6ccc7395017ea5f1adf
+      viewer/public/assembly.json: a8f13a55b5ff2cad1f8eadaaad54dd8a06a25a6d58c7f0058a581bc54d7f17d5
 caveat: Text hashes canonicalize line endings for cross-platform staleness; binary hashes preserve exact bytes. Neither verifies
   engineering evidence or physical results.

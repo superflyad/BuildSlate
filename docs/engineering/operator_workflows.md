@@ -85,4 +85,3 @@ Every station-1 input belongs in `units.csv`, including scrap and failed/reworke
 - **Contract contradiction:** resolve the upstream domain inputs; do not edit the generated contract report.
 - **Stale output:** use `regenerate`; do not hand-edit generated reports or the hash state.
 - **Unexpected gate pass:** stop, preserve the state, and inspect the underlying evidence and decision rule before further work.
-

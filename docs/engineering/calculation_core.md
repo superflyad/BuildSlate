@@ -60,7 +60,6 @@ battery.energy_wh
 
 Existing scripts are being migrated gradually. Model behavior should remain stable during migration, with arithmetic moving toward centralized formulas, variable ids, units, and explanation output where that provides clearer reuse and auditability.
 
-
 ## Migrated Stable Physics Calculations
 
 The calculation core now carries the stable arithmetic used by several legacy engineering scripts:

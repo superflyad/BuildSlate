@@ -9,4 +9,3 @@ Examples here describe bundle layouts and commands only. They intentionally cont
 - Approved operational fallback decision contract: `engineering/program/configuration-change.schema.yaml`
 
 Fallback examples are intentionally not stored as applied decisions. Use schema-valid placeholder data only in external staging, then reference a real controlled receipt and explicit approval when evidence exists.
-

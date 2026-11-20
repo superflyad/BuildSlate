@@ -33,4 +33,3 @@ The exact missing evidence, requested action, authorization, and active fallback
 6. Regenerate affected nodes.
 7. Run `python scripts/ci_validate.py`.
 8. Commit generated outputs, decision receipts, and their regeneration state together.
-

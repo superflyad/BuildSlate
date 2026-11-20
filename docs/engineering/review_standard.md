@@ -50,4 +50,3 @@ Screening models are useful for exposing contradictions, ranking risks, and deci
 Validated models require measured prototype data, supplier data, authoritative references, or documented standards that apply to the intended design envelope. Calibrated models should explain what data was used for calibration and where that calibration is valid.
 
 Critical domains must not remain hidden or unclassified. Battery safety, sustained compute, power delivery, power integrity, thermal limits, RF behavior, structural stackup, manufacturing tolerance, yield risk, and provenance gaps need explicit coverage status, maturity level, known gaps, required next evidence, and review priority before their outputs are used in higher-level automation or feasibility claims.
-

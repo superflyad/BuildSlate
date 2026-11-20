@@ -5,6 +5,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 ## Unreleased
 
 - Reworked the README, architecture, contribution, viewer, and documentation guides around the actual review and change workflows; added a schematic cover and mobile-friendly repository entry points.
+- Indexed all active engineering guides and added a documentation coverage check; expanded CI to Windows and strengthened maintained Python checks.
 
 ## 0.1.0 - 2026-11-19
 

@@ -8,7 +8,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -39,6 +38,19 @@ def main() -> int:
         "Python compilation",
     )
     run([sys.executable, "-m", "ruff", "check", "."], "Python static analysis")
+    run(
+        [
+            sys.executable,
+            "-m",
+            "ruff",
+            "check",
+            "--select",
+            "F,E4,E7,E9,I,B,UP",
+            "buildslate",
+            "scripts",
+        ],
+        "Maintained Python quality",
+    )
     run(
         [sys.executable, "-m", "ruff", "format", "--check", "."],
         "Python formatting",

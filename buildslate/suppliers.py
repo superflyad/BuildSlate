@@ -11,7 +11,6 @@ from typing import Any
 
 from .io import dump_yaml, load_yaml
 
-
 MISSING = object()
 DEFAULT_MANIFEST = "engineering/program/supplier_ingestion.yaml"
 

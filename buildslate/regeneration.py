@@ -5,11 +5,11 @@ from __future__ import annotations
 import fnmatch
 import hashlib
 import subprocess
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from .io import dump_yaml, load_yaml
-
 
 TEXT_SUFFIXES = {
     ".cfg",

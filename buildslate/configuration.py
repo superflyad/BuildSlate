@@ -12,7 +12,6 @@ from .io import dump_yaml, load_yaml
 from .regeneration import RegenerationEngine
 from .suppliers import SupplierResponseRepository
 
-
 MISSING = object()
 VALID_STATES = {
     "locked_target",

@@ -11,7 +11,8 @@ This roadmap separates software work from engineering evidence. A completed repo
 - [x] Establish a package/install contract and verify commands outside the repository checkout
 - [x] Add documentation style checks with a clean baseline for maintained guidance
 - [x] Define versioned software releases, changelog, and release artifacts
-- [ ] Expand static analysis beyond Ruff's name-error rules in reviewed model groups
+- [x] Expand static analysis beyond name errors in the maintained Python package and scripts
+- [ ] Extend the stronger lint rule set through the legacy engineering models and validators in reviewed groups
 - [ ] Keep command examples and review procedures current as the CLI and data contracts evolve
 
 ## Current viewer: provisional assembly review

@@ -12,7 +12,6 @@ from typing import Any
 
 from .io import dump_yaml, load_yaml
 
-
 HASH_LENGTH = 64
 REQUIRED_MANIFEST_FIELDS = {
     "schema_version",
@@ -320,7 +319,7 @@ class EVT0CampaignRepository:
         for path in csv_paths:
             try:
                 with path.open("r", encoding="utf-8-sig", newline="") as stream:
-                    for row_number, row in enumerate(csv.DictReader(stream), start=2):
+                    for row in csv.DictReader(stream):
                         converted: dict[str, float] = {}
                         for key, value in row.items():
                             if key and value not in (None, ""):
@@ -370,7 +369,7 @@ class EVT0CampaignRepository:
                 value = (
                     sum(
                         (right[0] - left[0]) * (right[1] + left[1]) / 2
-                        for left, right in zip(points, points[1:])
+                        for left, right in zip(points, points[1:], strict=False)
                     )
                     / 3600
                 )

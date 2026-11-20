@@ -29,7 +29,7 @@ The [program manifest](../../engineering/program/program_model.yaml) maps graph 
 4. Run `python scripts/ci_validate.py` from a clean commit. CI checks Python style, validator registration, maintained documentation and links, installed-package behavior, release metadata, generated state, viewer geometry, and the web build.
 5. Push only after the gate passes. A change to external evidence follows the separate intake and authorization procedures in the [operator workflows](../engineering/operator_workflows.md).
 
-The Python lint baseline is configured in `pyproject.toml` and runs Ruff's `F` rules across the repository. This catches undefined names, unused imports, and other executable-code defects. Ruff formatting is enforced across all Python source files.
+The Python lint baseline is configured in `pyproject.toml` and runs Ruff's `F` rules across the repository. The maintained `buildslate/` and `scripts/` modules also enforce import order, common correctness checks, and modern Python usage. Ruff formatting is enforced across all Python source files.
 
 ## Model claims
 

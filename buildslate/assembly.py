@@ -339,10 +339,11 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--repo-root", type=Path, default=DEFAULT_REPO_ROOT)
     args = parser.parse_args()
-    output, geometry = generate(check=args.check)
+    output, geometry = generate(repo_root=args.repo_root, check=args.check)
     print(
-        f"{'Checked' if args.check else 'Wrote'} {output.relative_to(DEFAULT_REPO_ROOT)} and {geometry.relative_to(DEFAULT_REPO_ROOT)}"
+        f"{'Checked' if args.check else 'Wrote'} {output.relative_to(args.repo_root.resolve())} and {geometry.relative_to(args.repo_root.resolve())}"
     )
     return 0
 

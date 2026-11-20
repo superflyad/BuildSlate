@@ -9,8 +9,22 @@ from typing import Any
 from .io import dump_yaml, load_yaml
 from .model import ProgramEntity, ProgramRelation, ProgramSnapshot
 
-DEFAULT_REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = Path("engineering/program/program_model.yaml")
+
+
+def discover_repo_root() -> Path:
+    """Find program inputs from the working directory or a source checkout."""
+    for candidate in (
+        Path.cwd(),
+        *Path.cwd().parents,
+        Path(__file__).resolve().parents[1],
+    ):
+        if (candidate / DEFAULT_MANIFEST).is_file():
+            return candidate
+    return Path.cwd()
+
+
+DEFAULT_REPO_ROOT = discover_repo_root()
 REQUIRED_SOURCES = {
     "profile",
     "evidence",

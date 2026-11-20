@@ -1,3 +1,27 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "buildslate"
+version = "0.1.0"
+description = "Traceable engineering model and CLI for the Slate Pocket program"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE.txt"]
+dependencies = ["PyYAML==6.0.3"]
+
+[project.scripts]
+buildslate = "buildslate.cli:main"
+
+[project.urls]
+Repository = "https://github.com/superflyad/BuildSlate"
+Issues = "https://github.com/superflyad/BuildSlate/issues"
+
+[tool.setuptools.packages.find]
+include = ["buildslate*"]
+
 [tool.ruff]
 target-version = "py312"
 extend-exclude = ["viewer"]

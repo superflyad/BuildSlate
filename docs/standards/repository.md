@@ -17,6 +17,7 @@ The [program manifest](../../engineering/program/program_model.yaml) maps graph 
 
 - Use lowercase `snake_case` for Python modules and identifiers; use the existing device ID `slate-pocket-v1r` in data and artifact paths.
 - Use repository-relative POSIX paths in YAML and generated metadata, including on Windows.
+- Write generated text with LF line endings on every platform so a validation run leaves tracked outputs clean.
 - Use millimeters for assembly geometry and declare units for other numerical inputs.
 - Give each assembly part a stable ID and a source path. Record an evidence class for every dimension or placement.
 - Prefer one canonical source for a value. Derived files may repeat it only through deterministic generation.

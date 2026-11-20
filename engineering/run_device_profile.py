@@ -577,7 +577,7 @@ def main() -> int:
     results = [run_model_command(command) for command in commands]
     report = render_report(profile, profile_path, results)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(report, encoding="utf-8")
+    output_path.write_text(report, encoding="utf-8", newline="\n")
     print(f"Report written to: {repo_relative(output_path)}")
     return 1 if any(result.status == "failed" for result in results) else 0
 

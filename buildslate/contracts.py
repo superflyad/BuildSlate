@@ -144,5 +144,7 @@ class IntegrationContractRepository:
     def generate(self) -> Path:
         destination = self._repo_path(self.manifest["outputs"]["report"])
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_text(dump_yaml(self.evaluate()), encoding="utf-8")
+        destination.write_text(
+            dump_yaml(self.evaluate()), encoding="utf-8", newline="\n"
+        )
         return destination

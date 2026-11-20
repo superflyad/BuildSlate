@@ -374,7 +374,7 @@ class SupplierResponseRepository:
             raise ValueError(
                 f"receipt already exists with different provenance: {receipt_path}"
             )
-        receipt_path.write_text(serialized, encoding="utf-8")
+        receipt_path.write_text(serialized, encoding="utf-8", newline="\n")
         return receipt_path, review
 
     def build_review_queue(self) -> dict[str, Any]:
@@ -448,5 +448,7 @@ class SupplierResponseRepository:
     def generate_review_queue(self) -> Path:
         destination = self._repo_path(self.manifest["storage"]["review_report"])
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_text(dump_yaml(self.build_review_queue()), encoding="utf-8")
+        destination.write_text(
+            dump_yaml(self.build_review_queue()), encoding="utf-8", newline="\n"
+        )
         return destination

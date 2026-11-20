@@ -561,7 +561,7 @@ def main() -> int:
     if not args.no_save:
         output_path = resolve_repo_path(args.output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(report + "\n", encoding="utf-8")
+        output_path.write_text(report + "\n", encoding="utf-8", newline="\n")
         print(f"\nSaved comparison report: {repo_relative(output_path)}")
     return 0
 

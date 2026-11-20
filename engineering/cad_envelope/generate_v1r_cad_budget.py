@@ -217,7 +217,7 @@ def main() -> int:
         print(f"FAIL: {exc}")
         return 1
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    REPORT_PATH.write_text(report, encoding="utf-8")
+    REPORT_PATH.write_text(report, encoding="utf-8", newline="\n")
     print(f"Wrote {REPORT_PATH.relative_to(REPO_ROOT)}")
     print(report)
     return 0

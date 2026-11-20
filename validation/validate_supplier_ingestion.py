@@ -176,7 +176,7 @@ def main() -> int:
             "review queue verifies raw-file integrity",
         )
 
-        raw_path.write_text("tampered: true\n", encoding="utf-8")
+        raw_path.write_text("tampered: true\n", encoding="utf-8", newline="\n")
         tampered_queue = temporary_repository.build_review_queue()
         require(
             tampered_queue["SUPPLIER_RESPONSE_GATE"] == "BLOCKED_BY_INVALID_RESPONSE",
@@ -185,7 +185,9 @@ def main() -> int:
 
         malformed_path = temporary_root / "malformed.yaml"
         malformed_path.write_text(
-            yaml.safe_dump({"request": {"packet": "wrong"}}), encoding="utf-8"
+            yaml.safe_dump({"request": {"packet": "wrong"}}),
+            encoding="utf-8",
+            newline="\n",
         )
         malformed_review = temporary_repository.validate_response(
             malformed_path, "battery"

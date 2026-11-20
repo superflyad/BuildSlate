@@ -68,7 +68,7 @@ def main() -> int:
     registry = load_registry(args.registry)
     result = calculate_thickness_budget(registry)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(render_report(result), encoding="utf-8")
+    args.output.write_text(render_report(result), encoding="utf-8", newline="\n")
     print(f"wrote {args.output.relative_to(REPO_ROOT)}")
     print(f"status: {result.status}")
     print(f"total_thickness_mm: {result.total_thickness_mm:.2f}")

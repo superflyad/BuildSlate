@@ -133,7 +133,7 @@ def main() -> int:
         return 1
 
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    REPORT_PATH.write_text(build_report(entries), encoding="utf-8")
+    REPORT_PATH.write_text(build_report(entries), encoding="utf-8", newline="\n")
     print(f"PASS: wrote {REPORT_PATH.relative_to(REPO_ROOT)}")
     print(f"Backend readiness verdict: {backend_readiness_verdict(entries)}")
     return 0

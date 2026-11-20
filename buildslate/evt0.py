@@ -567,7 +567,7 @@ class EVT0CampaignRepository:
             "authority_boundary": "ingested_run_evidence_not_automatic_verification",
         }
         receipt_path = destination / "receipt.yaml"
-        receipt_path.write_text(dump_yaml(receipt), encoding="utf-8")
+        receipt_path.write_text(dump_yaml(receipt), encoding="utf-8", newline="\n")
         return receipt_path, review
 
     def build_campaign_report(self) -> dict[str, Any]:
@@ -624,6 +624,6 @@ class EVT0CampaignRepository:
         destination = self.repo_root / "reports" / "program" / "evt0-campaign.yaml"
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(
-            dump_yaml(self.build_campaign_report()), encoding="utf-8"
+            dump_yaml(self.build_campaign_report()), encoding="utf-8", newline="\n"
         )
         return destination

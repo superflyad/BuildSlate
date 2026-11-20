@@ -40,7 +40,9 @@ def main() -> int:
     if match is None or not match.group(1).strip():
         raise SystemExit(f"missing changelog entry for {version}")
     if args.notes_file:
-        args.notes_file.write_text(match.group(1).strip() + "\n", encoding="utf-8")
+        args.notes_file.write_text(
+            match.group(1).strip() + "\n", encoding="utf-8", newline="\n"
+        )
     print(f"PASS: release v{version} has matching metadata and changelog")
     return 0
 

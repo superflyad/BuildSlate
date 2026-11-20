@@ -178,7 +178,7 @@ def main() -> int:
     output_path = REPO_ROOT / args.output
     report = render_report(evaluate_gate(profile_path=profile_path))
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(report, encoding="utf-8")
+    output_path.write_text(report, encoding="utf-8", newline="\n")
     print(f"Wrote {output_path.relative_to(REPO_ROOT)}")
     print(report)
     return 0

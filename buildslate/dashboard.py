@@ -248,6 +248,8 @@ class ProgramDashboard:
         dashboard = self.build(assume_upstream_current=assume_upstream_current)
         yaml_path = self.repo_root / "reports/program/dashboard.yaml"
         markdown_path = self.repo_root / "reports/program/dashboard.md"
-        yaml_path.write_text(dump_yaml(dashboard), encoding="utf-8")
-        markdown_path.write_text(self.render_markdown(dashboard), encoding="utf-8")
+        yaml_path.write_text(dump_yaml(dashboard), encoding="utf-8", newline="\n")
+        markdown_path.write_text(
+            self.render_markdown(dashboard), encoding="utf-8", newline="\n"
+        )
         return yaml_path, markdown_path

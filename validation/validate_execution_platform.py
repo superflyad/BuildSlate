@@ -197,6 +197,7 @@ def main() -> int:
         bad_manifest_path.write_text(
             "metadata:\n  schema_version: 1\n  program_id: broken\n  title: Broken\n  authority: test\nsources: {}\n",
             encoding="utf-8",
+            newline="\n",
         )
         try:
             ProgramRepository(REPO_ROOT, bad_manifest_path).validate_manifest()

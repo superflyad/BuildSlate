@@ -84,7 +84,7 @@ class MigrationRegistry:
     def generate(self) -> Path:
         destination = self.repo_root / self.registry["output"]
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_text(dump_yaml(self.audit()), encoding="utf-8")
+        destination.write_text(dump_yaml(self.audit()), encoding="utf-8", newline="\n")
         return destination
 
     def explain(self, artifact_id: str) -> dict[str, Any]:

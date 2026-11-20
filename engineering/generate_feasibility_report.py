@@ -280,7 +280,7 @@ def main() -> int:
     results = [run_check(check) for check in CHECKS]
     report = render_report(results)
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    REPORT_PATH.write_text(report, encoding="utf-8")
+    REPORT_PATH.write_text(report, encoding="utf-8", newline="\n")
     print(report)
     print(f"Report written to: {REPORT_PATH.relative_to(REPO_ROOT)}")
     return 1 if should_exit_with_failure(results) else 0

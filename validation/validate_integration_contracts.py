@@ -79,7 +79,7 @@ def main() -> int:
         thermal = load_yaml(thermal_path)
         thermal["heat_sources"]["compute_soc"]["sustained_w"] = 27.0
         thermal_path.write_text(
-            yaml.safe_dump(thermal, sort_keys=False), encoding="utf-8"
+            yaml.safe_dump(thermal, sort_keys=False), encoding="utf-8", newline="\n"
         )
         contradicted = IntegrationContractRepository(temporary_root).evaluate()
         require(

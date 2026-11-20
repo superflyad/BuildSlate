@@ -43,10 +43,13 @@ def create_bundle(root: Path, maximum_skin_c: float = 40.0) -> Path:
         "elapsed_s,system_power_w,work_units_completed,TC_REAR_SOC,TC_FRONT_SOC,TC_FRONT_CENTER,TC_REAR_CHARGER,TC_EDGE_LEFT,TC_EDGE_RIGHT,TC_REAR_BATTERY\n"
         f"0,10,0,30,30,30,30,29,29,28\n10,20,100,{maximum_skin_c},39,38,37,36,35,35\n",
         encoding="utf-8",
+        newline="\n",
     )
     certificate_path = bundle / "calibrations" / "CAL-VALIDATION.txt"
     certificate_path.write_text(
-        "synthetic calibration certificate for validator only\n", encoding="utf-8"
+        "synthetic calibration certificate for validator only\n",
+        encoding="utf-8",
+        newline="\n",
     )
     required_channels = EVT0CampaignRepository(REPO_ROOT).required_channels("P10")
     calibration = {
@@ -63,7 +66,7 @@ def create_bundle(root: Path, maximum_skin_c: float = 40.0) -> Path:
         "uncertainty_note": "synthetic validator fixture; not engineering evidence",
     }
     (bundle / "calibrations" / "CAL-VALIDATION.yaml").write_text(
-        dump_yaml(calibration), encoding="utf-8"
+        dump_yaml(calibration), encoding="utf-8", newline="\n"
     )
     manifest: dict[str, Any] = {
         "schema_version": 1,
@@ -140,8 +143,12 @@ def create_bundle(root: Path, maximum_skin_c: float = 40.0) -> Path:
         "reviewers": ["validator"],
         "notes": "Temporary synthetic fixture only.",
     }
-    (bundle / "manifest.yaml").write_text(dump_yaml(manifest), encoding="utf-8")
-    (bundle / "result.yaml").write_text(dump_yaml(result), encoding="utf-8")
+    (bundle / "manifest.yaml").write_text(
+        dump_yaml(manifest), encoding="utf-8", newline="\n"
+    )
+    (bundle / "result.yaml").write_text(
+        dump_yaml(result), encoding="utf-8", newline="\n"
+    )
     return bundle
 
 
@@ -219,7 +226,7 @@ def main() -> int:
         )
 
         preserved_raw = receipt.parent / "raw/telemetry.csv"
-        preserved_raw.write_text("tampered\n", encoding="utf-8")
+        preserved_raw.write_text("tampered\n", encoding="utf-8", newline="\n")
         require(
             temp_repository.build_campaign_report()["EVT0_CAMPAIGN_GATE"]
             == "BLOCKED_INVALID_EVIDENCE",

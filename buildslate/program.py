@@ -608,7 +608,7 @@ class ProgramRepository:
             destination = self.repo_root / destination
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(
-            dump_yaml(self.build_snapshot().to_dict()), encoding="utf-8"
+            dump_yaml(self.build_snapshot().to_dict()), encoding="utf-8", newline="\n"
         )
         return destination
 

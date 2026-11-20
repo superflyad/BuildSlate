@@ -150,7 +150,7 @@ def main() -> int:
         profile = load_yaml(profile_path)
         profile["memory"]["capacity_gb"] = 256
         profile_path.write_text(
-            yaml.safe_dump(profile, sort_keys=False), encoding="utf-8"
+            yaml.safe_dump(profile, sort_keys=False), encoding="utf-8", newline="\n"
         )
         mutated = ConfigurationResolver(temporary_root).resolve()
         require(
@@ -198,7 +198,7 @@ def main() -> int:
                 "authorized_for_public_disclosure": True,
             },
         }
-        response_path.write_text(dump_yaml(response), encoding="utf-8")
+        response_path.write_text(dump_yaml(response), encoding="utf-8", newline="\n")
         supplier_repository = SupplierResponseRepository(temporary_root)
         receipt_path, review = supplier_repository.ingest(
             response_path,
@@ -229,7 +229,7 @@ def main() -> int:
                 "rationale": "Synthetic fixture exercises controlled fallback propagation only.",
             },
         }
-        decision_path.write_text(dump_yaml(decision), encoding="utf-8")
+        decision_path.write_text(dump_yaml(decision), encoding="utf-8", newline="\n")
         controller = ConfigurationChangeController(temporary_root)
 
         bad_decision = {
@@ -238,7 +238,7 @@ def main() -> int:
             "decision_id": "synthetic_bad_value",
         }
         bad_path = Path(temp_directory) / "synthetic-bad-decision.yaml"
-        bad_path.write_text(dump_yaml(bad_decision), encoding="utf-8")
+        bad_path.write_text(dump_yaml(bad_decision), encoding="utf-8", newline="\n")
         require_raises(
             lambda: controller.validate_decision(bad_path),
             "must equal the executable fallback value",
@@ -250,7 +250,9 @@ def main() -> int:
             "approval": {**decision["approval"], "disposition": "pending"},
         }
         unapproved_path = Path(temp_directory) / "synthetic-unapproved-decision.yaml"
-        unapproved_path.write_text(dump_yaml(unapproved), encoding="utf-8")
+        unapproved_path.write_text(
+            dump_yaml(unapproved), encoding="utf-8", newline="\n"
+        )
         require_raises(
             lambda: controller.validate_decision(unapproved_path),
             "requires approval.disposition=approved",

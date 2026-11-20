@@ -271,5 +271,7 @@ class RegenerationEngine:
                 )
         state_path = self._repo_path(self.manifest["state_file"])
         state_path.parent.mkdir(parents=True, exist_ok=True)
-        state_path.write_text(dump_yaml(self.build_state()), encoding="utf-8")
+        state_path.write_text(
+            dump_yaml(self.build_state()), encoding="utf-8", newline="\n"
+        )
         return ordered

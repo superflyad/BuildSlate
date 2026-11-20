@@ -496,7 +496,7 @@ class ManufacturingAnalyticsRepository:
             "authority_boundary": "pilot_evidence_under_quality_review_not_production_approval",
         }
         receipt_path = destination / "receipt.yaml"
-        receipt_path.write_text(dump_yaml(receipt), encoding="utf-8")
+        receipt_path.write_text(dump_yaml(receipt), encoding="utf-8", newline="\n")
         return receipt_path, review
 
     def build_report(self) -> dict[str, Any]:
@@ -545,5 +545,7 @@ class ManufacturingAnalyticsRepository:
     def generate_report(self) -> Path:
         destination = self.repo_root / self.config["outputs"]["report"]
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_text(dump_yaml(self.build_report()), encoding="utf-8")
+        destination.write_text(
+            dump_yaml(self.build_report()), encoding="utf-8", newline="\n"
+        )
         return destination

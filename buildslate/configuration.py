@@ -304,7 +304,9 @@ class ConfigurationResolver:
     def generate(self) -> Path:
         destination = self._repo_path(self.registry["outputs"]["resolution_report"])
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_text(dump_yaml(self.resolve()), encoding="utf-8")
+        destination.write_text(
+            dump_yaml(self.resolve()), encoding="utf-8", newline="\n"
+        )
         return destination
 
 
@@ -585,9 +587,11 @@ class ConfigurationChangeController:
         }
         try:
             for path, document in documents.items():
-                path.write_text(dump_yaml(document), encoding="utf-8")
+                path.write_text(dump_yaml(document), encoding="utf-8", newline="\n")
             destination.parent.mkdir(parents=True, exist_ok=True)
-            destination.write_text(dump_yaml(application), encoding="utf-8")
+            destination.write_text(
+                dump_yaml(application), encoding="utf-8", newline="\n"
+            )
             resolution = ConfigurationResolver(self.repo_root).resolve()
             if resolution["violations"]:
                 raise ValueError(

@@ -125,7 +125,7 @@ def main() -> int:
         return 1
 
     DEFAULT_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    DEFAULT_OUTPUT.write_text(report, encoding="utf-8")
+    DEFAULT_OUTPUT.write_text(report, encoding="utf-8", newline="\n")
     print(report, end="")
     print(f"Report written to: {boundary.repo_relative(DEFAULT_OUTPUT)}")
     return 0

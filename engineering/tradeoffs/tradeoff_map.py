@@ -500,7 +500,7 @@ def main() -> int:
         return 1
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(report, encoding="utf-8")
+    output_path.write_text(report, encoding="utf-8", newline="\n")
     print(report, end="")
     print(f"Report written to: {repo_relative(output_path)}")
     return 0

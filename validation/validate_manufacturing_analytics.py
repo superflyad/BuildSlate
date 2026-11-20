@@ -49,6 +49,7 @@ def create_bundle(
             for index in range(1, unit_count + 1)
         ),
         encoding="utf-8",
+        newline="\n",
     )
     defects = bundle / "defects.csv"
     defects.write_text(
@@ -59,11 +60,13 @@ def create_bundle(
             else ""
         ),
         encoding="utf-8",
+        newline="\n",
     )
     rework = bundle / "rework.csv"
     rework.write_text(
         "rework_id,unit_id,action,outcome,approved_by\nR001,U001,synthetic_rework,pass,validation-quality\n",
         encoding="utf-8",
+        newline="\n",
     )
     measurements = bundle / "measurements.csv"
     measurements.write_text(
@@ -73,6 +76,7 @@ def create_bundle(
             for index in range(1, unit_count + 1)
         ),
         encoding="utf-8",
+        newline="\n",
     )
     source_files = [
         {"path": path.name, "sha256": sha256(path)}
@@ -103,7 +107,9 @@ def create_bundle(
             "rationale": "synthetic validator fixture only",
         },
     }
-    (bundle / "pilot-manifest.yaml").write_text(dump_yaml(manifest), encoding="utf-8")
+    (bundle / "pilot-manifest.yaml").write_text(
+        dump_yaml(manifest), encoding="utf-8", newline="\n"
+    )
     return bundle
 
 
@@ -187,7 +193,9 @@ def main() -> int:
             == "PILOT_QUALITY_REVIEW_READY",
             "valid campaign reaches quality review, not production approval",
         )
-        (receipt.parent / "units.csv").write_text("tampered\n", encoding="utf-8")
+        (receipt.parent / "units.csv").write_text(
+            "tampered\n", encoding="utf-8", newline="\n"
+        )
         require(
             temp_repository.build_report()["MANUFACTURING_ANALYTICS_GATE"]
             == "BLOCKED_INVALID_PILOT_EVIDENCE",

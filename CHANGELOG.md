@@ -4,6 +4,8 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Reworked the README, architecture, contribution, viewer, and documentation guides around the actual review and change workflows.
+
 ## 0.1.0 - 2026-11-19
 
 - Added an installable Python CLI for reading and validating a BuildSlate data checkout from any working directory.

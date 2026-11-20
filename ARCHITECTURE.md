@@ -1,40 +1,52 @@
 # Architecture
 
-## Authority
+BuildSlate connects engineering inputs to generated reviews without allowing a calculated result or polished drawing to become evidence by appearance alone. The Python package operates on a repository data checkout; the browser viewer reads generated files and cannot change them.
 
-BuildSlate has four kinds of content:
+## Authority and data flow
 
-1. **Intent and controlled inputs:** specifications, device profiles, engineering registries, and approved configuration decisions.
-2. **Source evidence:** supplier responses, EVT0 campaigns, calibration records, and pilot bundles. Their original bytes and receipts are preserved by the intake tools.
-3. **Derived models:** calculations, provisional CAD envelopes, integration contracts, and the assembly export. A derived model cannot promote an assumption to evidence.
-4. **Views:** reports, program graph, dashboard, and browser viewer. Views reflect source state and do not make release decisions.
+| Layer | Examples | Authority boundary |
+| --- | --- | --- |
+| Product intent | `specs/`, `configs/` | Describes targets and profile choices; it is not proof that a design meets them. |
+| Controlled evidence | Supplier responses, calibration records, EVT0 runs, pilot results | Received bytes and receipts are preserved through intake; review determines their evidence status. |
+| Engineering models | Calculations, CAD envelopes, integration contracts | Derives consequences from declared inputs; estimates do not become measurements. |
+| Generated views | `reports/`, program dashboard, assembly JSON and glTF | Presents source state and model output; it cannot approve a part or gate. |
 
-The [program manifest](engineering/program/program_model.yaml) identifies graph authorities. The [regeneration manifest](engineering/program/regeneration.yaml) identifies generated outputs and their dependencies. The [platform architecture](docs/engineering/platform_architecture.md) explains the evidence and transaction boundaries in detail.
+```mermaid
+flowchart LR
+    A[Specifications and profiles] --> C[Engineering models]
+    B[Controlled evidence] --> C
+    A --> D[Program graph]
+    B --> D
+    C --> D
+    C --> E[Regeneration engine]
+    D --> E
+    E --> F[Reports and dashboard]
+    E --> G[Assembly JSON and glTF]
+    G --> H[Read only browser viewer]
+```
 
-The [repository standards](docs/standards/repository.md) define directory ownership, source and generated file classes, and change rules. Domain models remain in their existing directories until a migration has an explicit authority map and a validated replacement.
+The [program manifest](engineering/program/program_model.yaml) names graph authorities. The [regeneration manifest](engineering/program/regeneration.yaml) records generator inputs, dependencies, and outputs. `buildslate impact --changed <path>` reports dependent nodes; `buildslate regenerate --stale` runs them in dependency order. The tracked [regeneration state](reports/program/regeneration-state.yaml) records source and output hashes so CI can detect stale or manually altered results.
+
+## Code boundaries
+
+| Module | Responsibility |
+| --- | --- |
+| `buildslate.program` | Load authoritative registries and construct the program graph. |
+| `buildslate.regeneration` | Resolve dependency impact, run generators, and verify deterministic outputs. |
+| `buildslate.configuration` | Resolve device profiles and controlled configuration decisions. |
+| `buildslate.suppliers`, `evt0`, `manufacturing` | Validate and ingest external evidence with source receipts. |
+| `buildslate.assembly` | Convert provisional placement inputs into JSON and glTF. |
+| `buildslate.cli` | Expose read, validation, intake, and regeneration commands. |
+| `validation/` | Check source contracts, model outputs, provenance, and repository wiring. |
+
+The wheel includes `buildslate/` and its Python dependency. It does not bundle product inputs or generated reports. `--repo-root` selects the data checkout when the CLI runs elsewhere. A command that changes evidence or generated files acts on that checkout, not on an installed package copy.
 
 ## Assembly pipeline
 
-```text
-mechanical envelope + keepouts + zone stacks + PCB floorplan
-                         |
-                         v
-       engineering/assembly/assembly.yaml
-                         |
-                         v
-                buildslate.assembly
-                         |
-                         v
-      assembly.json + assembly.gltf
-                         |
-                         v
-                 browser viewer
-```
+The [assembly manifest](engineering/assembly/assembly.yaml) gives every displayed part a stable ID, group, name, source path, and provisional z position. Mechanical envelopes, keepouts, zone stacks, and the PCB floorplan supply the remaining dimensions and x/y placement. `buildslate.assembly` validates IDs and containment, then exports `viewer/public/assembly.json` for metadata and `viewer/public/assembly.gltf` for geometry. The viewer reads both alongside generated gate context.
 
-The assembly manifest assigns stable part IDs, display names, groups, and provisional z positions. It references existing mechanical and PCB placements for x/y dimensions. The generator validates IDs and envelope containment, exports a common JSON record and glTF geometry, and copies current dashboard state into the JSON view. The viewer consumes these files; it does not edit engineering inputs.
+Every current solid is a box envelope. The display cannot establish fit, tolerance stack, thermal or RF performance, build sequence, or certification. Replacing a box with supplier or design geometry requires a reviewed source, revision, units, coordinate transform, evidence class, and acceptance decision. The [assembly contract](engineering/assembly/README.md) defines the current coordinate system.
 
-Every displayed solid is a box envelope. The glTF is a machine-readable visualization artifact, not released CAD. A supplier or design geometry import must carry its own source, revision, units, coordinate transform, evidence class, and acceptance review before replacing one of these boxes.
+## Change and review boundary
 
-## Change flow
-
-Update the authoritative input, regenerate affected outputs, run the validation gate, and review the resulting status. A source change should never be made only in a generated report or viewer asset. See [Contributing](CONTRIBUTING.md) and the [operator workflows](docs/engineering/operator_workflows.md).
+Change the authoritative input, regenerate affected views, inspect the diff, and run the validation gate. Reports and viewer assets are never the starting point for an engineering change. External evidence uses the [operator intake procedures](docs/engineering/operator_workflows.md); claims use the [engineering review standard](docs/engineering/review_standard.md). The [repository standards](docs/standards/repository.md) define file ownership and path rules, and [DECISIONS.md](DECISIONS.md) records durable design choices.

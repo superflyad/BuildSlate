@@ -1,62 +1,82 @@
 # BuildSlate
 
-BuildSlate is a traceable engineering model for the Slate Pocket v1R device. The repository keeps product intent, planning assumptions, evidence, analyses, and gate decisions separate. Generated outputs support review; they do not certify a build.
+BuildSlate is the engineering workspace for the proposed Slate Pocket v1R device. It connects specifications, assumptions, supplier evidence, models, and gate decisions so a reviewer can trace a result back to its source. A Python CLI generates the program views; a local browser viewer shows the provisional assembly.
 
-## Start here
+The software is at [v0.1.0](https://github.com/superflyad/BuildSlate/releases/tag/v0.1.0). The device design is **not released**. The 3D solids are planning envelopes, and the current program has unresolved supplier, mechanical, electrical, test, and manufacturing evidence. See the [program dashboard](reports/program/dashboard.md) for the current gate status.
 
-| Need | Entry point |
-| --- | --- |
-| Current program state and blockers | `python -m buildslate status` and `python -m buildslate blockers` |
-| Engineering dashboard | [Program dashboard](reports/program/dashboard.md) |
-| Provisional 3D assembly | [Assembly viewer](viewer/README.md) |
-| Data authority and generation flow | [Architecture](ARCHITECTURE.md) |
-| Repository rules | [Repository standards](docs/standards/repository.md) |
-| Contributing and validation | [Contributing](CONTRIBUTING.md) |
-| Support and issue reports | [Support](SUPPORT.md) |
-| Sensitive security reports | [Security policy](SECURITY.md) |
-| Engineering documentation | [Documentation index](docs/README.md) |
-| Versions and releases | [Changelog](CHANGELOG.md) and [release process](docs/standards/releases.md) |
+## What is here
 
-## Quick start
+| Capability | What it provides | Where to start |
+| --- | --- | --- |
+| Program graph | Traceable sources, dependencies, gates, and blockers | `buildslate status`, `buildslate blockers` |
+| Engineering models | Calculations, profiles, feasibility screens, and integration contracts | [Engineering documentation](docs/README.md#engineering-models) |
+| Controlled regeneration | Impact analysis and deterministic derived reports | `buildslate impact`, `buildslate regenerate` |
+| Assembly viewer | Rotatable provisional geometry with part provenance and gate context | [Viewer guide](viewer/README.md) |
+| Validation | Model, source, document, packaging, and web checks | [Contributing](CONTRIBUTING.md) |
 
-Requires Python 3.12 or newer. The viewer also requires Node.js 20.19 or newer.
+BuildSlate distinguishes a target from an assumption, a supplier statement from a measurement, and a generated view from an approved decision. The [architecture](ARCHITECTURE.md) explains those boundaries.
+
+## Get started
+
+Use a checkout of this repository with Python 3.12 or newer. Node.js 20.19 or newer is needed for the viewer and the full validation gate.
 
 ```bash
+git clone https://github.com/superflyad/BuildSlate.git
+cd BuildSlate
 python -m pip install -e .
-python -m pip install -r requirements-dev.txt
 buildslate validate
 buildslate status
-python -m buildslate.assembly --check
-python scripts/ci_validate.py
+buildslate blockers
 ```
 
-The wheel installs the CLI, not the engineering inputs. From another directory, pass the path to a BuildSlate data checkout: `buildslate --repo-root /path/to/BuildSlate status`. Use `python scripts/check_package.py` to verify a wheel in a fresh environment.
-
-To run the viewer:
+The package contains CLI code, not the engineering input files. From another working directory, point an installed CLI at a checkout:
 
 ```bash
+buildslate --repo-root /path/to/BuildSlate status
+```
+
+The [v0.1.0 release](https://github.com/superflyad/BuildSlate/releases/tag/v0.1.0) provides a wheel, source distribution, and static viewer archive. No PyPI publication is configured.
+
+## Inspect the assembly
+
+```bash
+python -m buildslate.assembly --check
 cd viewer
 npm ci
 npm run dev
 ```
 
-Open the local URL printed by Vite. The viewer loads generated `assembly.json` and `assembly.gltf`; regenerate them after changing an assembly input with `python -m buildslate.assembly` or the repository regeneration command.
+Open the local address printed by Vite. Drag to rotate, select a part to inspect its source and evidence class, and use filters, cutaway, or explode to examine the internal arrangement. The [viewer guide](viewer/README.md) covers the controls and generated assets. The viewer cannot establish physical fit or qualification.
+
+## How a change moves through the repository
+
+1. Locate the authoritative input using the [repository map](#repository-map) and [standards](docs/standards/repository.md).
+2. Ask `buildslate impact --changed <repository-relative-path>` which generated nodes depend on it.
+3. Change the input and record any changed authority or engineering decision in [DECISIONS.md](DECISIONS.md).
+4. Run `buildslate regenerate --stale`, then review the generated diff.
+5. Run the focused validator while editing. After committing, run `python scripts/ci_validate.py` from a clean tree. The gate checks all validators, Python and Markdown style, installed-package behavior, generated currency, and the viewer build.
+
+Generated reports and `viewer/public/assembly.json` and `.gltf` are outputs. Edit their source files, then regenerate. Supplier responses and physical test results follow the [controlled intake workflow](docs/engineering/operator_workflows.md).
 
 ## Repository map
 
-| Directory | Role |
+| Path | Role |
 | --- | --- |
-| `specs/`, `configs/` | Source intent and device profiles |
-| `engineering/`, `cad/`, `simulations/` | Engineering assumptions, calculations, geometry planning, and contracts |
-| `research/` | Supplier requests, candidates, and controlled response intake |
-| `validation/`, `manufacturing/` | Test definitions, validation, and pilot workflows |
-| `buildslate/` | Python integration and CLI |
-| `viewer/` | Browser viewer and generated assembly assets |
-| `reports/` | Derived status and engineering reports |
-| `docs/` | Architecture, methods, procedures, and reference material |
+| `specs/`, `configs/` | Product targets and device profile choices |
+| `engineering/`, `cad/`, `simulations/` | Model inputs, calculations, provisional geometry, and contracts |
+| `research/` | Candidate research, RFQs, and supplier response intake |
+| `validation/`, `manufacturing/` | Validators, test definitions, and pilot workflows |
+| `buildslate/` | Python program model, generation engine, and CLI |
+| `viewer/` | Static browser application and generated assembly assets |
+| `reports/` | Generated status and engineering views |
+| `docs/` | Engineering methods, procedures, and repository standards |
 
-## Current boundary
+The [program manifest](engineering/program/program_model.yaml) maps graph authorities. The [regeneration manifest](engineering/program/regeneration.yaml) maps generated dependencies. The [documentation index](docs/README.md) provides a task-based route through the detailed guides.
 
-The v1R assembly is provisional. The mechanical model uses planning rectangles; the PCB model uses placeholder footprints. Supplier CAD, a released enclosure, routed board, prototype measurements, and pilot evidence are not in this repository. The viewer shows those limits on each component. See the [dashboard](reports/program/dashboard.md) for current gates and external blockers.
+## Project information
 
-The earlier broad repository overview is retained in the [archive](docs/archive/2026-10-repository-overview.md). Current workflows and authority rules live in the documents linked above.
+- [Roadmap](ROADMAP.md) — delivered scope, missing evidence, and future viewer work
+- [Changelog](CHANGELOG.md) and [release process](docs/standards/releases.md) — software versions and artifacts
+- [Contributing](CONTRIBUTING.md) — setup, change workflow, and validation
+- [Support](SUPPORT.md) and [security policy](SECURITY.md) — issue and private reporting routes
+- [MIT license](LICENSE.txt)

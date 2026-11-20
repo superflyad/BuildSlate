@@ -1,5 +1,7 @@
 # Roadmap
 
+This roadmap separates software work from engineering evidence. A completed repository task does not imply that a device part, test, or manufacturing gate has been released. The [program dashboard](reports/program/dashboard.md) is the current source for those gates.
+
 ## Repository quality
 
 - [x] Curated documentation index, archive boundary, and directory ownership rules
@@ -9,10 +11,10 @@
 - [x] Establish a package/install contract and verify commands outside the repository checkout
 - [x] Add documentation style checks with a clean baseline for maintained guidance
 - [x] Define versioned software releases, changelog, and release artifacts
-- [ ] Expand static analysis beyond name errors after the legacy modules are migrated
-- [ ] Define a reviewed import contract for supplier and released CAD geometry
+- [ ] Expand static analysis beyond Ruff's name-error rules in reviewed model groups
+- [ ] Keep command examples and review procedures current as the CLI and data contracts evolve
 
-## Current release: provisional assembly review
+## Current viewer: provisional assembly review
 
 - [x] Stable part IDs and a documented coordinate system
 - [x] Generated JSON and glTF from existing engineering sources
@@ -28,6 +30,13 @@
 - Routed ECAD and measured thermal/RF data
 
 Replace a provisional solid only when the source includes revision, units, coordinate frame, geometry license, and engineering review. The [program dashboard](reports/program/dashboard.md) tracks external blockers and gates.
+
+## Next geometry milestone
+
+- [ ] Define a reviewed import contract for supplier and released CAD geometry, including revision, units, frame, provenance, and license.
+- [ ] Import one approved part without changing the identity or evidence status of its planning envelope.
+- [ ] Check placement, scale, and section views against the source drawing before expanding to additional parts.
+- [ ] Keep provisional and approved geometry visually distinct in the viewer.
 
 ## Future viewer capabilities
 

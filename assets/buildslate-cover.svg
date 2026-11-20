@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500" role="img" aria-labelledby="title description">
+  <title id="title">BuildSlate</title>
+  <desc id="description">BuildSlate engineering model cover with a schematic, provisional phone assembly.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b131e" />
+      <stop offset="1" stop-color="#152538" />
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#183347" stop-opacity=".85" />
+      <stop offset="1" stop-color="#0d1c2a" stop-opacity=".5" />
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#87b0c1" stroke-opacity=".08" stroke-width="1" />
+    </pattern>
+    <clipPath id="frame">
+      <rect width="1200" height="500" rx="8" />
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#frame)">
+    <rect width="1200" height="500" fill="url(#background)" />
+    <rect width="1200" height="500" fill="url(#grid)" />
+    <path d="M 0 450 H 1200 M 600 0 V 500" fill="none" stroke="#76aac0" stroke-opacity=".12" />
+    <path d="M 590 0 V 500" fill="none" stroke="#76aac0" stroke-opacity=".14" stroke-dasharray="4 8" />
+
+    <g fill="none" stroke="#75c2d8" stroke-width="3">
+      <path d="M 74 91 h 36 v 36 H 74 z" opacity=".38" />
+      <path d="M 86 79 h 36 v 36 H 86 z" opacity=".67" />
+      <path d="M 98 67 h 36 v 36 H 98 z" />
+    </g>
+    <text x="72" y="211" fill="#edf4f5" font-family="Segoe UI, Arial, sans-serif" font-size="80" font-weight="700" letter-spacing="-3">BuildSlate</text>
+    <rect x="74" y="241" width="108" height="5" rx="2.5" fill="#75c2d8" />
+    <text x="72" y="292" fill="#a5c4ce" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="500" letter-spacing="2">TRACEABLE DEVICE ENGINEERING</text>
+    <text x="74" y="394" fill="#d3e0e2" font-family="Segoe UI, Arial, sans-serif" font-size="20">Slate Pocket v1R</text>
+    <text x="74" y="426" fill="#88aab7" font-family="Segoe UI, Arial, sans-serif" font-size="17" letter-spacing="1.5">PROVISIONAL ASSEMBLY MODEL</text>
+
+    <g fill="none" stroke-linejoin="round">
+      <path d="M 756 127 L 1069 226 L 987 415 L 674 316 Z" fill="url(#panel)" stroke="#608aa0" stroke-width="3" />
+      <path d="M 756 127 L 756 145 L 674 334 L 674 316 M 1069 226 L 1069 244 L 987 433 L 987 415 M 674 334 L 987 433" stroke="#37566a" stroke-width="2" />
+      <path d="M 767 136 L 1055 227 L 980 399 L 692 308 Z" stroke="#7ec5d6" stroke-opacity=".72" stroke-width="2" />
+
+      <path d="M 785 180 L 922 223 L 874 337 L 737 294 Z" fill="#173746" fill-opacity=".74" stroke="#76bad0" stroke-width="2" />
+      <path d="M 794 195 L 901 229 L 864 317 L 757 283 Z" stroke="#4d8ba2" stroke-width="1.5" />
+      <path d="M 942 234 L 1020 259 L 984 341 L 906 316 Z" fill="#1d3541" stroke="#8da6a5" stroke-width="2" />
+      <path d="M 938 247 L 1004 268 M 930 266 L 996 287 M 922 285 L 988 306" stroke="#6c959c" stroke-opacity=".55" stroke-width="1" />
+      <circle cx="815" cy="163" r="12" stroke="#8ba9ba" stroke-width="2" />
+      <circle cx="843" cy="172" r="9" stroke="#8ba9ba" stroke-width="2" />
+      <circle cx="867" cy="180" r="7" stroke="#8ba9ba" stroke-width="2" />
+
+      <path d="M 742 76 L 1086 184 L 994 397 L 650 289 Z" stroke="#76c5db" stroke-width="2" stroke-dasharray="7 8" opacity=".75" />
+      <path d="M 742 76 L 756 127 M 1086 184 L 1069 226 M 650 289 L 674 316 M 994 397 L 987 415" stroke="#76c5db" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="4 7" />
+      <path d="M 707 278 L 684 273 L 627 273 M 987 415 L 1017 435 L 1120 435" stroke="#78a4b6" stroke-width="1.5" />
+      <circle cx="707" cy="278" r="4" fill="#75c2d8" stroke="none" />
+      <circle cx="987" cy="415" r="4" fill="#75c2d8" stroke="none" />
+    </g>
+    <text x="624" y="260" fill="#a8c4ca" font-family="Segoe UI, Arial, sans-serif" font-size="14" letter-spacing="1">DISPLAY</text>
+    <text x="1020" y="430" fill="#a8c4ca" font-family="Segoe UI, Arial, sans-serif" font-size="14" letter-spacing="1">ENVELOPE</text>
+    <text x="1056" y="70" fill="#6d99ab" font-family="Consolas, monospace" font-size="13">v1R / MODEL</text>
+  </g>
+</svg>

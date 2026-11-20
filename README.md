@@ -1,20 +1,21 @@
 # BuildSlate
 
-BuildSlate is the engineering workspace for the proposed Slate Pocket v1R device. It connects specifications, assumptions, supplier evidence, models, and gate decisions so a reviewer can trace a result back to its source. A Python CLI generates the program views; a local browser viewer shows the provisional assembly.
+[![Validation](https://github.com/superflyad/BuildSlate/actions/workflows/validation.yml/badge.svg?branch=main)](https://github.com/superflyad/BuildSlate/actions/workflows/validation.yml)
+[![Release](https://img.shields.io/github/v/release/superflyad/BuildSlate?label=release)](https://github.com/superflyad/BuildSlate/releases/latest)
+[![License: MIT](https://img.shields.io/badge/license-MIT-237d91)](LICENSE.txt)
 
-The software is at [v0.1.0](https://github.com/superflyad/BuildSlate/releases/tag/v0.1.0). The device design is **not released**. The 3D solids are planning envelopes, and the current program has unresolved supplier, mechanical, electrical, test, and manufacturing evidence. See the [program dashboard](reports/program/dashboard.md) for the current gate status.
+![BuildSlate cover: a schematic provisional phone assembly](assets/buildslate-cover.svg)
 
-## What is here
+BuildSlate connects specifications, assumptions, evidence, models, and gate decisions for the proposed Slate Pocket v1R device. It provides a traceable Python CLI and a local 3D assembly viewer.
 
-| Capability | What it provides | Where to start |
-| --- | --- | --- |
-| Program graph | Traceable sources, dependencies, gates, and blockers | `buildslate status`, `buildslate blockers` |
-| Engineering models | Calculations, profiles, feasibility screens, and integration contracts | [Engineering documentation](docs/README.md#engineering-models) |
-| Controlled regeneration | Impact analysis and deterministic derived reports | `buildslate impact`, `buildslate regenerate` |
-| Assembly viewer | Rotatable provisional geometry with part provenance and gate context | [Viewer guide](viewer/README.md) |
-| Validation | Model, source, document, packaging, and web checks | [Contributing](CONTRIBUTING.md) |
+## Start here
 
-BuildSlate distinguishes a target from an assumption, a supplier statement from a measurement, and a generated view from an approved decision. The [architecture](ARCHITECTURE.md) explains those boundaries.
+- **Review the program:** [current dashboard](reports/program/dashboard.md) and `buildslate blockers`
+- **Explore the model:** [assembly viewer](viewer/README.md) and [assembly contract](engineering/assembly/README.md)
+- **Understand the system:** [architecture](ARCHITECTURE.md) and [documentation index](docs/README.md)
+- **Contribute:** [repository standards](docs/standards/repository.md) and [contribution guide](CONTRIBUTING.md)
+
+**Engineering status:** the device design is not released. The 3D solids are planning envelopes, with unresolved supplier, mechanical, electrical, test, and manufacturing evidence. The [dashboard](reports/program/dashboard.md) is the current source for gate status. Software release [v0.1.0](https://github.com/superflyad/BuildSlate/releases/tag/v0.1.0) does not change that engineering status.
 
 ## Get started
 
@@ -60,16 +61,13 @@ Generated reports and `viewer/public/assembly.json` and `.gltf` are outputs. Edi
 
 ## Repository map
 
-| Path | Role |
-| --- | --- |
-| `specs/`, `configs/` | Product targets and device profile choices |
-| `engineering/`, `cad/`, `simulations/` | Model inputs, calculations, provisional geometry, and contracts |
-| `research/` | Candidate research, RFQs, and supplier response intake |
-| `validation/`, `manufacturing/` | Validators, test definitions, and pilot workflows |
-| `buildslate/` | Python program model, generation engine, and CLI |
-| `viewer/` | Static browser application and generated assembly assets |
-| `reports/` | Generated status and engineering views |
-| `docs/` | Engineering methods, procedures, and repository standards |
+- `specs/` and `configs/` hold product targets and device profiles.
+- `engineering/`, `cad/`, and `simulations/` hold model inputs, calculations, and provisional geometry.
+- `research/` holds candidate research, RFQs, and supplier response intake.
+- `validation/` and `manufacturing/` hold validators, tests, and pilot workflows.
+- `buildslate/` contains the Python model, generation engine, and CLI.
+- `viewer/` contains the static browser app and generated assembly assets.
+- `reports/` contains generated reviews; `docs/` holds methods and procedures.
 
 The [program manifest](engineering/program/program_model.yaml) maps graph authorities. The [regeneration manifest](engineering/program/regeneration.yaml) maps generated dependencies. The [documentation index](docs/README.md) provides a task-based route through the detailed guides.
 

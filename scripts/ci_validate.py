@@ -44,7 +44,10 @@ def main() -> int:
         "Python formatting",
     )
     run(["git", "diff", "--check"], "Git whitespace check")
+    run([sys.executable, "scripts/check_docs.py"], "Documentation style")
+    run([sys.executable, "scripts/check_release.py"], "Release metadata")
     run([sys.executable, "validation/run_all.py"], "Repository validation")
+    run([sys.executable, "scripts/check_package.py"], "Installed package")
     run(
         [sys.executable, "-m", "buildslate.assembly", "--check"],
         "Assembly export currency",

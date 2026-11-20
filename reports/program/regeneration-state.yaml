@@ -53,7 +53,7 @@ nodes:
   evt0_campaign:
     inputs:
       buildslate/evt0.py: 388de08c0943f5bb98caa959a470de50da5c067c0f3bc84417dbd989384a5bef
-      validation/evt0/campaigns/README.md: 13b8802320a6b4cb49693c3b63aa28f7a2cfee2693fee29c7e4717dd3662a3aa
+      validation/evt0/campaigns/README.md: 4dbc4d419c59fe854090afcd52aab82b88f43293880bcefd69122cac0740e42d
       validation/evt0/instrumentation.yaml: 47c9e8942a533cc94c919e17581315fccd3e41ed668fe7091613460afd6c3004
       validation/evt0/metric-definitions.yaml: b02a8eaa62ddbbc88520545a070a84bd400375b9f4c8c3874009b3eab8d6a22d
       validation/evt0/schemas/calibration.schema.yaml: 83e0f80006b6ddb6b418fe0337c57a1c7d1d9688dad7399b6b9a87c98f6eb19d
@@ -80,7 +80,7 @@ nodes:
       manufacturing/defect-taxonomy.yaml: d58ccf15116e7d8c5de8004043b4e3346ccb7ac0cdb2ccc717924f104a3adade
       manufacturing/pilot-analytics.yaml: ddd23c75a39d0ad263f3c21e225f2a65eb8bc932311aedd6e1e9b0a941af6061
       manufacturing/pilot-build-plan.yaml: 8bcc4d60a9ee710b524848eaeb4ab9646981874b67b1aafa17d50bbf8d77ebd4
-      manufacturing/pilot-results/campaigns/README.md: 489b0f5d8f15458f1240197d2269f4253998fefb2ca83840969e7ee9fa6271c9
+      manufacturing/pilot-results/campaigns/README.md: ba025accf238c20d03c21907656c3cfbc54cfd44fe4f7197657528ad89ff1f03
       manufacturing/schemas/pilot-manifest.schema.yaml: d87fdb17f52c9778e40498fce85a39721d49eefe71c81d92c0ba5b28049c0eee
     outputs:
       reports/program/manufacturing-pilot-analytics.yaml: 13d981cac98395095638a67a363e44b1be0044dd9ecc50b919c51a033419528b
@@ -176,7 +176,7 @@ nodes:
       reports/slate-pocket-v1r-program-readiness.txt: 9fda9b41a525622909e44b36dd53e86b05d117d151ec70727e20605271be4242
   program_snapshot:
     inputs:
-      buildslate/program.py: 6aa02e791222fb28963b0d246de676059da57230c8d740dae5d78ed75585aedb
+      buildslate/program.py: 3450b09a44535e0f44ad084785550ed7238b6a7850ff6c550c8ebd5ea39f1783
       configs/devices/slate-pocket-v1r.yaml: a0e4e3bbf41e266fd55866c1c9ad436e4f498f98edc33349e2108e4db4c67ae1
       engineering/assumptions/assumption_registry.yaml: 7d57e8745722891208e58b469854c049115a634e410ee3644e9e9ebb3124c12f
       engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
@@ -219,7 +219,7 @@ nodes:
       reports/program/dashboard.yaml: 468e726c041bb4cd6873b6620508be48af193f1d90b1ce1d85e197b31989282d
   assembly_viewer:
     inputs:
-      buildslate/assembly.py: f661b6e4503b23875b815fe2fda7cbaa92709efc4e70a66a1017145a6c6385ef
+      buildslate/assembly.py: 77f2a9a601d8d324a54e977c8d709e0fc3beb70b6bc7ae3ae4967a8a69ee1647
       cad/slate-pocket-v1r/envelope-model/envelope.yaml: d894c1d9c0bac3ffe3f16fcb884e1a0e29d7ca33e3b331a64b1d15d561078006
       cad/slate-pocket-v1r/envelope-model/keepouts.yaml: e3dba136016905f26f50bb664e19e90e7d2eeb406355cb00b198299a24102d02
       cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml: f9a67c9ec0b46eb3d7366ca0dfda4bddfc3d5774bb2f34722eea35fc43e19eda

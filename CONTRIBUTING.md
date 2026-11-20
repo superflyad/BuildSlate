@@ -16,8 +16,10 @@ python scripts/ci_validate.py
 ```
 
 Install `requirements.txt` and `requirements-dev.txt` first. The CI gate compiles Python, checks undefined and unused names with Ruff, runs every registered repository validator, checks local documentation links and generated state, verifies assembly export currency, and builds the viewer. On a clean commit it leaves the worktree unchanged.
+Install the CLI with `python -m pip install -e .` for development. CI also builds a wheel, tests its command from outside the checkout, checks maintained Markdown style, and verifies release metadata.
 
 Run `python -m ruff format .` after editing Python. The formatter check covers the repository in CI.
+Run `python scripts/check_docs.py` after editing maintained Markdown. Generated reports and archived snapshots are excluded; local links are checked separately by the repository validator.
 
 For a viewer change, run `npm run dev` in `viewer/` and inspect a desktop and narrow layout. Confirm the model loads, part selection opens source details, filters and visibility controls work, and no control suggests that planning geometry is released CAD.
 

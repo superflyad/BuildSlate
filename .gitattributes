@@ -15,6 +15,7 @@
 *.md text eol=lf
 *.csv text eol=lf
 *.toml text eol=lf
+*.txt text eol=lf
 
 *.pdf binary
 *.png binary

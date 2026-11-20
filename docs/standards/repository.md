@@ -26,7 +26,7 @@ The [program manifest](../../engineering/program/program_model.yaml) maps graph 
 1. Identify the authoritative input and affected generated nodes with `python -m buildslate impact --changed <path>`.
 2. Change the input and update the relevant decision or operating document when the authority or workflow changes.
 3. Run `python -m buildslate regenerate --stale` and review the generated diff.
-4. Run `python scripts/ci_validate.py` from a clean commit. CI checks Python names with Ruff, validator registration, local documentation links, generated state, viewer geometry, and the web build.
+4. Run `python scripts/ci_validate.py` from a clean commit. CI checks Python style, validator registration, maintained documentation and links, installed-package behavior, release metadata, generated state, viewer geometry, and the web build.
 5. Push only after the gate passes. A change to external evidence follows the separate intake and authorization procedures in the [operator workflows](../engineering/operator_workflows.md).
 
 The Python lint baseline is configured in `pyproject.toml` and runs Ruff's `F` rules across the repository. This catches undefined names, unused imports, and other executable-code defects. Ruff formatting is enforced across all Python source files.

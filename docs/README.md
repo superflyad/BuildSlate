@@ -11,6 +11,8 @@
 | [Security policy](../SECURITY.md) | Private vulnerability reporting |
 | [Design decisions](../DECISIONS.md) | Durable architecture choices |
 | [Roadmap](../ROADMAP.md) | Delivered scope and missing inputs |
+| [Changelog](../CHANGELOG.md) | Versioned software changes |
+| [Release process](standards/releases.md) | Version, artifact, and publication rules |
 | [Engineering review standard](engineering/review_standard.md) | Claim classes and model maturity |
 
 ## Program operation

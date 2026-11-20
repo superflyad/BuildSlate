@@ -29,3 +29,9 @@ Vite produces a static build with no server-side account or database. This keeps
 **Status:** Accepted
 
 Every `validation/validate_*.py` script must be registered in the suite. CI also checks local documentation links, placeholder READMEs, pinned Python requirements, undefined and unused Python names, repository-wide Python formatting, generated currency, and the viewer build. This closes a gap where three existing validators were present but not executed.
+
+## ADR-006: Package code separately from engineering inputs
+
+**Status:** Accepted
+
+The Python wheel contains the CLI and its runtime dependency. Engineering files remain in a checkout selected by `--repo-root`; the package does not snapshot or promote source evidence. CI tests the installed command from outside the checkout. Software tags identify code and viewer builds, while the program dashboard retains engineering gate authority.

@@ -15,19 +15,22 @@ BuildSlate is a traceable engineering model for the Slate Pocket v1R device. The
 | Support and issue reports | [Support](SUPPORT.md) |
 | Sensitive security reports | [Security policy](SECURITY.md) |
 | Engineering documentation | [Documentation index](docs/README.md) |
+| Versions and releases | [Changelog](CHANGELOG.md) and [release process](docs/standards/releases.md) |
 
 ## Quick start
 
 Requires Python 3.12 or newer. The viewer also requires Node.js 20.19 or newer.
 
 ```bash
-python -m pip install -r requirements.txt
+python -m pip install -e .
 python -m pip install -r requirements-dev.txt
-python -m buildslate validate
-python -m buildslate status
+buildslate validate
+buildslate status
 python -m buildslate.assembly --check
 python scripts/ci_validate.py
 ```
+
+The wheel installs the CLI, not the engineering inputs. From another directory, pass the path to a BuildSlate data checkout: `buildslate --repo-root /path/to/BuildSlate status`. Use `python scripts/check_package.py` to verify a wheel in a fresh environment.
 
 To run the viewer:
 

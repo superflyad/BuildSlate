@@ -36,16 +36,40 @@ Use this index to move from a question to the authoritative source. The root [RE
 | [Platform architecture](engineering/platform_architecture.md) | Evidence, configuration, and generation flow |
 | [Operator workflows](engineering/operator_workflows.md) | Evidence intake and recovery procedures |
 | [Platform handoff](engineering/platform_handoff.md) | Canonical commands and current boundary |
+| [Execution roadmap](engineering/execution_roadmap.md) | Staged path from screening to prototype decisions |
+| [Slate Pocket v1R baseline](engineering/slate-pocket-v1r-decision-baseline.md) | Protected device decisions and fallbacks |
+| [External blockers](engineering/slate-pocket-v1r-external-blockers.md) | Evidence requests and external decisions |
 | [Program dashboard](../reports/program/dashboard.md) | Generated gates and external blockers |
+
+## Review and calculation methods
+
+| Document | Purpose |
+| --- | --- |
+| [Engineering review standard](engineering/review_standard.md) | Claim classes and model maturity |
+| [Feasibility methodology](engineering/feasibility_methodology.md) | Screening and validation method |
+| [Feasibility reporting](engineering/feasibility_reporting.md) | Report structure and interpretation |
+| [Calculation core](engineering/calculation_core.md) | Shared formulas and dependencies |
+| [Calculation registry validation](engineering/calculation_registry_validation.md) | Formula registry checks |
+| [Constraint boundary analysis](engineering/constraint_boundary_analysis.md) | Coupled design limits |
+| [Scenario sweeps](engineering/scenario_sweeps.md) | Sensitivity analysis across assumptions |
+| [Tradeoff mapping](engineering/tradeoff_mapping.md) | Comparison of competing constraints |
 
 ## Engineering models
 
 | Document | Purpose |
 | --- | --- |
-| [Feasibility methodology](engineering/feasibility_methodology.md) | Screening and validation method |
-| [Calculation core](engineering/calculation_core.md) | Shared formulas and dependencies |
 | [Device profiles](engineering/device_profiles.md) | Profile data and comparisons |
+| [Profile comparison](engineering/profile_comparison.md) | Cross-profile engineering tradeoffs |
+| [Component modeling](engineering/component_modeling.md) | Component estimate structure |
+| [Component physics models](engineering/component_physics_models.md) | Component-level physical calculations |
+| [Material selection primer](engineering/material_selection_primer.md) | Enclosure material tradeoffs |
+| [Composite chassis strategy](engineering/composite_chassis_strategy.md) | Chassis material and structure approach |
+| [Environmental conditions](engineering/environmental_conditions.md) | Operating environment assumptions |
+| [Interconnect and power](engineering/interconnect_and_power.md) | Electrical interface and delivery screening |
+| [Local AI runtime modeling](engineering/local_ai_runtime_modeling.md) | Memory and runtime constraints |
+| [Thermal resistance modeling](engineering/thermal_resistance_modeling.md) | Thermal pathway estimates |
+| [Zone stackup modeling](engineering/zone_stackup_modeling.md) | Thickness and placement budgets |
+| [Manufacturing and reliability](engineering/manufacturing_and_reliability.md) | Build and reliability screening |
 | [Assembly contract](../engineering/assembly/README.md) | Provisional 3D data and coordinate frame |
-| [Slate Pocket v1R baseline](engineering/slate-pocket-v1r-decision-baseline.md) | Protected device decisions |
 
 The previous all-in-one overview is retained as an [archived snapshot](archive/2026-10-repository-overview.md). It is useful for history; the current program dashboard and source registries determine present status. Generated reports are views of the tracked inputs. A current hash or visible 3D solid does not promote a planning value to verified evidence.

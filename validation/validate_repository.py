@@ -65,6 +65,27 @@ def validate_links(path: Path) -> list[str]:
     return problems
 
 
+def validate_document_index() -> list[str]:
+    index = REPO_ROOT / "docs" / "README.md"
+    listed: set[Path] = set()
+    for match in LINK.finditer(index.read_text(encoding="utf-8")):
+        target = match.group(1).strip().split(" ", 1)[0].strip("<>")
+        if urlsplit(target).scheme:
+            continue
+        relative = unquote(target.split("#", 1)[0].split("?", 1)[0])
+        if relative:
+            listed.add((index.parent / relative).resolve())
+    required = {
+        path.resolve()
+        for folder in ("engineering", "standards")
+        for path in (REPO_ROOT / "docs" / folder).glob("*.md")
+    }
+    return [
+        f"docs/README.md: unlisted active guide: {path.relative_to(REPO_ROOT)}"
+        for path in sorted(required - listed)
+    ]
+
+
 def main() -> int:
     scripts = {
         f"validation/{path.name}"
@@ -96,12 +117,13 @@ def main() -> int:
     documents = markdown_files()
     for path in documents:
         problems.extend(validate_links(path))
+    problems.extend(validate_document_index())
     if problems:
         for problem in problems:
             print(f"FAIL: {problem}", file=sys.stderr)
         return 1
     print(
-        f"PASS: {len(scripts)} registered validators, {len(documents)} Markdown files, local links, and pinned Python requirements"
+        f"PASS: {len(scripts)} registered validators, {len(documents)} Markdown files, local links, active guide index, and pinned Python requirements"
     )
     return 0
 

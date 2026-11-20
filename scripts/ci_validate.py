@@ -69,18 +69,20 @@ def main() -> int:
     run([npm, "run", "check:model", "--prefix", "viewer"], "Viewer geometry load")
     run([npm, "run", "build", "--prefix", "viewer"], "Viewer build")
     run([sys.executable, "-m", "buildslate", "stale"], "Generated-output staleness")
+    # Compare content: Windows Git can report identical rewritten files as modified.
     run(["git", "diff", "--exit-code"], "Deterministic tracked outputs")
-    status = subprocess.run(
-        ["git", "status", "--porcelain", "--untracked-files=all"],
+    run(["git", "diff", "--cached", "--exit-code"], "No staged changes")
+    untracked = subprocess.run(
+        ["git", "ls-files", "--others", "--exclude-standard", "-z"],
         cwd=REPO_ROOT,
         capture_output=True,
-        text=True,
         check=False,
     )
-    if status.returncode != 0:
-        raise SystemExit("FAIL: unable to inspect worktree")
-    if status.stdout.strip():
-        raise SystemExit("FAIL: CI left a dirty worktree:\n" + status.stdout)
+    if untracked.returncode != 0:
+        raise SystemExit("FAIL: unable to inspect untracked files")
+    if untracked.stdout:
+        paths = [path.decode("utf-8") for path in untracked.stdout.split(b"\0") if path]
+        raise SystemExit("FAIL: CI left untracked files:\n" + "\n".join(paths))
     print("\nPASS: BuildSlate CI gate")
     return 0
 

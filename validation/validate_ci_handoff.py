@@ -43,8 +43,9 @@ def main() -> int:
         "validation/run_all.py",
         "buildslate",
         "stale",
-        "status",
-        "--porcelain",
+        "--cached",
+        "ls-files",
+        "--exclude-standard",
     ):
         require(marker in ci_script, f"CI entry point includes: {marker}")
 

@@ -77,3 +77,9 @@ The `erc_report` record must bind the approved editable schematic, KiCad project
 **Status:** Accepted
 
 The routed PCB record must bind the same `.kicad_pro` bytes as the approved ERC record. The PCB auditor rejects DRC exclusions, ignored critical board rules, and zero fabrication design minima. It inspects the fresh DRC JSON for rule, unconnected-item, and schematic-parity findings in addition to checking KiCad's exit code. This establishes rule-set consistency and reproducible screening; fabricator review, signal and power integrity, and physical validation remain required.
+
+## ADR-014: Bind power safety calculations to selected hardware
+
+**Status:** Accepted
+
+The `power_safety` record must name a controlled JSON release whose revision and reviewer match the evidence record. Its battery ratings come from the selected part set; its charger, PMIC, protection, and USB PD references match the electrical BOM. It binds the part set, BOM, and board by hash and checks charge input power, complete subsystem loads, rail capacity and startup order, pack current, and fault-control declarations. This makes a reviewed power analysis reproducible but does not prove supplier ratings or physical fault behavior. EVT0 measurements and safety review remain required.

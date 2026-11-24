@@ -26,6 +26,8 @@ from buildslate.part_selection import RELEASE as SELECTED_BOM_RELEASE
 from buildslate.part_selection import audit as audit_part_selection
 from buildslate.pcb_proof import audit as audit_pcb
 from buildslate.platform_fit import audit as audit_platform_fit
+from buildslate.power_safety_proof import RELEASE as POWER_RELEASE
+from buildslate.power_safety_proof import audit as audit_power_safety
 from buildslate.storage_fit import audit as audit_storage_fit
 
 MANIFEST = Path("engineering/hardware/readiness.yaml")
@@ -221,6 +223,42 @@ def _evidence_result(
                     proof = audit_pcb(target, schematic, netlist)
                     if proof["status"] != "pass":
                         reasons.extend(proof["errors"])
+        if not reasons and requirement.get("id") == "power_safety":
+            if target != (root / POWER_RELEASE).resolve():
+                reasons.append("Power release must name the controlled power JSON")
+            else:
+                proof = audit_power_safety(root)
+                if proof["status"] != "pass":
+                    reasons.extend(proof["errors"])
+                elif (
+                    proof["revision"] != record["revision"]
+                    or proof["reviewed_by"] != record["reviewed_by"]
+                ):
+                    reasons.append("Power review identity or revision differs")
+                related = related_records or {}
+                for identifier, digest in (
+                    ("selected_bom", proof["selected_bom_sha256"]),
+                    ("schematic_netlist", proof["electrical_bom_sha256"]),
+                    ("routed_pcb", proof["routed_pcb_sha256"]),
+                ):
+                    upstream = related.get(identifier)
+                    field = (
+                        "bom_sha256" if identifier == "schematic_netlist" else "sha256"
+                    )
+                    if (
+                        not isinstance(upstream, dict)
+                        or upstream.get("disposition") != "approved"
+                        or upstream.get(field) != digest
+                    ):
+                        reasons.append(
+                            f"Power release is not bound to approved {identifier}"
+                        )
+                if (
+                    selection_proof is None
+                    or selection_proof.get("status") != "pass"
+                    or selection_proof.get("sha256") != proof["selected_bom_sha256"]
+                ):
+                    reasons.append("Power selected BOM has no passing part proof")
         if not reasons and requirement.get("id") == "mechanical_release":
             if target != (root / MECHANICAL_ASSEMBLY).resolve():
                 reasons.append(
@@ -341,6 +379,7 @@ def build_report(root: Path) -> dict:
     battery_fit = audit_battery_fit(root)
     memory_package_fit = audit_memory_package_fit(root)
     firmware_bundle = audit_firmware(root / FIRMWARE_RELEASE)
+    power_safety = audit_power_safety(root)
     selected_roles = []
     for role in manifest["selected_roles"]:
         item = strategy["roles"].get(role)
@@ -435,6 +474,7 @@ def build_report(root: Path) -> dict:
         "battery_fit": battery_fit,
         "memory_package_fit": memory_package_fit,
         "firmware_bundle": firmware_bundle,
+        "power_safety": power_safety,
         "selected_roles": selected_roles,
         "cellular": {"status": cellular["status"], "selected": cellular_selected},
         "requirements": entries,

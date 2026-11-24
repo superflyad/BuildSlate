@@ -537,6 +537,12 @@
       "No released firmware manifest"
     ]
   },
+  "power_safety": {
+    "status": "missing",
+    "errors": [
+      "No released power safety design"
+    ]
+  },
   "selected_roles": [
     {
       "id": "compute_platform",

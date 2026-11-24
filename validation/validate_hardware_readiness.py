@@ -26,6 +26,10 @@ def main() -> int:
         raise ValueError("Hardware readiness report is stale; regenerate with --write")
     if expected["firmware_bundle"]["status"] != "missing":
         raise ValueError("Public hardware report must not imply released firmware")
+    if expected["power_safety"]["status"] != "missing":
+        raise ValueError(
+            "Public hardware report must not imply a released power design"
+        )
     if (
         expected["functional_evt0"] != "blocked"
         and expected["design_release"] == "blocked"

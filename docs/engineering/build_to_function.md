@@ -30,6 +30,8 @@ The ERC record has a separate [schematic rule proof](schematic_erc_proof.md). It
 
 The [routed PCB proof](routed_pcb_proof.md) requires that same approved KiCad project settings hash, enabled critical DRC rules, positive fabrication design minima, zero DRC and parity findings, netlist parity, and complete copper-layer exports. No released v1R board exists yet.
 
+The [power safety proof](power_safety_proof.md) requires selected battery ratings, a charge and discharge limit table, complete subsystem load coverage, rail capacity and sequence, fault response declarations, and exact bindings to the approved part set, electrical BOM, and routed board. No released v1R power design exists yet. The arithmetic is a consistency screen; supplier limits and protection behavior still need review and physical verification.
+
 The mechanical release record has a separate [STEP assembly proof](mechanical_release_proof.md). It requires source part and drawing hashes, released assembly identity, complete role coverage, and nominal interference and clearance checks. There is no released assembly to check yet.
 
 The firmware boot record has a separate [firmware bundle proof](firmware_release_proof.md). It requires exact image hashes, boot and recovery order, driver coverage, flash readback instructions, and binding to the approved selected BOM and routed board. There is no released firmware bundle; the proof cannot establish boot or recovery on hardware.

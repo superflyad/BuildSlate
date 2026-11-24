@@ -81,6 +81,7 @@ Use this index to move from a question to the authoritative source. The root [RE
 | [Electrical netlist proof](engineering/electrical_netlist_proof.md) | Connectivity and selected electrical BOM audit contract |
 | [Schematic ERC proof](engineering/schematic_erc_proof.md) | Reproducible KiCad ERC and project-rule integrity |
 | [Routed PCB proof](engineering/routed_pcb_proof.md) | KiCad schematic parity, DRC, and reproducible fabrication exports |
+| [Power safety proof](engineering/power_safety_proof.md) | Battery ratings, charge cap, rail load budgets, fault declarations, and controlled source bindings |
 | [Released mechanical CAD proof](engineering/mechanical_release_proof.md) | Supplier STEP identity, assembly placement, intersections, and tolerance clearance |
 | [Firmware release proof](engineering/firmware_release_proof.md) | Image integrity, boot and recovery order, driver coverage, and BOM/board binding |
 

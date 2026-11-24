@@ -13,8 +13,8 @@ import json
 import math
 from pathlib import Path
 
-from buildslate.io import load_yaml
 from buildslate.firmware_proof import RELEASE as FIRMWARE_RELEASE
+from buildslate.io import load_yaml
 from buildslate.netlist_proof import _netlist
 
 RELEASE = Path("engineering/hardware/released/rf/rf-release.json")
@@ -139,7 +139,7 @@ def _band_errors(
         or abs(inside[-1][0] - end) > 1e-6
         or any(
             second[0] - first[0] > band["max_step_mhz"] + 1e-6
-            for first, second in zip(inside, inside[1:])
+            for first, second in zip(inside, inside[1:], strict=False)
         )
     ):
         return [f"Sweep does not cover band {band['id']} at the required step"]
@@ -491,7 +491,7 @@ def audit(root: Path) -> dict:
         ).issubset({ref for ref, _ in endpoints}):
             errors.append(f"RF matching parts differ from electrical BOM: {identifier}")
         used_matching: set[str] = set()
-        for first, second in zip(endpoints, endpoints[1:]):
+        for first, second in zip(endpoints, endpoints[1:], strict=False):
             if (
                 first not in net_pins
                 or second not in net_pins

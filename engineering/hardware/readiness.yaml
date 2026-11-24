@@ -29,7 +29,7 @@ requirements:
     title: Reviewed schematic netlist and selected electrical BOM with endpoint proof
   - id: erc_report
     stage: design_release
-    title: Reviewed schematic electrical rules report and deviations
+    title: Reproducible clean schematic ERC and controlled project settings
   - id: routed_pcb
     stage: design_release
     title: Routed PCB, stackup, fabrication outputs and assembly drawings

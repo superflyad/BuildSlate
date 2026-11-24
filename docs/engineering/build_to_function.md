@@ -26,6 +26,8 @@ The [battery candidate screen](battery_candidate_fit.md) exposes a separate mech
 
 The schematic netlist record has an additional [electrical proof](electrical_netlist_proof.md): its selected electrical BOM, critical endpoint contract, and exported XML netlist are checked together before that record can be accepted.
 
+The ERC record has a separate [schematic rule proof](schematic_erc_proof.md). It reruns KiCad against the approved schematic and hashed project settings, rejects exclusions or disabled critical rules, and compares the clean result with the reviewed report. No released v1R schematic exists yet.
+
 The mechanical release record has a separate [STEP assembly proof](mechanical_release_proof.md). It requires source part and drawing hashes, released assembly identity, complete role coverage, and nominal interference and clearance checks. There is no released assembly to check yet.
 
 The firmware boot record has a separate [firmware bundle proof](firmware_release_proof.md). It requires exact image hashes, boot and recovery order, driver coverage, flash readback instructions, and binding to the approved selected BOM and routed board. There is no released firmware bundle; the proof cannot establish boot or recovery on hardware.

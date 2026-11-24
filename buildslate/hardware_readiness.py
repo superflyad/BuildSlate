@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 from buildslate.battery_fit import audit as audit_battery_fit
+from buildslate.erc_proof import audit as audit_erc
 from buildslate.evt0 import EVT0CampaignRepository
 from buildslate.firmware_proof import RELEASE as FIRMWARE_RELEASE
 from buildslate.firmware_proof import audit as audit_firmware
@@ -147,6 +148,35 @@ def _evidence_result(
                     else:
                         if proof["status"] != "pass":
                             reasons.extend(proof["errors"])
+        if not reasons and requirement.get("id") == "erc_report":
+            if not target.name.endswith(".erc.json"):
+                reasons.append("ERC evidence must be a KiCad JSON report")
+            else:
+                schematic = target.with_name(
+                    target.name.removesuffix(".erc.json") + ".kicad_sch"
+                )
+                project = schematic.with_suffix(".kicad_pro")
+                upstream = (related_records or {}).get("schematic_source")
+                if (
+                    not isinstance(upstream, dict)
+                    or upstream.get("disposition") != "approved"
+                    or not isinstance(upstream.get("path"), str)
+                    or (root / upstream["path"]).resolve() != schematic
+                    or upstream.get("sha256") != record.get("schematic_sha256")
+                    or not schematic.is_file()
+                    or record.get("schematic_sha256")
+                    != hashlib.sha256(schematic.read_bytes()).hexdigest()
+                    or not project.is_file()
+                    or record.get("project_sha256")
+                    != hashlib.sha256(project.read_bytes()).hexdigest()
+                ):
+                    reasons.append(
+                        "ERC is not bound to approved schematic and project bytes"
+                    )
+                else:
+                    proof = audit_erc(schematic, target)
+                    if proof["status"] != "pass":
+                        reasons.extend(proof["errors"])
         if not reasons and requirement.get("id") == "routed_pcb":
             if target.suffix.lower() != ".kicad_pcb":
                 reasons.append("Routed PCB must be an editable KiCad board")

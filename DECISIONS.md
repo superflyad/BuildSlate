@@ -65,3 +65,9 @@ The camera pupil proof found a rear cover opening smaller than the assumed pupil
 **Status:** Accepted
 
 The `firmware_boot` hardware record must name a controlled JSON release bundle with exact image hashes, boot and recovery order, required interface drivers, and a flash readback plan. The bundle revision and reviewer must match its evidence record, and its selected BOM and routed PCB hashes must match approved upstream records. This checks release integrity and configuration consistency; it does not claim that the images boot or recover on a physical Slate Pocket. Serialized EVT0 results remain necessary.
+
+## ADR-012: Reproduce schematic ERC from controlled settings
+
+**Status:** Accepted
+
+The `erc_report` record must bind the approved editable schematic, KiCad project settings, and reviewed JSON report by hash. Rerun ERC with all severities and reject any findings, project exclusions, or ignored critical connection rules. Compare the fresh and reviewed sheet results while allowing generation timestamps to differ. A clean ERC remains a rule check, not proof that the circuit can operate safely.

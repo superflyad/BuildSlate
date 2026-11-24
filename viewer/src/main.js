@@ -361,6 +361,7 @@ function renderHardware() {
     ["Design release", report.design_release],
     ["Functional EVT0", report.functional_evt0],
     ["Working phone", report.phone_function],
+    ["Schematic ERC", design.find((item) => item.id === "erc_report").status],
     ["Public platform fit", report.platform_fit.status],
     ["Storage integration", report.storage_fit.integration_status],
     ["Battery integration", report.battery_fit.integration_status],

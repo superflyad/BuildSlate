@@ -79,6 +79,7 @@ Use this index to move from a question to the authoritative source. The root [RE
 | [Battery candidate fit](engineering/battery_candidate_fit.md) | Published cell and concept pack volumes versus the complete-pack allocation; charge evidence limit |
 | [Selected BOM proof](engineering/selected_bom_proof.md) | Exact part identity, supplier source binding, and interface checks |
 | [Electrical netlist proof](engineering/electrical_netlist_proof.md) | Connectivity and selected electrical BOM audit contract |
+| [Schematic ERC proof](engineering/schematic_erc_proof.md) | Reproducible KiCad ERC and project-rule integrity |
 | [Routed PCB proof](engineering/routed_pcb_proof.md) | KiCad schematic parity, DRC, and reproducible fabrication exports |
 | [Released mechanical CAD proof](engineering/mechanical_release_proof.md) | Supplier STEP identity, assembly placement, intersections, and tolerance clearance |
 | [Firmware release proof](engineering/firmware_release_proof.md) | Image integrity, boot and recovery order, driver coverage, and BOM/board binding |

@@ -637,7 +637,7 @@
     {
       "id": "erc_report",
       "stage": "design_release",
-      "title": "Reviewed schematic electrical rules report and deviations",
+      "title": "Reproducible clean schematic ERC and controlled project settings",
       "status": "missing",
       "reasons": [
         "No evidence record"

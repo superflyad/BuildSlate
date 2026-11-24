@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Screen a public 5G voice-optional module outline against both sides of the 128 GB concept board and publish the unresolved phone package conflict.
 - Added a display active-area fit gate: the 7.5-inch 16:10 target exceeds the current body and CAD reserve, and the source 3200×1800 resolution is 16:9; design release remains blocked pending an approved geometry decision.
 - Added a platform reference audit that binds selected compute, memory, storage, and PMIC sources to the electrical BOM and an explicit 128 GB channel, rank, and data-lane map; public release status remains missing.
 - Published the X2 Extreme 192-bit versus eight x64 package bus-width screen in hardware readiness; independent wiring fails the width check, while shared-channel qualification remains unresolved.

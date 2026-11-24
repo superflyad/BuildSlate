@@ -8,6 +8,8 @@ EVT0 uses a modular Wi-Fi/Bluetooth development radio with cabled or supplier re
 
 Wireless charging is removed from EVT0. The current 58 x 58 x 0.8 mm planning stack drives the battery zone to 9.84 mm, 0.34 mm over the 9.5 mm device envelope. The Wireless Power Consortium publicly identifies Qi2 25W, while the Slate target is 50 W; this package has no primary evidence for a standards-based 50 W receiver or certification route. The rear coil zone remains reserved for future study, but it cannot consume EVT0 z-height or be presented as supported.
 
+The [public 5G module outline screen](../../docs/engineering/cellular_module_fit.md) finds no position for a 29 × 32 mm voice-optional reference module on either side of the present two-sided 128 GB board study. The reference is not selected. A released phone-function configuration requires a redesigned board and supplier-qualified voice, host, power, antenna, and carrier evidence.
+
 ## Target radio inventory
 
 | Function | Product intent | EVT0 posture | Missing release evidence |

@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 from buildslate.battery_fit import audit as audit_battery_fit
+from buildslate.cellular_fit import audit as audit_cellular_fit
 from buildslate.display_fit import audit as audit_display_fit
 from buildslate.erc_proof import audit as audit_erc
 from buildslate.evt0 import EVT0CampaignRepository
@@ -600,6 +601,7 @@ def build_report(root: Path) -> dict:
         "platform_fit": platform_fit,
         "storage_fit": storage_fit,
         "battery_fit": battery_fit,
+        "cellular_reference_fit": audit_cellular_fit(root),
         "display_fit": display_fit,
         "memory_package_fit": memory_package_fit,
         "firmware_bundle": firmware_bundle,

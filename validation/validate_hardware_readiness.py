@@ -42,6 +42,11 @@ def main() -> int:
     ):
         raise ValueError("Impossible display target must block design release")
     if (
+        expected["cellular_reference_fit"]["status"] != "outline_blocked"
+        or expected["phone_function"] != "blocked"
+    ):
+        raise ValueError("Public cellular reference cannot imply phone function")
+    if (
         expected["functional_evt0"] != "blocked"
         and expected["design_release"] == "blocked"
     ):

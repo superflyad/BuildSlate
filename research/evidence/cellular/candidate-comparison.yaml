@@ -1,0 +1,33 @@
+metadata:
+  status: public_module_reference_not_selected
+  reviewed_on: 2026-11-24
+  purpose: Screen a published voice-capable 5G module outline against the current 128 GB board study.
+
+reference_module:
+  id: quectel_rg255c_gl
+  manufacturer: Quectel
+  variant: RG255C-GL
+  technology: 5G_RedCap_SA_and_LTE_Cat_4
+  package_mm: [29.0, 32.0, 2.4]
+  supply_voltage_v: [3.3, 4.3]
+  host_interfaces: [USB_2_0, SGMII, PCIe_2_0, UART, PCM]
+  cellular_antenna_ports: 2
+  gnss_antenna_ports: 1
+  voice: optional_VoNR_and_VoLTE
+  product_class: industrial_and_commercial
+  certification_note: Manufacturer specification marks listed regulatory and carrier certifications as in progress; final status and use in a handheld product need supplier confirmation.
+  source:
+    url: https://www.quectel.com/content/uploads/2024/03/Quectel_RG255C_Series_5G_Module_Specification_V1.1.pdf
+    document: Quectel RG255C Series 5G Module Specification
+    revision: '1.1'
+    source_type: manufacturer_specification
+    accessed: 2026-11-24
+
+screen:
+  assumed_nominal_package_clearance_mm: 1.0
+  required_before_selection:
+    - Orderable voice-enabled hardware and firmware variant with carrier support for approved markets.
+    - Released land pattern, antenna, power transient, host, audio, and SIM design documents.
+    - Supplier confirmation that the module is appropriate for the final handheld product and certification route.
+    - Board placement, two antenna feeds, 3D stack, thermal, SAR, and coexistence review.
+    - Measured calling, data, emergency behavior, and regulatory results on a serialized Slate unit.

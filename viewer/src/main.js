@@ -370,6 +370,7 @@ function renderHardware() {
     ["Display active-area fit", report.display_fit.status],
     ["Storage integration", report.storage_fit.integration_status],
     ["Battery integration", report.battery_fit.integration_status],
+    ["5G reference outline", report.cellular_reference_fit.status],
     ["128 GB memory package", report.memory_package_fit.integration_status],
     ["Firmware bundle integrity", report.firmware_bundle.status],
     [
@@ -423,6 +424,19 @@ function renderHardware() {
       )
       .join("") +
     `<div class="gate-item"><strong>Cellular modem</strong><span>${report.cellular.selected ? "Selected" : esc(report.cellular.status.replaceAll("_", " "))}</span></div>`;
+  const cellularFit = report.cellular_reference_fit;
+  const cellularGeometry = Object.values(cellularFit.sides).some(
+    (side) => side.outline_fits,
+  )
+    ? "has a nominal outline location on the board; integration remains unqualified"
+    : "fits neither side of the current board";
+  const cellularSummary = `A ${esc(cellularFit.package_mm.join(" × "))} mm ${esc(cellularFit.candidate)} 5G RedCap reference module ${cellularGeometry} with four 16 GB memory outlines per side and an assumed ${esc(cellularFit.assumed_nominal_package_clearance_mm)} mm gap. Voice is optional on this module. It is not selected. <a href="${esc(cellularFit.source)}" target="_blank" rel="noopener noreferrer">Manufacturer specification</a> · <a href="https://github.com/superflyad/BuildSlate/blob/main/docs/engineering/cellular_module_fit.md" target="_blank" rel="noopener noreferrer">Fit method</a>`;
+  document
+    .querySelector("#hardware-parts")
+    .insertAdjacentHTML(
+      "beforeend",
+      `<div class="gate-item"><strong>5G reference package fit</strong><span>${cellularSummary}</span></div>`,
+    );
   const study = report.memory_package_fit.eight_package_study;
   document.querySelector("#hardware-memory-layout").innerHTML =
     `<p class="muted">Eight ${esc(report.memory_package_fit.public_reference_capacity_gb)} GB reference outlines: ${esc(study.packages_per_side.component)} on the component side, ${esc(study.packages_per_side.reverse)} on the reverse. Minimum screened planar gap ${esc(study.minimum_screened_planar_gap_mm)} mm under an assumed ${esc(study.assumed_planar_clearance_mm)} mm rule. Geometry status: ${esc(study.status.replaceAll("_", " "))}.</p>` +

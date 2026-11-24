@@ -74,7 +74,7 @@ Use this index to move from a question to the authoritative source. The root [RE
 | [CAD proofing](engineering/cad_proofing.md) | Solid, STEP, mesh, keepout, and stack checks with explicit limits |
 | [Build-to-function gate](engineering/build_to_function.md) | Required design release and physical EVT0 evidence |
 | [128 GB compute path](engineering/compute_platform_decision.md) | Public platform limits and evidence needed to prove the approved memory floor |
-| [128 GB package screen](engineering/memory_package_fit.md) | Exact public 16 GB LPDDR5X package versus four assumed 32 GB board sites |
+| [128 GB package screen](engineering/memory_package_fit.md) | Exact public 16 GB LPDDR5X package, four assumed 32 GB sites, and a two-sided eight-package outline study |
 | [1 TB UFS candidate screen](engineering/storage_candidate_fit.md) | Exact public package outline, rail requirements, and unresolved integration work |
 | [Battery candidate fit](engineering/battery_candidate_fit.md) | Published cell and concept pack volumes versus the complete-pack allocation; charge evidence limit |
 | [Selected BOM proof](engineering/selected_bom_proof.md) | Exact part identity, supplier source binding, and interface checks |

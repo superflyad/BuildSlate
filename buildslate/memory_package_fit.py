@@ -13,11 +13,143 @@ PROFILE = Path("configs/devices/slate-pocket-v1r.yaml")
 CANDIDATES = Path("research/evidence/compute/platform-comparison.yaml")
 FLOORPLAN = Path("engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml")
 ASSEMBLY = Path("engineering/assembly/assembly.yaml")
+STUDY = Path("engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml")
 PUBLIC_PART = "micron_lpddr5x_16gb_public_part"
 
 
+def _rectangle_gap(a: list[float], b: list[float]) -> float:
+    """Nominal edge distance between axis-aligned package outlines."""
+    dx = max(b[0] - a[0] - a[2], a[0] - b[0] - b[2], 0.0)
+    dy = max(b[1] - a[1] - a[3], a[1] - b[1] - b[3], 0.0)
+    return math.hypot(dx, dy)
+
+
+def _placement_study(
+    study: dict,
+    floorplan: dict,
+    assembly: dict,
+    board_height: float,
+    package: list[float],
+    required: int,
+) -> dict:
+    boundary = floorplan["board"]["component_side_boundary_mm"]
+    limit = [
+        float(boundary["x"]),
+        float(boundary["y"]),
+        float(boundary["length"]),
+        float(boundary["width"]),
+    ]
+    clearance = float(study["assumed_planar_clearance_mm"])
+    board = assembly["parts"]["mechanical"]["main_pcb_placeholder"]
+    board_z = float(board["z_mm"])
+    top_z = float(assembly["parts"]["pcb"]["z_mm"])
+    origin = floorplan["board"]["origin_in_mechanical_model_mm"]
+    placed = []
+    conflicts = []
+    if study["metadata"]["reference_part"] != PUBLIC_PART:
+        conflicts.append("Study reference part does not match the screened package")
+    if len(study["placements"]) != required:
+        conflicts.append("Study package count does not cover the memory target")
+    for name, item in study["placements"].items():
+        side = item["side"]
+        if side not in {"component", "reverse"}:
+            conflicts.append(f"{name}: unknown PCB side")
+            continue
+        rect = [float(item["x_mm"]), float(item["y_mm"]), package[0], package[1]]
+        z = top_z if side == "component" else round(board_z - package[2], 3)
+        placed.append(
+            {
+                "id": name,
+                "side": side,
+                "rect_mm": rect,
+                "assembly_box_mm": [
+                    float(origin["x"]) + rect[0],
+                    float(origin["y"]) + rect[1],
+                    z,
+                    *package,
+                ],
+            }
+        )
+        if (
+            rect[0] < limit[0]
+            or rect[1] < limit[1]
+            or rect[0] + rect[2] > limit[0] + limit[2]
+            or rect[1] + rect[3] > limit[1] + limit[3]
+        ):
+            conflicts.append(f"{name}: outside component-side boundary")
+        if z < 0:
+            conflicts.append(f"{name}: below device rear datum")
+    occupied = [
+        (name, [float(rect[key]) for key in ("x", "y", "length", "width")])
+        for name, item in floorplan["placements"].items()
+        if item["function"] != "lpddr5x_32gb_planning_site"
+        for rect in (item["rectangle_mm"],)
+    ]
+    gaps = []
+    for index, item in enumerate(placed):
+        neighbours = placed[index + 1 :]
+        for other in neighbours:
+            if item["side"] != other["side"]:
+                continue
+            gap = _rectangle_gap(item["rect_mm"], other["rect_mm"])
+            gaps.append(gap)
+            if gap < clearance:
+                conflicts.append(f"{item['id']} / {other['id']}: {gap:.2f} mm gap")
+        if item["side"] == "component":
+            for name, rect in occupied:
+                gap = _rectangle_gap(item["rect_mm"], rect)
+                gaps.append(gap)
+                if gap < clearance:
+                    conflicts.append(f"{item['id']} / {name}: {gap:.2f} mm gap")
+    sides = {
+        side: sum(item["side"] == side for item in placed)
+        for side in ("component", "reverse")
+    }
+    if sides != {"component": required // 2, "reverse": required // 2}:
+        conflicts.append(
+            "Study must distribute the eight reference packages across both sides"
+        )
+    stack_issues = []
+    floorplan_thickness = float(floorplan["board"]["outline_mm"]["thickness"])
+    if not math.isclose(board_height, floorplan_thickness, abs_tol=1e-6):
+        stack_issues.append(
+            "Mechanical board height differs from floorplan stack thickness"
+        )
+    if not math.isclose(board_z + board_height, top_z, abs_tol=1e-6):
+        stack_issues.append("Component Z does not meet the mechanical board top")
+    return {
+        "status": "outline_clear_stack_unresolved"
+        if not conflicts and stack_issues
+        else ("outline_clear" if not conflicts else "outline_conflict"),
+        "package_count": len(placed),
+        "packages_per_side": sides,
+        "assumed_planar_clearance_mm": clearance,
+        "minimum_screened_planar_gap_mm": round(min(gaps), 3) if gaps else None,
+        "board_outline_mm": [
+            float(floorplan["board"]["outline_mm"]["length"]),
+            float(floorplan["board"]["outline_mm"]["width"]),
+        ],
+        "component_side_placements": [
+            {"id": name, "rect_mm": rect} for name, rect in occupied
+        ],
+        "floorplan_board_thickness_mm": floorplan_thickness,
+        "mechanical_board_height_mm": board_height,
+        "board_z_mm": [board_z, board_z + board_height],
+        "placement_conflicts": conflicts,
+        "stack_issues": stack_issues,
+        "placements": placed,
+        "source": STUDY.as_posix(),
+        "caveat": "Planar package boxes do not include solder lands, via escape, decoupling, shields, thermal contacts, or X2 memory-channel rules.",
+    }
+
+
 def audit_data(
-    profile: dict, candidates: dict, floorplan: dict, assembly: dict
+    profile: dict,
+    candidates: dict,
+    floorplan: dict,
+    assembly: dict,
+    study: dict,
+    board_height: float,
 ) -> dict:
     memory = profile["memory"]
     target = int(memory["capacity_gb"])
@@ -84,12 +216,16 @@ def audit_data(
             public_part_area / boundary_area * 100, 1
         ),
         "site_geometry": geometry,
+        "eight_package_study": _placement_study(
+            study, floorplan, assembly, board_height, package, required
+        ),
         "source_consistency": "pass" if not errors else "fail",
         "source_errors": errors,
         "integration_status": "blocked",
         "missing_design_evidence": [
             "Exact 32 GB package MPN, drawing, and availability, or a new eight-package board architecture",
             "X2-qualified 128 GB channel topology, bus width, ranks, and signal rules",
+            "Reconciled 0.8 mm floorplan stack with the 1.2 mm mechanical board model",
             "Memory rails, power sequence, routed SI/PI, and thermal measurements",
             "Booted Slate unit with hash-bound 128 GB resident-memory test",
         ],
@@ -99,9 +235,13 @@ def audit_data(
 
 
 def audit(root: Path) -> dict:
-    return audit_data(
-        *(load_yaml(root / path) for path in (PROFILE, CANDIDATES, FLOORPLAN, ASSEMBLY))
+    profile, candidates, floorplan, assembly, study = (
+        load_yaml(root / path)
+        for path in (PROFILE, CANDIDATES, FLOORPLAN, ASSEMBLY, STUDY)
     )
+    envelope = load_yaml(root / assembly["sources"]["envelope"])
+    board_height = float(envelope["placements"]["main_pcb_placeholder"]["height_mm"])
+    return audit_data(profile, candidates, floorplan, assembly, study, board_height)
 
 
 def main() -> int:

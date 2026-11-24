@@ -16,6 +16,7 @@ from buildslate.memory_package_fit import (  # noqa: E402
     CANDIDATES,
     FLOORPLAN,
     PROFILE,
+    STUDY,
     audit,
     audit_data,
 )
@@ -35,6 +36,11 @@ def main() -> int:
             item["public_part_outline_fits"] or item["public_part_height_fits"]
             for item in report["site_geometry"]
         )
+        or report["eight_package_study"]["status"] != "outline_clear_stack_unresolved"
+        or report["eight_package_study"]["minimum_screened_planar_gap_mm"] != 1.5
+        or report["eight_package_study"]["packages_per_side"]
+        != {"component": 4, "reverse": 4}
+        or len(report["eight_package_study"]["stack_issues"]) != 1
     ):
         raise ValueError("128 GB package geometry or capacity gap was lost")
     published = json.loads(
@@ -43,8 +49,16 @@ def main() -> int:
     if published["memory_package_fit"] != report:
         raise ValueError("Published memory package screen is stale")
     data = [
-        load_yaml(ROOT / path) for path in (PROFILE, CANDIDATES, FLOORPLAN, ASSEMBLY)
+        load_yaml(ROOT / path)
+        for path in (PROFILE, CANDIDATES, FLOORPLAN, ASSEMBLY, STUDY)
     ]
+    data.append(
+        float(
+            load_yaml(ROOT / data[3]["sources"]["envelope"])["placements"][
+                "main_pcb_placeholder"
+            ]["height_mm"]
+        )
+    )
     altered = copy.deepcopy(data)
     altered[1]["memory_supplier_context"]["micron_lpddr5x_16gb_public_part"][
         "capacity_gb"
@@ -59,6 +73,19 @@ def main() -> int:
     altered[3]["parts"]["pcb"]["parts"]["memory_a_32gb"]["height_mm"] = 1.2
     if not audit_data(*altered)["site_geometry"][0]["public_part_height_fits"]:
         raise ValueError("Package height screen did not respond to assembly change")
+    altered = copy.deepcopy(data)
+    altered[4]["placements"]["memory_right_lower_component"]["x_mm"] = 57.0
+    if audit_data(*altered)["eight_package_study"]["status"] != "outline_conflict":
+        raise ValueError("Storage collision was accepted in eight-package study")
+    altered = copy.deepcopy(data)
+    altered[4]["placements"]["memory_left_lower_reverse"]["x_mm"] = 1.0
+    if audit_data(*altered)["eight_package_study"]["status"] != "outline_conflict":
+        raise ValueError("Reverse-side boundary breach was accepted")
+    altered = copy.deepcopy(data)
+    altered[5] = 0.8
+    altered[3]["parts"]["pcb"]["z_mm"] = 3.6
+    if audit_data(*altered)["eight_package_study"]["stack_issues"]:
+        raise ValueError("Board thickness reconciliation was not recognized")
     print("PASS: 128 GB public memory package count and geometry screen")
     return 0
 

@@ -23,6 +23,8 @@ The approved 128 GB memory floor is retained. Qualcomm publishes an X2 controlle
 
 The [memory package screen](docs/engineering/memory_package_fit.md) compares the four assumed 32 GB sites with an exact public 16 GB LPDDR5X package. Eight of those would be needed for 128 GB, and their dimensions do not fit the current memory rectangles. The CAD sites remain planning geometry.
 
+A separate [eight-package placement study](engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml) puts four public-reference package outlines on each board side. Its planar boxes clear the other current planning blocks by at least 1.5 mm under an assumed 1.0 mm rule. The board sources disagree on thickness (0.8 versus 1.2 mm), and there is no reviewed memory routing or controller topology. The [public Hardware view](https://superflyad.github.io/BuildSlate/?tab=hardware) shows this distinction.
+
 The [1 TB UFS candidate screen](docs/engineering/storage_candidate_fit.md) ties one exact KIOXIA part to its public package outline and voltage requirements. Its nominal outline fits the concept board, while the required storage rails, host support, and routed design remain unproven. The result is visible on the site's [Hardware tab](https://superflyad.github.io/BuildSlate/?tab=hardware).
 
 The [battery candidate fit](docs/engineering/battery_candidate_fit.md) shows that the public AI1-M01 bare-cell box is already larger than the current complete-pack allocation. Its listed 2C category is for discharge; the candidate has no published charge limit. The battery and 100 W charging target therefore remain unresolved.

@@ -32,6 +32,7 @@ nodes:
       configs/devices/slate-pocket-v1r.yaml: a0e4e3bbf41e266fd55866c1c9ad436e4f498f98edc33349e2108e4db4c67ae1
       engineering/pcb/power-tree.yaml: b7295f811582e3ed7ca9ac2f4e83daadfd792087c2650462d161276fa11b73a2
       engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml: adbef5a8a3fa4af6693d6e5134b16612c15dfaed5475809922cfbe54234188e9
+      engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml: 6c7770f7ca42e1b91f1aa52238cbbc85d735bdab0f54916bbc6898d1af10dc55
       engineering/program/integration_contracts.yaml: 2b2d767960ca78f44e64d2db557dfdf138b96d59ab0fed0719a777a27c61732a
       engineering/rf/keepout-map/map.yaml: 5f94e0422a298e5a937a3955d3a248a69f6c7ee8d17e69306d1751121415ec8d
       manufacturing/compliance-pretest-plan.yaml: 18042f3db64517b6fe1abc222a5ccf8cb8e3e14afa7581db33d48ad51a49e0c3
@@ -139,6 +140,7 @@ nodes:
       engineering/pcb/generate_v1r_pcb_power_report.py: 5606a601cd45ff38524b0d20c4798739d7aa0a73bb46f53bf3248bd11e69ca4a
       engineering/pcb/power-tree.yaml: b7295f811582e3ed7ca9ac2f4e83daadfd792087c2650462d161276fa11b73a2
       engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml: adbef5a8a3fa4af6693d6e5134b16612c15dfaed5475809922cfbe54234188e9
+      engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml: 6c7770f7ca42e1b91f1aa52238cbbc85d735bdab0f54916bbc6898d1af10dc55
       reports/program/configuration-resolution.yaml: c59e257abba32ad8317027a4d02ca123689ce3e614c2fed3903d2236ed5cf598
     outputs:
       reports/slate-pocket-v1r-pcb-power-architecture.txt: 46d59a8ec36a19740fddaf6d6139d0c523b5df8b3a9cf40b20ced498fdb23bee

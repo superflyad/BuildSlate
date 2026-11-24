@@ -139,6 +139,16 @@ function esc(text) {
 function textBox(box) {
   return `${box[3]} × ${box[4]} × ${box[5]} mm`;
 }
+function memoryBoard(study, side) {
+  const [width, height] = study.board_outline_mm;
+  const existing = side === "component" ? study.component_side_placements : [];
+  const packages = study.placements.filter((item) => item.side === side);
+  const rect = (item, className, label) => {
+    const [x, y, length, breadth] = item.rect_mm;
+    return `<g><title>${esc(item.id.replaceAll("_", " "))}</title><rect class="${className}" x="${esc(x)}" y="${esc(y)}" width="${esc(length)}" height="${esc(breadth)}"/>${label ? `<text x="${esc(x + length / 2)}" y="${esc(y + breadth / 2)}" dominant-baseline="central" text-anchor="middle">${esc(label)}</text>` : ""}</g>`;
+  };
+  return `<figure class="memory-board"><figcaption>${side === "component" ? "Component side" : "Reverse side"}</figcaption><svg role="img" aria-label="${side === "component" ? "Four reference memory packages beside existing planning blocks" : "Four reference memory packages on the reverse board side"}" viewBox="0 0 ${esc(width)} ${esc(height)}"><rect class="board-outline" x="0" y="0" width="${esc(width)}" height="${esc(height)}"/>${existing.map((item) => rect(item, "existing-part", item.id === "compute_soc" ? "SoC" : item.id === "storage_ufs_1tb_reference" ? "UFS" : "")).join("")}${packages.map((item) => rect(item, "memory-part", "16")).join("")}</svg></figure>`;
+}
 function sourceLink(reference) {
   const path = reference.split("#", 1)[0];
   return `https://github.com/superflyad/BuildSlate/blob/main/${path.split("/").map(encodeURIComponent).join("/")}`;
@@ -357,6 +367,11 @@ function renderHardware() {
       )
       .join("") +
     `<div class="gate-item"><strong>Cellular modem</strong><span>${report.cellular.selected ? "Selected" : esc(report.cellular.status.replaceAll("_", " "))}</span></div>`;
+  const study = report.memory_package_fit.eight_package_study;
+  document.querySelector("#hardware-memory-layout").innerHTML =
+    `<p class="muted">Eight ${esc(report.memory_package_fit.public_reference_capacity_gb)} GB reference outlines: ${esc(study.packages_per_side.component)} on the component side, ${esc(study.packages_per_side.reverse)} on the reverse. Minimum screened planar gap ${esc(study.minimum_screened_planar_gap_mm)} mm under an assumed ${esc(study.assumed_planar_clearance_mm)} mm rule. Geometry status: ${esc(study.status.replaceAll("_", " "))}.</p>` +
+    `<div class="memory-board-grid">${memoryBoard(study, "component")}${memoryBoard(study, "reverse")}</div>` +
+    `<p class="detail-caveat">Board thickness conflict: ${esc(study.floorplan_board_thickness_mm)} mm in the floorplan versus ${esc(study.mechanical_board_height_mm)} mm in the mechanical model. ${esc(study.caveat)} <a href="https://github.com/superflyad/BuildSlate/blob/main/${esc(study.source)}" target="_blank" rel="noopener noreferrer">Study coordinates</a></p>`;
   const campaign = report.evt0_campaign;
   const group = campaign.coherent_evidence_group;
   document.querySelector("#hardware-campaign").innerHTML = `

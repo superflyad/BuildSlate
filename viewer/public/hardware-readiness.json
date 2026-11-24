@@ -186,6 +186,34 @@
     "source": "https://apac.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf",
     "caveat": "A public package outline and supply range are candidate inputs, not a selected storage design or a functional device."
   },
+  "battery_fit": {
+    "candidate": "enovix_ai1_m01",
+    "product": "AI1-M01",
+    "cell_dimensions_mm": [
+      80.0,
+      66.74,
+      5.44
+    ],
+    "cell_box_volume_mm3": 29045.248,
+    "concept_pack_envelope_mm3": 34825.4,
+    "complete_pack_allocation_mm3": 28824.0,
+    "cell_over_allocation_mm3": 221.248,
+    "concept_pack_over_allocation_mm3": 6001.4,
+    "public_charge_limit": "not_published_for_this_cell",
+    "public_discharge_category": "up_to_2c",
+    "wired_target_equivalent_c_at_nominal_energy": 4.33,
+    "source_consistency": "pass",
+    "source_errors": [],
+    "integration_status": "blocked",
+    "missing_design_evidence": [
+      "Custom cell and complete-pack drawing within the allocation",
+      "Tab, protection, connector, insulation, and swelling allowances",
+      "Supplier charge curve and maximum current across voltage and temperature",
+      "Battery protection design, safety review, and measured charge validation"
+    ],
+    "source": "https://www.enovix.com/product-category/ai-platform",
+    "caveat": "The published cell box and concept pack envelope both exceed the current complete-pack allocation. A custom design or approved allocation change is required; no cell or charge rate is selected."
+  },
   "selected_roles": [
     {
       "id": "compute_platform",

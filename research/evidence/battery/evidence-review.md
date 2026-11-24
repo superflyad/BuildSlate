@@ -1,6 +1,7 @@
 # Battery Evidence Review — Phase 1
 
-Reviewed: 2026-10-31  
+Reviewed: 2026-11-24
+
 Status: **Public evidence available; supplier package not verified**
 
 ## Decision
@@ -13,7 +14,7 @@ Retain 6000 mAh as a conditional target and open a custom-cell conversation with
 - Enovix publishes an AI1-M01 preview at 7.35 Ah and 921 Wh/L with an 80 × 66.74 × 5.44 mm cell envelope. That establishes a credible high-density supplier conversation, but the published cell itself occupies about 29.045 cm³—slightly more than the entire v1R pack allocation.
 - A hypothetical 23.1 Wh cell at 921 Wh/L would occupy about 25.08 cm³, leaving about 3.74 cm³, or 13%, for every non-cell requirement. Supplier-specific geometry and pack CAD are still required.
 - Amprius and Panasonic publish 6 Ah cylindrical cells. They confirm that 6 Ah cells exist, but their roughly 21.7 mm diameters fail the 9.5 mm device envelope.
-- The 100 W target is approximately 4.33C against a 23.1 Wh pack. The reviewed public candidates list no comparable validated charge rate: Enovix AI1-M01 lists up to 2C and Amprius SA117 lists 0.7C.
+- The 100 W target is approximately 4.33 times the target pack's nominal 23.1 Wh energy per hour. Enovix's AI1-M01 listing places “up to 2C” under **maximum continuous discharge**, so it does not establish a charge limit for that cell. Amprius SA117 lists a 0.7C maximum charge rate, but its cylindrical shape cannot fit this device. No reviewed public source validates 100 W charging for a Slate-fit cell.
 
 ## What remains missing
 

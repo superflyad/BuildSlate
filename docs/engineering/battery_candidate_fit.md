@@ -1,0 +1,9 @@
+# Battery candidate fit
+
+The [public Enovix AI Platform listing](https://www.enovix.com/product-category/ai-platform) describes the AI1-M01 cell as 80 × 66.74 × 5.44 mm. Its rectangular box occupies 29,045 mm³. Slate Pocket v1R allocates 28,824 mm³ for the **complete pack**, including the cell and all non-cell parts. The published bare-cell box already exceeds that allocation by 221 mm³. The current CAD concept pack envelope is 34,825 mm³, 6,001 mm³ over the allocation. Neither geometry is a selected or qualified pack.
+
+Run `python -m buildslate.battery_fit` to recompute those figures from the manufacturer candidate, profile, source CAD placement, and concept pack envelope. The public [Hardware view](https://superflyad.github.io/BuildSlate/?tab=hardware) publishes the result. The screen checks that the CAD cell dimensions match the source listing and that the target allocation is consistent across inputs.
+
+The Enovix listing's “up to 2C” category is **maximum continuous discharge**. It is not a published charge limit for AI1-M01. The 100 W target divided by the target pack's nominal 23.1 Wh is 4.33 per hour, only a rough power-to-energy pressure indicator. Actual charge current varies with pack voltage, state of charge, and temperature. No 100 W charging claim is supported.
+
+Exit requires a custom cell and complete pack drawing that fits the approved allocation or an approved geometry change; tab, protection, connector, insulation, and swelling dimensions; a supplier charge curve; and safety review and measured validation. The 6000 mAh target can fall to the best supplier-validated complete pack under the [approved decision rule](slate-pocket-v1r-decision-baseline.md). This screen does not select a cell or authorize charging.

@@ -10,6 +10,7 @@ import hashlib
 import json
 from pathlib import Path
 
+from buildslate.battery_fit import audit as audit_battery_fit
 from buildslate.evt0 import EVT0CampaignRepository
 from buildslate.io import load_yaml
 from buildslate.mechanical_proof import ASSEMBLY as MECHANICAL_ASSEMBLY
@@ -252,6 +253,7 @@ def build_report(root: Path) -> dict:
     selection = audit_part_selection(root, strategy)
     platform_fit = audit_platform_fit(root)
     storage_fit = audit_storage_fit(root)
+    battery_fit = audit_battery_fit(root)
     selected_roles = []
     for role in manifest["selected_roles"]:
         item = strategy["roles"].get(role)
@@ -343,6 +345,7 @@ def build_report(root: Path) -> dict:
         },
         "platform_fit": platform_fit,
         "storage_fit": storage_fit,
+        "battery_fit": battery_fit,
         "selected_roles": selected_roles,
         "cellular": {"status": cellular["status"], "selected": cellular_selected},
         "requirements": entries,

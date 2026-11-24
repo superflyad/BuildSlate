@@ -1,6 +1,6 @@
 metadata:
   evidence_type: public_primary_source_screen
-  reviewed_on: 2026-10-31
+  reviewed_on: 2026-11-24
   status: available_not_verified
   scope: Public manufacturer evidence only; no NDA data, sample inspection, supplier quotation, or custom-cell commitment.
 
@@ -11,7 +11,7 @@ slate_target:
   complete_pack_volume_mm3: 28824
   required_complete_pack_density_wh_l: 801.4
   wired_charge_target_w: 100
-  implied_charge_rate_c: 4.33
+  wired_target_power_to_nominal_energy_per_hour: 4.33
 
 candidates:
   enovix_ai1_m01:
@@ -22,7 +22,8 @@ candidates:
     volumetric_energy_density_wh_l: 921
     gravimetric_energy_density_wh_kg: 320
     cycle_band: 501_to_800
-    charge_rate: up_to_2c
+    max_continuous_discharge_band: up_to_2c
+    max_charge_rate: unknown_public_source_does_not_state
     dimensions_mm:
       length: 80.0
       width: 66.74
@@ -32,12 +33,12 @@ candidates:
       capacity: exceeds_target
       raw_volume: exceeds_target_pack_allocation_by_221_mm3
       thickness: plausible_only_with_full_stackup_review
-      wired_100w_charge: unsupported_by_public_2c_rating
+      wired_100w_charge: unverified_public_charge_limit_absent
     source:
       url: https://www.enovix.com/product-category/ai-platform
       source_type: manufacturer_product_page
       accessed: 2026-10-31
-    caveat: Public preview data is not a complete cell datasheet or a commitment to supply Slate-specific geometry.
+    caveat: The 2C category on the source page is maximum continuous discharge, not charging. Public preview data is not a cell charge specification, complete datasheet, or commitment to supply Slate-specific geometry.
 
   enovix_ai1_platform:
     supplier: Enovix

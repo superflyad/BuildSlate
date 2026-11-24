@@ -30,9 +30,9 @@ enovix_921_wh_l_custom_cell_hypothesis:
 charge_pressure:
   wired_target_w: 100
   nominal_pack_energy_wh: 23.1
-  approximate_charge_rate_c: 4.33
-  public_candidate_limits:
-    enovix_ai1_m01: 2c
+  wired_target_power_to_nominal_energy_per_hour: 4.33
+  public_candidate_charge_limits:
+    enovix_ai1_m01: unknown
     amprius_sa117: 0.7c
   decision: Do not preserve 100 W as an engineering requirement without a supplier-approved cell, charge curve, thermal map, and cycle-life case.
 

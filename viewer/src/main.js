@@ -316,6 +316,7 @@ function renderHardware() {
     ["Working phone", report.phone_function],
     ["Public platform fit", report.platform_fit.status],
     ["Storage integration", report.storage_fit.integration_status],
+    ["Battery integration", report.battery_fit.integration_status],
     [
       "Selected roles",
       `${report.selected_roles.filter((item) => item.selected).length}/${report.selected_roles.length}`,
@@ -343,6 +344,8 @@ function renderHardware() {
     `<div class="gate-item"><strong>Released part set</strong><span>${esc(report.part_selection.status)}${report.part_selection.errors.length ? ` · ${esc(report.part_selection.errors.join("; "))}` : ""}</span></div>` +
     `<div class="gate-item"><strong>1 TB UFS candidate</strong><span>${esc(report.storage_fit.manufacturer_part_number)} · ${esc(report.storage_fit.package_mm.join(" × "))} mm · ${esc(report.storage_fit.outline_fit)} outline fit · ${esc(report.storage_fit.board_boundary_clearance_mm)} mm board-edge clearance · <a href="${esc(report.storage_fit.source)}" target="_blank" rel="noopener noreferrer">manufacturer brief</a></span></div>` +
     `<div class="gate-item"><strong>Storage integration blockers</strong><span>${esc(report.storage_fit.rails.map((rail) => `${rail.id}: ${rail.status} (${rail.required_voltage_v.join("–")} V)`).join("; "))} · ${esc(report.storage_fit.missing_design_evidence.join("; "))}</span></div>` +
+    `<div class="gate-item"><strong>Battery candidate geometry</strong><span>${esc(report.battery_fit.product)} cell box ${esc(report.battery_fit.cell_box_volume_mm3)} mm³ versus ${esc(report.battery_fit.complete_pack_allocation_mm3)} mm³ complete-pack allocation; concept pack envelope ${esc(report.battery_fit.concept_pack_envelope_mm3)} mm³. <a href="${esc(report.battery_fit.source)}" target="_blank" rel="noopener noreferrer">Manufacturer listing</a></span></div>` +
+    `<div class="gate-item"><strong>Battery charge evidence</strong><span>No published charge limit for this cell. The listed ${esc(report.battery_fit.public_discharge_category)} band is for continuous discharge. ${esc(report.battery_fit.missing_design_evidence.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>Supplier package review</strong><span>${esc(report.part_selection.supplier_packages_unverified.join(", ") || "Verified")}</span></div>` +
     report.selected_roles
       .map(

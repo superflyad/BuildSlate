@@ -82,7 +82,8 @@ def build_report() -> str:
         f"  target energy: {battery_target['energy_wh']:.1f} Wh",
         f"  complete pack allocation: {battery_target['complete_pack_volume_mm3']:,} mm^3",
         f"  required complete-pack density: {battery_target['required_complete_pack_density_wh_l']:.1f} Wh/L",
-        f"  100 W implied charge rate: {battery_target['implied_charge_rate_c']:.2f}C",
+        f"  100 W / nominal target energy: {battery_target['wired_target_power_to_nominal_energy_per_hour']:.2f} per hour (screening ratio, not a cell charge limit)",
+        "  AI1-M01 public 2C category: maximum continuous discharge; charge limit not published",
     ]
     for candidate_id, candidate in battery["candidates"].items():
         fit = candidate.get("target_fit", {})

@@ -20,6 +20,8 @@ The selected BOM record is bound to the [part selection proof](selected_bom_proo
 
 The approved memory floor remains 128 GB. The [compute path screen](compute_platform_decision.md) distinguishes an X2 controller maximum from an actual qualified 128 GB configuration. Current public mobile platforms cannot meet that floor; no reviewed public X2 package proves a pocket phone implementation. The Hardware view publishes this conflict without changing the product decision.
 
+The [battery candidate screen](battery_candidate_fit.md) exposes a separate mechanical and safety conflict: the published AI1-M01 bare-cell box is larger than the current complete-pack allocation, and no charge rating is published for that candidate. Its listed 2C band is a discharge category. The 100 W target cannot enter a build design without a supplier charge curve and complete-pack review.
+
 The schematic netlist record has an additional [electrical proof](electrical_netlist_proof.md): its selected electrical BOM, critical endpoint contract, and exported XML netlist are checked together before that record can be accepted.
 
 The mechanical release record has a separate [STEP assembly proof](mechanical_release_proof.md). It requires source part and drawing hashes, released assembly identity, complete role coverage, and nominal interference and clearance checks. There is no released assembly to check yet.

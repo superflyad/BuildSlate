@@ -20,8 +20,9 @@ Battery screen:
   target energy: 23.1 Wh
   complete pack allocation: 28,824 mm^3
   required complete-pack density: 801.4 Wh/L
-  100 W implied charge rate: 4.33C
-  - enovix_ai1_m01: capacity=exceeds_target, raw_volume=exceeds_target_pack_allocation_by_221_mm3, thickness=plausible_only_with_full_stackup_review, wired_100w_charge=unsupported_by_public_2c_rating
+  100 W / nominal target energy: 4.33 per hour (screening ratio, not a cell charge limit)
+  AI1-M01 public 2C category: maximum continuous discharge; charge limit not published
+  - enovix_ai1_m01: capacity=exceeds_target, raw_volume=exceeds_target_pack_allocation_by_221_mm3, thickness=plausible_only_with_full_stackup_review, wired_100w_charge=unverified_public_charge_limit_absent
   - enovix_ai1_platform: qualification_and_system_deployment_stage
   - amprius_sa117: capacity=meets_6000_mah, energy=below_23_1_wh_target, thickness=reject_21_65_mm_diameter, wired_100w_charge=reject_public_max_is_0_7c
   - panasonic_ncr2270b: capacity=meets_6000_mah, energy=below_23_1_wh_target, thickness=reject_21_8_mm_diameter

@@ -11,7 +11,7 @@ BuildSlate connects specifications, assumptions, evidence, models, and gate deci
 ## Start here
 
 - **Review the program:** [current dashboard](reports/program/dashboard.md) and `buildslate blockers`
-- **Explore the model:** [assembly viewer](viewer/README.md) and [assembly contract](engineering/assembly/README.md)
+- **Explore the model:** [live CAD viewer](https://superflyad.github.io/BuildSlate/), [viewer guide](viewer/README.md), and [assembly contract](engineering/assembly/README.md)
 - **Understand the system:** [architecture](ARCHITECTURE.md) and [documentation index](docs/README.md)
 - **Contribute:** [repository standards](docs/standards/repository.md) and [contribution guide](CONTRIBUTING.md)
 
@@ -49,6 +49,8 @@ npm run dev
 ```
 
 Open the local address printed by Vite. The concept CAD is the default view; switch to Source envelopes to inspect the original planning model. Drag to rotate, select a part to inspect its source and evidence class, and use section cuts, isolation, or explode to examine the internal arrangement. The Program tab includes all 22 component library roles and their source evidence status. The [viewer guide](viewer/README.md) covers the controls and generated assets. The viewer cannot establish physical fit or qualification.
+
+The same viewer is published from `main` at [superflyad.github.io/BuildSlate](https://superflyad.github.io/BuildSlate/) after the validation and CAD export jobs pass.
 
 ## How a change moves through the repository
 

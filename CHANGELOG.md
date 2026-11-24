@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Published the concept CAD viewer through GitHub Pages after the validation and CAD export jobs pass.
 - Added a 41-solid editable Slate Pocket v1R concept STEP assembly generated from the source envelopes and explicit assumptions for every component library role.
 - Added a matching browser CAD view, preserved the source-envelope comparison, and validated geometry identity, coverage, and regeneration in CI.
 - Completed the assembly review controls with an expanded canvas, axis section cuts, part focus and isolation, and navigation across every component library role; kept unplaced and deferred roles explicit.

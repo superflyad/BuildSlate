@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
+    "build:pages": "vite build --base=/BuildSlate/",
     "preview": "vite preview --host 127.0.0.1",
     "check:model": "node scripts/validate-model.mjs",
     "format:check": "prettier --check index.html src scripts package.json"

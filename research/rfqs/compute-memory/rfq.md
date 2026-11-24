@@ -22,7 +22,7 @@ Please identify supported precision, runtime, memory use, bandwidth, sustained p
 ## Required engineering data
 
 - Orderable platform/SKU, package drawing, height, keepouts, mounting, and thermal-interface requirements.
-- Supported 128 GB topology: qualified memory parts, package count/capacity, bus width, placement, routing, termination, and bandwidth.
+- Supported 128 GB topology: exact qualified memory part numbers, package count/capacity, package dimensions and heights, ball maps, bus width, placement, routing, termination, and bandwidth. State whether a four by 32 GB topology is supported. If only 16 GB packages are qualified, state whether an eight-package topology is supported and provide its board and channel layout.
 - Memory-controller maximums and any 256/512 GB roadmap support, clearly separated from production support.
 - PMIC/rail map, sequencing, reference schematic, average/peak/transient current, regulator losses, and reference decoupling.
 - Sustained/peak CPU, GPU, NPU, memory, and total platform power under defined workloads and temperatures.

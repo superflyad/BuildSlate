@@ -214,6 +214,78 @@
     "source": "https://www.enovix.com/product-category/ai-platform",
     "caveat": "The published cell box and concept pack envelope both exceed the current complete-pack allocation. A custom design or approved allocation change is required; no cell or charge rate is selected."
   },
+  "memory_package_fit": {
+    "target_gb": 128,
+    "planning_sites": 4,
+    "assumed_gb_per_site": 32,
+    "public_reference_part": "MT62F2G64D8EK-023 WT:C",
+    "public_reference_capacity_gb": 16,
+    "public_reference_density_gbit": 128,
+    "public_reference_package_mm": [
+      14.0,
+      14.0,
+      1.1
+    ],
+    "public_reference_ball_count": 441,
+    "required_public_reference_packages": 8,
+    "reserved_memory_area_mm2": 560.0,
+    "public_reference_package_area_mm2": 1568.0,
+    "additional_nominal_area_mm2": 1008.0,
+    "public_reference_board_area_percent": 41.5,
+    "site_geometry": [
+      {
+        "site": "memory_a_32gb",
+        "reserve_mm": [
+          14.0,
+          10.0,
+          1.0
+        ],
+        "public_part_outline_fits": false,
+        "public_part_height_fits": false
+      },
+      {
+        "site": "memory_b_32gb",
+        "reserve_mm": [
+          14.0,
+          10.0,
+          1.0
+        ],
+        "public_part_outline_fits": false,
+        "public_part_height_fits": false
+      },
+      {
+        "site": "memory_c_32gb",
+        "reserve_mm": [
+          14.0,
+          10.0,
+          1.0
+        ],
+        "public_part_outline_fits": false,
+        "public_part_height_fits": false
+      },
+      {
+        "site": "memory_d_32gb",
+        "reserve_mm": [
+          14.0,
+          10.0,
+          1.0
+        ],
+        "public_part_outline_fits": false,
+        "public_part_height_fits": false
+      }
+    ],
+    "source_consistency": "pass",
+    "source_errors": [],
+    "integration_status": "blocked",
+    "missing_design_evidence": [
+      "Exact 32 GB package MPN, drawing, and availability, or a new eight-package board architecture",
+      "X2-qualified 128 GB channel topology, bus width, ranks, and signal rules",
+      "Memory rails, power sequence, routed SI/PI, and thermal measurements",
+      "Booted Slate unit with hash-bound 128 GB resident-memory test"
+    ],
+    "source": "https://www.micron.com/products/memory/lpddr-components/lpddr5x/part-catalog/part-detail/mt62f2g64d8ek-023-wt-c",
+    "caveat": "This 16 GB part is a public geometry reference, not an X2-qualified memory selection. Eight packages do not prove a routable or bootable 128 GB Slate board."
+  },
   "selected_roles": [
     {
       "id": "compute_platform",

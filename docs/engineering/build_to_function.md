@@ -20,6 +20,8 @@ The selected BOM record is bound to the [part selection proof](selected_bom_proo
 
 The approved memory floor remains 128 GB. The [compute path screen](compute_platform_decision.md) distinguishes an X2 controller maximum from an actual qualified 128 GB configuration. Current public mobile platforms cannot meet that floor; no reviewed public X2 package proves a pocket phone implementation. The Hardware view publishes this conflict without changing the product decision.
 
+The [memory package screen](memory_package_fit.md) also shows that a reviewed exact 16 GB LPDDR5X part needs eight packages and cannot fit the current four memory planning rectangles. Public 32 GB capacity claims lack a reviewed exact package and X2 topology. The rectangles remain assumptions, not build coordinates.
+
 The [battery candidate screen](battery_candidate_fit.md) exposes a separate mechanical and safety conflict: the published AI1-M01 bare-cell box is larger than the current complete-pack allocation, and no charge rating is published for that candidate. Its listed 2C band is a discharge category. The 100 W target cannot enter a build design without a supplier charge curve and complete-pack review.
 
 The schematic netlist record has an additional [electrical proof](electrical_netlist_proof.md): its selected electrical BOM, critical endpoint contract, and exported XML netlist are checked together before that record can be accepted.

@@ -2,7 +2,7 @@
 
 This directory is a pre-supplier placement and routing pressure model for the locked Slate Pocket v1R envelope. It is not a schematic, routed board, reference design, or component selection.
 
-The model deliberately uses the 128 GB memory fallback as four 32 GB planning sites. The reviewed public evidence does not support a 512 GB pocket topology, and no 256 GB topology is modeled. All package rectangles except the public 1 TB UFS outline are planning reserves that must be replaced by supplier drawings.
+The model deliberately uses the 128 GB memory fallback as four 32 GB planning sites. The reviewed public evidence does not support a 512 GB pocket topology, and no 256 GB topology is modeled. All package rectangles except the public 1 TB UFS outline are planning reserves that must be replaced by supplier drawings. The [memory package screen](../../../docs/engineering/memory_package_fit.md) shows that an exact public 16 GB Micron package needs eight sites for 128 GB and cannot fit the current four memory rectangles.
 
 `floorplan.yaml` records:
 

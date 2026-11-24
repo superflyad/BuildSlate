@@ -317,6 +317,7 @@ function renderHardware() {
     ["Public platform fit", report.platform_fit.status],
     ["Storage integration", report.storage_fit.integration_status],
     ["Battery integration", report.battery_fit.integration_status],
+    ["128 GB memory package", report.memory_package_fit.integration_status],
     [
       "Selected roles",
       `${report.selected_roles.filter((item) => item.selected).length}/${report.selected_roles.length}`,
@@ -346,6 +347,8 @@ function renderHardware() {
     `<div class="gate-item"><strong>Storage integration blockers</strong><span>${esc(report.storage_fit.rails.map((rail) => `${rail.id}: ${rail.status} (${rail.required_voltage_v.join("–")} V)`).join("; "))} · ${esc(report.storage_fit.missing_design_evidence.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>Battery candidate geometry</strong><span>${esc(report.battery_fit.product)} cell box ${esc(report.battery_fit.cell_box_volume_mm3)} mm³ versus ${esc(report.battery_fit.complete_pack_allocation_mm3)} mm³ complete-pack allocation; concept pack envelope ${esc(report.battery_fit.concept_pack_envelope_mm3)} mm³. <a href="${esc(report.battery_fit.source)}" target="_blank" rel="noopener noreferrer">Manufacturer listing</a></span></div>` +
     `<div class="gate-item"><strong>Battery charge evidence</strong><span>No published charge limit for this cell. The listed ${esc(report.battery_fit.public_discharge_category)} band is for continuous discharge. ${esc(report.battery_fit.missing_design_evidence.join("; "))}</span></div>` +
+    `<div class="gate-item"><strong>128 GB memory geometry</strong><span>${esc(report.memory_package_fit.planning_sites)} assumed 32 GB sites; exact public ${esc(report.memory_package_fit.public_reference_part)} is ${esc(report.memory_package_fit.public_reference_capacity_gb)} GB and ${esc(report.memory_package_fit.public_reference_package_mm.join(" × "))} mm. It needs ${esc(report.memory_package_fit.required_public_reference_packages)} packages for 128 GB; the current sites fit neither its outline nor height. <a href="${esc(report.memory_package_fit.source)}" target="_blank" rel="noopener noreferrer">Manufacturer part</a></span></div>` +
+    `<div class="gate-item"><strong>Memory integration blockers</strong><span>${esc(report.memory_package_fit.missing_design_evidence.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>Supplier package review</strong><span>${esc(report.part_selection.supplier_packages_unverified.join(", ") || "Verified")}</span></div>` +
     report.selected_roles
       .map(

@@ -17,6 +17,7 @@ from buildslate.mechanical_proof import ASSEMBLY as MECHANICAL_ASSEMBLY
 from buildslate.mechanical_proof import MANIFEST as MECHANICAL_MANIFEST
 from buildslate.mechanical_proof import REPORT as MECHANICAL_REPORT
 from buildslate.mechanical_proof import REQUIRED_ROLES as MECHANICAL_ROLES
+from buildslate.memory_package_fit import audit as audit_memory_package_fit
 from buildslate.netlist_proof import audit as audit_netlist
 from buildslate.part_selection import RELEASE as SELECTED_BOM_RELEASE
 from buildslate.part_selection import audit as audit_part_selection
@@ -254,6 +255,7 @@ def build_report(root: Path) -> dict:
     platform_fit = audit_platform_fit(root)
     storage_fit = audit_storage_fit(root)
     battery_fit = audit_battery_fit(root)
+    memory_package_fit = audit_memory_package_fit(root)
     selected_roles = []
     for role in manifest["selected_roles"]:
         item = strategy["roles"].get(role)
@@ -346,6 +348,7 @@ def build_report(root: Path) -> dict:
         "platform_fit": platform_fit,
         "storage_fit": storage_fit,
         "battery_fit": battery_fit,
+        "memory_package_fit": memory_package_fit,
         "selected_roles": selected_roles,
         "cellular": {"status": cellular["status"], "selected": cellular_selected},
         "requirements": entries,

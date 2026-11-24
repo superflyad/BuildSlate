@@ -21,6 +21,8 @@ BuildSlate connects specifications, assumptions, evidence, models, and gate deci
 
 The approved 128 GB memory floor is retained. Qualcomm publishes an X2 controller maximum at or above that capacity; its public example is 48 GB, and no qualified 128 GB Slate topology is available. The [compute path](docs/engineering/compute_platform_decision.md) identifies the specific supplier and physical proof still required.
 
+The [memory package screen](docs/engineering/memory_package_fit.md) compares the four assumed 32 GB sites with an exact public 16 GB LPDDR5X package. Eight of those would be needed for 128 GB, and their dimensions do not fit the current memory rectangles. The CAD sites remain planning geometry.
+
 The [1 TB UFS candidate screen](docs/engineering/storage_candidate_fit.md) ties one exact KIOXIA part to its public package outline and voltage requirements. Its nominal outline fits the concept board, while the required storage rails, host support, and routed design remain unproven. The result is visible on the site's [Hardware tab](https://superflyad.github.io/BuildSlate/?tab=hardware).
 
 The [battery candidate fit](docs/engineering/battery_candidate_fit.md) shows that the public AI1-M01 bare-cell box is already larger than the current complete-pack allocation. Its listed 2C category is for discharge; the candidate has no published charge limit. The battery and 100 W charging target therefore remain unresolved.

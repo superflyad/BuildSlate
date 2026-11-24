@@ -13,7 +13,8 @@ This is not a component selection. Snapdragon X2 is a client-PC platform, and th
 
 - Snapdragon 8 Elite Gen 5 and both Gen 6 mobile SKUs have integrated phone systems, but their public maximum memory is 24 GB. None can satisfy the approved 128 GB floor.
 - Snapdragon X2 Elite documentation lists 128 GB or 128+ GB maximum capacity depending on SKU. This supports research at the locked 128 GB tier; it does not support 256 GB or 512 GB.
-- Micron publicly describes 8–32 GB LPDDR5X packages for 2026 flagship smartphones, and Samsung advertises a 32 GB LPDDR5X capacity. A 128 GB topology therefore implies four 32 GB packages before controller, routing, package-height, power, thermal, and availability constraints.
+- Micron announced an 8–32 GB LPDDR5X range for 2026 flagship smartphones, and Samsung advertises a 32 GB LPDDR5X capacity. The reviewed public sources do not identify an exact 32 GB part, its dimensions, and X2 qualification. Four 32 GB packages remain a capacity hypothesis before controller, routing, package-height, power, thermal, and availability constraints.
+- Micron's exact `MT62F2G64D8EK-023 WT:C` public listing is 128 Gb, or 16 GB, in a 14 × 14 × 1.1 mm package. An eight-package 128 GB arithmetic alternative would exceed the four memory planning sites and needs its own qualified channel topology and board design. See the [package fit screen](../../../docs/engineering/memory_package_fit.md).
 - A 512 GB topology would imply sixteen 32 GB packages and exceeds the documented memory maximum of the reviewed Snapdragon platforms. It remains aspirational and is not a Phase 1 product configuration.
 
 ## Prototype strategy

@@ -37,7 +37,7 @@ def _fixture(root: Path) -> tuple[Path, dict]:
         drawing = parts_dir / f"{part_id}.pdf"
         shape = cq.Workplane("XY").box(2, 2, 2, centered=False).val()
         cq.exporters.export(shape, str(source))
-        drawing.write_bytes(f"synthetic drawing for {part_id}".encode("utf-8"))
+        drawing.write_bytes(f"synthetic drawing for {part_id}".encode())
         bodies.append(shape.translate(cq.Vector(x, 1, 1)))
         parts.append(
             {

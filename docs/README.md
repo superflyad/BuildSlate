@@ -76,6 +76,7 @@ Use this index to move from a question to the authoritative source. The root [RE
 | [128 GB compute path](engineering/compute_platform_decision.md) | Public platform limits and evidence needed to prove the approved memory floor |
 | [128 GB package screen](engineering/memory_package_fit.md) | Exact public 16 GB LPDDR5X package, four assumed 32 GB sites, and a two-sided eight-package outline study |
 | [Cellular module outline screen](engineering/cellular_module_fit.md) | Public voice-optional 5G reference against both sides of the two-sided 128 GB board plan |
+| [Phone-function proof](engineering/phone_function_proof.md) | Raw calling, data, radio-kill, emergency-lab, and build-identity evidence contract |
 | [1 TB UFS candidate screen](engineering/storage_candidate_fit.md) | Exact public package outline, rail requirements, and unresolved integration work |
 | [Battery candidate fit](engineering/battery_candidate_fit.md) | Published cell and concept pack volumes versus the complete-pack allocation; charge evidence limit |
 | [Selected BOM proof](engineering/selected_bom_proof.md) | Exact part identity, supplier source binding, and interface checks |

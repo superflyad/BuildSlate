@@ -23,6 +23,8 @@ BuildSlate connects specifications, assumptions, evidence, models, and gate deci
 
 **Phone integration is blocked:** a [public 5G module outline screen](docs/engineering/cellular_module_fit.md) finds no nominal location for a 29 × 32 mm voice-optional reference module on either side of the current two-sided 128 GB board study. It is not a selected modem. The site's [Hardware tab](https://superflyad.github.io/BuildSlate/?tab=hardware) shows the result; a working phone still requires a redesigned board, selected cellular design, and measured calls and data.
 
+The [phone-function proof](docs/engineering/phone_function_proof.md) now checks raw calling, audio, data, radio-disable, and authorized emergency-lab records against one serialized EVT0 build and the selected design. No such records have been submitted.
+
 The [firmware release proof](docs/engineering/firmware_release_proof.md) now checks image bytes, boot and recovery order, driver coverage, and BOM/board bindings before the hardware gate can accept a firmware record. The public Hardware tab reports the bundle as missing. This is release integrity checking; no Slate Pocket firmware has been booted.
 
 The [schematic ERC proof](docs/engineering/schematic_erc_proof.md) reruns KiCad electrical rules from an editable source and pinned project settings before an ERC record can count toward design release. The v1R schematic and reviewed ERC report are still missing.

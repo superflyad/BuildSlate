@@ -27,6 +27,7 @@ from buildslate.netlist_proof import audit as audit_netlist
 from buildslate.part_selection import RELEASE as SELECTED_BOM_RELEASE
 from buildslate.part_selection import audit as audit_part_selection
 from buildslate.pcb_proof import audit as audit_pcb
+from buildslate.phone_proof import audit as audit_phone
 from buildslate.platform_fit import audit as audit_platform_fit
 from buildslate.platform_reference_proof import RELEASE as PLATFORM_REFERENCE_RELEASE
 from buildslate.platform_reference_proof import audit as audit_platform_reference
@@ -84,6 +85,7 @@ ROOTS = {
     "functional_evt0": Path("validation/evt0/test-results"),
     "phone_function": Path("validation/phone/test-results"),
 }
+PHONE_DESIGN_ROOT = Path("engineering/hardware/released")
 
 
 def _evidence_result(
@@ -106,7 +108,14 @@ def _evidence_result(
     proof: dict | None = None
     if "Missing path" not in reasons:
         relative = Path(record["path"])
-        allowed = (root / ROOTS[stage]).resolve()
+        allowed = (
+            root
+            / (
+                PHONE_DESIGN_ROOT
+                if requirement.get("id") in {"cellular_design", "telephony_software"}
+                else ROOTS[stage]
+            )
+        ).resolve()
         target = (root / relative).resolve()
         if not target.is_relative_to(allowed) or target == allowed:
             reasons.append("Artifact is outside the controlled evidence directory")
@@ -442,6 +451,28 @@ def _evidence_result(
                     "revision"
                 ):
                     reasons.append("Firmware board revision differs from routed PCB")
+        if not reasons and requirement.get("id") == "phone_validation":
+            if target.suffix.lower() != ".json":
+                reasons.append("Phone validation must be a controlled JSON bundle")
+            else:
+                proof = audit_phone(target, root)
+                if proof["status"] != "pass":
+                    reasons.extend(proof["errors"])
+                related = related_records or {}
+                for identifier, field in (
+                    ("selected_bom", "selected_bom_sha256"),
+                    ("cellular_design", "cellular_design_sha256"),
+                    ("telephony_software", "telephony_software_sha256"),
+                ):
+                    upstream = related.get(identifier)
+                    if (
+                        not isinstance(upstream, dict)
+                        or upstream.get("disposition") != "approved"
+                        or upstream.get("sha256") != proof[field]
+                    ):
+                        reasons.append(
+                            f"Phone test bundle is not bound to approved {identifier}"
+                        )
     result = {
         "status": "accepted" if not reasons else "rejected",
         "reasons": reasons,
@@ -566,9 +597,20 @@ def build_report(root: Path) -> dict:
         (entry for entry in selection["roles"] if entry["id"] == "cellular"), None
     )
     cellular_selected = bool(cellular_proof and cellular_proof["selected"])
+    phone_test = next(
+        (
+            entry.get("technical_proof")
+            for entry in entries
+            if entry["id"] == "phone_validation" and entry["status"] == "accepted"
+        ),
+        None,
+    )
     phone = (
         evt0
         and cellular_selected
+        and phone_test is not None
+        and phone_test["identity"] == campaign["coherent_evidence_group"]
+        and phone_test["cellular_mpn"] == cellular_proof["mpn"]
         and all(
             entry["status"] == "accepted"
             for entry in entries

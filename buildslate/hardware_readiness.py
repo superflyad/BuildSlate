@@ -591,7 +591,7 @@ def main() -> int:
     report = build_report(root)
     serialized = json.dumps(report, indent=2) + "\n"
     if args.write:
-        (root / REPORT).write_text(serialized, encoding="utf-8")
+        (root / REPORT).write_text(serialized, encoding="utf-8", newline="\n")
     else:
         print(serialized, end="")
     if args.require_design_release and report["design_release"] == "blocked":

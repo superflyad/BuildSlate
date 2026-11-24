@@ -390,6 +390,7 @@ function renderHardware() {
     )
     .join("");
   const platform = report.platform_fit;
+  const memoryBus = report.memory_package_fit.bus_topology_screen;
   document.querySelector("#hardware-platforms").innerHTML =
     `<div class="gate-item"><strong>Decision</strong><span>${esc(platform.decision)}</span></div>` +
     platform.candidates
@@ -409,6 +410,7 @@ function renderHardware() {
     `<div class="gate-item"><strong>Battery candidate geometry</strong><span>${esc(report.battery_fit.product)} cell box ${esc(report.battery_fit.cell_box_volume_mm3)} mm³ versus ${esc(report.battery_fit.complete_pack_allocation_mm3)} mm³ complete-pack allocation; concept pack envelope ${esc(report.battery_fit.concept_pack_envelope_mm3)} mm³. <a href="${esc(report.battery_fit.source)}" target="_blank" rel="noopener noreferrer">Manufacturer listing</a></span></div>` +
     `<div class="gate-item"><strong>Battery charge evidence</strong><span>No published charge limit for this cell. The listed ${esc(report.battery_fit.public_discharge_category)} band is for continuous discharge. ${esc(report.battery_fit.missing_design_evidence.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>128 GB memory geometry</strong><span>${esc(report.memory_package_fit.planning_sites)} assumed 32 GB sites; exact public ${esc(report.memory_package_fit.public_reference_part)} is ${esc(report.memory_package_fit.public_reference_capacity_gb)} GB and ${esc(report.memory_package_fit.public_reference_package_mm.join(" × "))} mm. It needs ${esc(report.memory_package_fit.required_public_reference_packages)} packages for 128 GB; the current sites fit neither its outline nor height. <a href="${esc(report.memory_package_fit.source)}" target="_blank" rel="noopener noreferrer">Manufacturer part</a></span></div>` +
+    `<div class="gate-item"><strong>128 GB bus topology</strong><span>Eight x${esc(memoryBus.public_reference_package_bus_width_bits)} packages would need ${esc(memoryBus.independent_connection_width_bits)} data bits if each had an independent host connection; the X2 Extreme lists ${esc(memoryBus.controller_bus_width_bits)} bits. A supplier-qualified shared-channel or other topology is required. <a href="${esc(memoryBus.controller_source)}" target="_blank" rel="noopener noreferrer">Controller brief</a></span></div>` +
     `<div class="gate-item"><strong>Memory integration blockers</strong><span>${esc(report.memory_package_fit.missing_design_evidence.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>Supplier package review</strong><span>${esc(report.part_selection.supplier_packages_unverified.join(", ") || "Verified")}</span></div>` +
     report.selected_roles
@@ -423,7 +425,7 @@ function renderHardware() {
     `<p class="muted">Eight ${esc(report.memory_package_fit.public_reference_capacity_gb)} GB reference outlines: ${esc(study.packages_per_side.component)} on the component side, ${esc(study.packages_per_side.reverse)} on the reverse. Minimum screened planar gap ${esc(study.minimum_screened_planar_gap_mm)} mm under an assumed ${esc(study.assumed_planar_clearance_mm)} mm rule. Geometry status: ${esc(study.status.replaceAll("_", " "))}.</p>` +
     `<p><a href="?model=memory8&tab=hardware">Open the 3D eight-package model</a></p>` +
     `<div class="memory-board-grid">${memoryBoard(study, "component")}${memoryBoard(study, "reverse")}</div>` +
-    `<p class="detail-caveat">The floorplan and mechanical model now use the same provisional ${esc(study.floorplan_board_thickness_mm)} mm board thickness. Fabrication and two-sided assembly remain unreviewed. ${esc(study.caveat)} <a href="https://github.com/superflyad/BuildSlate/blob/main/${esc(study.source)}" target="_blank" rel="noopener noreferrer">Study coordinates</a></p>`;
+    `<p class="detail-caveat">The floorplan and mechanical model use the same provisional ${esc(study.floorplan_board_thickness_mm)} mm board thickness. Fabrication and two-sided assembly remain unreviewed. ${esc(memoryBus.caveat)} ${esc(study.caveat)} <a href="https://github.com/superflyad/BuildSlate/blob/main/${esc(study.source)}" target="_blank" rel="noopener noreferrer">Study coordinates</a></p>`;
   const campaign = report.evt0_campaign;
   const group = campaign.coherent_evidence_group;
   document.querySelector("#hardware-campaign").innerHTML = `

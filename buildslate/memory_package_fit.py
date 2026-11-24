@@ -160,9 +160,17 @@ def audit_data(
         if placement["function"] == "lpddr5x_32gb_planning_site"
     }
     part = candidates["memory_supplier_context"][PUBLIC_PART]
+    controller = candidates["candidates"]["qualcomm_snapdragon_x2_elite_extreme"]
     capacity = int(part["capacity_gb"])
     package = [float(value) for value in part["package_mm"]]
     required = math.ceil(target / capacity)
+    controller_width = controller["memory_bus_width_bits"]
+    package_width = part["bus_width_bits"]
+    widths_valid = all(
+        isinstance(value, int) and not isinstance(value, bool) and value > 0
+        for value in (controller_width, package_width)
+    )
+    independent_width = required * package_width if widths_valid else None
     geometry = []
     for name, placement in sites.items():
         rectangle = placement["rectangle_mm"]
@@ -199,6 +207,21 @@ def audit_data(
         errors.append("Unqualified memory site was promoted beyond placeholder")
     if part["density_gbit"] != capacity * 8:
         errors.append("Manufacturer gigabit density was confused with gigabytes")
+    if not widths_valid:
+        errors.append("Controller or memory package bus width is invalid")
+    else:
+        transfer_rate = controller["memory_transfer_rate_mt_s"]
+        bandwidth = controller["memory_bandwidth_gb_s"]
+        if not all(
+            isinstance(value, (int, float))
+            and not isinstance(value, bool)
+            and math.isfinite(value)
+            and value > 0
+            for value in (transfer_rate, bandwidth)
+        ):
+            errors.append("X2 transfer rate or bandwidth is invalid")
+        elif abs(controller_width * transfer_rate / 8 / 1000 - bandwidth) > 1:
+            errors.append("X2 bus width, transfer rate, and bandwidth disagree")
     return {
         "target_gb": target,
         "planning_sites": len(sites),
@@ -208,6 +231,19 @@ def audit_data(
         "public_reference_density_gbit": part["density_gbit"],
         "public_reference_package_mm": package,
         "public_reference_ball_count": part["ball_count"],
+        "bus_topology_screen": {
+            "controller_bus_width_bits": controller_width,
+            "public_reference_package_bus_width_bits": package_width,
+            "independent_connection_width_bits": independent_width,
+            "independent_connection_possible": (
+                independent_width <= controller_width if widths_valid else None
+            ),
+            "shared_channel_or_other_topology_required": (
+                independent_width > controller_width if widths_valid else None
+            ),
+            "caveat": "The width comparison only rules out one independent host connection per reference package. It cannot prove whether shared channels, ranks, timing, routing, or boot are supported.",
+            "controller_source": controller["source"]["url"],
+        },
         "required_public_reference_packages": required,
         "reserved_memory_area_mm2": reserved_area,
         "public_reference_package_area_mm2": public_part_area,
@@ -224,7 +260,7 @@ def audit_data(
         "integration_status": "blocked",
         "missing_design_evidence": [
             "Exact 32 GB package MPN, drawing, and availability, or a new eight-package board architecture",
-            "X2-qualified 128 GB channel topology, bus width, ranks, and signal rules",
+            "X2-qualified 128 GB shared-channel or other package topology, ranks, and signal rules",
             "Fabricator-reviewed 0.8 mm 12-layer HDI stack and two-sided assembly limits",
             "Memory rails, power sequence, routed SI/PI, and thermal measurements",
             "Booted Slate unit with hash-bound 128 GB resident-memory test",

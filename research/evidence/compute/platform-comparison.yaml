@@ -80,6 +80,8 @@ candidates:
     memory_type: LPDDR5X
     maximum_memory_gb: 128_plus
     configured_capacity_gb_in_brief: 48
+    memory_bus_width_bits: 192
+    memory_transfer_rate_mt_s: 9523
     memory_bandwidth_gb_s: 228
     storage_interfaces: [dual_pcie_5_0, UFS_4_0, SDUC_SD_Express]
     on_device_display: eDP_1_5
@@ -96,7 +98,7 @@ candidates:
     source:
       url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf
       source_type: manufacturer_product_brief
-      accessed: 2026-10-31
+      accessed: 2026-11-24
 
   amd_ryzen_ai_max_plus_395:
     platform_class: high_power_client_pc

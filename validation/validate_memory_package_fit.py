@@ -29,6 +29,12 @@ def main() -> int:
         or report["planning_sites"] != 4
         or report["public_reference_capacity_gb"] != 16
         or report["required_public_reference_packages"] != 8
+        or report["bus_topology_screen"]["controller_bus_width_bits"] != 192
+        or report["bus_topology_screen"]["independent_connection_width_bits"] != 512
+        or report["bus_topology_screen"]["independent_connection_possible"]
+        or not report["bus_topology_screen"][
+            "shared_channel_or_other_topology_required"
+        ]
         or report["additional_nominal_area_mm2"] != 1008
         or report["source_consistency"] != "pass"
         or report["integration_status"] != "blocked"
@@ -60,6 +66,12 @@ def main() -> int:
             ]["height_mm"]
         )
     )
+    altered = copy.deepcopy(data)
+    altered[1]["candidates"]["qualcomm_snapdragon_x2_elite_extreme"][
+        "memory_bus_width_bits"
+    ] = 128
+    if audit_data(*altered)["source_consistency"] != "fail":
+        raise ValueError("X2 bus width and bandwidth mismatch was accepted")
     altered = copy.deepcopy(data)
     altered[1]["memory_supplier_context"]["micron_lpddr5x_16gb_public_part"][
         "capacity_gb"

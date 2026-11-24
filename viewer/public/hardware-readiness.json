@@ -227,6 +227,15 @@
       1.1
     ],
     "public_reference_ball_count": 441,
+    "bus_topology_screen": {
+      "controller_bus_width_bits": 192,
+      "public_reference_package_bus_width_bits": 64,
+      "independent_connection_width_bits": 512,
+      "independent_connection_possible": false,
+      "shared_channel_or_other_topology_required": true,
+      "caveat": "The width comparison only rules out one independent host connection per reference package. It cannot prove whether shared channels, ranks, timing, routing, or boot are supported.",
+      "controller_source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf"
+    },
     "required_public_reference_packages": 8,
     "reserved_memory_area_mm2": 560.0,
     "public_reference_package_area_mm2": 1568.0,
@@ -523,7 +532,7 @@
     "integration_status": "blocked",
     "missing_design_evidence": [
       "Exact 32 GB package MPN, drawing, and availability, or a new eight-package board architecture",
-      "X2-qualified 128 GB channel topology, bus width, ranks, and signal rules",
+      "X2-qualified 128 GB shared-channel or other package topology, ranks, and signal rules",
       "Fabricator-reviewed 0.8 mm 12-layer HDI stack and two-sided assembly limits",
       "Memory rails, power sequence, routed SI/PI, and thermal measurements",
       "Booted Slate unit with hash-bound 128 GB resident-memory test"

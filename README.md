@@ -23,6 +23,8 @@ The [firmware release proof](docs/engineering/firmware_release_proof.md) now che
 
 The [schematic ERC proof](docs/engineering/schematic_erc_proof.md) reruns KiCad electrical rules from an editable source and pinned project settings before an ERC record can count toward design release. The v1R schematic and reviewed ERC report are still missing.
 
+The [platform reference proof](docs/engineering/platform_reference_proof.md) requires selected compute, memory, storage, and PMIC identities, supplier source bindings, an electrical BOM match, and a complete 128 GB channel, rank, and lane map before a reference package can count toward design release. No such supplier package is released.
+
 The [routed PCB proof](docs/engineering/routed_pcb_proof.md) now binds those same KiCad settings to DRC, schematic parity, and complete copper-layer exports. There is still no released board to fabricate.
 
 The [power safety proof](docs/engineering/power_safety_proof.md) checks a released pack's recorded limits against charge settings, complete subsystem loads, rail capacity, battery current, and fault-control declarations. It binds the analysis to the selected BOM, electrical BOM, and routed board. The [public Hardware view](https://superflyad.github.io/BuildSlate/?tab=hardware) reports this release as missing; no battery or power circuit is selected or physically verified.

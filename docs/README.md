@@ -78,6 +78,7 @@ Use this index to move from a question to the authoritative source. The root [RE
 | [1 TB UFS candidate screen](engineering/storage_candidate_fit.md) | Exact public package outline, rail requirements, and unresolved integration work |
 | [Battery candidate fit](engineering/battery_candidate_fit.md) | Published cell and concept pack volumes versus the complete-pack allocation; charge evidence limit |
 | [Selected BOM proof](engineering/selected_bom_proof.md) | Exact part identity, supplier source binding, and interface checks |
+| [Platform reference proof](engineering/platform_reference_proof.md) | Selected compute, memory, storage, PMIC, and 128 GB channel-map binding |
 | [Electrical netlist proof](engineering/electrical_netlist_proof.md) | Connectivity and selected electrical BOM audit contract |
 | [Schematic ERC proof](engineering/schematic_erc_proof.md) | Reproducible KiCad ERC and project-rule integrity |
 | [Routed PCB proof](engineering/routed_pcb_proof.md) | KiCad schematic parity, DRC, and reproducible fabrication exports |

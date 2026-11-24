@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Added a platform reference audit that binds selected compute, memory, storage, and PMIC sources to the electrical BOM and an explicit 128 GB channel, rank, and data-lane map; public release status remains missing.
 - Published the X2 Extreme 192-bit versus eight x64 package bus-width screen in hardware readiness; independent wiring fails the width check, while shared-channel qualification remains unresolved.
 - Bound 128 GB selected-memory topology claims to exact compute and memory MPNs, package count and capacity, and hashes of the controller support and compute reference-design sources; a controller maximum alone cannot pass part selection.
 - Added an RF release audit for selected radio and antenna parts, host and firmware compatibility, schematic matching paths, released edge placement, Touchstone impedance and isolation sweeps, radiation efficiency, coexistence, and market scoping; public status remains missing.

@@ -58,6 +58,12 @@
       "display_storage_package"
     ]
   },
+  "platform_reference": {
+    "status": "missing",
+    "errors": [
+      "No released platform reference"
+    ]
+  },
   "platform_fit": {
     "status": "supplier_proof_required",
     "memory_floor_gb": 128,

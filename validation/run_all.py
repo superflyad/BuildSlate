@@ -58,6 +58,7 @@ VALIDATION_CHECKS = (
     "validation/validate_memory_package_fit.py",
     "validation/validate_memory_probe.py",
     "validation/validate_part_selection.py",
+    "validation/validate_platform_reference_proof.py",
     "validation/validate_netlist_proof.py",
     "validation/validate_erc_proof.py",
     "validation/validate_pcb_proof.py",

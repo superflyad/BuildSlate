@@ -401,6 +401,7 @@ function renderHardware() {
       .join("");
   document.querySelector("#hardware-parts").innerHTML =
     `<div class="gate-item"><strong>Released part set</strong><span>${esc(report.part_selection.status)}${report.part_selection.errors.length ? ` · ${esc(report.part_selection.errors.join("; "))}` : ""}</span></div>` +
+    `<div class="gate-item"><strong>Platform reference and memory map</strong><span>${esc(report.platform_reference.status)} · ${esc(report.platform_reference.errors.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>Power design proof</strong><span>${esc(report.power_safety.status)} · ${esc(report.power_safety.errors.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>Thermal design proof</strong><span>${esc(report.thermal_release.status)} · ${esc(report.thermal_release.errors.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>RF design proof</strong><span>${esc(report.rf_release.status)} · ${esc(report.rf_release.errors.join("; "))}</span></div>` +

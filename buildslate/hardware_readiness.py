@@ -26,6 +26,8 @@ from buildslate.part_selection import RELEASE as SELECTED_BOM_RELEASE
 from buildslate.part_selection import audit as audit_part_selection
 from buildslate.pcb_proof import audit as audit_pcb
 from buildslate.platform_fit import audit as audit_platform_fit
+from buildslate.platform_reference_proof import RELEASE as PLATFORM_REFERENCE_RELEASE
+from buildslate.platform_reference_proof import audit as audit_platform_reference
 from buildslate.power_safety_proof import RELEASE as POWER_RELEASE
 from buildslate.power_safety_proof import audit as audit_power_safety
 from buildslate.rf_proof import RELEASE as RF_RELEASE
@@ -133,6 +135,41 @@ def _evidence_result(
                 )
             else:
                 proof = selection_proof
+        if not reasons and requirement.get("id") == "platform_reference":
+            if target != (root / PLATFORM_REFERENCE_RELEASE).resolve():
+                reasons.append(
+                    "Platform reference must name the controlled release JSON"
+                )
+            else:
+                proof = audit_platform_reference(root)
+                if proof["status"] != "pass":
+                    reasons.extend(proof["errors"])
+                elif (
+                    proof["revision"] != record["revision"]
+                    or proof["reviewed_by"] != record["reviewed_by"]
+                ):
+                    reasons.append("Platform review identity or revision differs")
+                selected = (related_records or {}).get("selected_bom")
+                if (
+                    not isinstance(selected, dict)
+                    or selected.get("disposition") != "approved"
+                    or selected.get("sha256") != proof["selected_bom_sha256"]
+                    or selection_proof is None
+                    or selection_proof.get("status") != "pass"
+                    or selection_proof.get("sha256") != proof["selected_bom_sha256"]
+                ):
+                    reasons.append(
+                        "Platform reference is not bound to approved part selection"
+                    )
+                electrical = (related_records or {}).get("schematic_netlist")
+                if (
+                    not isinstance(electrical, dict)
+                    or electrical.get("disposition") != "approved"
+                    or electrical.get("bom_sha256") != proof["electrical_bom_sha256"]
+                ):
+                    reasons.append(
+                        "Platform reference is not bound to approved electrical BOM"
+                    )
         if not reasons and requirement.get("id") == "schematic_netlist":
             if target.suffix.lower() != ".xml":
                 reasons.append("Schematic netlist must be a KiCad XML export")
@@ -458,6 +495,7 @@ def build_report(root: Path) -> dict:
     if set(records) - set(ids):
         raise ValueError("Evidence record does not match a requirement")
     selection = audit_part_selection(root, strategy)
+    platform_reference = audit_platform_reference(root)
     platform_fit = audit_platform_fit(root)
     storage_fit = audit_storage_fit(root)
     battery_fit = audit_battery_fit(root)
@@ -555,6 +593,7 @@ def build_report(root: Path) -> dict:
             "errors": selection["errors"],
             "supplier_packages_unverified": supplier_gaps,
         },
+        "platform_reference": platform_reference,
         "platform_fit": platform_fit,
         "storage_fit": storage_fit,
         "battery_fit": battery_fit,

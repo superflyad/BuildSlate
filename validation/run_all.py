@@ -50,6 +50,7 @@ VALIDATION_CHECKS = (
     "validation/validate_dashboard_migrations.py",
     "validation/validate_ci_handoff.py",
     "validation/validate_assembly.py",
+    "validation/validate_concept_cad.py",
     "validation/validate_repository.py",
 )
 

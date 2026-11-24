@@ -28,7 +28,9 @@
           <div class="panel-heading">
             <div class="eyebrow">MODEL INDEX</div>
             <h1>Device assembly</h1>
-            <p>Explore the current mechanical and board planning model.</p>
+            <p>
+              Explore the editable concept assembly and its engineering basis.
+            </p>
           </div>
           <div class="search-wrap">
             <label for="part-search" class="sr-only">Search parts</label
@@ -62,12 +64,28 @@
             <div class="stage-metrics">
               <div>
                 <strong id="model-part-count">—</strong
-                ><small>planning boxes</small>
+                ><small id="geometry-label">concept solids</small>
               </div>
               <div>
                 <strong id="extent">—</strong><small>outer envelope</small>
               </div>
             </div>
+          </div>
+          <div class="model-switch" role="group" aria-label="Geometry source">
+            <button
+              type="button"
+              data-model="concept"
+              class="active"
+              aria-pressed="true"
+            >
+              Concept CAD
+            </button>
+            <button type="button" data-model="assembly" aria-pressed="false">
+              Source envelopes
+            </button>
+            <span id="model-basis"
+              >Editable assumptions and source geometry</span
+            >
           </div>
           <div
             id="viewport"
@@ -191,8 +209,9 @@
           <div class="evidence-note">
             <span aria-hidden="true">ⓘ</span>
             <p>
-              Geometry is a planning representation. It does not establish
-              component selection, fit, thermal performance, or build readiness.
+              Concept CAD is editable planning geometry. Inspect each part's
+              evidence class before using its dimensions. Supplier selection,
+              fit, and build readiness remain unresolved.
             </p>
           </div>
         </aside>

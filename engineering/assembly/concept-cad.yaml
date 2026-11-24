@@ -1,0 +1,150 @@
+schema_version: 1
+device: slate-pocket-v1r
+status: editable_concept_not_released
+description: >-
+  Explicit concept placements for library roles without source-backed geometry.
+  These are design assumptions for visual and packaging review, not selected
+  components, released drawings, or evidence of fit.
+source_overrides:
+  rear_cover: {shape: rounded_box, radius_mm: 3.0}
+  cover_glass: {shape: rounded_box, radius_mm: 3.0}
+  display_stack: {shape: rounded_box, radius_mm: 2.0, height_mm: 0.70}
+  main_pcb_placeholder: {shape: rounded_box, radius_mm: 1.0}
+  battery_reference: {shape: rounded_box, radius_mm: 2.0}
+  rear_camera_placeholder: {shape: camera_module}
+  speaker_a_placeholder: {shape: speaker}
+  speaker_b_placeholder: {shape: speaker}
+  wireless_charging_placeholder: {shape: coil}
+  frame_bottom: {shape: ported_frame}
+additional_parts:
+  touch_digitizer_concept:
+    label: Touch digitizer concept
+    group: display
+    box_mm: [3, 3, 8.80, 174, 89, 0.15]
+    shape: rounded_box
+    radius_mm: 2.0
+    roles: [touch_digitizer]
+    basis: cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.battery_without_wireless_charging.layers.touch_layer
+    assumption: Separate touch film shares the source display-stack envelope.
+  battery_pack_shell_concept:
+    label: Battery pack envelope concept
+    group: power
+    box_mm: [9, 11, 1.20, 82, 68, 6.20]
+    shape: rounded_box
+    radius_mm: 2.0
+    roles: [battery_pack]
+    basis: research/evidence/battery/pack-envelope.yaml#required_pack_cad_inputs
+    assumption: Outer pack allowance around the raw-cell reference; protection and swelling remain unresolved.
+  graphite_spreader_concept:
+    label: Graphite spreader concept
+    group: thermal
+    box_mm: [92, 12, 5.60, 70, 48, 0.12]
+    shape: rounded_box
+    radius_mm: 2.0
+    roles: [graphite_spreader]
+    basis: engineering/components/component_library.yaml#components.graphite_spreader
+    assumption: Sheet follows the thermal-overlay planform; electrical isolation and RF cutouts are unresolved.
+  phase_change_material_concept:
+    label: Phase-change interface concept
+    group: thermal
+    box_mm: [120, 30, 5.72, 20, 20, 0.20]
+    shape: rounded_box
+    radius_mm: 1.0
+    roles: [phase_change_material]
+    basis: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.compute_soc
+    assumption: Optional local patch above the compute site; material and containment are unselected.
+  front_camera_concept:
+    label: Front camera concept
+    group: camera
+    box_mm: [84, 83, 5.50, 8, 8, 2.40]
+    shape: camera_module
+    roles: [front_camera_module]
+    basis: engineering/components/component_library.yaml#components.front_camera_module
+    assumption: Under-display optical path; aperture and panel compatibility are unverified.
+  antenna_top_left_concept:
+    label: Top-left antenna reservation
+    group: radio
+    box_mm: [3, 86, 0.80, 35, 6, 0.40]
+    shape: rounded_box
+    radius_mm: 1.0
+    roles: [antenna_modules]
+    basis: engineering/rf/keepout-map/map.yaml#antenna_reservations.top_left
+    assumption: Reserved volume only; no radiating element or feed is designed.
+  antenna_top_right_concept:
+    label: Top-right antenna reservation
+    group: radio
+    box_mm: [142, 86, 0.80, 35, 6, 0.40]
+    shape: rounded_box
+    radius_mm: 1.0
+    roles: [antenna_modules]
+    basis: engineering/rf/keepout-map/map.yaml#antenna_reservations.top_right
+    assumption: Reserved volume only; no radiating element or feed is designed.
+  antenna_bottom_left_concept:
+    label: Bottom-left antenna reservation
+    group: radio
+    box_mm: [3, 3, 0.80, 35, 6, 0.40]
+    shape: rounded_box
+    radius_mm: 1.0
+    roles: [antenna_modules]
+    basis: engineering/rf/keepout-map/map.yaml#antenna_reservations.bottom_left
+    assumption: Reserved volume only; no radiating element or feed is designed.
+  antenna_bottom_right_concept:
+    label: Bottom-right antenna reservation
+    group: radio
+    box_mm: [142, 3, 0.80, 35, 6, 0.40]
+    shape: rounded_box
+    radius_mm: 1.0
+    roles: [antenna_modules]
+    basis: engineering/rf/keepout-map/map.yaml#antenna_reservations.bottom_right
+    assumption: Reserved volume only; no radiating element or feed is designed.
+  microphone_bottom_concept:
+    label: Bottom microphone concept
+    group: audio
+    box_mm: [80, 4, 1.20, 3, 3, 1.20]
+    shape: cylinder
+    roles: [microphones]
+    basis: engineering/components/component_library.yaml#components.microphones
+    assumption: Port position and acoustic seal require a released enclosure design.
+  microphone_top_concept:
+    label: Top microphone concept
+    group: audio
+    box_mm: [98, 88, 1.20, 3, 3, 1.20]
+    shape: cylinder
+    roles: [microphones]
+    basis: engineering/components/component_library.yaml#components.microphones
+    assumption: Port intersects the top RF reserve and requires joint acoustic/RF review.
+  haptics_concept:
+    label: Haptic actuator concept
+    group: audio
+    box_mm: [150, 68, 1.20, 10, 4, 2.50]
+    shape: rounded_box
+    radius_mm: 1.0
+    roles: [haptics]
+    basis: engineering/components/component_library.yaml#components.haptics
+    assumption: Chassis coupling and clearance beside the speaker are unverified.
+  usb_c_port_concept:
+    label: USB-C receptacle concept
+    group: power
+    box_mm: [84, 0, 2.80, 12, 6, 3.00]
+    shape: port
+    roles: [usb_c_port]
+    basis: cad/slate-pocket-v1r/envelope-model/keepouts.yaml#keepouts.bottom_connector_zone
+    assumption: Central edge opening with an assumed 12 by 3 mm receptacle envelope.
+  sensors_concept:
+    label: Sensor cluster concept
+    group: compute
+    box_mm: [100, 84, 5.50, 8, 4, 1.00]
+    shape: rounded_box
+    radius_mm: 0.5
+    roles: [sensors]
+    basis: engineering/components/component_library.yaml#components.sensors
+    assumption: Clustered package allowance; sensor suite and optical paths are unresolved.
+  perimeter_gasket_concept:
+    label: Perimeter gasket concept
+    group: exterior
+    box_mm: [3, 3, 8.90, 174, 89, 0.05]
+    shape: gasket
+    band_mm: 1.0
+    roles: [fasteners_adhesives_gaskets]
+    basis: engineering/components/component_library.yaml#components.fasteners_adhesives_gaskets
+    assumption: Seal path only; fastener and adhesive pattern await enclosure release.

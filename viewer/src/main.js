@@ -34,6 +34,8 @@ const labels = {
 const groups = Object.keys(labels);
 const state = {
   assembly: null,
+  assets: null,
+  model: "concept",
   selected: null,
   search: "",
   activeGroup: null,
@@ -49,6 +51,7 @@ const state = {
 };
 const meshes = new Map();
 const baseZ = new Map();
+let modelRoot = null;
 const keepoutMeshes = [];
 const viewport = document.querySelector("#viewport");
 const scene = new THREE.Scene();
@@ -197,15 +200,17 @@ function renderDetail() {
     <div class="section-heading">Geometry</div>
     <div class="property"><span>Envelope</span><strong>${textBox(part.box_mm)}</strong></div>
     <div class="property"><span>Origin (x, y, z)</span><strong>${part.box_mm.slice(0, 3).join(", ")} mm</strong></div>
-    <div class="property"><span>Geometry type</span><strong>Provisional box</strong></div>
+    <div class="property"><span>Geometry type</span><strong>${esc((part.shape || "box").replaceAll("_", " "))}</strong></div>
     <div class="section-heading">Engineering basis</div>
     <div class="property"><span>Evidence class</span><strong>${esc(part.evidence_class.replaceAll("_", " "))}</strong></div>
     <div class="source-path"><span>Source</span><code>${esc(part.source)}</code></div>
     ${part.notes ? `<div class="detail-note">${esc(part.notes.replaceAll("_", " "))}</div>` : ""}
-    <p class="detail-caveat">This box is a planning envelope. Verify against supplier CAD and released drawings before treating it as a physical part.</p>`;
+    <p class="detail-caveat">${esc(state.assembly.caveat)}</p>`;
 }
 function renderCoverageItem(component) {
-  const representedParts = component.part_ids
+  const representedParts = (
+    state.model === "concept" ? component.concept_part_ids : component.part_ids
+  )
     .map((id) => {
       const label =
         state.assembly.parts.find((part) => part.id === id)?.label || id;
@@ -241,7 +246,7 @@ function renderProgram() {
     ]),
   );
   document.querySelector("#coverage").innerHTML =
-    `<p class="coverage-intro">${coverage.length} library roles · ${counts.box} box modeled · ${counts.aggregate} aggregate · ${counts.deferred} deferred · ${counts.unplaced} unplaced</p>` +
+    `<p class="coverage-intro">${coverage.length} library roles · ${state.model === "concept" ? "all represented in concept CAD; source evidence status follows" : "source envelope status follows"} · ${counts.box} box modeled · ${counts.aggregate} aggregate · ${counts.deferred} deferred · ${counts.unplaced} unplaced</p>` +
     coverage.map(renderCoverageItem).join("");
   document.querySelector("#zones").innerHTML = Object.entries(
     state.assembly.zones,
@@ -617,13 +622,23 @@ for (const tab of ["inspect", "program"])
     setTab();
   });
 
-try {
-  const response = await fetch(`${import.meta.env.BASE_URL}assembly.json`);
-  if (!response.ok) throw new Error(`assembly data: HTTP ${response.status}`);
-  state.assembly = await response.json();
-  const gltf = await new GLTFLoader().loadAsync(
-    `${import.meta.env.BASE_URL}assembly.gltf`,
-  );
+function displayModel(model) {
+  for (const [id, mesh] of meshes) mesh.position.z = baseZ.get(id);
+  if (modelRoot) scene.remove(modelRoot);
+  if (selectionBox) {
+    scene.remove(selectionBox);
+    selectionBox.geometry.dispose();
+    selectionBox.material.dispose();
+    selectionBox = null;
+  }
+  meshes.clear();
+  baseZ.clear();
+  state.model = model;
+  state.assembly = state.assets[model].data;
+  state.selected = null;
+  state.isolated = null;
+  state.activeGroup = null;
+  const gltf = state.assets[model].gltf;
   gltf.scene.traverse((object) => {
     if (!object.isMesh) return;
     const id =
@@ -634,23 +649,26 @@ try {
     const part = state.assembly.parts.find((p) => p.id === id);
     if (!part) return;
     object.userData.partId = id;
-    object.material = new THREE.MeshStandardMaterial({
-      color: colors[part.group],
-      metalness: part.group === "exterior" ? 0.5 : 0.15,
-      roughness: 0.58,
-      flatShading: true,
-      side: THREE.DoubleSide,
-    });
+    if (!object.userData.buildslateMaterial) {
+      object.material = new THREE.MeshStandardMaterial({
+        color: colors[part.group],
+        metalness: part.group === "exterior" ? 0.5 : 0.15,
+        roughness: 0.58,
+        flatShading: model === "assembly",
+        side: THREE.DoubleSide,
+      });
+      object.userData.buildslateMaterial = true;
+    }
     meshes.set(id, object);
     baseZ.set(id, object.position.z);
   });
-  scene.add(gltf.scene);
+  modelRoot = gltf.scene;
+  scene.add(modelRoot);
   if (meshes.size !== state.assembly.parts.length) {
     throw new Error(
       `expected ${state.assembly.parts.length} part meshes, found ${meshes.size}`,
     );
   }
-  makeKeepouts();
   updateVisibility();
   updateSection();
   renderGroups();
@@ -658,10 +676,51 @@ try {
   renderProgram();
   document.querySelector("#model-part-count").textContent =
     state.assembly.parts.length;
+  document.querySelector("#geometry-label").textContent =
+    model === "concept" ? "concept solids" : "source envelopes";
+  document.querySelector("#model-basis").textContent =
+    model === "concept"
+      ? "Editable assumptions and source geometry"
+      : "Traceable source planning envelopes";
+  document.querySelector("#part-detail").className = "detail-placeholder";
+  document.querySelector("#part-detail").innerHTML =
+    '<div class="detail-icon">◇</div><h2>Select a component</h2><p>Inspect geometry, evidence, and its source.</p>';
+  document.querySelectorAll("[data-model]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.model === model);
+    button.setAttribute("aria-pressed", String(button.dataset.model === model));
+  });
   const e = state.assembly.extent_mm;
   document.querySelector("#extent").textContent =
     `${e.length} × ${e.width} × ${e.thickness}`;
   resize();
+}
+document
+  .querySelectorAll("[data-model]")
+  .forEach((button) =>
+    button.addEventListener("click", () => displayModel(button.dataset.model)),
+  );
+try {
+  const loader = new GLTFLoader();
+  const assets = await Promise.all(
+    ["concept", "assembly"].map(async (name) => {
+      const response = await fetch(`${import.meta.env.BASE_URL}${name}.json`);
+      if (!response.ok)
+        throw new Error(`${name} data: HTTP ${response.status}`);
+      return [
+        name,
+        {
+          data: await response.json(),
+          gltf: await loader.loadAsync(
+            `${import.meta.env.BASE_URL}${name}.gltf`,
+          ),
+        },
+      ];
+    }),
+  );
+  state.assets = Object.fromEntries(assets);
+  state.assembly = state.assets.concept.data;
+  makeKeepouts();
+  displayModel("concept");
 } catch (error) {
   document
     .querySelector("#viewport")

@@ -1,0 +1,2 @@
+# Optional STEP export toolchain; use Python 3.12.
+cadquery==2.7.0

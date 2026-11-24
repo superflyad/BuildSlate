@@ -15,7 +15,7 @@ BuildSlate connects specifications, assumptions, evidence, models, and gate deci
 - **Understand the system:** [architecture](ARCHITECTURE.md) and [documentation index](docs/README.md)
 - **Contribute:** [repository standards](docs/standards/repository.md) and [contribution guide](CONTRIBUTING.md)
 
-**Engineering status:** the device design is not released. The 3D solids are planning envelopes, with unresolved supplier, mechanical, electrical, test, and manufacturing evidence. The [dashboard](reports/program/dashboard.md) is the current source for gate status. Software release [v0.1.0](https://github.com/superflyad/BuildSlate/releases/tag/v0.1.0) does not change that engineering status.
+**Engineering status:** the device design is not released. The 41-solid [editable concept CAD](cad/slate-pocket-v1r/concept-cad/README.md) includes explicitly assumed placements; the original 26 source planning envelopes remain available. Supplier, mechanical, electrical, test, and manufacturing evidence remains unresolved. The [dashboard](reports/program/dashboard.md) is the current source for gate status. Software release [v0.1.0](https://github.com/superflyad/BuildSlate/releases/tag/v0.1.0) does not change that engineering status.
 
 ## Get started
 
@@ -42,12 +42,13 @@ The [v0.1.0 release](https://github.com/superflyad/BuildSlate/releases/tag/v0.1.
 
 ```bash
 python -m buildslate.assembly --check
+python validation/validate_concept_cad.py
 cd viewer
 npm ci
 npm run dev
 ```
 
-Open the local address printed by Vite. Drag to rotate, select a part to inspect its source and evidence class, and use section cuts, isolation, or explode to examine the internal arrangement. The Program tab includes every component library role and identifies roles without geometry. The [viewer guide](viewer/README.md) covers the controls and generated assets. The viewer cannot establish physical fit or qualification.
+Open the local address printed by Vite. The concept CAD is the default view; switch to Source envelopes to inspect the original planning model. Drag to rotate, select a part to inspect its source and evidence class, and use section cuts, isolation, or explode to examine the internal arrangement. The Program tab includes all 22 component library roles and their source evidence status. The [viewer guide](viewer/README.md) covers the controls and generated assets. The viewer cannot establish physical fit or qualification.
 
 ## How a change moves through the repository
 
@@ -57,7 +58,7 @@ Open the local address printed by Vite. Drag to rotate, select a part to inspect
 4. Run `buildslate regenerate --stale`, then review the generated diff.
 5. Run the focused validator while editing. After committing, run `python scripts/ci_validate.py` from a clean tree. The gate checks all validators, Python and Markdown style, installed-package behavior, generated currency, and the viewer build.
 
-Generated reports and `viewer/public/assembly.json` and `.gltf` are outputs. Edit their source files, then regenerate. Supplier responses and physical test results follow the [controlled intake workflow](docs/engineering/operator_workflows.md).
+Generated reports and the viewer's `assembly` and `concept` JSON/glTF files are outputs. Edit their source files, then regenerate. The concept CAD also requires `python -m buildslate.cad` in the [Python 3.12 CAD environment](cad/slate-pocket-v1r/concept-cad/README.md). Supplier responses and physical test results follow the [controlled intake workflow](docs/engineering/operator_workflows.md).
 
 ## Repository map
 

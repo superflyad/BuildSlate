@@ -15,13 +15,15 @@ This roadmap separates software work from engineering evidence. A completed repo
 - [ ] Extend the stronger lint rule set through the legacy engineering models and validators in reviewed groups
 - [ ] Keep command examples and review procedures current as the CLI and data contracts evolve
 
-## Current viewer: provisional assembly review
+## Current viewer: concept CAD review
 
 - [x] Stable part IDs and a documented coordinate system
 - [x] Generated JSON and glTF from existing engineering sources
 - [x] Viewer with rotation, selection, filtering, focus, isolation, axis sections, explode, keepouts, expanded view, and gate context
 - [x] Surface all component library roles and distinguish modeled boxes, aggregates, deferred concepts, and unplaced parts
 - [x] Generation and build checks in CI
+- [x] Editable, 41-solid concept STEP assembly with explicit assumptions for all 22 component roles
+- [x] Tessellated concept CAD in the browser with a source-envelope comparison view
 
 ## Next engineering inputs
 

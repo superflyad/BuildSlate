@@ -107,6 +107,34 @@ summary:focus-visible {
   padding: 6px 8px;
   margin-left: 9px;
 }
+.model-switch {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-bottom: 1px solid #27394b;
+  background: #0d1928;
+  flex-wrap: wrap;
+}
+.model-switch button {
+  border: 1px solid #40556b;
+  color: #b8c8d9;
+  background: #142437;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+.model-switch button.active {
+  border-color: #d7ae66;
+  color: #f4d69d;
+  background: #2b2b2d;
+}
+.model-switch span {
+  color: #96aabb;
+  font-size: 12px;
+  margin-left: 6px;
+}
 .workspace {
   display: grid;
   grid-template-columns: 285px minmax(0, 1fr) 320px;
@@ -879,7 +907,11 @@ summary:focus-visible {
     padding-bottom: 7px;
   }
   .stage-tools {
-    margin-left: auto;
+    margin-left: 0;
+    width: 100%;
+    min-width: 0;
+    flex-wrap: wrap;
+    justify-content: flex-start;
   }
   .stage-bottom {
     padding: 12px;

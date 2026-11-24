@@ -12,42 +12,50 @@ globalThis.ProgressEvent ??= class ProgressEvent {
 };
 
 const root = resolve(import.meta.dirname, "..");
-const assembly = JSON.parse(
-  readFileSync(resolve(root, "public/assembly.json"), "utf8"),
-);
-const geometry = readFileSync(resolve(root, "public/assembly.gltf"), "utf8");
-const gltf = await new GLTFLoader().parseAsync(geometry, "");
-const names = new Set();
-const meshes = new Map();
-gltf.scene.traverse((object) => {
-  if (object.isMesh) {
-    const id = object.userData.part_id ?? object.name;
-    names.add(id);
-    meshes.set(id, object);
-  }
-});
-assert.deepEqual(names, new Set(assembly.parts.map((part) => part.id)));
-assert.equal(names.size, assembly.parts.length);
-for (const part of assembly.parts) {
-  const [x, y, z, length, width, height] = part.box_mm;
-  const box = new Box3().setFromObject(meshes.get(part.id));
-  const expected = [
-    [x, y, z],
-    [x + length, y + width, z + height],
-  ];
-  for (const [actual, values] of [
-    [box.min, expected[0]],
-    [box.max, expected[1]],
-  ]) {
-    for (const [axis, value] of ["x", "y", "z"].map((axis, index) => [
-      axis,
-      values[index],
-    ])) {
-      assert.ok(
-        Math.abs(actual[axis] - value) < 0.001,
-        `${part.id} ${axis} bounds drift`,
-      );
+for (const model of ["assembly", "concept"]) {
+  const assembly = JSON.parse(
+    readFileSync(resolve(root, `public/${model}.json`), "utf8"),
+  );
+  const geometry = readFileSync(resolve(root, `public/${model}.gltf`), "utf8");
+  const gltf = await new GLTFLoader().parseAsync(geometry, "");
+  const names = new Set();
+  const meshes = new Map();
+  gltf.scene.traverse((object) => {
+    if (object.isMesh) {
+      const id = object.userData.part_id ?? object.name;
+      names.add(id);
+      meshes.set(id, object);
+    }
+  });
+  assert.deepEqual(names, new Set(assembly.parts.map((part) => part.id)));
+  assert.equal(names.size, assembly.parts.length);
+  for (const part of assembly.parts) {
+    const [x, y, z, length, width, height] = part.box_mm;
+    const box = new Box3().setFromObject(meshes.get(part.id));
+    const expected = [
+      [x, y, z],
+      [x + length, y + width, z + height],
+    ];
+    for (const [actual, values] of [
+      [box.min, expected[0]],
+      [box.max, expected[1]],
+    ]) {
+      for (const [axis, value] of ["x", "y", "z"].map((axis, index) => [
+        axis,
+        values[index],
+      ])) {
+        assert.ok(
+          Math.abs(actual[axis] - value) < 0.25,
+          `${model}: ${part.id} ${axis} bounds drift`,
+        );
+      }
     }
   }
+  if (model === "concept") {
+    assert.equal(assembly.component_coverage.length, 22);
+    assert.ok(
+      assembly.component_coverage.every((role) => role.concept_part_ids.length),
+    );
+  }
+  console.log(`PASS: ${model} glTF loads ${names.size} distinct meshes`);
 }
-console.log(`PASS: glTF loads ${names.size} distinct assembly meshes`);

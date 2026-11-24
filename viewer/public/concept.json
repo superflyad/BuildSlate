@@ -25,8 +25,17 @@
       "source": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.battery_without_wireless_charging.layers.rear_cover",
       "active": true,
       "notes": "",
-      "shape": "rounded_box",
-      "radius_mm": 3.0
+      "shape": "rear_panel",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "radius_mm": 3.0,
+      "aperture_center_mm": [
+        111.0,
+        76.5
+      ],
+      "aperture_radius_mm": 4.0,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.rear_cover",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "frame_left",
@@ -38,13 +47,18 @@
         0.55,
         3.0,
         95.0,
-        8.4
+        8.35
       ],
       "evidence_class": "placeholder",
       "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.perimeter_inset_mm",
       "active": true,
       "notes": "",
-      "shape": "box"
+      "shape": "box",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "height_mm": 8.35,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.frame_left",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "frame_right",
@@ -56,13 +70,18 @@
         0.55,
         3.0,
         95.0,
-        8.4
+        8.35
       ],
       "evidence_class": "placeholder",
       "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.perimeter_inset_mm",
       "active": true,
       "notes": "",
-      "shape": "box"
+      "shape": "box",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "height_mm": 8.35,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.frame_right",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "frame_top",
@@ -74,13 +93,18 @@
         0.55,
         174.0,
         3.0,
-        8.4
+        8.35
       ],
       "evidence_class": "placeholder",
       "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.perimeter_inset_mm",
       "active": true,
       "notes": "",
-      "shape": "box"
+      "shape": "box",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "height_mm": 8.35,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.frame_top",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "frame_bottom",
@@ -92,13 +116,18 @@
         0.55,
         174.0,
         3.0,
-        8.4
+        8.35
       ],
       "evidence_class": "placeholder",
       "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.perimeter_inset_mm",
       "active": true,
       "notes": "",
-      "shape": "ported_frame"
+      "shape": "ported_frame",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "height_mm": 8.35,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.frame_bottom",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "display_stack",
@@ -110,15 +139,19 @@
         8.1,
         174.0,
         89.0,
-        0.85
+        0.7
       ],
       "evidence_class": "placeholder",
       "source": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.battery_without_wireless_charging",
       "active": true,
       "notes": "",
       "shape": "rounded_box",
+      "geometry_use": "solid",
+      "screen_layer": null,
       "radius_mm": 2.0,
-      "height_mm": 0.7
+      "height_mm": 0.7,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.display_stack",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "cover_glass",
@@ -137,7 +170,11 @@
       "active": true,
       "notes": "",
       "shape": "rounded_box",
-      "radius_mm": 3.0
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "radius_mm": 3.0,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.cover_glass",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "battery_reference",
@@ -156,7 +193,11 @@
       "active": true,
       "notes": "reference_only_raw_cell_exceeds_current_complete_pack_allocation",
       "shape": "rounded_box",
-      "radius_mm": 2.0
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "radius_mm": 2.0,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.battery_reference",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "main_pcb_placeholder",
@@ -174,8 +215,12 @@
       "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder",
       "active": true,
       "notes": "replace_with_ecad_floorplan",
-      "shape": "rounded_box",
-      "radius_mm": 1.0
+      "shape": "pcb",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "radius_mm": 1.0,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.main_pcb_placeholder",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "rear_camera_placeholder",
@@ -193,7 +238,12 @@
       "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.rear_camera_placeholder",
       "active": true,
       "notes": "replace_with_module_drawing",
-      "shape": "camera_module"
+      "shape": "camera_module",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "lens_face": "rear",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.rear_camera_placeholder",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "speaker_a_placeholder",
@@ -211,7 +261,11 @@
       "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.speaker_a_placeholder",
       "active": true,
       "notes": "acoustic_and_rf_review_required",
-      "shape": "speaker"
+      "shape": "speaker",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.speaker_a_placeholder",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "speaker_b_placeholder",
@@ -229,7 +283,11 @@
       "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.speaker_b_placeholder",
       "active": true,
       "notes": "acoustic_and_rf_review_required",
-      "shape": "speaker"
+      "shape": "speaker",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.speaker_b_placeholder",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "wireless_charging_placeholder",
@@ -247,7 +305,11 @@
       "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.wireless_charging_placeholder",
       "active": false,
       "notes": "negotiable_feature_and_z_height_conflict",
-      "shape": "coil"
+      "shape": "coil",
+      "geometry_use": "reservation",
+      "screen_layer": "rear_overlay",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.wireless_charging_placeholder",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "thermal_spreader_placeholder",
@@ -265,7 +327,12 @@
       "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.thermal_spreader_placeholder",
       "active": true,
       "notes": "geometry_and_performance_unverified",
-      "shape": "box"
+      "shape": "rounded_box",
+      "geometry_use": "solid",
+      "screen_layer": "thermal_overlay",
+      "radius_mm": 2.0,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.thermal_spreader_placeholder",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "compute_soc",
@@ -283,7 +350,11 @@
       "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.compute_soc",
       "active": true,
       "notes": "compute_platform",
-      "shape": "box"
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.compute_soc",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "memory_a_32gb",
@@ -301,7 +372,11 @@
       "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.memory_a_32gb",
       "active": true,
       "notes": "lpddr5x_32gb_planning_site",
-      "shape": "box"
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.memory_a_32gb",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "memory_b_32gb",
@@ -319,7 +394,11 @@
       "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.memory_b_32gb",
       "active": true,
       "notes": "lpddr5x_32gb_planning_site",
-      "shape": "box"
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.memory_b_32gb",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "memory_c_32gb",
@@ -337,7 +416,11 @@
       "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.memory_c_32gb",
       "active": true,
       "notes": "lpddr5x_32gb_planning_site",
-      "shape": "box"
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.memory_c_32gb",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "memory_d_32gb",
@@ -355,7 +438,11 @@
       "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.memory_d_32gb",
       "active": true,
       "notes": "lpddr5x_32gb_planning_site",
-      "shape": "box"
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.memory_d_32gb",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "storage_ufs_1tb_reference",
@@ -373,7 +460,11 @@
       "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.storage_ufs_1tb_reference",
       "active": true,
       "notes": "embedded_storage",
-      "shape": "box"
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.storage_ufs_1tb_reference",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "platform_pmic",
@@ -391,7 +482,11 @@
       "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.platform_pmic",
       "active": true,
       "notes": "platform_power",
-      "shape": "box"
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.platform_pmic",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "battery_charger",
@@ -409,7 +504,11 @@
       "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.battery_charger",
       "active": true,
       "notes": "wired_charge_and_system_path",
-      "shape": "box"
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.battery_charger",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "usb_pd_controller",
@@ -427,7 +526,11 @@
       "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.usb_pd_controller",
       "active": true,
       "notes": "usb_power_delivery_policy",
-      "shape": "box"
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.usb_pd_controller",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "wireless_charge_controller",
@@ -445,7 +548,11 @@
       "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.wireless_charge_controller",
       "active": false,
       "notes": "wireless_power_receiver",
-      "shape": "box"
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.wireless_charge_controller",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "wifi_bluetooth",
@@ -463,7 +570,11 @@
       "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.wifi_bluetooth",
       "active": true,
       "notes": "connectivity",
-      "shape": "box"
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.wifi_bluetooth",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "security_controller",
@@ -481,7 +592,11 @@
       "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.security_controller",
       "active": true,
       "notes": "hardware_root_of_trust",
-      "shape": "box"
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.security_controller",
+      "geometry_evidence_class": "design_assumption"
     },
     {
       "id": "touch_digitizer_concept",
@@ -503,6 +618,11 @@
       "roles": [
         "touch_digitizer"
       ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.touch_digitizer_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "allowed_keepouts": [],
       "radius_mm": 2.0
     },
     {
@@ -514,18 +634,23 @@
         11.0,
         1.2,
         82.0,
-        68.0,
+        68.5,
         6.2
       ],
       "evidence_class": "design_assumption",
       "source": "research/evidence/battery/pack-envelope.yaml#required_pack_cad_inputs",
       "notes": "Outer pack allowance around the raw-cell reference; protection and swelling remain unresolved.",
       "active": true,
-      "shape": "rounded_box",
+      "shape": "battery_tray",
       "roles": [
         "battery_pack"
       ],
-      "radius_mm": 2.0
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.battery_pack_shell_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": [],
+      "wall_mm": 0.5
     },
     {
       "id": "graphite_spreader_concept",
@@ -547,6 +672,11 @@
       "roles": [
         "graphite_spreader"
       ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.graphite_spreader_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "thermal_overlay",
+      "allowed_keepouts": [],
       "radius_mm": 2.0
     },
     {
@@ -569,6 +699,11 @@
       "roles": [
         "phase_change_material"
       ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.phase_change_material_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "thermal_overlay",
+      "allowed_keepouts": [],
       "radius_mm": 1.0
     },
     {
@@ -590,7 +725,12 @@
       "shape": "camera_module",
       "roles": [
         "front_camera_module"
-      ]
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.front_camera_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": []
     },
     {
       "id": "antenna_top_left_concept",
@@ -612,6 +752,11 @@
       "roles": [
         "antenna_modules"
       ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.antenna_top_left_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "reservation",
+      "screen_layer": null,
+      "allowed_keepouts": [],
       "radius_mm": 1.0
     },
     {
@@ -634,6 +779,11 @@
       "roles": [
         "antenna_modules"
       ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.antenna_top_right_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "reservation",
+      "screen_layer": null,
+      "allowed_keepouts": [],
       "radius_mm": 1.0
     },
     {
@@ -656,6 +806,11 @@
       "roles": [
         "antenna_modules"
       ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.antenna_bottom_left_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "reservation",
+      "screen_layer": null,
+      "allowed_keepouts": [],
       "radius_mm": 1.0
     },
     {
@@ -678,6 +833,11 @@
       "roles": [
         "antenna_modules"
       ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.antenna_bottom_right_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "reservation",
+      "screen_layer": null,
+      "allowed_keepouts": [],
       "radius_mm": 1.0
     },
     {
@@ -699,7 +859,12 @@
       "shape": "cylinder",
       "roles": [
         "microphones"
-      ]
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.microphone_bottom_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": []
     },
     {
       "id": "microphone_top_concept",
@@ -720,7 +885,12 @@
       "shape": "cylinder",
       "roles": [
         "microphones"
-      ]
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.microphone_top_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": []
     },
     {
       "id": "haptics_concept",
@@ -742,6 +912,11 @@
       "roles": [
         "haptics"
       ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.haptics_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": [],
       "radius_mm": 1.0
     },
     {
@@ -763,6 +938,13 @@
       "shape": "port",
       "roles": [
         "usb_c_port"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.usb_c_port_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": [
+        "bottom_connector_zone"
       ]
     },
     {
@@ -785,6 +967,11 @@
       "roles": [
         "sensors"
       ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.sensors_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": [],
       "radius_mm": 0.5
     },
     {
@@ -792,11 +979,11 @@
       "label": "Perimeter gasket concept",
       "group": "exterior",
       "box_mm": [
-        3.0,
-        3.0,
+        0.0,
+        0.0,
         8.9,
-        174.0,
-        89.0,
+        180.0,
+        95.0,
         0.05
       ],
       "evidence_class": "design_assumption",
@@ -807,7 +994,12 @@
       "roles": [
         "fasteners_adhesives_gaskets"
       ],
-      "band_mm": 1.0
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.perimeter_gasket_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "allowed_keepouts": [],
+      "band_mm": 2.0
     }
   ],
   "keepouts": [

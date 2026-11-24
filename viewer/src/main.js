@@ -32,9 +32,11 @@ const labels = {
   deferred: "Deferred",
 };
 const groups = Object.keys(labels);
+const requestedTab = new URLSearchParams(window.location.search).get("tab");
 const state = {
   assembly: null,
   assets: null,
+  proof: null,
   model: "concept",
   selected: null,
   search: "",
@@ -42,12 +44,15 @@ const state = {
   shell: true,
   keepouts: false,
   deferred: false,
+  proofConflicts: false,
   explode: 0,
   isolated: null,
   section: { enabled: false, axis: "x", fraction: 0.5 },
   immersive: false,
   view: "iso",
-  tab: "inspect",
+  tab: ["inspect", "program", "proof"].includes(requestedTab)
+    ? requestedTab
+    : "inspect",
 };
 const meshes = new Map();
 const baseZ = new Map();
@@ -133,6 +138,10 @@ function esc(text) {
 function textBox(box) {
   return `${box[3]} × ${box[4]} × ${box[5]} mm`;
 }
+function sourceLink(reference) {
+  const path = reference.split("#", 1)[0];
+  return `https://github.com/superflyad/BuildSlate/blob/main/${path.split("/").map(encodeURIComponent).join("/")}`;
+}
 function filteredParts() {
   return state.assembly.parts.filter(
     (p) =>
@@ -188,6 +197,10 @@ function renderParts() {
 function renderDetail() {
   const part = state.assembly.parts.find((p) => p.id === state.selected);
   if (!part) return;
+  const proof =
+    state.model === "concept"
+      ? state.proof.parts.find((item) => item.id === part.id)
+      : null;
   document.querySelector("#part-detail").className = "detail-body";
   document.querySelector("#part-detail").innerHTML = `
     <div class="eyebrow">${esc(labels[part.group])} / ${esc(part.id)}</div>
@@ -201,11 +214,89 @@ function renderDetail() {
     <div class="property"><span>Envelope</span><strong>${textBox(part.box_mm)}</strong></div>
     <div class="property"><span>Origin (x, y, z)</span><strong>${part.box_mm.slice(0, 3).join(", ")} mm</strong></div>
     <div class="property"><span>Geometry type</span><strong>${esc((part.shape || "box").replaceAll("_", " "))}</strong></div>
+    ${
+      proof
+        ? `<div class="property"><span>BREP volume</span><strong>${proof.volume_mm3.toLocaleString()} mm³</strong></div>
+    <div class="property"><span>Topology</span><strong>${proof.faces} faces · ${proof.edges} edges</strong></div>
+    <div class="property"><span>Integrity checks</span><strong>${Object.values(proof.checks).filter(Boolean).length}/${Object.keys(proof.checks).length} passed</strong></div>
+    <div class="property"><span>Solid intersections</span><strong>${proof.interference_ids.length}</strong></div>
+    <div class="property"><span>Keepout conflicts</span><strong>${proof.keepout_ids.length}</strong></div>
+    ${proof.keepout_ids.length ? `<p class="detail-note">Reserved regions: ${esc(proof.keepout_ids.join(", "))}</p>` : ""}
+    ${proof.reservation_conflict_ids.length ? `<p class="detail-note">Reservation overlap: ${esc(proof.reservation_conflict_ids.join(", "))}</p>` : ""}`
+        : ""
+    }
     <div class="section-heading">Engineering basis</div>
     <div class="property"><span>Evidence class</span><strong>${esc(part.evidence_class.replaceAll("_", " "))}</strong></div>
-    <div class="source-path"><span>Source</span><code>${esc(part.source)}</code></div>
+    <div class="source-path"><span>Source</span><a href="${sourceLink(part.source)}" target="_blank" rel="noopener noreferrer"><code>${esc(part.source)}</code></a></div>
+    ${part.geometry_source ? `<div class="source-path"><span>Geometry basis · ${esc(part.geometry_evidence_class.replaceAll("_", " "))}</span><a href="${sourceLink(part.geometry_source)}" target="_blank" rel="noopener noreferrer"><code>${esc(part.geometry_source)}</code></a></div>` : ""}
     ${part.notes ? `<div class="detail-note">${esc(part.notes.replaceAll("_", " "))}</div>` : ""}
     <p class="detail-caveat">${esc(state.assembly.caveat)}</p>`;
+}
+function proofPartButton(id) {
+  const part = state.assets.concept.data.parts.find((item) => item.id === id);
+  return `<button type="button" class="proof-part" data-proof-part="${esc(id)}">${esc(part?.label || id)}</button>`;
+}
+function renderProof() {
+  const proof = state.proof;
+  const summary = proof.summary;
+  document.querySelector("#proof-method").textContent = proof.method;
+  document.querySelector("#proof-summary").innerHTML = [
+    [
+      "Solids checked",
+      `${summary.parts_checked}/${state.assets.concept.data.parts.length}`,
+    ],
+    ["STEP round trip", summary.step_roundtrip_passed ? "PASS" : "FAIL"],
+    ["Integrity", summary.integrity_passed ? "PASS" : "FAIL"],
+    ["Solid intersections", summary.interferences],
+    ["Keepout conflicts", summary.keepout_conflicts],
+    ["Reservation overlaps", summary.reservation_conflicts],
+    ["Stack failures", summary.stack_failures],
+    ["Unverified parts", summary.unverified_parts],
+  ]
+    .map(
+      ([label, value]) =>
+        `<div><strong>${value}</strong><span>${label}</span></div>`,
+    )
+    .join("");
+  document.querySelector("#proof-intersections").innerHTML =
+    proof.intersections
+      .filter((item) => item.kind === "interference")
+      .map(
+        (item) =>
+          `<div class="proof-item">${proofPartButton(item.first)}<span>↔</span>${proofPartButton(item.second)}<small>${item.volume_mm3} mm³ overlap</small></div>`,
+      )
+      .join("") ||
+    '<p class="muted">No positive volume intersections at nominal concept positions. Tolerances and flex routing are not modeled.</p>';
+  document.querySelector("#proof-reservations").innerHTML = proof.intersections
+    .filter((item) => item.kind === "reservation_conflict")
+    .map(
+      (item) =>
+        `<div class="proof-item">${proofPartButton(item.first)}<span>↔</span>${proofPartButton(item.second)}<small>${item.volume_mm3} mm³ reserved volume</small></div>`,
+    )
+    .join("");
+  document.querySelector("#proof-keepouts").innerHTML = proof.keepout_conflicts
+    .map(
+      (item) =>
+        `<div class="proof-item">${proofPartButton(item.part_id)}<small>${esc(item.keepout_id.replaceAll("_", " "))} · ${item.overlap_area_mm2} mm²</small></div>`,
+    )
+    .join("");
+  document.querySelector("#proof-zones").innerHTML = proof.zones
+    .map(
+      (zone) =>
+        `<div class="proof-zone"><strong>${esc(zone.id.replaceAll("_", " "))}</strong><span class="proof-status ${esc(zone.status)}">${esc(zone.status)}</span><small>${zone.total_mm.toFixed(2)} mm · ${zone.margin_mm.toFixed(2)} mm margin</small></div>`,
+    )
+    .join("");
+  document.querySelector("#proof-roles").innerHTML = proof.roles
+    .map(
+      (role) => `<details class="coverage-item">
+        <summary><strong>${esc(role.id.replaceAll("_", " "))}</strong><span class="coverage-tag">${role.missing_evidence.length} gaps</span></summary>
+        <p>Geometry integrity ${role.geometry_integrity_passed ? "passed" : "failed"} · ${role.keepout_count} keepout findings · ${esc(role.source_representation)} source representation</p>
+        <div class="coverage-parts">${role.part_ids.map(proofPartButton).join("")}</div>
+        <p>Still needed:</p><ul class="proof-unknowns">${role.missing_evidence.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
+      </details>`,
+    )
+    .join("");
+  document.querySelector("#proof-caveat").textContent = proof.caveat;
 }
 function renderCoverageItem(component) {
   const representedParts = (
@@ -277,6 +368,20 @@ function updateVisibility() {
   for (const part of state.assembly.parts) {
     const mesh = meshes.get(part.id);
     if (!mesh) continue;
+    const proof =
+      state.model === "concept"
+        ? state.proof.parts.find((item) => item.id === part.id)
+        : null;
+    const highlight = state.proofConflicts && proof;
+    const tint =
+      highlight && proof.interference_ids.length
+        ? 0xf16d55
+        : highlight && proof.keepout_ids.length
+          ? 0xe5a45c
+          : highlight && proof.reservation_conflict_ids.length
+            ? 0xb598e8
+            : colors[part.group];
+    mesh.material.color.setHex(tint);
     mesh.visible =
       (!state.isolated || part.id === state.isolated) &&
       (!state.activeGroup || part.group === state.activeGroup) &&
@@ -447,7 +552,7 @@ function setImmersive(enabled) {
   resize();
 }
 function setTab() {
-  for (const tab of ["inspect", "program"]) {
+  for (const tab of ["inspect", "program", "proof"]) {
     document
       .querySelector(`#tab-${tab}`)
       .classList.toggle("active", state.tab === tab);
@@ -578,6 +683,12 @@ document.querySelector("#coverage").addEventListener("click", (event) => {
   const id = event.target.closest("[data-cover-part]")?.dataset.coverPart;
   if (id) selectPart(id);
 });
+document.querySelector("#proof-panel").addEventListener("click", (event) => {
+  const id = event.target.closest("[data-proof-part]")?.dataset.proofPart;
+  if (!id) return;
+  if (state.model !== "concept") displayModel("concept");
+  selectPart(id);
+});
 document.querySelector("#explode").addEventListener("input", (event) => {
   state.explode = Number(event.target.value) / 100;
   document.querySelector("#explode-value").textContent =
@@ -588,6 +699,7 @@ for (const [id, key] of [
   ["shell-toggle", "shell"],
   ["keepouts-toggle", "keepouts"],
   ["deferred-toggle", "deferred"],
+  ["proof-toggle", "proofConflicts"],
 ])
   document.querySelector(`#${id}`).addEventListener("change", (event) => {
     state[key] = event.target.checked;
@@ -616,7 +728,7 @@ document
   .forEach((button) =>
     button.addEventListener("click", () => setView(button.dataset.view)),
   );
-for (const tab of ["inspect", "program"])
+for (const tab of ["inspect", "program", "proof"])
   document.querySelector(`#tab-${tab}`).addEventListener("click", () => {
     state.tab = tab;
     setTab();
@@ -674,6 +786,9 @@ function displayModel(model) {
   renderGroups();
   renderParts();
   renderProgram();
+  renderProof();
+  setTab();
+  document.querySelector("#proof-toggle").disabled = model !== "concept";
   document.querySelector("#model-part-count").textContent =
     state.assembly.parts.length;
   document.querySelector("#geometry-label").textContent =
@@ -700,6 +815,10 @@ document
     button.addEventListener("click", () => displayModel(button.dataset.model)),
   );
 try {
+  const proofResponse = await fetch(`${import.meta.env.BASE_URL}proof.json`);
+  if (!proofResponse.ok)
+    throw new Error(`proof data: HTTP ${proofResponse.status}`);
+  state.proof = await proofResponse.json();
   const loader = new GLTFLoader();
   const assets = await Promise.all(
     ["concept", "assembly"].map(async (name) => {

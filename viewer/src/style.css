@@ -691,6 +691,9 @@ summary:focus-visible {
   color: #bed6e7;
   overflow-wrap: anywhere;
 }
+.source-path a:hover code {
+  color: #f0d39d;
+}
 .detail-note {
   color: #c9d5e1;
   font-size: 12px;
@@ -728,6 +731,87 @@ summary:focus-visible {
 .summary-grid span {
   color: #9db1c3;
   font-size: 11px;
+}
+.proof-list {
+  display: grid;
+  gap: 7px;
+}
+.proof-links {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 12px;
+}
+.proof-links a {
+  color: #d7b777;
+  text-underline-offset: 3px;
+}
+.proof-item,
+.proof-zone {
+  border: 1px solid #30475a;
+  border-radius: 4px;
+  background: #182b3e;
+  padding: 9px;
+  font-size: 12px;
+}
+.proof-item {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.proof-item small,
+.proof-zone small {
+  display: block;
+  flex-basis: 100%;
+  color: #9db1c3;
+  font-size: 11px;
+}
+.proof-part {
+  border: 0;
+  background: transparent;
+  color: #d7b777;
+  text-align: left;
+  padding: 0;
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+.proof-zone {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 8px;
+}
+.proof-zone strong {
+  font-size: 12px;
+  text-transform: capitalize;
+}
+.proof-status {
+  font:
+    600 10px Consolas,
+    ui-monospace,
+    monospace;
+  text-transform: uppercase;
+}
+.proof-status.pass {
+  color: #83d3b1;
+}
+.proof-status.warning {
+  color: #e5bd74;
+}
+.proof-status.fail {
+  color: #f28e82;
+}
+.proof-unknowns {
+  margin: 6px 0 12px;
+  padding-left: 18px;
+  color: #aebfd0;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.proof-unknowns li + li {
+  margin-top: 4px;
 }
 .gate-item {
   padding: 10px 0;
@@ -864,17 +948,30 @@ summary:focus-visible {
     flex-direction: column;
   }
   .stage {
-    height: 690px;
+    height: auto;
+    min-height: 690px;
     order: 0;
+  }
+  .viewport {
+    flex: none;
+    height: 300px;
   }
   .left-panel {
     height: 560px;
-    order: 1;
+    order: 2;
     border-right: 0;
     border-top: 1px solid #293b4e;
   }
   .right-panel {
-    order: 2;
+    order: 1;
+    min-width: 0;
+    width: 100%;
+    overflow: visible;
+  }
+  .right-panel [role="tabpanel"] {
+    max-height: none;
+    overflow: visible;
+    flex: none;
   }
   .stage-top {
     padding: 15px 18px;
@@ -915,6 +1012,15 @@ summary:focus-visible {
   }
   .stage-bottom {
     padding: 12px;
+  }
+  .toggles {
+    width: 100%;
+    min-width: 0;
+    gap: 10px 14px;
+  }
+  .right-tabs {
+    min-width: 0;
+    width: 100%;
   }
   .section-row {
     flex-wrap: wrap;

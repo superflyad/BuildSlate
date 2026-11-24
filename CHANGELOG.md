@@ -4,6 +4,8 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Added per-solid CAD proofing with anchored source checks, BREP/mesh bounds, STEP round-trip volume, exact intersections, planform keepouts, and local stack results; exposed findings in the viewer.
+- Detailed the concept board, packages, battery tray, cameras, speakers, rear cover, frame, and gasket while preserving each added feature's assumption status.
 - Published the concept CAD viewer through GitHub Pages after the validation and CAD export jobs pass.
 - Added a 41-solid editable Slate Pocket v1R concept STEP assembly generated from the source envelopes and explicit assumptions for every component library role.
 - Added a matching browser CAD view, preserved the source-envelope comparison, and validated geometry identity, coverage, and regeneration in CI.

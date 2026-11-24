@@ -11,6 +11,7 @@ import struct
 from pathlib import Path
 
 from .assembly import build_assembly
+from .cad_proof import PROOF, build_proof
 from .io import load_yaml
 from .program import DEFAULT_REPO_ROOT
 
@@ -28,10 +29,29 @@ def build_concept(repo_root: Path) -> dict:
     source_ids = {part["id"] for part in source["parts"]}
     if set(manifest["source_overrides"]) - source_ids:
         raise ValueError("unknown source part in concept override")
+    envelope = load_yaml(repo_root / source["sources"]["envelope"])
+    placement_layers = {
+        part_id: spec["layer"] for part_id, spec in envelope["placements"].items()
+    }
     parts = []
     for original in source["parts"]:
         part = {**original, "shape": "box"}
-        part.update(manifest["source_overrides"].get(part["id"], {}))
+        part["geometry_use"] = "solid"
+        part["screen_layer"] = placement_layers.get(part["id"])
+        if part["source"].startswith(source["sources"]["pcb"] + "#"):
+            part["screen_layer"] = "component_planform"
+        override = manifest["source_overrides"].get(part["id"])
+        if override:
+            part.update(override)
+            if "height_mm" in override:
+                part["box_mm"] = [*part["box_mm"][:5], float(override["height_mm"])]
+            part["geometry_source"] = (
+                f"{MANIFEST.as_posix()}#source_overrides.{part['id']}"
+            )
+            part["geometry_evidence_class"] = "design_assumption"
+        else:
+            part["geometry_source"] = part["source"]
+            part["geometry_evidence_class"] = part["evidence_class"]
         parts.append(part)
     for part_id, spec in manifest["additional_parts"].items():
         if part_id in source_ids:
@@ -47,14 +67,23 @@ def build_concept(repo_root: Path) -> dict:
             "active": True,
             "shape": spec["shape"],
             "roles": spec["roles"],
+            "geometry_source": f"{MANIFEST.as_posix()}#additional_parts.{part_id}",
+            "geometry_evidence_class": "design_assumption",
+            "geometry_use": spec.get("geometry_use", "solid"),
+            "screen_layer": spec.get("screen_layer"),
+            "allowed_keepouts": spec.get("allowed_keepouts", []),
         }
-        for key in ("radius_mm", "band_mm"):
+        for key in ("radius_mm", "band_mm", "wall_mm"):
             if key in spec:
                 part[key] = float(spec[key])
         parts.append(part)
     if len({part["id"] for part in parts}) != len(parts):
         raise ValueError("duplicate concept part ID")
     extent = source["extent_mm"]
+    keepouts = load_yaml(repo_root / source["sources"]["keepouts"])["keepouts"]
+    screen_layers = {
+        layer for keepout in keepouts.values() for layer in keepout["applies_to_layers"]
+    }
     for part in parts:
         box = part["box_mm"]
         if (
@@ -69,6 +98,15 @@ def build_concept(repo_root: Path) -> dict:
             )
         ):
             raise ValueError(f"concept part outside device: {part['id']}")
+        if part["geometry_use"] not in {"solid", "reservation"}:
+            raise ValueError(f"unknown geometry use: {part['id']}")
+        if (
+            part.get("screen_layer") is not None
+            and part["screen_layer"] not in screen_layers
+        ):
+            raise ValueError(f"unknown keepout screen layer: {part['id']}")
+        if set(part.get("allowed_keepouts", [])) - set(keepouts):
+            raise ValueError(f"unknown keepout allowance: {part['id']}")
     roles = {item["id"] for item in source["component_coverage"]}
     if {role for part in parts for role in part.get("roles", [])} - roles:
         raise ValueError("unknown concept component role")
@@ -93,19 +131,89 @@ def _shape(cq, part: dict):
     x, y, z, length, width, height = part["box_mm"]
     kind = part["shape"]
     body = cq.Workplane("XY").box(length, width, height, centered=False)
-    if kind in {"rounded_box", "speaker"}:
+    if kind in {"rounded_box", "speaker", "rear_panel", "pcb"}:
         radius = min(float(part.get("radius_mm", 1.0)), length / 3, width / 3)
         body = body.edges("|Z").fillet(radius)
+    if kind == "rear_panel":
+        center_x, center_y = part["aperture_center_mm"]
+        aperture = (
+            cq.Workplane("XY")
+            .center(center_x - x, center_y - y)
+            .circle(float(part["aperture_radius_mm"]))
+            .extrude(height + 2)
+            .translate((0, 0, -1))
+        )
+        body = body.cut(aperture)
+    elif kind == "pcb":
+        for hole_x in (4, length - 4):
+            for hole_y in (4, width - 4):
+                drill = (
+                    cq.Workplane("XY")
+                    .center(hole_x, hole_y)
+                    .circle(0.9)
+                    .extrude(height + 2)
+                    .translate((0, 0, -1))
+                )
+                body = body.cut(drill)
+    elif kind == "speaker":
+        slot_width = min(0.8, length / 12)
+        for slot_x in (length * 0.3, length * 0.5, length * 0.7):
+            slot = (
+                cq.Workplane("XY")
+                .box(slot_width, width * 0.55, height * 0.4, centered=False)
+                .translate((slot_x - slot_width / 2, width * 0.225, height * 0.6))
+            )
+            body = body.cut(slot)
+    elif kind == "chip":
+        inset = min(0.6, length * 0.12, width * 0.12)
+        recess_depth = min(0.08, height * 0.12)
+        recess = (
+            cq.Workplane("XY")
+            .box(
+                length - 2 * inset,
+                width - 2 * inset,
+                recess_depth + 0.1,
+                centered=False,
+            )
+            .translate((inset, inset, height - recess_depth))
+        )
+        body = body.cut(recess)
+    elif kind == "battery_tray":
+        wall = float(part["wall_mm"])
+        floor = min(0.3, height * 0.1)
+        cavity = (
+            cq.Workplane("XY")
+            .box(length - 2 * wall, width - 2 * wall, height + 1, centered=False)
+            .translate((wall, wall, floor))
+        )
+        body = body.cut(cavity)
     elif kind == "camera_module":
-        body = cq.Workplane("XY").box(length, width, height * 0.65, centered=False)
+        rear = part.get("lens_face") == "rear"
+        base_z = height * 0.35 if rear else 0
+        lens_z = 0 if rear else height * 0.65
+        body = (
+            cq.Workplane("XY")
+            .box(length, width, height * 0.65, centered=False)
+            .translate((0, 0, base_z))
+        )
+        lens_radius = min(length, width) * 0.32
         lens = (
             cq.Workplane("XY")
             .center(length / 2, width / 2)
-            .circle(min(length, width) * 0.32)
+            .circle(lens_radius)
             .extrude(height * 0.35)
-            .translate((0, 0, height * 0.65))
+            .translate((0, 0, lens_z))
         )
         body = body.union(lens)
+        well_z = 0 if rear else height * 0.9
+        optical_well = (
+            cq.Workplane("XY")
+            .center(length / 2, width / 2)
+            .circle(lens_radius * 0.42)
+            .extrude(height * 0.1)
+            .translate((0, 0, well_z))
+        )
+        body = body.cut(optical_well)
     elif kind == "cylinder":
         body = (
             cq.Workplane("XY")
@@ -135,7 +243,7 @@ def _shape(cq, part: dict):
             .translate((length / 2 - 6, -1, 2.25))
         )
         body = body.cut(void)
-    elif kind != "box":
+    elif kind not in {"box", "rounded_box"}:
         raise ValueError(f"unknown CAD shape: {kind}")
     return body.translate((x, y, z))
 
@@ -269,6 +377,17 @@ def generate(repo_root: Path = DEFAULT_REPO_ROOT) -> tuple[int, Path]:
             raise ValueError(f"concept part is not one solid: {part['id']}")
         cad.add(solid, name=part["id"])
         solids.append((part, solid))
+    exact_bounds = {}
+    for part, solid in solids:
+        box = solid.val().BoundingBox()
+        exact_bounds[part["id"]] = [
+            box.xmin,
+            box.ymin,
+            box.zmin,
+            box.xmax,
+            box.ymax,
+            box.zmax,
+        ]
     step_path = root / STEP
     step_path.parent.mkdir(parents=True, exist_ok=True)
     cad.export(str(step_path))
@@ -280,15 +399,19 @@ def generate(repo_root: Path = DEFAULT_REPO_ROOT) -> tuple[int, Path]:
     if count != 1:
         raise ValueError("STEP header format changed")
     step_path.write_text(step_text, encoding="utf-8", newline="\n")
-    if len(cq.importers.importStep(str(step_path)).solids().vals()) != len(solids):
-        raise ValueError("STEP solid count drift")
+    imported_solids = cq.importers.importStep(str(step_path)).solids().vals()
+    geometry = _gltf(solids)
+    proof = build_proof(root, model, solids, geometry, imported_solids, exact_bounds)
     (root / MODEL).write_text(
         json.dumps(model, indent=2) + "\n", encoding="utf-8", newline="\n"
     )
     (root / GLTF).write_text(
-        json.dumps(_gltf(solids), separators=(",", ":")) + "\n",
+        json.dumps(geometry, separators=(",", ":")) + "\n",
         encoding="utf-8",
         newline="\n",
+    )
+    (root / PROOF).write_text(
+        json.dumps(proof, indent=2) + "\n", encoding="utf-8", newline="\n"
     )
     return len(solids), step_path
 

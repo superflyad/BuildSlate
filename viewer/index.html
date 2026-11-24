@@ -138,6 +138,10 @@
                 ><input id="deferred-toggle" type="checkbox" /><span
                   >Deferred concepts</span
                 ></label
+              ><label
+                ><input id="proof-toggle" type="checkbox" /><span
+                  >Proof conflicts</span
+                ></label
               >
             </div>
             <div class="section-row">
@@ -175,7 +179,9 @@
             >
               Inspect</button
             ><button id="tab-program" role="tab" aria-selected="false">
-              Program
+              Program</button
+            ><button id="tab-proof" role="tab" aria-selected="false">
+              Proof
             </button>
           </div>
           <div id="inspect-panel" role="tabpanel">
@@ -204,6 +210,39 @@
               <div id="gates" class="gate-list"></div>
               <div class="section-heading">External blockers</div>
               <div id="blockers" class="blocker-list"></div>
+            </div>
+          </div>
+          <div id="proof-panel" class="hidden" role="tabpanel">
+            <div class="detail-body">
+              <div class="eyebrow">CAD PROOF</div>
+              <h2>Geometry review</h2>
+              <p id="proof-method" class="muted"></p>
+              <div class="proof-links">
+                <a
+                  href="https://github.com/superflyad/BuildSlate/blob/main/buildslate/cad_proof.py"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Proof code</a
+                >
+                <a
+                  href="https://superflyad.github.io/BuildSlate/proof.json"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Raw findings</a
+                >
+              </div>
+              <div id="proof-summary" class="summary-grid"></div>
+              <div class="section-heading">Physical intersections</div>
+              <div id="proof-intersections" class="proof-list"></div>
+              <div class="section-heading">Reservation overlaps</div>
+              <div id="proof-reservations" class="proof-list"></div>
+              <div class="section-heading">Keepout conflicts</div>
+              <div id="proof-keepouts" class="proof-list"></div>
+              <div class="section-heading">Local thickness screens</div>
+              <div id="proof-zones" class="proof-list"></div>
+              <div class="section-heading">Component role proof</div>
+              <div id="proof-roles" class="coverage-list"></div>
+              <p id="proof-caveat" class="detail-caveat"></p>
             </div>
           </div>
           <div class="evidence-note">

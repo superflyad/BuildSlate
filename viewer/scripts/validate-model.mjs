@@ -59,3 +59,23 @@ for (const model of ["assembly", "concept"]) {
   }
   console.log(`PASS: ${model} glTF loads ${names.size} distinct meshes`);
 }
+const proof = JSON.parse(
+  readFileSync(resolve(root, "public/proof.json"), "utf8"),
+);
+const concept = JSON.parse(
+  readFileSync(resolve(root, "public/concept.json"), "utf8"),
+);
+assert.deepEqual(
+  new Set(proof.parts.map((part) => part.id)),
+  new Set(concept.parts.map((part) => part.id)),
+);
+assert.ok(
+  proof.parts.every((part) => Object.values(part.checks).every(Boolean)),
+);
+assert.equal(proof.summary.parts_checked, concept.parts.length);
+assert.deepEqual(
+  new Set(proof.roles.map((role) => role.id)),
+  new Set(concept.component_coverage.map((role) => role.id)),
+);
+assert.equal(proof.summary.keepout_conflicts, proof.keepout_conflicts.length);
+console.log(`PASS: ${proof.parts.length} CAD proof records load`);

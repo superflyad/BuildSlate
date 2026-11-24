@@ -6,16 +6,32 @@ description: >-
   These are design assumptions for visual and packaging review, not selected
   components, released drawings, or evidence of fit.
 source_overrides:
-  rear_cover: {shape: rounded_box, radius_mm: 3.0}
+  rear_cover: {shape: rear_panel, radius_mm: 3.0, aperture_center_mm: [111.0, 76.5], aperture_radius_mm: 4.0}
   cover_glass: {shape: rounded_box, radius_mm: 3.0}
   display_stack: {shape: rounded_box, radius_mm: 2.0, height_mm: 0.70}
-  main_pcb_placeholder: {shape: rounded_box, radius_mm: 1.0}
+  main_pcb_placeholder: {shape: pcb, radius_mm: 1.0}
   battery_reference: {shape: rounded_box, radius_mm: 2.0}
-  rear_camera_placeholder: {shape: camera_module}
+  rear_camera_placeholder: {shape: camera_module, lens_face: rear}
   speaker_a_placeholder: {shape: speaker}
   speaker_b_placeholder: {shape: speaker}
-  wireless_charging_placeholder: {shape: coil}
-  frame_bottom: {shape: ported_frame}
+  wireless_charging_placeholder: {shape: coil, geometry_use: reservation}
+  frame_left: {shape: box, height_mm: 8.35}
+  frame_right: {shape: box, height_mm: 8.35}
+  frame_top: {shape: box, height_mm: 8.35}
+  frame_bottom: {shape: ported_frame, height_mm: 8.35}
+  thermal_spreader_placeholder: {shape: rounded_box, radius_mm: 2.0}
+  compute_soc: {shape: chip}
+  memory_a_32gb: {shape: chip}
+  memory_b_32gb: {shape: chip}
+  memory_c_32gb: {shape: chip}
+  memory_d_32gb: {shape: chip}
+  storage_ufs_1tb_reference: {shape: chip}
+  platform_pmic: {shape: chip}
+  battery_charger: {shape: chip}
+  usb_pd_controller: {shape: chip}
+  wireless_charge_controller: {shape: chip}
+  wifi_bluetooth: {shape: chip}
+  security_controller: {shape: chip}
 additional_parts:
   touch_digitizer_concept:
     label: Touch digitizer concept
@@ -29,10 +45,11 @@ additional_parts:
   battery_pack_shell_concept:
     label: Battery pack envelope concept
     group: power
-    box_mm: [9, 11, 1.20, 82, 68, 6.20]
-    shape: rounded_box
-    radius_mm: 2.0
+    box_mm: [9, 11, 1.20, 82, 68.5, 6.20]
+    shape: battery_tray
+    wall_mm: 0.5
     roles: [battery_pack]
+    screen_layer: component_planform
     basis: research/evidence/battery/pack-envelope.yaml#required_pack_cad_inputs
     assumption: Outer pack allowance around the raw-cell reference; protection and swelling remain unresolved.
   graphite_spreader_concept:
@@ -42,6 +59,7 @@ additional_parts:
     shape: rounded_box
     radius_mm: 2.0
     roles: [graphite_spreader]
+    screen_layer: thermal_overlay
     basis: engineering/components/component_library.yaml#components.graphite_spreader
     assumption: Sheet follows the thermal-overlay planform; electrical isolation and RF cutouts are unresolved.
   phase_change_material_concept:
@@ -51,6 +69,7 @@ additional_parts:
     shape: rounded_box
     radius_mm: 1.0
     roles: [phase_change_material]
+    screen_layer: thermal_overlay
     basis: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.compute_soc
     assumption: Optional local patch above the compute site; material and containment are unselected.
   front_camera_concept:
@@ -59,6 +78,7 @@ additional_parts:
     box_mm: [84, 83, 5.50, 8, 8, 2.40]
     shape: camera_module
     roles: [front_camera_module]
+    screen_layer: component_planform
     basis: engineering/components/component_library.yaml#components.front_camera_module
     assumption: Under-display optical path; aperture and panel compatibility are unverified.
   antenna_top_left_concept:
@@ -68,6 +88,7 @@ additional_parts:
     shape: rounded_box
     radius_mm: 1.0
     roles: [antenna_modules]
+    geometry_use: reservation
     basis: engineering/rf/keepout-map/map.yaml#antenna_reservations.top_left
     assumption: Reserved volume only; no radiating element or feed is designed.
   antenna_top_right_concept:
@@ -77,6 +98,7 @@ additional_parts:
     shape: rounded_box
     radius_mm: 1.0
     roles: [antenna_modules]
+    geometry_use: reservation
     basis: engineering/rf/keepout-map/map.yaml#antenna_reservations.top_right
     assumption: Reserved volume only; no radiating element or feed is designed.
   antenna_bottom_left_concept:
@@ -86,6 +108,7 @@ additional_parts:
     shape: rounded_box
     radius_mm: 1.0
     roles: [antenna_modules]
+    geometry_use: reservation
     basis: engineering/rf/keepout-map/map.yaml#antenna_reservations.bottom_left
     assumption: Reserved volume only; no radiating element or feed is designed.
   antenna_bottom_right_concept:
@@ -95,6 +118,7 @@ additional_parts:
     shape: rounded_box
     radius_mm: 1.0
     roles: [antenna_modules]
+    geometry_use: reservation
     basis: engineering/rf/keepout-map/map.yaml#antenna_reservations.bottom_right
     assumption: Reserved volume only; no radiating element or feed is designed.
   microphone_bottom_concept:
@@ -103,6 +127,7 @@ additional_parts:
     box_mm: [80, 4, 1.20, 3, 3, 1.20]
     shape: cylinder
     roles: [microphones]
+    screen_layer: component_planform
     basis: engineering/components/component_library.yaml#components.microphones
     assumption: Port position and acoustic seal require a released enclosure design.
   microphone_top_concept:
@@ -111,6 +136,7 @@ additional_parts:
     box_mm: [98, 88, 1.20, 3, 3, 1.20]
     shape: cylinder
     roles: [microphones]
+    screen_layer: component_planform
     basis: engineering/components/component_library.yaml#components.microphones
     assumption: Port intersects the top RF reserve and requires joint acoustic/RF review.
   haptics_concept:
@@ -120,6 +146,7 @@ additional_parts:
     shape: rounded_box
     radius_mm: 1.0
     roles: [haptics]
+    screen_layer: component_planform
     basis: engineering/components/component_library.yaml#components.haptics
     assumption: Chassis coupling and clearance beside the speaker are unverified.
   usb_c_port_concept:
@@ -128,6 +155,8 @@ additional_parts:
     box_mm: [84, 0, 2.80, 12, 6, 3.00]
     shape: port
     roles: [usb_c_port]
+    screen_layer: component_planform
+    allowed_keepouts: [bottom_connector_zone]
     basis: cad/slate-pocket-v1r/envelope-model/keepouts.yaml#keepouts.bottom_connector_zone
     assumption: Central edge opening with an assumed 12 by 3 mm receptacle envelope.
   sensors_concept:
@@ -137,14 +166,15 @@ additional_parts:
     shape: rounded_box
     radius_mm: 0.5
     roles: [sensors]
+    screen_layer: component_planform
     basis: engineering/components/component_library.yaml#components.sensors
     assumption: Clustered package allowance; sensor suite and optical paths are unresolved.
   perimeter_gasket_concept:
     label: Perimeter gasket concept
     group: exterior
-    box_mm: [3, 3, 8.90, 174, 89, 0.05]
+    box_mm: [0, 0, 8.90, 180, 95, 0.05]
     shape: gasket
-    band_mm: 1.0
+    band_mm: 2.0
     roles: [fasteners_adhesives_gaskets]
     basis: engineering/components/component_library.yaml#components.fasteners_adhesives_gaskets
     assumption: Seal path only; fastener and adhesive pattern await enclosure release.

@@ -1,7 +1,7 @@
 EVT0_CAMPAIGN_GATE: EMPTY_CAMPAIGN
 summary:
   ingested_run_count: 0
-  required_test_count: 16
+  required_test_count: 17
   passing_required_test_count: 0
 missing_or_nonpassing_required_tests:
 - B00
@@ -10,6 +10,7 @@ missing_or_nonpassing_required_tests:
 - B50
 - C40
 - F00
+- I20
 - M20
 - MC0
 - P00
@@ -20,6 +21,8 @@ missing_or_nonpassing_required_tests:
 - T10
 - T20
 - T30
+coherent_evidence_group: null
+evidence_groups: []
 runs: []
 next_actions:
 - Satisfy supplier, Phase 2, safety, calibration, and authorization prerequisites before physical work.

@@ -887,8 +887,8 @@
     }
   ],
   "program_summary": {
-    "entity_count": 267,
-    "relation_count": 310,
+    "entity_count": 268,
+    "relation_count": 311,
     "entity_kind_counts": {
       "artifact": 35,
       "assumption": 12,
@@ -904,7 +904,7 @@
       "requirement": 14,
       "risk": 13,
       "supplier": 12,
-      "test": 18,
+      "test": 19,
       "workflow": 18
     },
     "evidence_status_counts": {

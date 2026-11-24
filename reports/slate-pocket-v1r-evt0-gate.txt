@@ -32,8 +32,8 @@ Build readiness:
   cellular: DEFERRED
 
 Executable test package:
-  planned tests: 18
-  tests required for evidence gate: 16
+  planned tests: 19
+  tests required for evidence gate: 17
   workload definitions: 7
   workload definitions awaiting content hashes: 4
   run manifest schema: available
@@ -44,7 +44,7 @@ Executable test package:
 Measured evidence:
   result files excluding instructions: 0
   ingested campaign runs: 0
-  objective passing required tests: 0/16
+  objective passing required tests: 0/17
   campaign gate: EMPTY_CAMPAIGN
   model correlation completed: no
 

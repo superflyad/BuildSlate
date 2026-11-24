@@ -16,7 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from buildslate.evt0 import EVT0CampaignRepository
+from buildslate.evt0 import EVT0CampaignRepository, _coherent_coverage
 from buildslate.io import dump_yaml, load_yaml
 
 
@@ -176,6 +176,47 @@ def main() -> int:
         load_yaml(REPO_ROOT / "reports/program/evt0-campaign.yaml") == empty,
         "generated EVT0 campaign report is deterministic and current",
     )
+    required = set(repository.matrix["required_for_evt0_evidence_gate"])
+    split_units = [
+        {
+            "campaign_id": "C1",
+            "unit_id": f"U{index}",
+            "build_id": "B1",
+            "configuration_sha256": "a" * 64,
+            "test_id": test_id,
+            "objective_disposition": "VALID_PASS",
+        }
+        for index, test_id in enumerate(sorted(required))
+    ]
+    _, credited, groups = _coherent_coverage(split_units, required)
+    require(
+        len(credited) == 1 and len(groups) == len(required),
+        "passing tests on different physical units cannot complete EVT0",
+    )
+    coherent = [{**item, "unit_id": "U1"} for item in split_units]
+    selected, credited, _ = _coherent_coverage(coherent, required)
+    require(
+        credited == required and selected["unit_id"] == "U1",
+        "one serialized unit can cover the full required test set",
+    )
+    mixed_build = [
+        {**item, "build_id": "B2" if index % 2 else "B1"}
+        for index, item in enumerate(coherent)
+    ]
+    _, credited, _ = _coherent_coverage(mixed_build, required)
+    require(
+        len(credited) < len(required),
+        "tests across build revisions cannot be pooled",
+    )
+    mixed_configuration = [
+        {**item, "configuration_sha256": "b" * 64 if index % 2 else "a" * 64}
+        for index, item in enumerate(coherent)
+    ]
+    _, credited, _ = _coherent_coverage(mixed_configuration, required)
+    require(
+        len(credited) < len(required),
+        "tests across configuration revisions cannot be pooled",
+    )
     for name in ("calibration.schema.yaml", "deviation.schema.yaml"):
         require(
             (REPO_ROOT / "validation/evt0/schemas" / name).is_file(),
@@ -224,6 +265,10 @@ def main() -> int:
             "P10" not in report["missing_or_nonpassing_required_tests"],
             "passing test is credited without claiming campaign completion",
         )
+        require(
+            report["coherent_evidence_group"]["unit_id"] == "UNIT-VALIDATION",
+            "campaign report identifies the physical unit behind credited tests",
+        )
 
         preserved_raw = receipt.parent / "raw/telemetry.csv"
         preserved_raw.write_text("tampered\n", encoding="utf-8", newline="\n")
@@ -243,6 +288,64 @@ def main() -> int:
         require(
             "maximum_skin_c" in hot_review["calculated_limit_events"],
             "calculated hard-stop cause is explicit",
+        )
+
+    with tempfile.TemporaryDirectory() as temp_directory:
+        interface_bundle = create_bundle(Path(temp_directory))
+        manifest_path = interface_bundle / "manifest.yaml"
+        manifest = load_yaml(manifest_path)
+        manifest["test_id"] = "I20"
+        manifest["run_id"] = "RUN-I20"
+        manifest_path.write_text(dump_yaml(manifest), encoding="utf-8", newline="\n")
+        result_path = interface_bundle / "result.yaml"
+        result = load_yaml(result_path)
+        for channel in repository.required_channels("I20"):
+            result["required_channel_status"][channel] = True
+        result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
+        review = repository.review_bundle(interface_bundle)
+        require(
+            review["objective_disposition"] == "REJECTED_INVALID_EVIDENCE"
+            and any("display_frames" in error for error in review["integrity_errors"]),
+            "interface test cannot pass without raw activity counters",
+        )
+        raw_path = interface_bundle / "raw/telemetry.csv"
+        counter_names = (
+            "display_frames",
+            "touch_events",
+            "camera_frames",
+            "audio_playback_samples",
+            "audio_capture_samples",
+            "usb_bytes_tx",
+            "usb_bytes_rx",
+        )
+        raw_path.write_text(
+            "elapsed_s,"
+            + ",".join(counter_names)
+            + "\n"
+            + "0,"
+            + ",".join("0" for _ in counter_names)
+            + "\n"
+            + "10,"
+            + ",".join("10" for _ in counter_names)
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+        result["raw_data"][0]["sha256"] = sha256(raw_path)
+        result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
+        calibration_path = interface_bundle / "calibrations/CAL-VALIDATION.yaml"
+        calibration = load_yaml(calibration_path)
+        calibration["channels"] = sorted(
+            set(calibration["channels"]) | set(repository.required_channels("I20"))
+        )
+        calibration_path.write_text(
+            dump_yaml(calibration), encoding="utf-8", newline="\n"
+        )
+        review = repository.review_bundle(interface_bundle)
+        require(
+            review["objective_disposition"] == "VALID_PASS"
+            and all(value == 10 for value in review["interface_activity"].values()),
+            "interface activity is calculated from hash-verified raw CSV",
         )
 
     cli = subprocess.run(

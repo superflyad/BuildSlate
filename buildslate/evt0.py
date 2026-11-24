@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import json
 import math
 import shutil
 from datetime import datetime
@@ -13,6 +14,15 @@ from typing import Any
 from .io import dump_yaml, load_yaml
 
 HASH_LENGTH = 64
+INTERFACE_COUNTERS = (
+    "display_frames",
+    "touch_events",
+    "camera_frames",
+    "audio_playback_samples",
+    "audio_capture_samples",
+    "usb_bytes_tx",
+    "usb_bytes_rx",
+)
 REQUIRED_MANIFEST_FIELDS = {
     "schema_version",
     "campaign_id",
@@ -60,6 +70,52 @@ def _valid_hash(value: Any) -> bool:
         isinstance(value, str)
         and len(value) == HASH_LENGTH
         and all(character in "0123456789abcdefABCDEF" for character in value)
+    )
+
+
+def _coherent_coverage(
+    items: list[dict[str, Any]], required: set[str]
+) -> tuple[dict[str, str] | None, set[str], list[dict[str, Any]]]:
+    """Credit tests only within one campaign, unit, build, and configuration."""
+    groups: dict[tuple[str, str, str, str], set[str]] = {}
+    for item in items:
+        if item.get("objective_disposition") != "VALID_PASS":
+            continue
+        fields = (
+            item.get("campaign_id"),
+            item.get("unit_id"),
+            item.get("build_id"),
+            item.get("configuration_sha256"),
+        )
+        if not all(isinstance(field, str) and field for field in fields):
+            continue
+        groups.setdefault(fields, set()).add(item["test_id"])
+    ordered = sorted(
+        groups.items(), key=lambda entry: (-len(entry[1] & required), entry[0])
+    )
+    summaries = [
+        {
+            "campaign_id": key[0],
+            "unit_id": key[1],
+            "build_id": key[2],
+            "configuration_sha256": key[3],
+            "passing_required_tests": sorted(tests & required),
+        }
+        for key, tests in ordered
+    ]
+    if not ordered:
+        return None, set(), summaries
+    return (
+        {
+            key: value
+            for key, value in zip(
+                ("campaign_id", "unit_id", "build_id", "configuration_sha256"),
+                ordered[0][0],
+                strict=True,
+            )
+        },
+        ordered[0][1] & required,
+        summaries,
     )
 
 
@@ -412,6 +468,14 @@ class EVT0CampaignRepository:
         errors.extend(self._verify_calibrations(bundle, manifest))
         rows, csv_errors = self._read_rows(csv_paths)
         errors.extend(csv_errors)
+        interface_activity: dict[str, float | None] = {}
+        if manifest.get("test_id") == "I20":
+            for counter in INTERFACE_COUNTERS:
+                values = [row[counter] for row in rows if counter in row]
+                delta = values[-1] - values[0] if len(values) >= 2 else None
+                interface_activity[counter] = delta
+                if delta is None or not math.isfinite(delta) or delta <= 0:
+                    errors.append(f"I20 requires positive raw activity: {counter}")
         try:
             calculated_metrics = self.calculate_metrics(rows) if not csv_errors else {}
         except (ValueError, ZeroDivisionError) as exc:
@@ -511,8 +575,15 @@ class EVT0CampaignRepository:
             "run_id": manifest.get("run_id"),
             "test_id": manifest.get("test_id"),
             "unit_id": manifest.get("unit_id"),
+            "build_id": manifest.get("build_id"),
+            "configuration_sha256": hashlib.sha256(
+                json.dumps(
+                    manifest.get("configuration"), sort_keys=True, default=str
+                ).encode()
+            ).hexdigest(),
             "integrity_errors": errors,
             "calculated_metrics": calculated_metrics,
+            "interface_activity": interface_activity,
             "model_correlations": correlations,
             "deviation_count": len(deviations),
             "open_deviation_count": len(open_deviations),
@@ -586,11 +657,7 @@ class EVT0CampaignRepository:
                 review["objective_disposition"] = "REJECTED_INVALID_EVIDENCE"
             items.append(review)
         required = set(self.matrix["required_for_evt0_evidence_gate"])
-        passing = {
-            item.get("test_id")
-            for item in items
-            if item.get("objective_disposition") == "VALID_PASS"
-        }
+        selected_group, passing, groups = _coherent_coverage(items, required)
         missing = sorted(required - passing)
         if not items:
             gate = "EMPTY_CAMPAIGN"
@@ -611,6 +678,8 @@ class EVT0CampaignRepository:
                 "passing_required_test_count": len(required) - len(missing),
             },
             "missing_or_nonpassing_required_tests": missing,
+            "coherent_evidence_group": selected_group,
+            "evidence_groups": groups,
             "runs": items,
             "next_actions": [
                 "Satisfy supplier, Phase 2, safety, calibration, and authorization prerequisites before physical work.",

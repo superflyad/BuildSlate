@@ -336,6 +336,13 @@ function renderHardware() {
       )
       .join("") +
     `<div class="gate-item"><strong>Cellular modem</strong><span>${report.cellular.selected ? "Selected" : esc(report.cellular.status.replaceAll("_", " "))}</span></div>`;
+  const campaign = report.evt0_campaign;
+  const group = campaign.coherent_evidence_group;
+  document.querySelector("#hardware-campaign").innerHTML = `
+    <div class="gate-item"><strong>Campaign gate</strong><span>${esc(campaign.gate.replaceAll("_", " "))}</span></div>
+    <div class="gate-item"><strong>Required tests on one unit</strong><span>${campaign.passing_required_tests}/${campaign.required_tests} passed${group ? ` · ${esc(group.unit_id)} / ${esc(group.build_id)}` : " · no unit evidence"}</span></div>
+    <div class="gate-item"><strong>Missing or nonpassing tests</strong><span>${esc(campaign.missing_tests.join(", ") || "None")}</span></div>
+    <div class="gate-item"><strong>Prerequisite gaps</strong><span>${esc(campaign.prerequisite_gaps.join(", ") || "None")}</span></div>`;
   for (const [selector, items] of [
     ["#hardware-design", design],
     ["#hardware-evt0", evt0],

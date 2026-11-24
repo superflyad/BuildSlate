@@ -10,6 +10,7 @@ import hashlib
 import json
 from pathlib import Path
 
+from buildslate.evt0 import EVT0CampaignRepository
 from buildslate.io import load_yaml
 from buildslate.mechanical_proof import ASSEMBLY as MECHANICAL_ASSEMBLY
 from buildslate.mechanical_proof import MANIFEST as MECHANICAL_MANIFEST
@@ -20,6 +21,8 @@ from buildslate.netlist_proof import audit as audit_netlist
 MANIFEST = Path("engineering/hardware/readiness.yaml")
 STRATEGY = Path("validation/evt0/bom-strategy.yaml")
 REPORT = Path("viewer/public/hardware-readiness.json")
+EVT0_SPEC = Path("validation/evt0/evt0-spec.yaml")
+EVIDENCE_REGISTRY = Path("engineering/evidence/evidence_registry.yaml")
 STAGES = ("design_release", "functional_evt0", "phone_function")
 REQUIRED = {
     "design_release": (
@@ -147,6 +150,30 @@ def _evidence_result(root: Path, requirement: dict, record: object) -> dict:
     return result
 
 
+def _evt0_prerequisites(root: Path) -> list[str]:
+    """Preserve source authorization, safety, and supplier gates in hardware status."""
+    spec = load_yaml(root / EVT0_SPEC)
+    registry = load_yaml(root / EVIDENCE_REGISTRY)
+    prerequisites = spec["prerequisite_gates"]
+    missing = []
+    for field, value in prerequisites["authorization"].items():
+        if field.endswith("_authorized") and value is not True:
+            missing.append(f"authorization.{field}")
+    if (
+        not isinstance(prerequisites["authorization"].get("authorized_by"), str)
+        or not prerequisites["authorization"]["authorized_by"].strip()
+    ):
+        missing.append("authorization.authorized_by")
+    for field, value in prerequisites["safety"].items():
+        if value is not True:
+            missing.append(f"safety.{field}")
+    for group in ("supplier_evidence", "phase2_integration"):
+        for package in prerequisites[group]["packages"]:
+            if registry["packages"][package]["status"] != "verified":
+                missing.append(f"package.{package}")
+    return missing
+
+
 def build_report(root: Path) -> dict:
     """Return a deterministic, fail-closed readiness report."""
     manifest = load_yaml(root / MANIFEST)
@@ -201,10 +228,17 @@ def build_report(root: Path) -> dict:
             if entry["stage"] == "design_release"
         )
     )
-    evt0 = design and all(
-        entry["status"] == "accepted"
-        for entry in entries
-        if entry["stage"] == "functional_evt0"
+    campaign = EVT0CampaignRepository(root).build_campaign_report()
+    prerequisite_gaps = _evt0_prerequisites(root)
+    evt0 = (
+        design
+        and all(
+            entry["status"] == "accepted"
+            for entry in entries
+            if entry["stage"] == "functional_evt0"
+        )
+        and campaign["EVT0_CAMPAIGN_GATE"] == "OBJECTIVE_EVIDENCE_REVIEW_READY"
+        and not prerequisite_gaps
     )
     cellular = strategy["roles"]["cellular"]
     cellular_selected = (
@@ -226,6 +260,16 @@ def build_report(root: Path) -> dict:
         "device": manifest["device"],
         "design_release": "ready_for_review" if design else "blocked",
         "functional_evt0": "evidence_ready_for_review" if evt0 else "blocked",
+        "evt0_campaign": {
+            "gate": campaign["EVT0_CAMPAIGN_GATE"],
+            "required_tests": campaign["summary"]["required_test_count"],
+            "passing_required_tests": campaign["summary"][
+                "passing_required_test_count"
+            ],
+            "missing_tests": campaign["missing_or_nonpassing_required_tests"],
+            "coherent_evidence_group": campaign["coherent_evidence_group"],
+            "prerequisite_gaps": prerequisite_gaps,
+        },
         "phone_function": "evidence_ready_for_review" if phone else "blocked",
         "selected_roles": selected_roles,
         "cellular": {"status": cellular["status"], "selected": cellular_selected},

@@ -22,6 +22,7 @@ sequence:
   - {id: B00, test: incoming_inspection_and_mass, state: blocked_on_selected_components, workload: none, purpose: identity_dimensions_mass_damage_and_traceability}
   - {id: B01, test: build_traveler_and_electrical_safety_review, state: blocked_on_build, workload: none, purpose: assembly_inspection_isolation_ground_and_protection_checks}
   - {id: F00, test: boot_telemetry_and_radio_kill, state: blocked_on_build, workload: W00_idle_baseline, purpose: functional_baseline_security_and_fault_logging}
+  - {id: I20, test: integrated_local_interfaces, state: blocked_on_selected_interfaces_and_firmware, workload: none, purpose: measure_display_touch_camera_audio_and_usb_activity_on_one_serialized_unit}
   - {id: P00, test: idle_power_and_thermal_stabilization, state: blocked_on_build, workload: W00_idle_baseline, purpose: establish_baseline_and_sensor_sanity}
   - {id: P10, test: controlled_compute_power_ramp, state: blocked_on_build, workload: W10_ai_reference_70b_4bit, purpose: find_safe_sustained_envelope_without_assuming_28w}
   - {id: P11, test: peak_burst_and_rail_transient, state: blocked_on_P10, workload: W11_ai_peak_burst, purpose: measure_droop_response_and_recovery_within_approved_peak_duration}
@@ -38,13 +39,14 @@ sequence:
   - {id: R50, test: modular_radio_coexistence, state: blocked_on_radio_mule, workload: W50_radio_coexistence_traffic, purpose: detect_desense_EMC_and_performance_coupling}
   - {id: MC0, test: model_correlation_and_residual_review, state: blocked_on_required_measurements, workload: none, purpose: compare_mechanical_power_thermal_and_runtime_models_to_data}
 
-required_for_evt0_evidence_gate: [B00, B01, F00, P00, P10, P11, M20, S30, C40, T10, T20, T30, B40, B50, R50, MC0]
+required_for_evt0_evidence_gate: [B00, B01, F00, I20, P00, P10, P11, M20, S30, C40, T10, T20, T30, B40, B50, R50, MC0]
 explicitly_not_required_because_removed_or_deferred: [wireless_charging, cellular, 512gb_memory, 4tb_storage]
 
 channel_requirements:
   B00: [configuration]
   B01: [configuration, electrical_slow]
   F00: [configuration, platform]
+  I20: [configuration, electrical_slow, platform]
   P00: [configuration, electrical_slow, thermal, platform]
   P10: [configuration, electrical_slow, electrical_transient, thermal, platform, workload]
   P11: [configuration, electrical_transient, platform, workload]

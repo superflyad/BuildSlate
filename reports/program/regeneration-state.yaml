@@ -46,13 +46,13 @@ nodes:
       validation/evt0/evt0-spec.yaml: 2c1a0823ef0285d749ece9bc6741cd866f92ebce4ceb24e24b08d3dab6cdbe10
       validation/evt0/instrumentation.yaml: 47c9e8942a533cc94c919e17581315fccd3e41ed668fe7091613460afd6c3004
       validation/evt0/metric-definitions.yaml: b02a8eaa62ddbbc88520545a070a84bd400375b9f4c8c3874009b3eab8d6a22d
-      validation/evt0/test-matrix.yaml: 0250480061bc8751c180f86901b0335f64e497038b24aa04d9c91876fa04ddf6
+      validation/evt0/test-matrix.yaml: 29cb650d0bdd56ccea1b49e3a1f4fba32ad80fab3e315f417286b53277f40bba
       validation/evt0/workloads.yaml: 15ee8713856cd4191b2cd27eec23545b53cdda0b6c6f6528ce2268a8d78f1d35
     outputs:
       reports/program/integration-contracts.yaml: dbcc1c59c3d24d6e1b6cdf1ba76e2cf2ebfd440ae9634317decccedae5f8210f
   evt0_campaign:
     inputs:
-      buildslate/evt0.py: 4ec01ac0daee261750bfdb3dcc2461a568e1219de92ca79ba462608c27397014
+      buildslate/evt0.py: ccca1128afd67f3cf8ade234b0ece8083b20db59e397f894d3b3cb40d2f51b44
       validation/evt0/campaigns/README.md: 4dbc4d419c59fe854090afcd52aab82b88f43293880bcefd69122cac0740e42d
       validation/evt0/instrumentation.yaml: 47c9e8942a533cc94c919e17581315fccd3e41ed668fe7091613460afd6c3004
       validation/evt0/metric-definitions.yaml: b02a8eaa62ddbbc88520545a070a84bd400375b9f4c8c3874009b3eab8d6a22d
@@ -60,20 +60,20 @@ nodes:
       validation/evt0/schemas/deviation.schema.yaml: 176cf86d86e96e62bbac6cec98220544181eac7236f9ec379231d0ffcd28f379
       validation/evt0/schemas/run-manifest.schema.yaml: 931d13494beba81a35eecfa646f0ebd809b46a97de273f9c328091b15101dfc5
       validation/evt0/schemas/test-result.schema.yaml: 74797d851a2444ce40e9ccc83ca0919617dd1dd73aa583780721c5e437963cca
-      validation/evt0/test-matrix.yaml: 0250480061bc8751c180f86901b0335f64e497038b24aa04d9c91876fa04ddf6
+      validation/evt0/test-matrix.yaml: 29cb650d0bdd56ccea1b49e3a1f4fba32ad80fab3e315f417286b53277f40bba
     outputs:
-      reports/program/evt0-campaign.yaml: 41195f94f22764c3667131144f84c94d89d7b2150c66f01261e753c36322f90d
+      reports/program/evt0-campaign.yaml: 3b7563a559b00dbc352479c6aa0c00feb66aa268f576fcf45f458db683ba2e0c
   evt0_readiness:
     inputs:
       engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
-      reports/program/evt0-campaign.yaml: 41195f94f22764c3667131144f84c94d89d7b2150c66f01261e753c36322f90d
+      reports/program/evt0-campaign.yaml: 3b7563a559b00dbc352479c6aa0c00feb66aa268f576fcf45f458db683ba2e0c
       validation/evt0/bom-strategy.yaml: 4efe93039fe301aaa34b26999e332f9d559ad6a05153bbcf79223bfcd48b4d6d
       validation/evt0/evt0-spec.yaml: 2c1a0823ef0285d749ece9bc6741cd866f92ebce4ceb24e24b08d3dab6cdbe10
       validation/evt0/generate_evt0_gate_report.py: 24c69149d02d90ef26d585687d46c5c1603f6b4591a777349b9b4d9781a108b9
-      validation/evt0/test-matrix.yaml: 0250480061bc8751c180f86901b0335f64e497038b24aa04d9c91876fa04ddf6
+      validation/evt0/test-matrix.yaml: 29cb650d0bdd56ccea1b49e3a1f4fba32ad80fab3e315f417286b53277f40bba
       validation/evt0/workloads.yaml: 15ee8713856cd4191b2cd27eec23545b53cdda0b6c6f6528ce2268a8d78f1d35
     outputs:
-      reports/slate-pocket-v1r-evt0-gate.txt: f6c1ba0db3a56b738ca66e5f7b0f059717e6548b630b576f815b0f333414ca3b
+      reports/slate-pocket-v1r-evt0-gate.txt: c364bbc15f232a154ca6a09f5157858b410e8a786f7829cbe46cd82e27b8e873
   manufacturing_analytics:
     inputs:
       buildslate/manufacturing.py: 12ab012af157e8907135fb0e23d74f201fa970ccdeb910ec37a81f384478f303
@@ -188,28 +188,28 @@ nodes:
       engineering/risks/risk_register.yaml: eae86e2b4c61d57e0a09e4310a3d7873c10d2af8945a7f84e493ac31a70751e9
       manufacturing/defect-taxonomy.yaml: d58ccf15116e7d8c5de8004043b4e3346ccb7ac0cdb2ccc717924f104a3adade
       reports/program/configuration-resolution.yaml: c59e257abba32ad8317027a4d02ca123689ce3e614c2fed3903d2236ed5cf598
-      reports/program/evt0-campaign.yaml: 41195f94f22764c3667131144f84c94d89d7b2150c66f01261e753c36322f90d
+      reports/program/evt0-campaign.yaml: 3b7563a559b00dbc352479c6aa0c00feb66aa268f576fcf45f458db683ba2e0c
       reports/program/integration-contracts.yaml: dbcc1c59c3d24d6e1b6cdf1ba76e2cf2ebfd440ae9634317decccedae5f8210f
       reports/program/manufacturing-pilot-analytics.yaml: 13d981cac98395095638a67a363e44b1be0044dd9ecc50b919c51a033419528b
       reports/program/supplier-response-review.yaml: 343bb9ab70cd09224876c6ce32618b4696e0fc0b2698e5ab0c32d9e61f83eeb7
       reports/slate-pocket-evidence-readiness.txt: 187991a06b78822e0c3f21cc131c9bcb237ecf96a9f514ecf20a0f118a189248
-      reports/slate-pocket-v1r-evt0-gate.txt: f6c1ba0db3a56b738ca66e5f7b0f059717e6548b630b576f815b0f333414ca3b
+      reports/slate-pocket-v1r-evt0-gate.txt: c364bbc15f232a154ca6a09f5157858b410e8a786f7829cbe46cd82e27b8e873
       reports/slate-pocket-v1r-manufacturing-readiness.txt: c0f01f33e718e4d97f670d613645ad5e24f99902f7a71d43ba2c5cbe7904d172
       reports/slate-pocket-v1r-program-readiness.txt: 9fda9b41a525622909e44b36dd53e86b05d117d151ec70727e20605271be4242
       research/rfqs/rfq_registry.yaml: 4178a8634868b1865ee844f78fc51ddd9e8c08074c505d30503c3f8bd72ee91f
       validation/evt0/bom-strategy.yaml: 4efe93039fe301aaa34b26999e332f9d559ad6a05153bbcf79223bfcd48b4d6d
-      validation/evt0/test-matrix.yaml: 0250480061bc8751c180f86901b0335f64e497038b24aa04d9c91876fa04ddf6
+      validation/evt0/test-matrix.yaml: 29cb650d0bdd56ccea1b49e3a1f4fba32ad80fab3e315f417286b53277f40bba
     outputs:
-      reports/program/buildslate-program-snapshot.yaml: 31672c5115ce3ae92e4e99d563b2c91854bd8582643aaeb4a1d2ed73b4e83c3f
+      reports/program/buildslate-program-snapshot.yaml: 10edb21d1cc45abc0ed86824c3378141a5e25fbd2218e2869c93e8ff0e58fe24
   dashboard:
     inputs:
       buildslate/dashboard.py: 8e29d69f152b5ba09830ce50915b2c69598a67931a775770fc99fd89138bf0b2
       engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
       engineering/evidence/external_blocker_registry.yaml: 7d1f9caa12b431824f418ec957128e3a47f6239eec98b758697c8775927893b8
       engineering/program/configuration_registry.yaml: e884eb94098366bc9d4fd52bf8d46195970a8b21c880823223834cb98606fbc2
-      reports/program/buildslate-program-snapshot.yaml: 31672c5115ce3ae92e4e99d563b2c91854bd8582643aaeb4a1d2ed73b4e83c3f
+      reports/program/buildslate-program-snapshot.yaml: 10edb21d1cc45abc0ed86824c3378141a5e25fbd2218e2869c93e8ff0e58fe24
       reports/program/configuration-resolution.yaml: c59e257abba32ad8317027a4d02ca123689ce3e614c2fed3903d2236ed5cf598
-      reports/program/evt0-campaign.yaml: 41195f94f22764c3667131144f84c94d89d7b2150c66f01261e753c36322f90d
+      reports/program/evt0-campaign.yaml: 3b7563a559b00dbc352479c6aa0c00feb66aa268f576fcf45f458db683ba2e0c
       reports/program/integration-contracts.yaml: dbcc1c59c3d24d6e1b6cdf1ba76e2cf2ebfd440ae9634317decccedae5f8210f
       reports/program/manufacturing-pilot-analytics.yaml: 13d981cac98395095638a67a363e44b1be0044dd9ecc50b919c51a033419528b
       reports/program/migration-audit.yaml: 6c9e56e3099e6c658413976d68910f6a0040909c416f14875b58432fa684955d
@@ -226,10 +226,10 @@ nodes:
       engineering/assembly/assembly.yaml: 1fdc005034419d3aa2a0ef88aeda700ac33ac7910f4ba9315d9a532f22c91912
       engineering/components/component_library.yaml: f5e18ac5d498f5f3f303080452a6340d9930ed830dbf87031fca780b221f8672
       engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml: 8d97cf5d635e423a5fea7d90b9c52b815be67d807ce5490016bc0784eb18d58b
-      reports/program/buildslate-program-snapshot.yaml: 31672c5115ce3ae92e4e99d563b2c91854bd8582643aaeb4a1d2ed73b4e83c3f
+      reports/program/buildslate-program-snapshot.yaml: 10edb21d1cc45abc0ed86824c3378141a5e25fbd2218e2869c93e8ff0e58fe24
       reports/program/dashboard.yaml: 468e726c041bb4cd6873b6620508be48af193f1d90b1ce1d85e197b31989282d
     outputs:
       viewer/public/assembly.gltf: f76ed4f3524f31d9868267ab6a448cf6d17e9c0ee715b6ccc7395017ea5f1adf
-      viewer/public/assembly.json: a8f13a55b5ff2cad1f8eadaaad54dd8a06a25a6d58c7f0058a581bc54d7f17d5
+      viewer/public/assembly.json: 001f22223d4f6c5dbc46a75627e78ed931c9ab53800cceaf4ecff5d664cd3c9b
 caveat: Text hashes canonicalize line endings for cross-platform staleness; binary hashes preserve exact bytes. Neither verifies
   engineering evidence or physical results.

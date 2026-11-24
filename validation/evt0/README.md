@@ -17,3 +17,5 @@ The package contains:
 - `model-correlation.md` — model-to-measurement workflow and thresholds.
 
 No test result exists until a schema-valid result package references raw data, unit/build identity, calibration, workload hashes, and reviewer disposition. Empty folders, templates, and generated readiness reports are not measurements.
+
+The campaign gate credits required passes only within one campaign, serialized unit, build, and configuration. The required `I20` integrated-interface run needs positive deltas in raw CSV columns `display_frames`, `touch_events`, `camera_frames`, `audio_playback_samples`, `audio_capture_samples`, `usb_bytes_tx`, and `usb_bytes_rx`. Capture logs and physical observations alongside these counters for engineering review; generated counters alone cannot establish correct user-visible behavior.

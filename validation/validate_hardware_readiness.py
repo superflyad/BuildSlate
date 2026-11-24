@@ -13,8 +13,10 @@ sys.path.insert(0, str(ROOT))
 from buildslate.hardware_readiness import (  # noqa: E402
     REPORT,
     _evidence_result,
+    _evt0_prerequisites,
     build_report,
 )
+from buildslate.io import dump_yaml  # noqa: E402
 
 
 def main() -> int:
@@ -32,6 +34,14 @@ def main() -> int:
         and expected["functional_evt0"] == "blocked"
     ):
         raise ValueError("Phone function cannot precede functional EVT0")
+    campaign = expected["evt0_campaign"]
+    if (
+        campaign["gate"] != "EMPTY_CAMPAIGN"
+        or campaign["passing_required_tests"] != 0
+        or "I20" not in campaign["missing_tests"]
+        or not campaign["prerequisite_gaps"]
+    ):
+        raise ValueError("Public hardware gate must expose the empty physical campaign")
     requirement = {"stage": "design_release"}
     with TemporaryDirectory() as temp:
         root = Path(temp)
@@ -60,6 +70,45 @@ def main() -> int:
             invalid = {**record, **mutation}
             if _evidence_result(root, requirement, invalid)["status"] == "accepted":
                 raise ValueError(f"Invalid evidence was accepted: {mutation}")
+    with TemporaryDirectory() as temp:
+        root = Path(temp)
+        spec_path = root / "validation/evt0/evt0-spec.yaml"
+        registry_path = root / "engineering/evidence/evidence_registry.yaml"
+        spec_path.parent.mkdir(parents=True)
+        registry_path.parent.mkdir(parents=True)
+        prerequisites = {
+            "authorization": {"build_authorized": False, "authorized_by": None},
+            "safety": {"approved_lab_procedure": False},
+            "supplier_evidence": {"packages": ["battery"]},
+            "phase2_integration": {"packages": ["board"]},
+        }
+        registry = {
+            "packages": {
+                "battery": {"status": "verified"},
+                "board": {"status": "missing"},
+            }
+        }
+        spec_path.write_text(
+            dump_yaml({"prerequisite_gates": prerequisites}), encoding="utf-8"
+        )
+        registry_path.write_text(dump_yaml(registry), encoding="utf-8")
+        if set(_evt0_prerequisites(root)) != {
+            "authorization.build_authorized",
+            "authorization.authorized_by",
+            "safety.approved_lab_procedure",
+            "package.board",
+        }:
+            raise ValueError("EVT0 prerequisite gaps were not preserved")
+        prerequisites["authorization"]["build_authorized"] = True
+        prerequisites["authorization"]["authorized_by"] = "fixture reviewer"
+        prerequisites["safety"]["approved_lab_procedure"] = True
+        registry["packages"]["board"]["status"] = "verified"
+        spec_path.write_text(
+            dump_yaml({"prerequisite_gates": prerequisites}), encoding="utf-8"
+        )
+        registry_path.write_text(dump_yaml(registry), encoding="utf-8")
+        if _evt0_prerequisites(root):
+            raise ValueError("Satisfied EVT0 prerequisites were not recognized")
     print(
         "PASS: hardware readiness report current; "
         f"{len(expected['requirements'])} evidence requirements checked"

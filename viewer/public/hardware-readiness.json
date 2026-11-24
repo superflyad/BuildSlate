@@ -3,6 +3,48 @@
   "device": "slate-pocket-v1r",
   "design_release": "blocked",
   "functional_evt0": "blocked",
+  "evt0_campaign": {
+    "gate": "EMPTY_CAMPAIGN",
+    "required_tests": 17,
+    "passing_required_tests": 0,
+    "missing_tests": [
+      "B00",
+      "B01",
+      "B40",
+      "B50",
+      "C40",
+      "F00",
+      "I20",
+      "M20",
+      "MC0",
+      "P00",
+      "P10",
+      "P11",
+      "R50",
+      "S30",
+      "T10",
+      "T20",
+      "T30"
+    ],
+    "coherent_evidence_group": null,
+    "prerequisite_gaps": [
+      "authorization.purchase_authorized",
+      "authorization.build_authorized",
+      "authorization.energized_test_authorized",
+      "authorization.authorized_by",
+      "safety.approved_battery_and_charge_limits",
+      "safety.approved_lab_procedure",
+      "safety.calibrated_instrumentation_available",
+      "safety.emergency_response_reviewed",
+      "package.battery_supplier_package",
+      "package.compute_memory_platform_package",
+      "package.display_storage_package",
+      "package.mechanical_cad_stackup",
+      "package.pcb_power_architecture",
+      "package.thermal_model_and_test_plan",
+      "package.rf_wireless_architecture"
+    ]
+  },
   "phone_function": "blocked",
   "selected_roles": [
     {

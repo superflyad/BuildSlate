@@ -78,6 +78,8 @@ def main() -> int:
                 failures.append("EVT0 workload set is incomplete")
             if len(matrix["required_for_evt0_evidence_gate"]) < 15:
                 failures.append("EVT0 test gate lacks required test coverage")
+            if "I20" not in matrix["required_for_evt0_evidence_gate"]:
+                failures.append("EVT0 gate must require integrated interface activity")
             if matrix["global_pass_fail"]["hard_stops"]["maximum_skin_c"] != 43.0:
                 failures.append("EVT0 locked 43 C skin hard stop changed unexpectedly")
             for schema, name in (

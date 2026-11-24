@@ -64,6 +64,7 @@ VALIDATION_CHECKS = (
     "validation/validate_mechanical_proof.py",
     "validation/validate_firmware_proof.py",
     "validation/validate_power_safety_proof.py",
+    "validation/validate_thermal_proof.py",
     "validation/validate_repository.py",
 )
 

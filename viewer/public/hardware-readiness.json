@@ -543,6 +543,12 @@
       "No released power safety design"
     ]
   },
+  "thermal_release": {
+    "status": "missing",
+    "errors": [
+      "No released thermal design"
+    ]
+  },
   "selected_roles": [
     {
       "id": "compute_platform",

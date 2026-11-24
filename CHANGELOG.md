@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Added a geometry- and power-bound thermal release audit with source-backed material and boundary properties, case heat maps, mesh and energy checks, supplier temperature limits, and public missing status.
 - Added a released power-design audit for selected pack ratings, charge input and conversion budget, complete rail and battery current loads, sequencing, fault-control declarations, and approved BOM/board bindings; public status remains missing.
 - Bound routed PCB proof to the approved KiCad project settings and rejected DRC exclusions, disabled critical rules, zero fabrication minima, and report findings across all three DRC categories.
 - Made ERC evidence reproducible from the released KiCad schematic and hashed project settings, with a clean JSON report and no excluded or ignored critical rules.

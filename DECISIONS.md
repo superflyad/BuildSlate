@@ -83,3 +83,9 @@ The routed PCB record must bind the same `.kicad_pro` bytes as the approved ERC 
 **Status:** Accepted
 
 The `power_safety` record must name a controlled JSON release whose revision and reviewer match the evidence record. Its battery ratings come from the selected part set; its charger, PMIC, protection, and USB PD references match the electrical BOM. It binds the part set, BOM, and board by hash and checks charge input power, complete subsystem loads, rail capacity and startup order, pack current, and fault-control declarations. This makes a reviewed power analysis reproducible but does not prove supplier ratings or physical fault behavior. EVT0 measurements and safety review remain required.
+
+## ADR-015: Bind thermal predictions to released geometry and power
+
+**Status:** Accepted
+
+The `thermal_release` record must name a controlled model package and solver result table. The auditor binds selected parts, mechanical assembly, board, and power design by exact hashes, requires sourced material/interface/boundary inputs and case-specific heat maps, and checks mesh drift, energy balance, and recorded skin, battery, and junction limits. The separate EVT0 gate still requires calibrated physical measurements and model correlation. A numerical screen cannot establish safe operation without those results.

@@ -29,6 +29,8 @@ from buildslate.platform_fit import audit as audit_platform_fit
 from buildslate.power_safety_proof import RELEASE as POWER_RELEASE
 from buildslate.power_safety_proof import audit as audit_power_safety
 from buildslate.storage_fit import audit as audit_storage_fit
+from buildslate.thermal_proof import RELEASE as THERMAL_RELEASE
+from buildslate.thermal_proof import audit as audit_thermal
 
 MANIFEST = Path("engineering/hardware/readiness.yaml")
 STRATEGY = Path("validation/evt0/bom-strategy.yaml")
@@ -259,6 +261,45 @@ def _evidence_result(
                     or selection_proof.get("sha256") != proof["selected_bom_sha256"]
                 ):
                     reasons.append("Power selected BOM has no passing part proof")
+        if not reasons and requirement.get("id") == "thermal_release":
+            if target != (root / THERMAL_RELEASE).resolve():
+                reasons.append("Thermal release must name the controlled thermal JSON")
+            else:
+                proof = audit_thermal(root)
+                if proof["status"] != "pass":
+                    reasons.extend(proof["errors"])
+                elif (
+                    proof["revision"] != record["revision"]
+                    or proof["reviewed_by"] != record["reviewed_by"]
+                ):
+                    reasons.append("Thermal review identity or revision differs")
+                related = related_records or {}
+                for identifier, hash_field, proof_field in (
+                    ("selected_bom", "sha256", "selected_bom_sha256"),
+                    ("routed_pcb", "sha256", "routed_pcb_sha256"),
+                    ("mechanical_release", "sha256", "mechanical_assembly_sha256"),
+                    (
+                        "mechanical_release",
+                        "manifest_sha256",
+                        "mechanical_manifest_sha256",
+                    ),
+                    ("power_safety", "sha256", "power_safety_sha256"),
+                ):
+                    upstream = related.get(identifier)
+                    if (
+                        not isinstance(upstream, dict)
+                        or upstream.get("disposition") != "approved"
+                        or upstream.get(hash_field) != proof[proof_field]
+                    ):
+                        reasons.append(
+                            f"Thermal release is not bound to approved {identifier}"
+                        )
+                if (
+                    selection_proof is None
+                    or selection_proof.get("status") != "pass"
+                    or selection_proof.get("sha256") != proof["selected_bom_sha256"]
+                ):
+                    reasons.append("Thermal selected BOM has no passing part proof")
         if not reasons and requirement.get("id") == "mechanical_release":
             if target != (root / MECHANICAL_ASSEMBLY).resolve():
                 reasons.append(
@@ -380,6 +421,7 @@ def build_report(root: Path) -> dict:
     memory_package_fit = audit_memory_package_fit(root)
     firmware_bundle = audit_firmware(root / FIRMWARE_RELEASE)
     power_safety = audit_power_safety(root)
+    thermal_release = audit_thermal(root)
     selected_roles = []
     for role in manifest["selected_roles"]:
         item = strategy["roles"].get(role)
@@ -475,6 +517,7 @@ def build_report(root: Path) -> dict:
         "memory_package_fit": memory_package_fit,
         "firmware_bundle": firmware_bundle,
         "power_safety": power_safety,
+        "thermal_release": thermal_release,
         "selected_roles": selected_roles,
         "cellular": {"status": cellular["status"], "selected": cellular_selected},
         "requirements": entries,

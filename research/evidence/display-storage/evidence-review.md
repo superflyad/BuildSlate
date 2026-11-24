@@ -5,7 +5,9 @@ Status: **Public evidence available; candidates not verified**
 
 ## Display decision
 
-Issue RFQs to BOE, Tianma, and Samsung Display. No reviewed public product exactly matches the 7.5-inch, 16:10, 3200×1800, 120 Hz LTPO AMOLED target with a usable module drawing and power curve.
+The active-area [geometry screen](../../../docs/engineering/display_geometry_fit.md) found that the locked 7.5-inch 16:10 target needs a 100.965 mm short side inside a 95 mm body and 89 mm CAD reserve. Even a 7.0-inch 16:10 panel exceeds that reserve. The source resolution 3200 × 1800 is 16:9. A product-owner geometry and resolution decision is required before any supplier panel can be selected for the present body.
+
+RFIs for BOE, Tianma, and Samsung Display are prepared but should not be sent with contradictory body and panel requirements. No reviewed public product exactly matches the stated target with a usable module drawing and power curve.
 
 The public market proves that neighboring technologies exist:
 

@@ -1,6 +1,6 @@
 # Slate Pocket v1R External Blocker Handoff
 
-BuildSlate has exhausted the defensible public/local planning path. Remaining progress depends on supplier responses or controlled drawings, selected components, NDA/reference-design access, detailed released design work, paid tools or labs, physical hardware, measurements, and explicit authorization for external actions.
+BuildSlate has a locally provable display geometry conflict: the 7.5-inch 16:10 active area does not fit the 95 mm body or 89 mm CAD reserve, and the source resolution is 16:9. The [geometry proof](display_geometry_fit.md) must be resolved through product-owner change control. Other remaining progress depends on supplier responses or controlled drawings, selected components, NDA/reference-design access, detailed released design work, paid tools or labs, physical hardware, measurements, and explicit authorization for external actions.
 
 The authoritative machine-readable handoff is `engineering/evidence/external_blocker_registry.yaml`. Each blocker records affected packages, missing evidence, the exact request, acceptance criteria, approved fallback, completed independent work, and required authorization.
 
@@ -8,7 +8,7 @@ No supplier has been contacted, NDA accepted, sample requested, part purchased, 
 
 The recommended sequence is:
 
-1. Authorize and send the prepared battery, compute/memory, display, and storage packets after contact/NDA review.
+1. Resolve the display body, diagonal, aspect, and resolution contradiction under the locked baseline; then authorize and send the prepared battery, compute/memory, display, and storage packets after contact/NDA review.
 2. Verify supplier evidence and freeze the evidence-driven component/configuration set.
 3. Release detailed CAD, ECAD, thermal, and RF work against controlled supplier inputs.
 4. Pass EVT0 prerequisite/safety gates, then separately authorize procurement, build, and energized testing.

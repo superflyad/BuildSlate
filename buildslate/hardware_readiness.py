@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 from buildslate.battery_fit import audit as audit_battery_fit
+from buildslate.display_fit import audit as audit_display_fit
 from buildslate.erc_proof import audit as audit_erc
 from buildslate.evt0 import EVT0CampaignRepository
 from buildslate.firmware_proof import RELEASE as FIRMWARE_RELEASE
@@ -499,6 +500,7 @@ def build_report(root: Path) -> dict:
     platform_fit = audit_platform_fit(root)
     storage_fit = audit_storage_fit(root)
     battery_fit = audit_battery_fit(root)
+    display_fit = audit_display_fit(root)
     memory_package_fit = audit_memory_package_fit(root)
     firmware_bundle = audit_firmware(root / FIRMWARE_RELEASE)
     power_safety = audit_power_safety(root)
@@ -537,6 +539,7 @@ def build_report(root: Path) -> dict:
     ]
     design = (
         selection["status"] == "pass"
+        and display_fit["status"] == "pass"
         and not supplier_gaps
         and all(item["selected"] for item in selected_roles)
         and all(
@@ -597,6 +600,7 @@ def build_report(root: Path) -> dict:
         "platform_fit": platform_fit,
         "storage_fit": storage_fit,
         "battery_fit": battery_fit,
+        "display_fit": display_fit,
         "memory_package_fit": memory_package_fit,
         "firmware_bundle": firmware_bundle,
         "power_safety": power_safety,

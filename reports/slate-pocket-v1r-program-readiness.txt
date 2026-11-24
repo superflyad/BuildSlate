@@ -60,9 +60,9 @@ Externally blocked work (8):
     authorization: supplier_contact_NDA_eval_hardware_and_licenses
   - display_storage_drawings [supplier_engineering]
     affects: display_storage_package, mechanical_cad_stackup, pcb_power_architecture, evt0_prototype_evidence
-    missing: Selected display module drawing/flex/power and selected storage package/host/power/thermal/lifecycle evidence.
-    exact request: Run prepared display and storage RFIs; request EVT-available modules and complete response schemas.
-    authorization: supplier_contact_samples_and_purchases
+    missing: Approved resolution of the 7.5-inch 16:10 versus 95 mm body conflict; selected display module drawing/flex/power and selected storage package/host/power/thermal/lifecycle evidence.
+    exact request: Resolve display body width, diagonal, aspect, and resolution under product-owner change control; then run prepared display and storage RFIs for modules fitting that revision.
+    authorization: product_owner_geometry_decision_supplier_contact_samples_and_purchases
   - released_integration_design [engineering_and_paid_tools]
     affects: mechanical_cad_stackup, pcb_power_architecture, thermal_model_and_test_plan, rf_wireless_architecture
     missing: Released 3D CAD, tolerance/mass/interference review, schematic/netlist/routed ECAD, solver model, EM model, and peer signoff.

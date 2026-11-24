@@ -220,6 +220,54 @@
     "source": "https://www.enovix.com/product-category/ai-platform",
     "caveat": "The published cell box and concept pack envelope both exceed the current complete-pack allocation. A custom design or approved allocation change is required; no cell or charge rate is selected."
   },
+  "display_fit": {
+    "status": "blocked",
+    "errors": [
+      "Target active display rectangle exceeds the device face",
+      "Target active display rectangle exceeds the CAD display reserve",
+      "Declared display aspect ratio differs from resolution"
+    ],
+    "target_diagonal_in": 7.5,
+    "target_aspect_ratio": "16:10",
+    "target_active_mm": [
+      161.544,
+      100.965
+    ],
+    "device_face_mm": [
+      180.0,
+      95.0
+    ],
+    "cad_display_reserve_mm": [
+      174.0,
+      89.0
+    ],
+    "device_face_fit": false,
+    "cad_reserve_fit": false,
+    "short_side_overrun_mm": {
+      "device_face": 5.965,
+      "cad_reserve": 11.965
+    },
+    "maximum_diagonal_in_at_target_aspect": {
+      "device_face": 7.057,
+      "cad_reserve": 6.611
+    },
+    "minimum_device_width_mm_with_current_side_inset": 106.965,
+    "resolution_px": [
+      3200,
+      1800
+    ],
+    "resolution_aspect_ratio": "16:9",
+    "resolution_source": "source_spec",
+    "source_spec_aspect_ratio": "16:10",
+    "source_consistency": "pass",
+    "source_errors": [],
+    "caveat": "Active pixels are a lower bound on module size. Bezel, driver, flex, bonding, corner, and tolerance allowances would need additional space.",
+    "sources": [
+      "configs/devices/slate-pocket-v1r.yaml",
+      "cad/slate-pocket-v1r/envelope-model/envelope.yaml",
+      "engineering/assembly/assembly.yaml"
+    ]
+  },
   "memory_package_fit": {
     "target_gb": 128,
     "planning_sites": 4,

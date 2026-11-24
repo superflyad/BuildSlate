@@ -112,10 +112,13 @@ externally_blocked:
   fallback: Use external 128 GB developer systems for workload characterization only; do not claim pocket integration.
 - id: display_storage_drawings
   category: supplier_engineering
-  missing_evidence: Selected display module drawing/flex/power and selected storage package/host/power/thermal/lifecycle evidence.
-  exact_next_action: Run prepared display and storage RFIs; request EVT-available modules and complete response schemas.
-  authorization_required: supplier_contact_samples_and_purchases
-  fallback: Allow supplier-available 7–8.4 inch display variation and modular/external storage; 4 TB internal stays rejected.
+  missing_evidence: Approved resolution of the 7.5-inch 16:10 versus 95 mm body conflict; selected display module drawing/flex/power
+    and selected storage package/host/power/thermal/lifecycle evidence.
+  exact_next_action: Resolve display body width, diagonal, aspect, and resolution under product-owner change control; then
+    run prepared display and storage RFIs for modules fitting that revision.
+  authorization_required: product_owner_geometry_decision_supplier_contact_samples_and_purchases
+  fallback: A 7–8.4 inch panel alone cannot fit the present 89 mm reserve at 16:10; widen or revise the approved display architecture,
+    and use modular/external storage if needed.
 - id: released_integration_design
   category: engineering_and_paid_tools
   missing_evidence: Released 3D CAD, tolerance/mass/interference review, schematic/netlist/routed ECAD, solver model, EM model,
@@ -158,8 +161,9 @@ exact_next_actions:
   action: Obtain the selected platform's NDA-controlled design package and evaluation access for the 128 GB fallback.
   authorization_required: supplier_contact_NDA_eval_hardware_and_licenses
 - blocker: display_storage_drawings
-  action: Run prepared display and storage RFIs; request EVT-available modules and complete response schemas.
-  authorization_required: supplier_contact_samples_and_purchases
+  action: Resolve display body width, diagonal, aspect, and resolution under product-owner change control; then run prepared
+    display and storage RFIs for modules fitting that revision.
+  authorization_required: product_owner_geometry_decision_supplier_contact_samples_and_purchases
 - blocker: released_integration_design
   action: After supplier packages are verified, authorize detailed CAD/ECAD/solver work and any required paid tools or contractors.
   authorization_required: design_release_paid_tools_and_external_engineering_if_needed

@@ -37,6 +37,11 @@ def main() -> int:
     if expected["rf_release"]["status"] != "missing":
         raise ValueError("Public hardware report must not imply a released RF design")
     if (
+        expected["display_fit"]["status"] != "blocked"
+        or expected["design_release"] != "blocked"
+    ):
+        raise ValueError("Impossible display target must block design release")
+    if (
         expected["functional_evt0"] != "blocked"
         and expected["design_release"] == "blocked"
     ):

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "slate-pocket-v1r",
-  "model_sha256": "752f9fd8025c754cb04b1a955f93035ca296561ff58ceea7e9b2939d8dde79ec",
+  "model_sha256": "2556956a99528523fd324ece2160138feeaa49e6ed26428a0950bdcc7dcb144c",
   "status": "review_required",
   "method": "CadQuery BREP validity, exact Boolean intersections, nominal distances and camera pupil prisms, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
   "thresholds": {

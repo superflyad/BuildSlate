@@ -12,9 +12,12 @@ display:
   panel_type: LTPO
   aspect_ratio: "16:10"
   feasibility:
-    status: feasible_today
-    rationale: 7-8 inch AMOLED LTPO panels are within current manufacturing capability.
-    blockers: []
+    status: research_required
+    rationale: Panel technology exists, but 3200x1800 is 16:9 rather than the stated 16:10; the v1R 7.5-inch active area also exceeds its body width and CAD display reserve.
+    blockers:
+      - resolution_and_aspect_conflict
+      - active_area_exceeds_v1r_body_and_cad_reserve
+      - no_selected_panel_module_drawing
 
 compute:
   cpu:

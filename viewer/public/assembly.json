@@ -997,10 +997,10 @@
     {
       "id": "display_storage_drawings",
       "category": "supplier_engineering",
-      "missing_evidence": "Selected display module drawing/flex/power and selected storage package/host/power/thermal/lifecycle evidence.",
-      "exact_next_action": "Run prepared display and storage RFIs; request EVT-available modules and complete response schemas.",
-      "authorization_required": "supplier_contact_samples_and_purchases",
-      "fallback": "Allow supplier-available 7–8.4 inch display variation and modular/external storage; 4 TB internal stays rejected."
+      "missing_evidence": "Approved resolution of the 7.5-inch 16:10 versus 95 mm body conflict; selected display module drawing/flex/power and selected storage package/host/power/thermal/lifecycle evidence.",
+      "exact_next_action": "Resolve display body width, diagonal, aspect, and resolution under product-owner change control; then run prepared display and storage RFIs for modules fitting that revision.",
+      "authorization_required": "product_owner_geometry_decision_supplier_contact_samples_and_purchases",
+      "fallback": "A 7–8.4 inch panel alone cannot fit the present 89 mm reserve at 16:10; widen or revise the approved display architecture, and use modular/external storage if needed."
     },
     {
       "id": "released_integration_design",

@@ -56,10 +56,10 @@ This is a generated evidence and action view. It does not approve suppliers, com
    - Authorization: `supplier_contact_NDA_eval_hardware_and_licenses`
    - Active fallback: Use external 128 GB developer systems for workload characterization only; do not claim pocket integration.
 4. **display_storage_drawings** (`supplier_engineering`)
-   - Missing: Selected display module drawing/flex/power and selected storage package/host/power/thermal/lifecycle evidence.
-   - Action: Run prepared display and storage RFIs; request EVT-available modules and complete response schemas.
-   - Authorization: `supplier_contact_samples_and_purchases`
-   - Active fallback: Allow supplier-available 7–8.4 inch display variation and modular/external storage; 4 TB internal stays rejected.
+   - Missing: Approved resolution of the 7.5-inch 16:10 versus 95 mm body conflict; selected display module drawing/flex/power and selected storage package/host/power/thermal/lifecycle evidence.
+   - Action: Resolve display body width, diagonal, aspect, and resolution under product-owner change control; then run prepared display and storage RFIs for modules fitting that revision.
+   - Authorization: `product_owner_geometry_decision_supplier_contact_samples_and_purchases`
+   - Active fallback: A 7–8.4 inch panel alone cannot fit the present 89 mm reserve at 16:10; widen or revise the approved display architecture, and use modular/external storage if needed.
 5. **released_integration_design** (`engineering_and_paid_tools`)
    - Missing: Released 3D CAD, tolerance/mass/interference review, schematic/netlist/routed ECAD, solver model, EM model, and peer signoff.
    - Action: After supplier packages are verified, authorize detailed CAD/ECAD/solver work and any required paid tools or contractors.

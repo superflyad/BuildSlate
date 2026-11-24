@@ -55,6 +55,7 @@ VALIDATION_CHECKS = (
     "validation/validate_platform_fit.py",
     "validation/validate_storage_fit.py",
     "validation/validate_battery_fit.py",
+    "validation/validate_display_fit.py",
     "validation/validate_memory_package_fit.py",
     "validation/validate_memory_probe.py",
     "validation/validate_part_selection.py",

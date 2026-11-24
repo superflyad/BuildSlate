@@ -36,11 +36,12 @@ def main() -> int:
             item["public_part_outline_fits"] or item["public_part_height_fits"]
             for item in report["site_geometry"]
         )
-        or report["eight_package_study"]["status"] != "outline_clear_stack_unresolved"
+        or report["eight_package_study"]["status"] != "outline_clear"
         or report["eight_package_study"]["minimum_screened_planar_gap_mm"] != 1.5
         or report["eight_package_study"]["packages_per_side"]
         != {"component": 4, "reverse": 4}
-        or len(report["eight_package_study"]["stack_issues"]) != 1
+        or report["eight_package_study"]["stack_issues"]
+        or report["eight_package_study"]["board_z_mm"] != [3.2, 4.0]
     ):
         raise ValueError("128 GB package geometry or capacity gap was lost")
     published = json.loads(
@@ -82,10 +83,9 @@ def main() -> int:
     if audit_data(*altered)["eight_package_study"]["status"] != "outline_conflict":
         raise ValueError("Reverse-side boundary breach was accepted")
     altered = copy.deepcopy(data)
-    altered[5] = 0.8
-    altered[3]["parts"]["pcb"]["z_mm"] = 3.6
-    if audit_data(*altered)["eight_package_study"]["stack_issues"]:
-        raise ValueError("Board thickness reconciliation was not recognized")
+    altered[5] = 1.2
+    if not audit_data(*altered)["eight_package_study"]["stack_issues"]:
+        raise ValueError("Board thickness disagreement was not detected")
     print("PASS: 128 GB public memory package count and geometry screen")
     return 0
 

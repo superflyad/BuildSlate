@@ -275,7 +275,7 @@
       }
     ],
     "eight_package_study": {
-      "status": "outline_clear_stack_unresolved",
+      "status": "outline_clear",
       "package_count": 8,
       "packages_per_side": {
         "component": 4,
@@ -362,15 +362,13 @@
         }
       ],
       "floorplan_board_thickness_mm": 0.8,
-      "mechanical_board_height_mm": 1.2,
+      "mechanical_board_height_mm": 0.8,
       "board_z_mm": [
-        2.8,
+        3.2,
         4.0
       ],
       "placement_conflicts": [],
-      "stack_issues": [
-        "Mechanical board height differs from floorplan stack thickness"
-      ],
+      "stack_issues": [],
       "placements": [
         {
           "id": "memory_left_lower_component",
@@ -456,7 +454,7 @@
           "assembly_box_mm": [
             102.0,
             28.0,
-            1.7,
+            2.1,
             14.0,
             14.0,
             1.1
@@ -474,7 +472,7 @@
           "assembly_box_mm": [
             102.0,
             44.0,
-            1.7,
+            2.1,
             14.0,
             14.0,
             1.1
@@ -492,7 +490,7 @@
           "assembly_box_mm": [
             143.0,
             28.0,
-            1.7,
+            2.1,
             14.0,
             14.0,
             1.1
@@ -510,7 +508,7 @@
           "assembly_box_mm": [
             143.0,
             44.0,
-            1.7,
+            2.1,
             14.0,
             14.0,
             1.1
@@ -526,7 +524,7 @@
     "missing_design_evidence": [
       "Exact 32 GB package MPN, drawing, and availability, or a new eight-package board architecture",
       "X2-qualified 128 GB channel topology, bus width, ranks, and signal rules",
-      "Reconciled 0.8 mm floorplan stack with the 1.2 mm mechanical board model",
+      "Fabricator-reviewed 0.8 mm 12-layer HDI stack and two-sided assembly limits",
       "Memory rails, power sequence, routed SI/PI, and thermal measurements",
       "Booted Slate unit with hash-bound 128 GB resident-memory test"
     ],

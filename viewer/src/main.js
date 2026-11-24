@@ -282,7 +282,7 @@ function renderProof() {
     .join("");
   const memoryStudy = proof.memory_study;
   document.querySelector("#proof-memory-study").innerHTML = memoryStudy
-    ? `<div class="gate-item"><strong>Eight-package outline</strong><span>${esc(memoryStudy.status.replaceAll("_", " "))} · ${esc(memoryStudy.minimum_screened_planar_gap_mm)} mm minimum screened planar gap</span></div><div class="gate-item"><strong>PCB stack conflict</strong><span>${esc(memoryStudy.floorplan_board_thickness_mm)} mm floorplan versus ${esc(memoryStudy.mechanical_board_height_mm)} mm mechanical board · ${esc(memoryStudy.stack_issues.join("; "))}</span></div>`
+    ? `<div class="gate-item"><strong>Eight-package outline</strong><span>${esc(memoryStudy.status.replaceAll("_", " "))} · ${esc(memoryStudy.minimum_screened_planar_gap_mm)} mm minimum screened planar gap</span></div><div class="gate-item"><strong>PCB stack screen</strong><span>${esc(memoryStudy.floorplan_board_thickness_mm)} mm provisional floorplan and ${esc(memoryStudy.mechanical_board_height_mm)} mm mechanical board · ${esc(memoryStudy.stack_issues.join("; ") || "internal geometry aligned; fabricator review required")}</span></div>`
     : "";
   document.querySelector("#proof-intersections").innerHTML =
     proof.intersections
@@ -388,7 +388,7 @@ function renderHardware() {
     `<p class="muted">Eight ${esc(report.memory_package_fit.public_reference_capacity_gb)} GB reference outlines: ${esc(study.packages_per_side.component)} on the component side, ${esc(study.packages_per_side.reverse)} on the reverse. Minimum screened planar gap ${esc(study.minimum_screened_planar_gap_mm)} mm under an assumed ${esc(study.assumed_planar_clearance_mm)} mm rule. Geometry status: ${esc(study.status.replaceAll("_", " "))}.</p>` +
     `<p><a href="?model=memory8&tab=hardware">Open the 3D eight-package model</a></p>` +
     `<div class="memory-board-grid">${memoryBoard(study, "component")}${memoryBoard(study, "reverse")}</div>` +
-    `<p class="detail-caveat">Board thickness conflict: ${esc(study.floorplan_board_thickness_mm)} mm in the floorplan versus ${esc(study.mechanical_board_height_mm)} mm in the mechanical model. ${esc(study.caveat)} <a href="https://github.com/superflyad/BuildSlate/blob/main/${esc(study.source)}" target="_blank" rel="noopener noreferrer">Study coordinates</a></p>`;
+    `<p class="detail-caveat">The floorplan and mechanical model now use the same provisional ${esc(study.floorplan_board_thickness_mm)} mm board thickness. Fabrication and two-sided assembly remain unreviewed. ${esc(study.caveat)} <a href="https://github.com/superflyad/BuildSlate/blob/main/${esc(study.source)}" target="_blank" rel="noopener noreferrer">Study coordinates</a></p>`;
   const campaign = report.evt0_campaign;
   const group = campaign.coherent_evidence_group;
   document.querySelector("#hardware-campaign").innerHTML = `

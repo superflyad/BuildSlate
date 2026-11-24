@@ -46,4 +46,10 @@ Section cuts, isolation, focus, and expanded view operate only on generated plan
 
 **Status:** Accepted
 
-The exact public 16 GB memory package needs eight outlines to reach the approved 128 GB capacity. The baseline retains four assumed 32 GB sites. A separate CAD variant replaces those four solids with eight two-sided reference boxes and receives its own STEP, glTF, and proof report. This allows geometry review without treating the public package as X2-qualified or silently changing the baseline board architecture. The thickness discrepancy, routing, power, thermal path, and boot proof remain unresolved.
+The exact public 16 GB memory package needs eight outlines to reach the approved 128 GB capacity. The baseline retains four assumed 32 GB sites. A separate CAD variant replaces those four solids with eight two-sided reference boxes and receives its own STEP, glTF, and proof report. This allows geometry review without treating the public package as X2-qualified or silently changing the baseline board architecture. PCB fabrication, routing, power, thermal path, and boot proof remain unresolved.
+
+## ADR-009: Use one provisional v1R board thickness across models
+
+**Status:** Accepted
+
+The v1R floorplan and compute-zone stack specify a 0.8 mm PCB. The mechanical envelope still carried a 1.2 mm generic board allowance. Align the v1R envelope and assembly to 0.8 mm while keeping the board top at z = 4.0 mm, and enforce envelope/floorplan equality in the integration contract. This is an internal model correction. A fabricator-reviewed 12-layer stack, two-sided assembly limits, and physical tolerance evidence remain required.

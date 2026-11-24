@@ -2,7 +2,7 @@
 
 The viewer is a local, read-only view of the Slate Pocket v1R editable concept CAD. It combines generated assembly geometry, part source references, evidence classes, keepouts, and the current program gate context. It does not edit repository inputs.
 
-The public viewer is at [superflyad.github.io/BuildSlate](https://superflyad.github.io/BuildSlate/). The GitHub Pages deployment runs from `main` after repository validation and CAD export succeed.
+The public viewer is at [superflyad.github.io/BuildSlate](https://superflyad.github.io/BuildSlate/). Open the [128 GB placement study](https://superflyad.github.io/BuildSlate/?model=memory8), [CAD proof](https://superflyad.github.io/BuildSlate/?tab=proof), or [hardware readiness](https://superflyad.github.io/BuildSlate/?tab=hardware) directly. The GitHub Pages deployment runs from `main` after repository validation and CAD export succeed.
 
 ## Run it
 

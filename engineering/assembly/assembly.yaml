@@ -36,7 +36,7 @@ parts:
     cover_glass: {label: Cover glass, group: exterior, box_mm: [0, 0, 8.95, 180, 95, 0.55], evidence_class: estimate, source: cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.battery_without_wireless_charging.layers.cover_glass}
   mechanical:
     battery_reference: {label: Battery reference, group: power, z_mm: 1.5}
-    main_pcb_placeholder: {label: Main PCB, group: pcb, z_mm: 2.8}
+    main_pcb_placeholder: {label: Main PCB, group: pcb, z_mm: 3.2}
     rear_camera_placeholder: {label: Rear camera envelope, group: camera, z_mm: 1.2}
     speaker_a_placeholder: {label: Speaker A, group: audio, z_mm: 1.2}
     speaker_b_placeholder: {label: Speaker B, group: audio, z_mm: 1.2}

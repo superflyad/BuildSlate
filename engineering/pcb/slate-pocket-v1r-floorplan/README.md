@@ -4,7 +4,7 @@ This directory is a pre-supplier placement and routing pressure model for the lo
 
 The model deliberately uses the 128 GB memory fallback as four 32 GB planning sites. The reviewed public evidence does not support a 512 GB pocket topology, and no 256 GB topology is modeled. All package rectangles except the public 1 TB UFS outline are planning reserves that must be replaced by supplier drawings. The [memory package screen](../../../docs/engineering/memory_package_fit.md) shows that an exact public 16 GB Micron package needs eight sites for 128 GB and cannot fit the current four memory rectangles.
 
-`memory-8x16-study.yaml` is a separate two-sided package-outline experiment using that public 16 GB part. The checker tests boundary and planar gaps without treating these boxes as a qualified layout. It also exposes the unresolved 0.8 mm floorplan versus 1.2 mm mechanical-board height.
+`memory-8x16-study.yaml` is a separate two-sided package-outline experiment using that public 16 GB part. The checker tests boundary and planar gaps without treating these boxes as a qualified layout. The v1R floorplan, mechanical board, and compute-zone stack now share a provisional 0.8 mm PCB thickness; a fabrication stackup and reverse-side assembly review are still required.
 
 `floorplan.yaml` records:
 

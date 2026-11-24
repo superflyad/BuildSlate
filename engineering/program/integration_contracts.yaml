@@ -40,6 +40,7 @@ checks:
   - {id: board_length, operator: equal, left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder.rectangle_mm.length, right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#board.outline_mm.length}
   - {id: board_width, operator: equal, left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder.rectangle_mm.width, right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#board.outline_mm.width}
   - {id: board_origin, operator: equal, left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder.rectangle_mm, right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#board.origin_in_mechanical_model_mm, keys: [x, y]}
+  - {id: board_thickness, operator: equal, left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder.height_mm, right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#board.outline_mm.thickness}
   - {id: ecad_memory_tier, operator: equal, left: configs/devices/slate-pocket-v1r.yaml#memory.capacity_gb, right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#metadata.modeled_memory_tier_gb}
   - {id: power_compute_sustained, operator: equal, left: configs/devices/slate-pocket-v1r.yaml#compute.sustained_power_w, right: engineering/pcb/power-tree.yaml#loads.compute_platform.sustained_w}
   - {id: power_compute_peak, operator: equal, left: configs/devices/slate-pocket-v1r.yaml#compute.peak_power_w, right: engineering/pcb/power-tree.yaml#loads.compute_platform.peak_w}

@@ -199,8 +199,9 @@ def build_memory_variant(repo_root: Path) -> dict:
         "replace the four 32 GB planning sites; all other concept parts remain."
     )
     model["caveat"] = (
-        "Editable outline study only. The PCB thickness sources disagree, and "
-        "memory topology, routing, thermal path, and physical function are unproven."
+        "Editable outline study only. The 0.8 mm PCB stack remains an unreviewed "
+        "fabrication assumption; memory topology, routing, thermal path, and "
+        "physical function are unproven."
     )
     return model
 

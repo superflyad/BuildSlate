@@ -7,7 +7,7 @@ domain_statuses:
   rf: provisional
   firmware: planned
   manufacturing: planned_not_authorized
-check_count: 20
+check_count: 21
 contradiction_count: 0
 checks:
 - id: mechanical_length
@@ -58,6 +58,13 @@ checks:
   right_value:
     x: 92.0
     y: 12.0
+- id: board_thickness
+  operator: equal
+  passed: true
+  left: cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder.height_mm
+  right: engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#board.outline_mm.thickness
+  left_value: 0.8
+  right_value: 0.8
 - id: ecad_memory_tier
   operator: equal
   passed: true

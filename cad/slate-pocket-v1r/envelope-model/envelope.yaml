@@ -20,9 +20,9 @@ placements:
   main_pcb_placeholder:
     layer: component_planform
     rectangle_mm: {x: 92.0, y: 12.0, length: 78.0, width: 55.0}
-    height_mm: 1.2
+    height_mm: 0.8
     evidence_class: estimate
-    source: engineering/cad_envelope/component_volume_registry.yaml#main_pcb
+    source: cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.compute_hotspot.layers.pcb
     status: replace_with_ecad_floorplan
   rear_camera_placeholder:
     layer: component_planform

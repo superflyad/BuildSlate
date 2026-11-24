@@ -225,7 +225,7 @@ def audit_data(
         "missing_design_evidence": [
             "Exact 32 GB package MPN, drawing, and availability, or a new eight-package board architecture",
             "X2-qualified 128 GB channel topology, bus width, ranks, and signal rules",
-            "Reconciled 0.8 mm floorplan stack with the 1.2 mm mechanical board model",
+            "Fabricator-reviewed 0.8 mm 12-layer HDI stack and two-sided assembly limits",
             "Memory rails, power sequence, routed SI/PI, and thermal measurements",
             "Booted Slate unit with hash-bound 128 GB resident-memory test",
         ],

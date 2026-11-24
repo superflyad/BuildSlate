@@ -206,10 +206,10 @@
       "box_mm": [
         92.0,
         12.0,
-        2.8,
+        3.2,
         78.0,
         55.0,
-        1.2
+        0.8
       ],
       "evidence_class": "estimate",
       "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder",
@@ -1020,7 +1020,7 @@
       "box_mm": [
         102.0,
         28.0,
-        1.7,
+        2.1,
         14.0,
         14.0,
         1.1
@@ -1045,7 +1045,7 @@
       "box_mm": [
         102.0,
         44.0,
-        1.7,
+        2.1,
         14.0,
         14.0,
         1.1
@@ -1070,7 +1070,7 @@
       "box_mm": [
         143.0,
         28.0,
-        1.7,
+        2.1,
         14.0,
         14.0,
         1.1
@@ -1095,7 +1095,7 @@
       "box_mm": [
         143.0,
         44.0,
-        1.7,
+        2.1,
         14.0,
         14.0,
         1.1
@@ -1786,6 +1786,6 @@
     "program": "reports/program/buildslate-program-snapshot.yaml",
     "component_library": "engineering/components/component_library.yaml"
   },
-  "caveat": "Editable outline study only. The PCB thickness sources disagree, and memory topology, routing, thermal path, and physical function are unproven.",
+  "caveat": "Editable outline study only. The 0.8 mm PCB stack remains an unreviewed fabrication assumption; memory topology, routing, thermal path, and physical function are unproven.",
   "description": "Two-sided eight-package reference alternative. Public package outlines replace the four 32 GB planning sites; all other concept parts remain."
 }

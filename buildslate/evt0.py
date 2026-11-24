@@ -11,6 +11,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from jsonschema import Draft202012Validator, FormatChecker
+from referencing import Registry, Resource
+
 from .io import dump_yaml, load_yaml
 
 HASH_LENGTH = 64
@@ -128,6 +131,41 @@ class EVT0CampaignRepository:
         self.instrumentation = load_yaml(self.evt_root / "instrumentation.yaml")
         self.metric_definitions = load_yaml(self.evt_root / "metric-definitions.yaml")
         self.test_ids = {entry["id"] for entry in self.matrix["sequence"]}
+        self.objective_measurements = self.matrix["objective_measurements"]
+        if set(self.objective_measurements) != set(
+            self.matrix["required_for_evt0_evidence_gate"]
+        ):
+            raise ValueError(
+                "Every required EVT0 test needs an objective measurement contract"
+            )
+        schemas = {
+            name: load_yaml(self.evt_root / "schemas" / f"{name}.schema.yaml")
+            for name in ("run-manifest", "test-result", "calibration", "deviation")
+        }
+        registry = Registry()
+        for schema in schemas.values():
+            Draft202012Validator.check_schema(schema)
+            registry = registry.with_resource(
+                schema["$id"], Resource.from_contents(schema)
+            )
+        self.validators = {
+            name: Draft202012Validator(
+                schema, registry=registry, format_checker=FormatChecker()
+            )
+            for name, schema in schemas.items()
+        }
+
+    def _schema_errors(self, name: str, data: object) -> list[str]:
+        return [
+            f"{name} schema: {'/'.join(str(part) for part in error.absolute_path) or '<root>'}: {error.message}"
+            for error in sorted(
+                self.validators[name].iter_errors(data),
+                key=lambda item: (
+                    tuple(str(part) for part in item.absolute_path),
+                    item.message,
+                ),
+            )
+        ]
 
     def required_channels(self, test_id: str) -> tuple[str, ...]:
         groups = self.matrix.get("channel_requirements", {}).get(test_id, [])
@@ -157,7 +195,11 @@ class EVT0CampaignRepository:
     def _validate_structure(
         self, manifest: dict[str, Any], result: dict[str, Any]
     ) -> list[str]:
-        errors: list[str] = []
+        errors = self._schema_errors("run-manifest", manifest) + self._schema_errors(
+            "test-result", result
+        )
+        if errors:
+            return errors
         missing_manifest = sorted(REQUIRED_MANIFEST_FIELDS - set(manifest))
         missing_result = sorted(REQUIRED_RESULT_FIELDS - set(result))
         if missing_manifest:
@@ -236,6 +278,31 @@ class EVT0CampaignRepository:
             "review_required",
         }:
             errors.append("result.disposition has an invalid value")
+        if result.get("disposition") == "pass" and (
+            not isinstance(result.get("reviewers"), list)
+            or not result["reviewers"]
+            or any(
+                not isinstance(item, str) or not item.strip()
+                for item in result["reviewers"]
+            )
+        ):
+            errors.append("passing result requires named engineering reviewers")
+        test = next(
+            (
+                entry
+                for entry in self.matrix["sequence"]
+                if entry["id"] == manifest.get("test_id")
+            ),
+            None,
+        )
+        if test and test["state"].startswith("prohibited"):
+            errors.append(f"{test['id']} remains prohibited by the EVT0 plan")
+        if (
+            test
+            and isinstance(manifest.get("workload"), dict)
+            and manifest["workload"].get("workload_id") != test["workload"]
+        ):
+            errors.append(f"{test['id']} workload does not match the test matrix")
         if not isinstance(result.get("raw_data"), list) or not result["raw_data"]:
             errors.append("result.raw_data must be a non-empty list")
         if (
@@ -320,6 +387,10 @@ class EVT0CampaignRepository:
             record_path = bundle / "calibrations" / f"{calibration_id}.yaml"
             try:
                 record = load_yaml(record_path)
+                schema_errors = self._schema_errors("calibration", record)
+                if schema_errors:
+                    errors.extend(schema_errors)
+                    continue
                 if (
                     record.get("schema_version") != 1
                     or record.get("calibration_id") != calibration_id
@@ -357,7 +428,7 @@ class EVT0CampaignRepository:
                     errors.append(
                         f"calibration certificate hash mismatch or missing: {calibration_id}"
                     )
-            except (KeyError, TypeError, ValueError) as exc:
+            except (OSError, KeyError, TypeError, ValueError) as exc:
                 errors.append(f"invalid calibration {calibration_id}: {exc}")
         required = set(self.required_channels(manifest.get("test_id", "")))
         uncovered = sorted(required - covered_channels)
@@ -369,21 +440,110 @@ class EVT0CampaignRepository:
 
     def _read_rows(
         self, csv_paths: list[Path]
-    ) -> tuple[list[dict[str, float]], list[str]]:
-        rows: list[dict[str, float]] = []
+    ) -> tuple[list[list[dict[str, float]]], list[str]]:
+        tables: list[list[dict[str, float]]] = []
         errors: list[str] = []
         for path in csv_paths:
             try:
+                rows: list[dict[str, float]] = []
                 with path.open("r", encoding="utf-8-sig", newline="") as stream:
-                    for row in csv.DictReader(stream):
+                    reader = csv.DictReader(stream)
+                    if not reader.fieldnames or len(reader.fieldnames) != len(
+                        set(reader.fieldnames)
+                    ):
+                        raise ValueError("missing or duplicate CSV header")
+                    for row in reader:
+                        if None in row:
+                            raise ValueError("CSV row has more fields than its header")
                         converted: dict[str, float] = {}
                         for key, value in row.items():
                             if key and value not in (None, ""):
-                                converted[key] = float(value)
+                                number = float(value)
+                                if not math.isfinite(number):
+                                    raise ValueError(f"non-finite value in {key}")
+                                converted[key] = number
                         rows.append(converted)
+                tables.append(rows)
             except (OSError, UnicodeError, ValueError) as exc:
                 errors.append(f"cannot parse raw CSV {path.name}: {exc}")
-        rows.sort(key=lambda row: row.get("elapsed_s", math.inf))
+        return tables, errors
+
+    def _objective_rows(
+        self, test_id: str, tables: list[list[dict[str, float]]], result: dict[str, Any]
+    ) -> tuple[list[dict[str, float]], list[str]]:
+        """Evaluate required activity in one hash-verified CSV time series."""
+        contract = self.objective_measurements.get(test_id)
+        if contract is None:
+            return (tables[0] if tables else []), []
+        columns = contract["required_columns"]
+        matches = [
+            table
+            for table in tables
+            if len(table) >= 2
+            and all(all(column in row for column in columns) for row in table)
+        ]
+        if len(matches) != 1:
+            return [], [
+                f"{test_id} requires exactly one CSV with all required columns: {', '.join(columns)}"
+            ]
+        rows = matches[0]
+        errors: list[str] = []
+        times = [row["elapsed_s"] for row in rows]
+        if any(right <= left for left, right in zip(times, times[1:], strict=False)):
+            errors.append(f"{test_id} raw elapsed_s must increase strictly")
+        duration = times[-1] - times[0]
+        if duration < contract.get("minimum_duration_s", 0):
+            errors.append(f"{test_id} raw duration is below the test minimum")
+        try:
+            time_range = result["time_range_utc"]
+            declared_duration = (
+                _datetime(time_range["end"], "result end")
+                - _datetime(time_range["start"], "result start")
+            ).total_seconds()
+            if abs(duration - declared_duration) > 1:
+                errors.append(f"{test_id} raw duration differs from result time range")
+        except (KeyError, TypeError, ValueError):
+            errors.append(f"{test_id} result time range cannot be verified")
+        for column in contract.get("positive_columns", []):
+            if any(row[column] <= 0 for row in rows):
+                errors.append(f"{test_id} requires positive {column} samples")
+        for column in contract.get("positive_deltas", []):
+            if rows[-1][column] <= rows[0][column]:
+                errors.append(f"{test_id} requires positive raw activity: {column}")
+        for column in contract.get("negative_deltas", []):
+            if rows[-1][column] >= rows[0][column]:
+                errors.append(f"{test_id} requires decreasing raw activity: {column}")
+        for column in contract.get("zero_columns", []):
+            if any(row[column] != 0 for row in rows):
+                errors.append(f"{test_id} requires zero {column} events")
+        for column in contract.get("one_columns", []):
+            if rows[-1][column] != 1:
+                errors.append(f"{test_id} requires confirmed {column}")
+        for column in contract.get("observed_one_columns", []):
+            if not any(row[column] == 1 for row in rows):
+                errors.append(f"{test_id} requires observed {column}")
+        for column, floor in contract.get("minimum_final", {}).items():
+            if rows[-1][column] < floor:
+                errors.append(f"{test_id} {column} is below the required configuration")
+        for lower, upper in contract.get("final_order", []):
+            if rows[-1][lower] > rows[-1][upper]:
+                errors.append(f"{test_id} {lower} exceeds {upper}")
+        for column, floor in contract.get("minimum_columns", {}).items():
+            if any(row[column] < floor for row in rows):
+                errors.append(f"{test_id} {column} is below the test condition")
+        for column, ceiling in contract.get("maximum_columns", {}).items():
+            if any(row[column] > ceiling for row in rows):
+                errors.append(f"{test_id} {column} exceeds the test condition")
+        if "maximum_input_power_w" in contract and any(
+            row["input_voltage_v"] * row["input_current_a"]
+            > contract["maximum_input_power_w"]
+            for row in rows
+        ):
+            errors.append(f"{test_id} measured input power exceeds the EVT cap")
+        if len(result.get("analysis_artifacts", [])) < contract.get(
+            "analysis_artifacts_min", 0
+        ):
+            errors.append(f"{test_id} needs hash-verified analysis artifacts")
         return rows, errors
 
     def calculate_metrics(
@@ -463,19 +623,32 @@ class EVT0CampaignRepository:
                 "objective_disposition": "REJECTED_INVALID_EVIDENCE",
             }
         errors.extend(self._validate_structure(manifest, result))
+        if errors:
+            return {
+                "campaign_id": manifest.get("campaign_id"),
+                "run_id": manifest.get("run_id"),
+                "test_id": manifest.get("test_id"),
+                "unit_id": manifest.get("unit_id"),
+                "build_id": manifest.get("build_id"),
+                "integrity_errors": errors,
+                "objective_disposition": "REJECTED_INVALID_EVIDENCE",
+                "evidence_effect": "invalid run structure; no requirement verification",
+            }
         artifact_errors, csv_paths = self._verify_artifacts(bundle, result)
         errors.extend(artifact_errors)
         errors.extend(self._verify_calibrations(bundle, manifest))
-        rows, csv_errors = self._read_rows(csv_paths)
+        tables, csv_errors = self._read_rows(csv_paths)
         errors.extend(csv_errors)
+        rows, measurement_errors = self._objective_rows(
+            manifest.get("test_id"), tables, result
+        )
+        errors.extend(measurement_errors)
         interface_activity: dict[str, float | None] = {}
         if manifest.get("test_id") == "I20":
             for counter in INTERFACE_COUNTERS:
                 values = [row[counter] for row in rows if counter in row]
                 delta = values[-1] - values[0] if len(values) >= 2 else None
                 interface_activity[counter] = delta
-                if delta is None or not math.isfinite(delta) or delta <= 0:
-                    errors.append(f"I20 requires positive raw activity: {counter}")
         try:
             calculated_metrics = self.calculate_metrics(rows) if not csv_errors else {}
         except (ValueError, ZeroDivisionError) as exc:
@@ -492,6 +665,13 @@ class EVT0CampaignRepository:
                 )
             except (KeyError, TypeError) as exc:
                 errors.append(f"invalid model correlation: {exc}")
+        required_correlations = self.objective_measurements.get(
+            manifest.get("test_id"), {}
+        ).get("correlations_min", 0)
+        if len(correlations) < required_correlations:
+            errors.append(
+                f"{manifest.get('test_id')} needs at least {required_correlations} model correlations"
+            )
         deviations = result.get("deviations", [])
         required_deviation_fields = {
             "deviation_id",

@@ -20,7 +20,7 @@ The schematic netlist record has an additional [electrical proof](electrical_net
 
 The mechanical release record has a separate [STEP assembly proof](mechanical_release_proof.md). It requires source part and drawing hashes, released assembly identity, complete role coverage, and nominal interference and clearance checks. There is no released assembly to check yet.
 
-The functional gate also reads the [EVT0 campaign](../../reports/program/evt0-campaign.yaml) directly. Passing required tests must belong to one serialized unit, build revision, configuration, and campaign. An integrated interface test requires positive raw display, touch, camera, audio playback/capture, and USB transfer counters. These checks confirm the presence and internal consistency of recorded evidence; engineering review and physical observation remain necessary.
+The functional gate also reads the [EVT0 campaign](../../reports/program/evt0-campaign.yaml) directly. Passing required tests must belong to one serialized unit, build revision, configuration, and campaign. Each required test has a raw measurement contract, including integrated display, touch, camera, audio playback/capture, and USB activity; charge input power; and separately measured memory capacity and allocation. These checks confirm the presence and internal consistency of recorded evidence; engineering review and physical observation remain necessary.
 
 ```bash
 buildslate hardware

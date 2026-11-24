@@ -62,3 +62,106 @@ channel_requirements:
   B51: [configuration, electrical_slow, thermal, platform]
   R50: [configuration, electrical_slow, platform, workload]
   MC0: [configuration]
+
+# A passing run needs these columns in one hash-verified, time-aligned CSV.
+# Values establish observed activity and data completeness, not supplier-specific
+# acceptance limits or physical authenticity. Reviewers retain final disposition.
+objective_measurements:
+  B00:
+    required_columns: [elapsed_s, mass_g, length_mm, width_mm, thickness_mm]
+    positive_columns: [mass_g, length_mm, width_mm, thickness_mm]
+    analysis_artifacts_min: 1
+  B01:
+    required_columns: [elapsed_s, build_inspection_pass, electrical_safety_review_pass, protection_check_pass]
+    one_columns: [build_inspection_pass, electrical_safety_review_pass, protection_check_pass]
+    analysis_artifacts_min: 1
+  F00:
+    required_columns: [elapsed_s, boot_complete, radio_kill_confirmed, unexpected_resets, protection_faults]
+    one_columns: [boot_complete, radio_kill_confirmed]
+    zero_columns: [unexpected_resets, protection_faults]
+  I20:
+    required_columns: [elapsed_s, display_frames, touch_events, camera_frames, audio_playback_samples, audio_capture_samples, usb_bytes_tx, usb_bytes_rx]
+    positive_deltas: [display_frames, touch_events, camera_frames, audio_playback_samples, audio_capture_samples, usb_bytes_tx, usb_bytes_rx]
+  P00:
+    required_columns: [elapsed_s, system_power_w, battery_voltage_v, TC_REAR_SOC, TC_FRONT_SOC, TC_REAR_BATTERY, T_AMBIENT]
+    positive_columns: [system_power_w, battery_voltage_v]
+    minimum_duration_s: 1800
+  P10:
+    required_columns: [elapsed_s, system_power_w, work_units_completed, compute_rail_voltage_v, compute_rail_current_a, TC_REAR_SOC, TC_FRONT_SOC, TC_REAR_BATTERY, unexpected_resets, protection_faults]
+    positive_columns: [system_power_w, compute_rail_voltage_v, compute_rail_current_a]
+    positive_deltas: [work_units_completed]
+    zero_columns: [unexpected_resets, protection_faults]
+    minimum_duration_s: 3600
+  P11:
+    required_columns: [elapsed_s, compute_rail_voltage_v, compute_rail_current_a, rail_droop_v, rail_recovered, peak_mode_active, work_units_completed, protection_faults]
+    positive_columns: [compute_rail_voltage_v, compute_rail_current_a]
+    positive_deltas: [work_units_completed]
+    zero_columns: [protection_faults]
+    one_columns: [rail_recovered, peak_mode_active]
+  M20:
+    required_columns: [elapsed_s, installed_bytes, usable_bytes, allocated_bytes, memory_errors, work_units_completed]
+    positive_columns: [installed_bytes, usable_bytes, allocated_bytes]
+    positive_deltas: [work_units_completed]
+    zero_columns: [memory_errors]
+    minimum_final: {installed_bytes: 128000000000, usable_bytes: 100000000000, allocated_bytes: 90000000000}
+    final_order: [[allocated_bytes, usable_bytes], [usable_bytes, installed_bytes]]
+  S30:
+    required_columns: [elapsed_s, storage_capacity_bytes, storage_bytes_read, storage_bytes_written, storage_temperature_c, storage_errors]
+    positive_columns: [storage_capacity_bytes]
+    positive_deltas: [storage_bytes_read, storage_bytes_written]
+    zero_columns: [storage_errors]
+    minimum_final: {storage_capacity_bytes: 1000000000000}
+  C40:
+    required_columns: [elapsed_s, system_power_w, work_units_completed, display_frames, TC_REAR_SOC, TC_FRONT_SOC, TC_REAR_BATTERY, unexpected_resets]
+    positive_columns: [system_power_w]
+    positive_deltas: [work_units_completed, display_frames]
+    zero_columns: [unexpected_resets]
+    minimum_duration_s: 600
+  T10:
+    required_columns: [elapsed_s, system_power_w, work_units_completed, TC_REAR_SOC, TC_FRONT_SOC, TC_REAR_BATTERY, T_AMBIENT]
+    positive_columns: [system_power_w]
+    positive_deltas: [work_units_completed]
+    minimum_duration_s: 3600
+    minimum_columns: {T_AMBIENT: 23}
+    maximum_columns: {T_AMBIENT: 27}
+  T20:
+    required_columns: [elapsed_s, system_power_w, work_units_completed, TC_REAR_SOC, TC_FRONT_SOC, TC_REAR_BATTERY, T_AMBIENT, throttle_state]
+    positive_columns: [system_power_w]
+    positive_deltas: [work_units_completed]
+    minimum_duration_s: 3600
+    observed_one_columns: [throttle_state]
+    minimum_columns: {T_AMBIENT: 33}
+    maximum_columns: {T_AMBIENT: 37}
+  T30:
+    required_columns: [elapsed_s, system_power_w, work_units_completed, TC_REAR_SOC, TC_FRONT_SOC, TC_REAR_BATTERY, TC_EDGE_LEFT, TC_EDGE_RIGHT, T_AMBIENT]
+    positive_columns: [system_power_w]
+    positive_deltas: [work_units_completed]
+    minimum_duration_s: 3600
+    minimum_columns: {T_AMBIENT: 23}
+    maximum_columns: {T_AMBIENT: 27}
+  B40:
+    required_columns: [elapsed_s, state_of_charge_percent, battery_voltage_v, system_power_w, work_units_completed, TC_REAR_BATTERY]
+    positive_columns: [battery_voltage_v, system_power_w]
+    positive_deltas: [work_units_completed]
+    negative_deltas: [state_of_charge_percent]
+    minimum_duration_s: 600
+    minimum_columns: {state_of_charge_percent: 0}
+    maximum_columns: {state_of_charge_percent: 100}
+  B50:
+    required_columns: [elapsed_s, state_of_charge_percent, input_voltage_v, input_current_a, TC_REAR_BATTERY, charge_faults]
+    positive_columns: [input_voltage_v, input_current_a]
+    positive_deltas: [state_of_charge_percent]
+    zero_columns: [charge_faults]
+    minimum_duration_s: 600
+    minimum_columns: {state_of_charge_percent: 0}
+    maximum_columns: {state_of_charge_percent: 100}
+    maximum_input_power_w: 30
+  R50:
+    required_columns: [elapsed_s, radio_enabled, radio_tx_bytes, radio_rx_bytes, radio_errors, system_power_w, work_units_completed]
+    positive_columns: [system_power_w]
+    positive_deltas: [radio_enabled, radio_tx_bytes, radio_rx_bytes, work_units_completed]
+    minimum_duration_s: 600
+  MC0:
+    required_columns: [elapsed_s]
+    analysis_artifacts_min: 1
+    correlations_min: 4

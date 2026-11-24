@@ -80,6 +80,20 @@ def main() -> int:
                 failures.append("EVT0 test gate lacks required test coverage")
             if "I20" not in matrix["required_for_evt0_evidence_gate"]:
                 failures.append("EVT0 gate must require integrated interface activity")
+            contracts = matrix["objective_measurements"]
+            if set(contracts) != set(matrix["required_for_evt0_evidence_gate"]):
+                failures.append(
+                    "Every required EVT0 test needs an objective measurement contract"
+                )
+            if contracts["P10"].get("minimum_duration_s", 0) < 3600:
+                failures.append("P10 sustained load needs an hour of raw telemetry")
+            if contracts["B50"].get("maximum_input_power_w") != 30:
+                failures.append("B50 must enforce the 30 W EVT input cap")
+            if (
+                contracts["M20"].get("minimum_final", {}).get("installed_bytes", 0)
+                < 128000000000
+            ):
+                failures.append("M20 must prove the 128 GB memory tier")
             if matrix["global_pass_fail"]["hard_stops"]["maximum_skin_c"] != 43.0:
                 failures.append("EVT0 locked 43 C skin hard stop changed unexpectedly")
             for schema, name in (

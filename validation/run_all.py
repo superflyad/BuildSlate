@@ -52,6 +52,7 @@ VALIDATION_CHECKS = (
     "validation/validate_assembly.py",
     "validation/validate_concept_cad.py",
     "validation/validate_hardware_readiness.py",
+    "validation/validate_part_selection.py",
     "validation/validate_netlist_proof.py",
     "validation/validate_mechanical_proof.py",
     "validation/validate_repository.py",

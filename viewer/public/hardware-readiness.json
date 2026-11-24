@@ -46,31 +46,63 @@
     ]
   },
   "phone_function": "blocked",
+  "part_selection": {
+    "status": "missing",
+    "source": "engineering/hardware/released/selected-bom.json",
+    "errors": [
+      "No released selected BOM"
+    ],
+    "supplier_packages_unverified": [
+      "battery_supplier_package",
+      "compute_memory_platform_package",
+      "display_storage_package"
+    ]
+  },
   "selected_roles": [
     {
       "id": "compute_platform",
       "status": "selection_required",
-      "selected": false
+      "selected": false,
+      "reasons": [
+        "No released selected BOM"
+      ],
+      "mpn": null
     },
     {
       "id": "memory",
       "status": "selection_required",
-      "selected": false
+      "selected": false,
+      "reasons": [
+        "No released selected BOM"
+      ],
+      "mpn": null
     },
     {
       "id": "storage",
       "status": "selection_required",
-      "selected": false
+      "selected": false,
+      "reasons": [
+        "No released selected BOM"
+      ],
+      "mpn": null
     },
     {
       "id": "battery_pack",
       "status": "selection_required",
-      "selected": false
+      "selected": false,
+      "reasons": [
+        "No released selected BOM"
+      ],
+      "mpn": null
     },
     {
       "id": "display_module",
       "status": "selection_required",
-      "selected": false
+      "selected": false,
+      "reasons": [
+        "No released selected BOM"
+      ],
+      "mpn": null
     }
   ],
   "cellular": {

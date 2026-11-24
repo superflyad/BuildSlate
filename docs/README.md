@@ -73,6 +73,7 @@ Use this index to move from a question to the authoritative source. The root [RE
 | [Assembly contract](../engineering/assembly/README.md) | Provisional 3D data and coordinate frame |
 | [CAD proofing](engineering/cad_proofing.md) | Solid, STEP, mesh, keepout, and stack checks with explicit limits |
 | [Build-to-function gate](engineering/build_to_function.md) | Required design release and physical EVT0 evidence |
+| [Selected BOM proof](engineering/selected_bom_proof.md) | Exact part identity, supplier source binding, and interface checks |
 | [Electrical netlist proof](engineering/electrical_netlist_proof.md) | Connectivity and selected electrical BOM audit contract |
 | [Released mechanical CAD proof](engineering/mechanical_release_proof.md) | Supplier STEP identity, assembly placement, intersections, and tolerance clearance |
 

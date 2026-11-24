@@ -580,7 +580,13 @@ entities:
   source_path: validation/evt0/bom-strategy.yaml
   attributes:
     quantity_per_unit: 0
-    required_evidence: []
+    required_evidence:
+    - modem_datasheet
+    - reference_design
+    - rf_grants
+    - antenna_match
+    - firmware_drivers
+    - sample_terms
 - entity_id: component_role:compute_platform
   kind: component_role
   title: compute platform

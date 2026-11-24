@@ -163,17 +163,19 @@ def copy_engine_inputs(destination_root: Path) -> None:
 
 def main() -> int:
     repository = EVT0CampaignRepository(REPO_ROOT)
-    empty = repository.build_campaign_report()
+    current = repository.build_campaign_report()
     require(
-        empty["EVT0_CAMPAIGN_GATE"] == "EMPTY_CAMPAIGN",
-        "committed EVT0 campaign store remains empty",
+        current["summary"]["ingested_run_count"]
+        == len(list(repository.campaign_root.glob("*/*/receipt.yaml"))),
+        "campaign run count matches preserved receipts",
     )
     require(
-        empty["summary"]["ingested_run_count"] == 0,
-        "no measurement or prototype run is invented",
+        current["EVT0_CAMPAIGN_GATE"] != "EMPTY_CAMPAIGN"
+        or current["summary"]["passing_required_test_count"] == 0,
+        "empty campaign cannot claim passing measurements",
     )
     require(
-        load_yaml(REPO_ROOT / "reports/program/evt0-campaign.yaml") == empty,
+        load_yaml(REPO_ROOT / "reports/program/evt0-campaign.yaml") == current,
         "generated EVT0 campaign report is deterministic and current",
     )
     required = set(repository.matrix["required_for_evt0_evidence_gate"])
@@ -537,7 +539,8 @@ def main() -> int:
         check=False,
     )
     require(
-        cli.returncode == 0 and '"EVT0_CAMPAIGN_GATE": "EMPTY_CAMPAIGN"' in cli.stdout,
+        cli.returncode == 0
+        and f'"EVT0_CAMPAIGN_GATE": "{current["EVT0_CAMPAIGN_GATE"]}"' in cli.stdout,
         "CLI exposes the EVT0 campaign gate",
     )
     passed("EVT0 campaign tooling validation")

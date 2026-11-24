@@ -17,6 +17,8 @@ from buildslate.mechanical_proof import MANIFEST as MECHANICAL_MANIFEST
 from buildslate.mechanical_proof import REPORT as MECHANICAL_REPORT
 from buildslate.mechanical_proof import REQUIRED_ROLES as MECHANICAL_ROLES
 from buildslate.netlist_proof import audit as audit_netlist
+from buildslate.part_selection import RELEASE as SELECTED_BOM_RELEASE
+from buildslate.part_selection import audit as audit_part_selection
 
 MANIFEST = Path("engineering/hardware/readiness.yaml")
 STRATEGY = Path("validation/evt0/bom-strategy.yaml")
@@ -66,7 +68,9 @@ ROOTS = {
 }
 
 
-def _evidence_result(root: Path, requirement: dict, record: object) -> dict:
+def _evidence_result(
+    root: Path, requirement: dict, record: object, selection_proof: dict | None = None
+) -> dict:
     """Require a reviewed, revisioned artifact under the stage's controlled root."""
     reasons: list[str] = []
     if not isinstance(record, dict):
@@ -97,6 +101,20 @@ def _evidence_result(root: Path, requirement: dict, record: object) -> dict:
             digest = hashlib.sha256(target.read_bytes()).hexdigest()
             if digest != record["sha256"]:
                 reasons.append("Artifact hash does not match")
+        if not reasons and requirement.get("id") == "selected_bom":
+            if target != (root / SELECTED_BOM_RELEASE).resolve():
+                reasons.append("Selected BOM must name the controlled release JSON")
+            elif selection_proof is None or selection_proof["status"] != "pass":
+                reasons.append("Selected part set or interface proof is incomplete")
+            elif (
+                selection_proof.get("revision") != record["revision"]
+                or selection_proof.get("reviewed_by") != record["reviewed_by"]
+            ):
+                reasons.append(
+                    "Selected BOM review identity or revision differs from evidence record"
+                )
+            else:
+                proof = selection_proof
         if not reasons and requirement.get("id") == "schematic_netlist":
             if target.suffix.lower() != ".xml":
                 reasons.append("Schematic netlist must be a KiCad XML export")
@@ -195,19 +213,20 @@ def build_report(root: Path) -> dict:
     records = manifest["evidence"]
     if set(records) - set(ids):
         raise ValueError("Evidence record does not match a requirement")
+    selection = audit_part_selection(root, strategy)
     selected_roles = []
     for role in manifest["selected_roles"]:
         item = strategy["roles"].get(role)
         if item is None:
             raise ValueError(f"Unknown sourcing role: {role}")
-        candidate = item.get("selected_candidate")
+        proof_role = next(entry for entry in selection["roles"] if entry["id"] == role)
         selected_roles.append(
             {
                 "id": role,
                 "status": item["status"],
-                "selected": item["status"] == "selected"
-                and isinstance(candidate, str)
-                and bool(candidate.strip()),
+                "selected": proof_role["selected"],
+                "reasons": proof_role["reasons"],
+                "mpn": proof_role.get("mpn"),
             }
         )
     entries = [
@@ -215,13 +234,21 @@ def build_report(root: Path) -> dict:
             "id": item["id"],
             "stage": item["stage"],
             "title": item["title"],
-            **_evidence_result(root, item, records.get(item["id"])),
+            **_evidence_result(root, item, records.get(item["id"]), selection),
         }
         for item in requirements
     ]
+    evt0_spec = load_yaml(root / EVT0_SPEC)
+    evidence_registry = load_yaml(root / EVIDENCE_REGISTRY)
+    supplier_gaps = [
+        package
+        for package in evt0_spec["prerequisite_gates"]["supplier_evidence"]["packages"]
+        if evidence_registry["packages"][package]["status"] != "verified"
+    ]
     design = (
-        all(item["selected"] for item in selected_roles)
-        and strategy["metadata"]["selected_parts"] >= len(SELECTED_ROLES)
+        selection["status"] == "pass"
+        and not supplier_gaps
+        and all(item["selected"] for item in selected_roles)
         and all(
             entry["status"] == "accepted"
             for entry in entries
@@ -241,11 +268,10 @@ def build_report(root: Path) -> dict:
         and not prerequisite_gaps
     )
     cellular = strategy["roles"]["cellular"]
-    cellular_selected = (
-        cellular["status"] == "selected"
-        and isinstance(cellular.get("selected_candidate"), str)
-        and bool(cellular["selected_candidate"].strip())
+    cellular_proof = next(
+        (entry for entry in selection["roles"] if entry["id"] == "cellular"), None
     )
+    cellular_selected = bool(cellular_proof and cellular_proof["selected"])
     phone = (
         evt0
         and cellular_selected
@@ -271,6 +297,12 @@ def build_report(root: Path) -> dict:
             "prerequisite_gaps": prerequisite_gaps,
         },
         "phone_function": "evidence_ready_for_review" if phone else "blocked",
+        "part_selection": {
+            "status": selection["status"],
+            "source": selection["source"],
+            "errors": selection["errors"],
+            "supplier_packages_unverified": supplier_gaps,
+        },
         "selected_roles": selected_roles,
         "cellular": {"status": cellular["status"], "selected": cellular_selected},
         "requirements": entries,

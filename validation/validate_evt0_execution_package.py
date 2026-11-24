@@ -11,6 +11,11 @@ from typing import Any
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from buildslate.part_selection import audit as audit_part_selection  # noqa: E402
+
 EVT_ROOT = REPO_ROOT / "validation" / "evt0"
 REPORT_PATH = REPO_ROOT / "reports" / "slate-pocket-v1r-evt0-gate.txt"
 GENERATOR_PATH = EVT_ROOT / "generate_evt0_gate_report.py"
@@ -55,23 +60,53 @@ def main() -> int:
             matrix = _load(EVT_ROOT / "test-matrix.yaml")
             manifest_schema = _load(EVT_ROOT / "schemas" / "run-manifest.schema.yaml")
             result_schema = _load(EVT_ROOT / "schemas" / "test-result.schema.yaml")
-            if spec["metadata"]["status"] != "planned_not_authorized":
-                failures.append("EVT0 spec must remain planned and unauthorized")
+            if spec["metadata"]["status"] not in {
+                "planned_not_authorized",
+                "authorized_for_build",
+                "evt0_in_progress",
+                "evidence_review",
+            }:
+                failures.append("EVT0 specification status is unknown")
             authorization = spec["prerequisite_gates"]["authorization"]
             if any(
                 value is True
                 for field, value in authorization.items()
                 if field.endswith("_authorized")
+            ) and (
+                not isinstance(authorization.get("authorized_by"), str)
+                or not authorization["authorized_by"].strip()
+            ):
+                failures.append("EVT0 authorization needs a named decision owner")
+            status = spec["metadata"]["status"]
+            if status == "planned_not_authorized" and (
+                authorization["build_authorized"] is True
+                or authorization["energized_test_authorized"] is True
             ):
                 failures.append(
-                    "EVT0 package may not imply purchase, build, or test authorization"
+                    "Planned EVT0 status contradicts build or test authorization"
+                )
+            if (
+                status
+                in {"authorized_for_build", "evt0_in_progress", "evidence_review"}
+                and authorization["build_authorized"] is not True
+            ):
+                failures.append(
+                    "Build authorization is required for the stated EVT0 status"
+                )
+            if (
+                status in {"evt0_in_progress", "evidence_review"}
+                and authorization["energized_test_authorized"] is not True
+            ):
+                failures.append(
+                    "Energized-test authorization is required for the stated EVT0 status"
                 )
             if spec["configuration_rules"]["memory_tier_gb"] != 128:
                 failures.append("EVT0 must use the locked 128 GB fallback")
             if spec["configuration_rules"]["wireless_charging"] != "removed":
                 failures.append("wireless charging must remain removed from EVT0")
-            if bom["metadata"]["selected_parts"] != 0:
-                failures.append("EVT0 BOM may not imply selected parts")
+            part_proof = audit_part_selection(REPO_ROOT, bom)
+            if bom["metadata"]["selected_parts"] > 0 and part_proof["status"] != "pass":
+                failures.append("Selected parts require a complete released BOM proof")
             if len(instrumentation["channel_groups"]) < 5:
                 failures.append("EVT0 instrumentation lacks required channel coverage")
             if len(workloads["workloads"]) < 6:
@@ -122,7 +157,7 @@ def main() -> int:
         else:
             if not failures:
                 print(
-                    "PASS: EVT0 fallbacks, authorization, BOM, instrumentation, workloads, tests, schemas, and empty evidence state are valid"
+                    "PASS: EVT0 fallbacks, authorization, part proof, instrumentation, workloads, tests, and schemas are consistent"
                 )
 
     if not failures:
@@ -140,25 +175,26 @@ def main() -> int:
                 f"EVT0 gate generator failed: {result.stderr.strip() or result.stdout.strip()}"
             )
 
-    if REPORT_PATH.exists():
+    if REPORT_PATH.exists() and not failures:
         report = REPORT_PATH.read_text(encoding="utf-8")
+        campaign = _load(REPO_ROOT / "reports/program/evt0-campaign.yaml")
+        proof = audit_part_selection(REPO_ROOT)
         markers = (
-            "specification status: planned_not_authorized",
-            "physical prototype exists: no evidence",
-            "selected roles: 0",
-            "result files excluding instructions: 0",
-            "campaign gate: EMPTY_CAMPAIGN",
-            "EVT0_GATE: BLOCKED_ON_SUPPLIER_PHASE2_VERIFICATION_BUILD_AUTHORIZATION_AND_RESULTS",
-            "does not claim a component selection",
+            f"specification status: {spec['metadata']['status']}",
+            f"released part proof: {proof['status']}",
+            f"selected roles: {sum(item['selected'] for item in proof['roles'])}",
+            f"campaign gate: {campaign['EVT0_CAMPAIGN_GATE']}",
+            "EVT0_GATE:",
+            "Engineering review, physical observation",
         )
         missing = [marker for marker in markers if marker not in report]
         if missing:
             failures.append(f"EVT0 gate report missing markers: {', '.join(missing)}")
         else:
             print(
-                "PASS: EVT0 gate report preserves readiness blockers and non-evidence caveat"
+                "PASS: EVT0 gate report reflects current part, campaign, and review state"
             )
-    else:
+    elif not REPORT_PATH.exists():
         failures.append(
             f"EVT0 gate report missing: {REPORT_PATH.relative_to(REPO_ROOT)}"
         )

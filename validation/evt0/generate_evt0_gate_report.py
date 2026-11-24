@@ -5,10 +5,16 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
+import sys
 
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from buildslate.part_selection import audit as audit_part_selection  # noqa: E402
+
 EVT_ROOT = REPO_ROOT / "validation" / "evt0"
 SPEC_PATH = EVT_ROOT / "evt0-spec.yaml"
 BOM_PATH = EVT_ROOT / "bom-strategy.yaml"
@@ -65,12 +71,16 @@ def build_report() -> str:
         for field, value in authorization.items()
         if field.endswith("_authorized") and value is not True
     ]
+    if (
+        not isinstance(authorization.get("authorized_by"), str)
+        or not authorization["authorized_by"].strip()
+    ):
+        false_authorizations.append("authorized_by")
     false_safety_gates = [field for field, value in safety.items() if value is not True]
 
     roles = bom["roles"]
-    selected_roles = [
-        role_id for role_id, role in roles.items() if role["status"] == "selected"
-    ]
+    selection = audit_part_selection(REPO_ROOT, bom)
+    selected_roles = [item["id"] for item in selection["roles"] if item["selected"]]
     removed_or_deferred = [
         role_id
         for role_id, role in roles.items()
@@ -87,7 +97,13 @@ def build_report() -> str:
     campaign_gate = campaign["EVT0_CAMPAIGN_GATE"]
     campaign_runs = campaign["summary"]["ingested_run_count"]
     campaign_passing = campaign["summary"]["passing_required_test_count"]
-    if unverified or false_authorizations or false_safety_gates or not selected_roles:
+    if (
+        unverified
+        or false_authorizations
+        or false_safety_gates
+        or selection["status"] != "pass"
+        or unresolved_workloads
+    ):
         gate = "BLOCKED_ON_SUPPLIER_PHASE2_VERIFICATION_BUILD_AUTHORIZATION_AND_RESULTS"
     elif campaign_gate == "OBJECTIVE_EVIDENCE_REVIEW_READY":
         gate = "OBJECTIVE_EVIDENCE_REVIEW_READY"
@@ -100,10 +116,10 @@ def build_report() -> str:
         "",
         "Program state:",
         f"  specification status: {spec['metadata']['status']}",
-        "  physical prototype exists: no evidence",
-        "  physical work authorized: no",
-        "  purchases authorized: no",
-        "  energized testing authorized: no",
+        f"  physical prototype evidence: {'ingested runs under review' if campaign_runs else 'no evidence'}",
+        f"  physical work authorized: {'yes' if authorization['build_authorized'] is True else 'no'}",
+        f"  purchases authorized: {'yes' if authorization['purchase_authorized'] is True else 'no'}",
+        f"  energized testing authorized: {'yes' if authorization['energized_test_authorized'] is True else 'no'}",
         "",
         "Prerequisite evidence:",
         f"  required packages: {len(prerequisite_ids)}",
@@ -119,13 +135,14 @@ def build_report() -> str:
             "Build readiness:",
             f"  BOM roles: {len(roles)}",
             f"  selected roles: {len(selected_roles)}",
+            f"  released part proof: {selection['status']}",
             f"  intentionally removed/deferred roles: {', '.join(removed_or_deferred)}",
             f"  unmet authorization gates: {', '.join(false_authorizations)}",
             f"  unmet safety gates: {', '.join(false_safety_gates)}",
             "  EVT0 memory configuration: 128 GB fallback",
             "  EVT0 storage configuration: 1 TB planning baseline",
-            "  wireless charging: REMOVED",
-            "  cellular: DEFERRED",
+            f"  wireless charging: {spec['configuration_rules']['wireless_charging']}",
+            f"  cellular: {spec['configuration_rules']['cellular']}",
             "",
             "Executable test package:",
             f"  planned tests: {len(tests)}",
@@ -145,15 +162,35 @@ def build_report() -> str:
             f"  model correlation completed: {'yes' if campaign_gate == 'OBJECTIVE_EVIDENCE_REVIEW_READY' else 'no'}",
             "",
             "Gate blockers:",
-            "  - Supplier packages and Phase 2 integration packages are not verified.",
-            "  - No selected BOM, released hardware design, approved battery/charge limits, or calibrated setup exists.",
-            "  - Purchase, build, and energized-test authorization have not been granted.",
-            "  - No physical unit, raw measurement campaign, reviewed result, or correlation evidence exists.",
+        ]
+    )
+    blockers = []
+    if unverified:
+        blockers.append("Supplier or Phase 2 packages remain unverified.")
+    if selection["status"] != "pass":
+        blockers.append("Released selected BOM or part compatibility proof is missing.")
+    if false_authorizations:
+        blockers.append("Required purchase, build, or test authorization is missing.")
+    if false_safety_gates:
+        blockers.append(
+            "Required battery, laboratory, calibration, or response safety review is missing."
+        )
+    if unresolved_workloads:
+        blockers.append("Workload definitions still lack executable content hashes.")
+    if campaign_gate != "OBJECTIVE_EVIDENCE_REVIEW_READY":
+        blockers.append("The measured EVT0 campaign is incomplete or invalid.")
+    lines.extend(f"  - {blocker}" for blocker in blockers)
+    if not blockers:
+        lines.append(
+            "  - None in automated evidence checks; engineering review remains required."
+        )
+    lines.extend(
+        [
             "",
             f"EVT0_GATE: {gate}",
             "",
             "Caveat:",
-            "  The EVT0 package is executable planning evidence only. It does not claim a component selection, prototype build, measurement, correlated model, safety validation, certification, or prototype readiness.",
+            "  The automated gate checks documented evidence and consistency. Engineering review, physical observation, safety validation, and certification require separate decisions.",
             "",
         ]
     )

@@ -16,6 +16,8 @@ The planning geometry was created before supplier selection and controlled drawi
 
 The [readiness manifest](../../engineering/hardware/readiness.yaml) lists the required artifacts. The [gate code](../../buildslate/hardware_readiness.py) checks the selected sourcing roles and each evidence record. A record must identify an approved revision, reviewer, controlled file path, and matching SHA-256. Planning Markdown/YAML and files outside the controlled release or test directories are rejected. An accepted record means the listed file and review metadata exist; the gate cannot independently verify that the engineering judgment or test result is correct. Its positive state is therefore **ready for review**, not certification.
 
+The selected BOM record is bound to the [part selection proof](selected_bom_proof.md). A status flag or candidate name cannot select a part: the proof requires a controlled released JSON BOM, exact manufacturer part numbers, hashed supplier artifacts for every required evidence type, and basic compute, memory, storage, display, and battery compatibility checks. Cellular requires its own released part and interface proof before the phone-function gate can use it.
+
 The schematic netlist record has an additional [electrical proof](electrical_netlist_proof.md): its selected electrical BOM, critical endpoint contract, and exported XML netlist are checked together before that record can be accepted.
 
 The mechanical release record has a separate [STEP assembly proof](mechanical_release_proof.md). It requires source part and drawing hashes, released assembly identity, complete role coverage, and nominal interference and clearance checks. There is no released assembly to check yet.

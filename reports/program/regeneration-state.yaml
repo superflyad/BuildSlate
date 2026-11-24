@@ -42,7 +42,7 @@ nodes:
       manufacturing/supplier-dfm-response.yaml: 79eb4c2c77125a88d7b02d90ead69a749bb74b0d301254303e77cb613127cfdf
       simulations/thermal/slate-pocket-v1r/model/model.yaml: 3aebbfd9fb27432ca9b4a7a8c3f877fc34510c13c8cc79c29e0d2f795f9c3035
       simulations/thermal/slate-pocket-v1r/test-matrix.yaml: 989da9fb89fbc1e72e2a43ad317e10f11a50294346bf305183574234657f2cf4
-      validation/evt0/bom-strategy.yaml: 4efe93039fe301aaa34b26999e332f9d559ad6a05153bbcf79223bfcd48b4d6d
+      validation/evt0/bom-strategy.yaml: 157a15ee5592239a7f91ff048d442998b686b54df9c5933a1469e0f770d8b7d6
       validation/evt0/evt0-spec.yaml: 2c1a0823ef0285d749ece9bc6741cd866f92ebce4ceb24e24b08d3dab6cdbe10
       validation/evt0/instrumentation.yaml: 47c9e8942a533cc94c919e17581315fccd3e41ed668fe7091613460afd6c3004
       validation/evt0/metric-definitions.yaml: b02a8eaa62ddbbc88520545a070a84bd400375b9f4c8c3874009b3eab8d6a22d
@@ -67,13 +67,13 @@ nodes:
     inputs:
       engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
       reports/program/evt0-campaign.yaml: 3b7563a559b00dbc352479c6aa0c00feb66aa268f576fcf45f458db683ba2e0c
-      validation/evt0/bom-strategy.yaml: 4efe93039fe301aaa34b26999e332f9d559ad6a05153bbcf79223bfcd48b4d6d
+      validation/evt0/bom-strategy.yaml: 157a15ee5592239a7f91ff048d442998b686b54df9c5933a1469e0f770d8b7d6
       validation/evt0/evt0-spec.yaml: 2c1a0823ef0285d749ece9bc6741cd866f92ebce4ceb24e24b08d3dab6cdbe10
-      validation/evt0/generate_evt0_gate_report.py: 24c69149d02d90ef26d585687d46c5c1603f6b4591a777349b9b4d9781a108b9
+      validation/evt0/generate_evt0_gate_report.py: 10224a2f90085384e4134e51f4ee4f0f154a22f7e6db5a310d2fd1e0445cdcc6
       validation/evt0/test-matrix.yaml: 7cebcd10617b05e8e55900dc58dbd4040dd54889928c704b57456102177a8e55
       validation/evt0/workloads.yaml: 15ee8713856cd4191b2cd27eec23545b53cdda0b6c6f6528ce2268a8d78f1d35
     outputs:
-      reports/slate-pocket-v1r-evt0-gate.txt: c364bbc15f232a154ca6a09f5157858b410e8a786f7829cbe46cd82e27b8e873
+      reports/slate-pocket-v1r-evt0-gate.txt: 798a4f6870ec0902b379bde07e0fc68067e4644abe513af2e9c1679994af030a
   manufacturing_analytics:
     inputs:
       buildslate/manufacturing.py: 12ab012af157e8907135fb0e23d74f201fa970ccdeb910ec37a81f384478f303
@@ -193,21 +193,21 @@ nodes:
       reports/program/manufacturing-pilot-analytics.yaml: 13d981cac98395095638a67a363e44b1be0044dd9ecc50b919c51a033419528b
       reports/program/supplier-response-review.yaml: 343bb9ab70cd09224876c6ce32618b4696e0fc0b2698e5ab0c32d9e61f83eeb7
       reports/slate-pocket-evidence-readiness.txt: 187991a06b78822e0c3f21cc131c9bcb237ecf96a9f514ecf20a0f118a189248
-      reports/slate-pocket-v1r-evt0-gate.txt: c364bbc15f232a154ca6a09f5157858b410e8a786f7829cbe46cd82e27b8e873
+      reports/slate-pocket-v1r-evt0-gate.txt: 798a4f6870ec0902b379bde07e0fc68067e4644abe513af2e9c1679994af030a
       reports/slate-pocket-v1r-manufacturing-readiness.txt: c0f01f33e718e4d97f670d613645ad5e24f99902f7a71d43ba2c5cbe7904d172
       reports/slate-pocket-v1r-program-readiness.txt: 9fda9b41a525622909e44b36dd53e86b05d117d151ec70727e20605271be4242
       research/rfqs/rfq_registry.yaml: 4178a8634868b1865ee844f78fc51ddd9e8c08074c505d30503c3f8bd72ee91f
-      validation/evt0/bom-strategy.yaml: 4efe93039fe301aaa34b26999e332f9d559ad6a05153bbcf79223bfcd48b4d6d
+      validation/evt0/bom-strategy.yaml: 157a15ee5592239a7f91ff048d442998b686b54df9c5933a1469e0f770d8b7d6
       validation/evt0/test-matrix.yaml: 7cebcd10617b05e8e55900dc58dbd4040dd54889928c704b57456102177a8e55
     outputs:
-      reports/program/buildslate-program-snapshot.yaml: 10edb21d1cc45abc0ed86824c3378141a5e25fbd2218e2869c93e8ff0e58fe24
+      reports/program/buildslate-program-snapshot.yaml: f4696fc3844fdd1e646b7686ccbb219e1facb8081cb52ea91f059fd672c9cf57
   dashboard:
     inputs:
       buildslate/dashboard.py: 8e29d69f152b5ba09830ce50915b2c69598a67931a775770fc99fd89138bf0b2
       engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
       engineering/evidence/external_blocker_registry.yaml: 7d1f9caa12b431824f418ec957128e3a47f6239eec98b758697c8775927893b8
       engineering/program/configuration_registry.yaml: e884eb94098366bc9d4fd52bf8d46195970a8b21c880823223834cb98606fbc2
-      reports/program/buildslate-program-snapshot.yaml: 10edb21d1cc45abc0ed86824c3378141a5e25fbd2218e2869c93e8ff0e58fe24
+      reports/program/buildslate-program-snapshot.yaml: f4696fc3844fdd1e646b7686ccbb219e1facb8081cb52ea91f059fd672c9cf57
       reports/program/configuration-resolution.yaml: c59e257abba32ad8317027a4d02ca123689ce3e614c2fed3903d2236ed5cf598
       reports/program/evt0-campaign.yaml: 3b7563a559b00dbc352479c6aa0c00feb66aa268f576fcf45f458db683ba2e0c
       reports/program/integration-contracts.yaml: dbcc1c59c3d24d6e1b6cdf1ba76e2cf2ebfd440ae9634317decccedae5f8210f
@@ -226,7 +226,7 @@ nodes:
       engineering/assembly/assembly.yaml: 1fdc005034419d3aa2a0ef88aeda700ac33ac7910f4ba9315d9a532f22c91912
       engineering/components/component_library.yaml: f5e18ac5d498f5f3f303080452a6340d9930ed830dbf87031fca780b221f8672
       engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml: 8d97cf5d635e423a5fea7d90b9c52b815be67d807ce5490016bc0784eb18d58b
-      reports/program/buildslate-program-snapshot.yaml: 10edb21d1cc45abc0ed86824c3378141a5e25fbd2218e2869c93e8ff0e58fe24
+      reports/program/buildslate-program-snapshot.yaml: f4696fc3844fdd1e646b7686ccbb219e1facb8081cb52ea91f059fd672c9cf57
       reports/program/dashboard.yaml: 468e726c041bb4cd6873b6620508be48af193f1d90b1ce1d85e197b31989282d
     outputs:
       viewer/public/assembly.gltf: f76ed4f3524f31d9868267ab6a448cf6d17e9c0ee715b6ccc7395017ea5f1adf

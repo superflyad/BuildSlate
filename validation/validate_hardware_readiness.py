@@ -35,13 +35,17 @@ def main() -> int:
     ):
         raise ValueError("Phone function cannot precede functional EVT0")
     campaign = expected["evt0_campaign"]
-    if (
-        campaign["gate"] != "EMPTY_CAMPAIGN"
-        or campaign["passing_required_tests"] != 0
-        or "I20" not in campaign["missing_tests"]
-        or not campaign["prerequisite_gaps"]
+    if campaign["gate"] == "EMPTY_CAMPAIGN" and (
+        campaign["passing_required_tests"] != 0
+        or len(campaign["missing_tests"]) != campaign["required_tests"]
     ):
-        raise ValueError("Public hardware gate must expose the empty physical campaign")
+        raise ValueError("Empty campaign must credit no physical test")
+    if campaign["gate"] == "OBJECTIVE_EVIDENCE_REVIEW_READY" and (
+        campaign["missing_tests"]
+        or campaign["passing_required_tests"] != campaign["required_tests"]
+        or campaign["coherent_evidence_group"] is None
+    ):
+        raise ValueError("Review-ready campaign must cover all tests on one unit")
     requirement = {"stage": "design_release"}
     with TemporaryDirectory() as temp:
         root = Path(temp)

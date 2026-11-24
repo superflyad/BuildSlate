@@ -59,6 +59,7 @@ roles:
     quantity_per_unit: 0
     status: deferred_from_EVT0
     reason: target_market_band_operator_and_certification_scope_unset
+    required_evidence: [modem_datasheet, reference_design, rf_grants, antenna_match, firmware_drivers, sample_terms]
   instrumentation_and_safety:
     quantity_per_unit: lab_shared
     status: selection_and_calibration_required

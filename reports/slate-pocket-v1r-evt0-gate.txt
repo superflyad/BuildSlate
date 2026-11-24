@@ -3,7 +3,7 @@ Slate Pocket v1R EVT0 Gate
 
 Program state:
   specification status: planned_not_authorized
-  physical prototype exists: no evidence
+  physical prototype evidence: no evidence
   physical work authorized: no
   purchases authorized: no
   energized testing authorized: no
@@ -23,13 +23,14 @@ Prerequisite evidence:
 Build readiness:
   BOM roles: 12
   selected roles: 0
+  released part proof: missing
   intentionally removed/deferred roles: wireless_charging, cellular
-  unmet authorization gates: purchase_authorized, build_authorized, energized_test_authorized
+  unmet authorization gates: purchase_authorized, build_authorized, energized_test_authorized, authorized_by
   unmet safety gates: approved_battery_and_charge_limits, approved_lab_procedure, calibrated_instrumentation_available, emergency_response_reviewed
   EVT0 memory configuration: 128 GB fallback
   EVT0 storage configuration: 1 TB planning baseline
-  wireless charging: REMOVED
-  cellular: DEFERRED
+  wireless charging: removed
+  cellular: deferred
 
 Executable test package:
   planned tests: 19
@@ -49,12 +50,14 @@ Measured evidence:
   model correlation completed: no
 
 Gate blockers:
-  - Supplier packages and Phase 2 integration packages are not verified.
-  - No selected BOM, released hardware design, approved battery/charge limits, or calibrated setup exists.
-  - Purchase, build, and energized-test authorization have not been granted.
-  - No physical unit, raw measurement campaign, reviewed result, or correlation evidence exists.
+  - Supplier or Phase 2 packages remain unverified.
+  - Released selected BOM or part compatibility proof is missing.
+  - Required purchase, build, or test authorization is missing.
+  - Required battery, laboratory, calibration, or response safety review is missing.
+  - Workload definitions still lack executable content hashes.
+  - The measured EVT0 campaign is incomplete or invalid.
 
 EVT0_GATE: BLOCKED_ON_SUPPLIER_PHASE2_VERIFICATION_BUILD_AUTHORIZATION_AND_RESULTS
 
 Caveat:
-  The EVT0 package is executable planning evidence only. It does not claim a component selection, prototype build, measurement, correlated model, safety validation, certification, or prototype readiness.
+  The automated gate checks documented evidence and consistency. Engineering review, physical observation, safety validation, and certification require separate decisions.

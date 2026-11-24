@@ -329,10 +329,12 @@ function renderHardware() {
     )
     .join("");
   document.querySelector("#hardware-parts").innerHTML =
+    `<div class="gate-item"><strong>Released part set</strong><span>${esc(report.part_selection.status)}${report.part_selection.errors.length ? ` · ${esc(report.part_selection.errors.join("; "))}` : ""}</span></div>` +
+    `<div class="gate-item"><strong>Supplier package review</strong><span>${esc(report.part_selection.supplier_packages_unverified.join(", ") || "Verified")}</span></div>` +
     report.selected_roles
       .map(
         (item) =>
-          `<div class="gate-item"><strong>${esc(item.id.replaceAll("_", " "))}</strong><span>${item.selected ? "Selected" : "Selection required"}</span></div>`,
+          `<div class="gate-item"><strong>${esc(item.id.replaceAll("_", " "))}</strong><span>${item.selected ? `Selected · ${esc(item.mpn)}` : `Selection required${item.reasons.length ? ` · ${esc(item.reasons.join("; "))}` : ""}`}</span></div>`,
       )
       .join("") +
     `<div class="gate-item"><strong>Cellular modem</strong><span>${report.cellular.selected ? "Selected" : esc(report.cellular.status.replaceAll("_", " "))}</span></div>`;

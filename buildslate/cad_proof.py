@@ -18,6 +18,8 @@ PROOF = Path("viewer/public/proof.json")
 DECLARED_BOUNDS_TOLERANCE_MM = 0.01
 MESH_BOUNDS_MAX_TOLERANCE_MM = 0.25
 INTERFERENCE_THRESHOLD_MM3 = 0.01
+NOMINAL_GAP_SCREEN_MM = 0.5
+CONTACT_TOLERANCE_MM = 0.005
 
 
 def _source_exists(root: Path, reference: str) -> bool:
@@ -75,6 +77,16 @@ def _boxes_overlap(a: list[float], b: list[float]) -> bool:
     return all(min(a[i + 3], b[i + 3]) - max(a[i], b[i]) > 0.001 for i in range(3))
 
 
+def _box_gap(a: list[float], b: list[float]) -> float:
+    return (
+        sum(
+            max(0.0, a[axis] - b[axis + 3], b[axis] - a[axis + 3]) ** 2
+            for axis in range(3)
+        )
+        ** 0.5
+    )
+
+
 def _rectangle_overlap_area(box: list[float], rect: dict) -> float:
     x, y, _, length, width, _ = box
     dx = min(x + length, rect["x"] + rect["length"]) - max(x, rect["x"])
@@ -106,6 +118,41 @@ def measure_intersections(parts: list[dict], shapes: dict[str, Any]) -> list[dic
             }
         )
     return intersections
+
+
+def measure_nominal_gaps(
+    parts: list[dict], shapes: dict[str, Any], intersections: list[dict]
+) -> list[dict]:
+    """Measure exact distances for active solids with nearby bounding boxes."""
+    overlapped = {
+        frozenset((item["first"], item["second"]))
+        for item in intersections
+        if item["kind"] == "interference"
+    }
+    findings = []
+    for first, second in combinations(parts, 2):
+        if (
+            not first["active"]
+            or not second["active"]
+            or first["geometry_use"] != "solid"
+            or second["geometry_use"] != "solid"
+            or frozenset((first["id"], second["id"])) in overlapped
+            or _box_gap(_declared_bounds(first), _declared_bounds(second))
+            > NOMINAL_GAP_SCREEN_MM
+        ):
+            continue
+        distance = shapes[first["id"]].distance(shapes[second["id"]])
+        if distance > NOMINAL_GAP_SCREEN_MM + 1e-6:
+            continue
+        findings.append(
+            {
+                "first": first["id"],
+                "second": second["id"],
+                "distance_mm": round(distance, 3),
+                "kind": "contact" if distance <= CONTACT_TOLERANCE_MM else "small_gap",
+            }
+        )
+    return findings
 
 
 def _zone_screen(root: Path, model: dict) -> list[dict]:
@@ -197,6 +244,7 @@ def build_proof(
             "faces": len(shape.Faces()),
             "edges": len(shape.Edges()),
             "interference_ids": [],
+            "nominal_gap_ids": [],
             "reservation_conflict_ids": [],
             "keepout_ids": [],
         }
@@ -211,6 +259,10 @@ def build_proof(
         )
         by_id[item["first"]][key].append(item["second"])
         by_id[item["second"]][key].append(item["first"])
+    nominal_gaps = measure_nominal_gaps(model["parts"], shape_by_id, intersections)
+    for item in nominal_gaps:
+        by_id[item["first"]]["nominal_gap_ids"].append(item["second"])
+        by_id[item["second"]]["nominal_gap_ids"].append(item["first"])
     keepout_conflicts = []
     keepout_specs = load_yaml(root / model["sources"]["keepouts"])["keepouts"]
     for part in model["parts"]:
@@ -274,11 +326,13 @@ def build_proof(
         "device": model["device"],
         "model_sha256": model_sha256,
         "status": "review_required",
-        "method": "CadQuery BREP validity, exact Boolean intersections, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
+        "method": "CadQuery BREP validity, exact Boolean intersections and nominal distances, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
         "thresholds": {
             "declared_bounds_tolerance_mm": DECLARED_BOUNDS_TOLERANCE_MM,
             "mesh_bounds_max_tolerance_mm": MESH_BOUNDS_MAX_TOLERANCE_MM,
             "interference_volume_mm3": INTERFERENCE_THRESHOLD_MM3,
+            "nominal_gap_screen_mm": NOMINAL_GAP_SCREEN_MM,
+            "contact_tolerance_mm": CONTACT_TOLERANCE_MM,
         },
         "summary": {
             "parts_checked": len(part_reports),
@@ -289,6 +343,10 @@ def build_proof(
             ),
             "step_roundtrip_passed": step_roundtrip,
             "interferences": len(physical),
+            "nominal_contacts": sum(item["kind"] == "contact" for item in nominal_gaps),
+            "small_nominal_gaps": sum(
+                item["kind"] == "small_gap" for item in nominal_gaps
+            ),
             "reservation_conflicts": len(reserves),
             "keepout_conflicts": len(keepout_conflicts),
             "stack_failures": sum(item["status"] == "fail" for item in zones),
@@ -297,7 +355,8 @@ def build_proof(
         "parts": part_reports,
         "roles": role_reports,
         "intersections": intersections,
+        "nominal_gaps": nominal_gaps,
         "keepout_conflicts": keepout_conflicts,
         "zones": zones,
-        "caveat": "Integrity checks establish that the concept artifacts agree. Interferences and keepout overlaps are unresolved design work. No fit, tolerance, performance, or release approval is implied.",
+        "caveat": "Nominal contacts and small gaps are review findings, not tolerance clearances. Interferences and keepout overlaps remain unresolved. No fit, performance, or release approval is implied.",
     }

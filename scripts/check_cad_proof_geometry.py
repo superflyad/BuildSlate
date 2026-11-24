@@ -11,7 +11,10 @@ sys.path.insert(0, str(ROOT))
 
 import cadquery as cq  # noqa: E402
 
-from buildslate.cad_proof import measure_intersections  # noqa: E402
+from buildslate.cad_proof import (  # noqa: E402
+    measure_intersections,
+    measure_nominal_gaps,
+)
 
 
 def part(part_id: str, x: float, use: str = "solid") -> dict:
@@ -28,6 +31,7 @@ def main() -> int:
         part("a", 0),
         part("b", 1),
         part("touching", 3),
+        part("near", 5.25),
         part("reserve", 0.5, "reservation"),
     ]
     shapes = {
@@ -48,7 +52,16 @@ def main() -> int:
         raise ValueError("face contact was incorrectly treated as interference")
     if by_pair[("a", "reserve")]["kind"] != "reservation_conflict":
         raise ValueError("reservation overlap was not classified")
-    print("PASS: exact overlap, face contact, and reservation classification")
+    gaps = measure_nominal_gaps(parts, shapes, results)
+    by_gap = {(item["first"], item["second"]): item for item in gaps}
+    if (
+        ("a", "b") in by_gap
+        or by_gap[("b", "touching")]["kind"] != "contact"
+        or by_gap[("touching", "near")]["distance_mm"] != 0.25
+        or any("reserve" in pair for pair in by_gap)
+    ):
+        raise ValueError("Exact nominal contact and small-gap screen failed")
+    print("PASS: exact overlap, nominal gap, and reservation classification")
     return 0
 
 

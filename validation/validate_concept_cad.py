@@ -79,11 +79,28 @@ def _check_model(
         != sum(
             item["kind"] == "reservation_conflict" for item in proof["intersections"]
         )
+        or summary["nominal_contacts"]
+        != sum(item["kind"] == "contact" for item in proof["nominal_gaps"])
+        or summary["small_nominal_gaps"]
+        != sum(item["kind"] == "small_gap" for item in proof["nominal_gaps"])
         or summary["keepout_conflicts"] != len(proof["keepout_conflicts"])
         or summary["stack_failures"]
         != sum(item["status"] == "fail" for item in proof["zones"])
     ):
         raise ValueError("CAD proof summary does not match its findings")
+    for finding in proof["nominal_gaps"]:
+        first, second = finding["first"], finding["second"]
+        if (
+            first not in ids
+            or second not in ids
+            or finding["distance_mm"] < 0
+            or finding["distance_mm"] > proof["thresholds"]["nominal_gap_screen_mm"]
+            or second
+            not in next(item for item in part_reports if item["id"] == first)[
+                "nominal_gap_ids"
+            ]
+        ):
+            raise ValueError("CAD nominal gap finding is inconsistent")
     unverified = sum(part["evidence_class"] != "verified" for part in expected["parts"])
     if (
         proof["status"] != "review_required"

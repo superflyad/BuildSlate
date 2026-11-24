@@ -233,7 +233,9 @@ function renderDetail() {
     <div class="property"><span>Topology</span><strong>${proof.faces} faces · ${proof.edges} edges</strong></div>
     <div class="property"><span>Integrity checks</span><strong>${Object.values(proof.checks).filter(Boolean).length}/${Object.keys(proof.checks).length} passed</strong></div>
     <div class="property"><span>Solid intersections</span><strong>${proof.interference_ids.length}</strong></div>
+    <div class="property"><span>Contacts and gaps ≤0.5 mm</span><strong>${proof.nominal_gap_ids.length}</strong></div>
     <div class="property"><span>Keepout conflicts</span><strong>${proof.keepout_ids.length}</strong></div>
+    ${proof.nominal_gap_ids.length ? `<p class="detail-note">Nominally near: ${esc(proof.nominal_gap_ids.join(", "))}</p>` : ""}
     ${proof.keepout_ids.length ? `<p class="detail-note">Reserved regions: ${esc(proof.keepout_ids.join(", "))}</p>` : ""}
     ${proof.reservation_conflict_ids.length ? `<p class="detail-note">Reservation overlap: ${esc(proof.reservation_conflict_ids.join(", "))}</p>` : ""}`
         : ""
@@ -270,6 +272,8 @@ function renderProof() {
     ["STEP round trip", summary.step_roundtrip_passed ? "PASS" : "FAIL"],
     ["Integrity", summary.integrity_passed ? "PASS" : "FAIL"],
     ["Solid intersections", summary.interferences],
+    ["Nominal contacts", summary.nominal_contacts],
+    ["Gaps ≤0.5 mm", summary.small_nominal_gaps],
     ["Keepout conflicts", summary.keepout_conflicts],
     ["Reservation overlaps", summary.reservation_conflicts],
     ["Stack failures", summary.stack_failures],
@@ -293,6 +297,15 @@ function renderProof() {
       )
       .join("") ||
     '<p class="muted">No positive volume intersections at nominal concept positions. Tolerances and flex routing are not modeled.</p>';
+  const gapItem = (item) =>
+    `<div class="proof-item">${proofPartButton(item.first)}<span>↔</span>${proofPartButton(item.second)}<small>${item.kind === "contact" ? "nominal contact" : `${item.distance_mm.toFixed(3)} mm nominal gap`}</small></div>`;
+  const smallGaps = proof.nominal_gaps
+    .filter((item) => item.kind === "small_gap")
+    .sort((first, second) => first.distance_mm - second.distance_mm);
+  const contacts = proof.nominal_gaps.filter((item) => item.kind === "contact");
+  document.querySelector("#proof-nominal-gaps").innerHTML =
+    `<details class="coverage-item" open><summary><strong>Gaps through 0.5 mm</strong><span class="coverage-tag">${smallGaps.length}</span></summary><div class="proof-list">${smallGaps.map(gapItem).join("") || '<p class="muted">No small nominal gaps.</p>'}</div></details>` +
+    `<details class="coverage-item"><summary><strong>Nominal contacts</strong><span class="coverage-tag">${contacts.length}</span></summary><div class="proof-list">${contacts.map(gapItem).join("") || '<p class="muted">No nominal contacts.</p>'}</div></details>`;
   document.querySelector("#proof-reservations").innerHTML = proof.intersections
     .filter((item) => item.kind === "reservation_conflict")
     .map(

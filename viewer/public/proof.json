@@ -3,11 +3,13 @@
   "device": "slate-pocket-v1r",
   "model_sha256": "4ea3805d1fa2903064e47de471a2bea4ac6c2d76da587f4560a85577edb8f6f8",
   "status": "review_required",
-  "method": "CadQuery BREP validity, exact Boolean intersections, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
+  "method": "CadQuery BREP validity, exact Boolean intersections and nominal distances, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
   "thresholds": {
     "declared_bounds_tolerance_mm": 0.01,
     "mesh_bounds_max_tolerance_mm": 0.25,
-    "interference_volume_mm3": 0.01
+    "interference_volume_mm3": 0.01,
+    "nominal_gap_screen_mm": 0.5,
+    "contact_tolerance_mm": 0.005
   },
   "summary": {
     "parts_checked": 41,
@@ -16,6 +18,8 @@
     "integrity_passed": true,
     "step_roundtrip_passed": true,
     "interferences": 0,
+    "nominal_contacts": 41,
+    "small_nominal_gaps": 21,
     "reservation_conflicts": 2,
     "keepout_conflicts": 13,
     "stack_failures": 1,
@@ -37,6 +41,12 @@
       "faces": 11,
       "edges": 27,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "frame_left",
+        "frame_right",
+        "frame_top",
+        "frame_bottom"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -55,6 +65,15 @@
       "faces": 6,
       "edges": 12,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "rear_cover",
+        "frame_top",
+        "frame_bottom",
+        "display_stack",
+        "cover_glass",
+        "touch_digitizer_concept",
+        "perimeter_gasket_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -73,6 +92,15 @@
       "faces": 6,
       "edges": 12,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "rear_cover",
+        "frame_top",
+        "frame_bottom",
+        "display_stack",
+        "cover_glass",
+        "touch_digitizer_concept",
+        "perimeter_gasket_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -91,6 +119,15 @@
       "faces": 6,
       "edges": 12,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "rear_cover",
+        "frame_left",
+        "frame_right",
+        "display_stack",
+        "cover_glass",
+        "touch_digitizer_concept",
+        "perimeter_gasket_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -109,6 +146,16 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "rear_cover",
+        "frame_left",
+        "frame_right",
+        "display_stack",
+        "cover_glass",
+        "touch_digitizer_concept",
+        "usb_c_port_concept",
+        "perimeter_gasket_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -127,6 +174,15 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "frame_left",
+        "frame_right",
+        "frame_top",
+        "frame_bottom",
+        "cover_glass",
+        "touch_digitizer_concept",
+        "front_camera_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -145,6 +201,15 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "frame_left",
+        "frame_right",
+        "frame_top",
+        "frame_bottom",
+        "display_stack",
+        "touch_digitizer_concept",
+        "perimeter_gasket_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -163,6 +228,9 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "battery_pack_shell_concept"
+      ],
       "reservation_conflict_ids": [
         "wireless_charging_placeholder"
       ],
@@ -185,6 +253,19 @@
       "faces": 14,
       "edges": 36,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "compute_soc",
+        "memory_a_32gb",
+        "memory_b_32gb",
+        "memory_c_32gb",
+        "memory_d_32gb",
+        "storage_ufs_1tb_reference",
+        "platform_pmic",
+        "battery_charger",
+        "usb_pd_controller",
+        "wifi_bluetooth",
+        "security_controller"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": [
         "bottom_connector_zone"
@@ -205,6 +286,9 @@
       "faces": 10,
       "edges": 18,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "front_camera_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -223,6 +307,9 @@
       "faces": 25,
       "edges": 60,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "haptics_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -241,6 +328,9 @@
       "faces": 25,
       "edges": 60,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "battery_pack_shell_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": [
         "top_rf_edge"
@@ -261,6 +351,7 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [],
       "reservation_conflict_ids": [
         "battery_reference",
         "battery_pack_shell_concept"
@@ -282,6 +373,21 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "compute_soc",
+        "memory_a_32gb",
+        "memory_b_32gb",
+        "memory_c_32gb",
+        "memory_d_32gb",
+        "storage_ufs_1tb_reference",
+        "platform_pmic",
+        "battery_charger",
+        "usb_pd_controller",
+        "wifi_bluetooth",
+        "security_controller",
+        "graphite_spreader_concept",
+        "phase_change_material_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -300,6 +406,11 @@
       "faces": 11,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder",
+        "graphite_spreader_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -318,6 +429,10 @@
       "faces": 11,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -336,6 +451,10 @@
       "faces": 11,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -354,6 +473,11 @@
       "faces": 11,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder",
+        "storage_ufs_1tb_reference"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -372,6 +496,11 @@
       "faces": 11,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder",
+        "storage_ufs_1tb_reference"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -390,6 +519,12 @@
       "faces": 11,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder",
+        "memory_c_32gb",
+        "memory_d_32gb"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -408,6 +543,10 @@
       "faces": 11,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -426,6 +565,10 @@
       "faces": 11,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -444,6 +587,10 @@
       "faces": 11,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -462,6 +609,7 @@
       "faces": 11,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -480,6 +628,10 @@
       "faces": 11,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -498,6 +650,10 @@
       "faces": 11,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -516,6 +672,14 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "frame_left",
+        "frame_right",
+        "frame_top",
+        "frame_bottom",
+        "display_stack",
+        "cover_glass"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -534,6 +698,10 @@
       "faces": 11,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "battery_reference",
+        "speaker_b_placeholder"
+      ],
       "reservation_conflict_ids": [
         "wireless_charging_placeholder"
       ],
@@ -557,6 +725,11 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "thermal_spreader_placeholder",
+        "compute_soc",
+        "phase_change_material_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -575,6 +748,10 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "thermal_spreader_placeholder",
+        "graphite_spreader_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -593,6 +770,10 @@
       "faces": 10,
       "edges": 18,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "display_stack",
+        "rear_camera_placeholder"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": [
         "top_rf_edge",
@@ -614,6 +795,7 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -632,6 +814,7 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -650,6 +833,7 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -668,6 +852,7 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -686,6 +871,7 @@
       "faces": 3,
       "edges": 3,
       "interference_ids": [],
+      "nominal_gap_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": [
         "bottom_rf_edge",
@@ -707,6 +893,7 @@
       "faces": 3,
       "edges": 3,
       "interference_ids": [],
+      "nominal_gap_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": [
         "top_rf_edge"
@@ -727,6 +914,9 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "speaker_a_placeholder"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -745,6 +935,9 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "frame_bottom"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": [
         "bottom_rf_edge"
@@ -765,6 +958,7 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": [
         "top_rf_edge",
@@ -786,6 +980,13 @@
       "faces": 10,
       "edges": 24,
       "interference_ids": [],
+      "nominal_gap_ids": [
+        "frame_left",
+        "frame_right",
+        "frame_top",
+        "frame_bottom",
+        "cover_glass"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     }
@@ -1168,6 +1369,380 @@
       "kind": "reservation_conflict"
     }
   ],
+  "nominal_gaps": [
+    {
+      "first": "rear_cover",
+      "second": "frame_left",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "rear_cover",
+      "second": "frame_right",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "rear_cover",
+      "second": "frame_top",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "rear_cover",
+      "second": "frame_bottom",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_left",
+      "second": "frame_top",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_left",
+      "second": "frame_bottom",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_left",
+      "second": "display_stack",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_left",
+      "second": "cover_glass",
+      "distance_mm": 0.05,
+      "kind": "small_gap"
+    },
+    {
+      "first": "frame_left",
+      "second": "touch_digitizer_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_left",
+      "second": "perimeter_gasket_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_right",
+      "second": "frame_top",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_right",
+      "second": "frame_bottom",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_right",
+      "second": "display_stack",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_right",
+      "second": "cover_glass",
+      "distance_mm": 0.05,
+      "kind": "small_gap"
+    },
+    {
+      "first": "frame_right",
+      "second": "touch_digitizer_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_right",
+      "second": "perimeter_gasket_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_top",
+      "second": "display_stack",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_top",
+      "second": "cover_glass",
+      "distance_mm": 0.05,
+      "kind": "small_gap"
+    },
+    {
+      "first": "frame_top",
+      "second": "touch_digitizer_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_top",
+      "second": "perimeter_gasket_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_bottom",
+      "second": "display_stack",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_bottom",
+      "second": "cover_glass",
+      "distance_mm": 0.05,
+      "kind": "small_gap"
+    },
+    {
+      "first": "frame_bottom",
+      "second": "touch_digitizer_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_bottom",
+      "second": "usb_c_port_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_bottom",
+      "second": "perimeter_gasket_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "display_stack",
+      "second": "cover_glass",
+      "distance_mm": 0.15,
+      "kind": "small_gap"
+    },
+    {
+      "first": "display_stack",
+      "second": "touch_digitizer_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "display_stack",
+      "second": "front_camera_concept",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "cover_glass",
+      "second": "touch_digitizer_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "cover_glass",
+      "second": "perimeter_gasket_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "battery_reference",
+      "second": "battery_pack_shell_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "compute_soc",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "memory_a_32gb",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "memory_b_32gb",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "memory_c_32gb",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "memory_d_32gb",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "storage_ufs_1tb_reference",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "platform_pmic",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "battery_charger",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "usb_pd_controller",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "wifi_bluetooth",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "security_controller",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "rear_camera_placeholder",
+      "second": "front_camera_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "speaker_a_placeholder",
+      "second": "haptics_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "speaker_b_placeholder",
+      "second": "battery_pack_shell_concept",
+      "distance_mm": 0.5,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "compute_soc",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "memory_a_32gb",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "memory_b_32gb",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "memory_c_32gb",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "memory_d_32gb",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "storage_ufs_1tb_reference",
+      "distance_mm": 0.35,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "platform_pmic",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "battery_charger",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "usb_pd_controller",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "wifi_bluetooth",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "security_controller",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "graphite_spreader_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "phase_change_material_concept",
+      "distance_mm": 0.12,
+      "kind": "small_gap"
+    },
+    {
+      "first": "compute_soc",
+      "second": "graphite_spreader_concept",
+      "distance_mm": 0.4,
+      "kind": "small_gap"
+    },
+    {
+      "first": "memory_c_32gb",
+      "second": "storage_ufs_1tb_reference",
+      "distance_mm": 0.5,
+      "kind": "small_gap"
+    },
+    {
+      "first": "memory_d_32gb",
+      "second": "storage_ufs_1tb_reference",
+      "distance_mm": 0.5,
+      "kind": "small_gap"
+    },
+    {
+      "first": "graphite_spreader_concept",
+      "second": "phase_change_material_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    }
+  ],
   "keepout_conflicts": [
     {
       "part_id": "battery_reference",
@@ -1278,5 +1853,5 @@
       "basis": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml"
     }
   ],
-  "caveat": "Integrity checks establish that the concept artifacts agree. Interferences and keepout overlaps are unresolved design work. No fit, tolerance, performance, or release approval is implied."
+  "caveat": "Nominal contacts and small gaps are review findings, not tolerance clearances. Interferences and keepout overlaps remain unresolved. No fit, performance, or release approval is implied."
 }

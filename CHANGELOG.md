@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Required a controlled firmware bundle with hashed images, boot/recovery sequence, driver coverage, flash readback plan, and approved BOM/PCB bindings before firmware evidence can enter the hardware gate.
 - Added nominal camera pupil path checks, then revised the concept rear cover and front display/touch openings to clear the assumed pupils; supplier optics and physical qualification remain open.
 - Added exact nominal contact and small-gap findings to both CAD proof reports and the public viewer.
 - Made routed PCB proof export and require every configured copper layer; a missing internal Gerber now blocks release.

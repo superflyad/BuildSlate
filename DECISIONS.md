@@ -59,3 +59,9 @@ The v1R floorplan and compute-zone stack specify a 0.8 mm PCB. The mechanical en
 **Status:** Accepted for concept review
 
 The camera pupil proof found a rear cover opening smaller than the assumed pupil and a continuous display and touch film over the front pupil. Widen the modeled rear cover opening to 5.0 mm radius and add a 3.1 mm radius punch-hole to the display stack and touch film at the front camera axis. Screen all three modeled layers with exact solid intersections. These dimensions are concept assumptions, not a selected panel or camera design. Supplier panel construction, black mask, cover optics, seals, alignment tolerances, and measured image performance are required before the optical path can be qualified.
+
+## ADR-011: Bind firmware release to hardware identities
+
+**Status:** Accepted
+
+The `firmware_boot` hardware record must name a controlled JSON release bundle with exact image hashes, boot and recovery order, required interface drivers, and a flash readback plan. The bundle revision and reviewer must match its evidence record, and its selected BOM and routed PCB hashes must match approved upstream records. This checks release integrity and configuration consistency; it does not claim that the images boot or recover on a physical Slate Pocket. Serialized EVT0 results remain necessary.

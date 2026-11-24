@@ -81,5 +81,6 @@ Use this index to move from a question to the authoritative source. The root [RE
 | [Electrical netlist proof](engineering/electrical_netlist_proof.md) | Connectivity and selected electrical BOM audit contract |
 | [Routed PCB proof](engineering/routed_pcb_proof.md) | KiCad schematic parity, DRC, and reproducible fabrication exports |
 | [Released mechanical CAD proof](engineering/mechanical_release_proof.md) | Supplier STEP identity, assembly placement, intersections, and tolerance clearance |
+| [Firmware release proof](engineering/firmware_release_proof.md) | Image integrity, boot and recovery order, driver coverage, and BOM/board binding |
 
 The previous all-in-one overview is retained as an [archived snapshot](archive/2026-10-repository-overview.md). It is useful for history; the current program dashboard and source registries determine present status. Generated reports are views of the tracked inputs. A current hash or visible 3D solid does not promote a planning value to verified evidence.

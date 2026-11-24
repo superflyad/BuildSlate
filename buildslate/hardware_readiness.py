@@ -12,6 +12,8 @@ from pathlib import Path
 
 from buildslate.battery_fit import audit as audit_battery_fit
 from buildslate.evt0 import EVT0CampaignRepository
+from buildslate.firmware_proof import RELEASE as FIRMWARE_RELEASE
+from buildslate.firmware_proof import audit as audit_firmware
 from buildslate.io import load_yaml
 from buildslate.mechanical_proof import ASSEMBLY as MECHANICAL_ASSEMBLY
 from buildslate.mechanical_proof import MANIFEST as MECHANICAL_MANIFEST
@@ -197,6 +199,43 @@ def _evidence_result(
                         )
                     ):
                         reasons.append("Released mechanical proof is missing or stale")
+        if not reasons and requirement.get("id") == "firmware_boot":
+            if target != (root / FIRMWARE_RELEASE).resolve():
+                reasons.append("Firmware release must name the controlled bundle JSON")
+            else:
+                proof = audit_firmware(target)
+                if proof["status"] != "pass":
+                    reasons.extend(proof["errors"])
+                elif (
+                    proof["revision"] != record["revision"]
+                    or proof["reviewed_by"] != record["reviewed_by"]
+                ):
+                    reasons.append("Firmware review identity or revision differs")
+                related = related_records or {}
+                selected = related.get("selected_bom")
+                board = related.get("routed_pcb")
+                for identifier, upstream, expected_hash in (
+                    ("selected_bom", selected, proof["selected_bom_sha256"]),
+                    ("routed_pcb", board, proof["routed_pcb_sha256"]),
+                ):
+                    if (
+                        not isinstance(upstream, dict)
+                        or upstream.get("disposition") != "approved"
+                        or upstream.get("sha256") != expected_hash
+                    ):
+                        reasons.append(
+                            f"Firmware is not bound to approved {identifier}"
+                        )
+                if (
+                    selection_proof is None
+                    or selection_proof.get("status") != "pass"
+                    or selection_proof.get("sha256") != proof["selected_bom_sha256"]
+                ):
+                    reasons.append("Firmware selected BOM has no passing part proof")
+                if isinstance(board, dict) and proof["board_revision"] != board.get(
+                    "revision"
+                ):
+                    reasons.append("Firmware board revision differs from routed PCB")
     result = {
         "status": "accepted" if not reasons else "rejected",
         "reasons": reasons,
@@ -256,6 +295,7 @@ def build_report(root: Path) -> dict:
     storage_fit = audit_storage_fit(root)
     battery_fit = audit_battery_fit(root)
     memory_package_fit = audit_memory_package_fit(root)
+    firmware_bundle = audit_firmware(root / FIRMWARE_RELEASE)
     selected_roles = []
     for role in manifest["selected_roles"]:
         item = strategy["roles"].get(role)
@@ -349,6 +389,7 @@ def build_report(root: Path) -> dict:
         "storage_fit": storage_fit,
         "battery_fit": battery_fit,
         "memory_package_fit": memory_package_fit,
+        "firmware_bundle": firmware_bundle,
         "selected_roles": selected_roles,
         "cellular": {"status": cellular["status"], "selected": cellular_selected},
         "requirements": entries,

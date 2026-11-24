@@ -531,6 +531,12 @@
     "source": "https://www.micron.com/products/memory/lpddr-components/lpddr5x/part-catalog/part-detail/mt62f2g64d8ek-023-wt-c",
     "caveat": "This 16 GB part is a public geometry reference, not an X2-qualified memory selection. Eight packages do not prove a routable or bootable 128 GB Slate board."
   },
+  "firmware_bundle": {
+    "status": "missing",
+    "errors": [
+      "No released firmware manifest"
+    ]
+  },
   "selected_roles": [
     {
       "id": "compute_platform",

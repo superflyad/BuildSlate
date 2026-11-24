@@ -24,6 +24,8 @@ def main() -> int:
     committed = json.loads((ROOT / REPORT).read_text(encoding="utf-8"))
     if committed != expected:
         raise ValueError("Hardware readiness report is stale; regenerate with --write")
+    if expected["firmware_bundle"]["status"] != "missing":
+        raise ValueError("Public hardware report must not imply released firmware")
     if (
         expected["functional_evt0"] != "blocked"
         and expected["design_release"] == "blocked"

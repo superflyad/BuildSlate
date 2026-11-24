@@ -103,8 +103,9 @@ objective_measurements:
     positive_columns: [installed_bytes, usable_bytes, allocated_bytes]
     positive_deltas: [work_units_completed]
     zero_columns: [memory_errors]
-    minimum_final: {installed_bytes: 128000000000, usable_bytes: 100000000000, allocated_bytes: 90000000000}
+    minimum_final: {installed_bytes: 128000000000, usable_bytes: 120000000000, allocated_bytes: 103079215104}
     final_order: [[allocated_bytes, usable_bytes], [usable_bytes, installed_bytes]]
+    analysis_artifacts_min: 1
   S30:
     required_columns: [elapsed_s, storage_capacity_bytes, storage_bytes_read, storage_bytes_written, storage_temperature_c, storage_errors]
     positive_columns: [storage_capacity_bytes]

@@ -15,6 +15,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 from referencing import Registry, Resource
 
 from .io import dump_yaml, load_yaml
+from .memory_probe import DEFAULT_ALLOCATION, DEFAULT_MIN_TOTAL, PAGE
 
 HASH_LENGTH = 64
 INTERFACE_COUNTERS = (
@@ -546,6 +547,85 @@ class EVT0CampaignRepository:
             errors.append(f"{test_id} needs hash-verified analysis artifacts")
         return rows, errors
 
+    def _verify_memory_probe(
+        self,
+        bundle: Path,
+        manifest: dict[str, Any],
+        result: dict[str, Any],
+        rows: list[dict[str, float]],
+    ) -> list[str]:
+        if manifest.get("test_id") != "M20":
+            return []
+        artifacts = [
+            item
+            for item in result.get("analysis_artifacts", [])
+            if isinstance(item, dict)
+            and item.get("path") == "analysis/memory-probe.json"
+        ]
+        if len(artifacts) != 1:
+            return ["M20 needs exactly one analysis/memory-probe.json artifact"]
+        artifact = artifacts[0]
+        try:
+            path = self._bundle_path(bundle, artifact["path"], "M20 memory probe")
+            if (
+                not path.is_file()
+                or path.stat().st_size > 100_000
+                or _sha256(path).lower() != artifact["sha256"].lower()
+            ):
+                raise ValueError(
+                    "M20 memory probe file is missing, oversized, or stale"
+                )
+            probe = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(probe, dict):
+                raise ValueError("M20 memory probe must be a JSON object")
+        except (KeyError, TypeError, ValueError, OSError, UnicodeError) as exc:
+            return [f"M20 memory probe is invalid: {exc}"]
+        errors: list[str] = []
+        if (
+            probe.get("status") != "pass"
+            or probe.get("unit_id") != manifest.get("unit_id")
+            or probe.get("build_id") != manifest.get("build_id")
+        ):
+            errors.append("M20 memory probe status or build identity differs")
+        for field, floor in (
+            ("os_total_physical_bytes", DEFAULT_MIN_TOTAL),
+            ("allocated_bytes", DEFAULT_ALLOCATION),
+            ("resident_delta_bytes", DEFAULT_ALLOCATION * 99 // 100),
+            ("verified_pages", DEFAULT_ALLOCATION // PAGE),
+        ):
+            value = probe.get(field)
+            if not isinstance(value, int) or isinstance(value, bool) or value < floor:
+                errors.append(f"M20 memory probe {field} is below proof minimum")
+        if probe.get("memory_errors") != 0:
+            errors.append("M20 memory probe memory_errors must be zero")
+        if probe.get("swap_used_delta_bytes") != 0 and not (
+            probe.get("os_name") == "Windows"
+            and probe.get("swap_used_delta_bytes") is None
+        ):
+            errors.append(
+                "M20 memory probe swap use must be zero or unavailable on Windows"
+            )
+        allocation = probe.get("allocated_bytes")
+        if isinstance(allocation, int) and allocation >= DEFAULT_ALLOCATION:
+            resident = probe.get("resident_delta_bytes")
+            pages = probe.get("verified_pages")
+            if not isinstance(resident, int) or resident < allocation * 99 // 100:
+                errors.append("M20 resident memory is below 99 percent of allocation")
+            if not isinstance(pages, int) or pages < (allocation + PAGE - 1) // PAGE:
+                errors.append("M20 page verification does not cover allocation")
+        if rows and len(errors) == 0:
+            final = rows[-1]
+            total = probe["os_total_physical_bytes"]
+            if final["installed_bytes"] < total:
+                errors.append("M20 reported installed memory is below OS capacity")
+            if abs(final["usable_bytes"] - total) > 1_000_000_000:
+                errors.append("M20 usable memory differs from the OS probe")
+            if final["allocated_bytes"] != probe["allocated_bytes"]:
+                errors.append("M20 allocated memory differs from the resident probe")
+            if final["work_units_completed"] < probe["verified_pages"]:
+                errors.append("M20 workload counter omits verified pages")
+        return errors
+
     def calculate_metrics(
         self, rows: list[dict[str, float]]
     ) -> dict[str, dict[str, Any]]:
@@ -643,6 +723,7 @@ class EVT0CampaignRepository:
             manifest.get("test_id"), tables, result
         )
         errors.extend(measurement_errors)
+        errors.extend(self._verify_memory_probe(bundle, manifest, result, rows))
         interface_activity: dict[str, float | None] = {}
         if manifest.get("test_id") == "I20":
             for counter in INTERFACE_COUNTERS:

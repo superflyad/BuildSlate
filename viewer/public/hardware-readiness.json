@@ -58,6 +58,87 @@
       "display_storage_package"
     ]
   },
+  "platform_fit": {
+    "status": "supplier_proof_required",
+    "memory_floor_gb": 128,
+    "integrated_phone_matches": [],
+    "candidates": [
+      {
+        "id": "qualcomm_snapdragon_8_elite_gen_5",
+        "part": "SM8850-5-AC",
+        "platform_class": "flagship_mobile",
+        "public_maximum_memory_gb": 24,
+        "public_configured_memory_gb": null,
+        "published_capacity_permits_floor": false,
+        "integrated_phone_path": true,
+        "combined_public_fit": false,
+        "public_128gb_configuration": false,
+        "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Gen-5-SM8850-5-AC-Product-Brief.pdf"
+      },
+      {
+        "id": "qualcomm_snapdragon_8_elite_gen_6",
+        "part": "SM8950",
+        "platform_class": "flagship_mobile",
+        "public_maximum_memory_gb": 24,
+        "public_configured_memory_gb": null,
+        "published_capacity_permits_floor": false,
+        "integrated_phone_path": true,
+        "combined_public_fit": false,
+        "public_128gb_configuration": false,
+        "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Gen-6-Product-Brief.pdf"
+      },
+      {
+        "id": "qualcomm_snapdragon_8_elite_extreme_gen_6",
+        "part": "SM8975",
+        "platform_class": "flagship_mobile",
+        "public_maximum_memory_gb": 24,
+        "public_configured_memory_gb": null,
+        "published_capacity_permits_floor": false,
+        "integrated_phone_path": true,
+        "combined_public_fit": false,
+        "public_128gb_configuration": false,
+        "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Extreme-Gen-6-Product-Brief.pdf"
+      },
+      {
+        "id": "qualcomm_snapdragon_x2_elite_extreme",
+        "part": "X2E-96-100",
+        "platform_class": "client_pc",
+        "public_maximum_memory_gb": 128,
+        "public_configured_memory_gb": 48,
+        "published_capacity_permits_floor": true,
+        "integrated_phone_path": false,
+        "combined_public_fit": false,
+        "public_128gb_configuration": false,
+        "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf"
+      },
+      {
+        "id": "amd_ryzen_ai_max_plus_395",
+        "part": null,
+        "platform_class": "high_power_client_pc",
+        "public_maximum_memory_gb": 128,
+        "public_configured_memory_gb": 128,
+        "published_capacity_permits_floor": true,
+        "integrated_phone_path": false,
+        "combined_public_fit": false,
+        "public_128gb_configuration": true,
+        "source": "https://www.amd.com/en/products/processors/desktops/ryzen/ryzen-ai-halo/ryzen-ai-max-plus-395.html"
+      },
+      {
+        "id": "nvidia_jetson_agx_thor",
+        "part": null,
+        "platform_class": "robotics_edge_developer_platform",
+        "public_maximum_memory_gb": 128,
+        "public_configured_memory_gb": 128,
+        "published_capacity_permits_floor": true,
+        "integrated_phone_path": false,
+        "combined_public_fit": false,
+        "public_128gb_configuration": true,
+        "source": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/"
+      }
+    ],
+    "decision": "The 128 GB floor is retained. X2 publishes controller capacity for it, but no reviewed public 128 GB configuration or pocket phone integration is established. Obtain supplier topology, package, power, software, and modem evidence before selection.",
+    "caveat": "Published maximum memory and modem features do not prove a supported memory topology, purchasability, thermal fit, or a working phone."
+  },
   "selected_roles": [
     {
       "id": "compute_platform",

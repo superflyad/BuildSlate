@@ -4,13 +4,14 @@ Slate Pocket Phase 1 Public Candidate Screen
 Scope:
   baseline: slate-pocket-v1r
   evidence basis: public manufacturer product pages, briefs, catalogs, and technical specifications
-  review date: 2026-10-31
+  compute review date: 2026-11-24
   purpose: narrow supplier conversations without claiming component selection
 
 Executive decisions:
   battery: retain 6000 mAh conditionally; pursue a custom Enovix AI-1-class RFQ; do not select a pack
   charging: replace 100 W as a hard requirement with the highest supplier-validated level
   compute: advance Snapdragon X2 Elite Extreme to supplier/NDA review at the 128 GB fallback
+  phone platform: no reviewed integrated mobile SoC reaches the approved 128 GB floor; product decision required
   memory: do not carry 512 GB into CAD as a credible first-build topology
   display: issue RFQs; no exact public 7.5-inch 16:10 LTPO AMOLED module match was found
   storage: use 1 TB as the reviewed single-package unit; 2 TB requires multi-device or NVMe architecture
@@ -28,11 +29,15 @@ Battery screen:
 
 Compute and memory screen:
   - qualcomm_snapdragon_8_elite_gen_5: memory=24 GB; AI metric=not_public; disposition=mobile_architecture_reference_not_memory_fit
+  - qualcomm_snapdragon_8_elite_gen_6: memory=24 GB; AI metric=not_public; disposition=mobile_architecture_reference_not_memory_fit
+  - qualcomm_snapdragon_8_elite_extreme_gen_6: memory=24 GB; AI metric=not_public; disposition=mobile_architecture_reference_not_memory_fit
   - qualcomm_snapdragon_x2_elite_extreme: memory=128_plus GB; AI metric=80; disposition=preferred_product_rfq_subject_to_package_and_power_evidence
   - amd_ryzen_ai_max_plus_395: memory=128 GB; AI metric=50; disposition=external_prototype_reference_only
   - nvidia_jetson_agx_thor: memory=128 GB; AI metric=2070; disposition=bench_workload_reference_only
   preferred product RFQ: qualcomm_snapdragon_x2_elite_extreme
   preferred RFQ memory tier: 128 GB
+  integrated phone platform at 128 GB found: False
+  approved 128 GB path: Retain the 128 GB floor. Obtain a qualified 128 GB X2 memory configuration and pocket integration package, or identify a different platform with equivalent evidence.
   unsupported by reviewed candidates:
     - 512 GB pocket memory topology
     - 100 TOPS sustained NPU claim

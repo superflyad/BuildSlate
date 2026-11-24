@@ -1,6 +1,6 @@
 # Compute Package and Memory Topology — Phase 1
 
-Reviewed: 2026-10-31  
+Reviewed: 2026-11-24
 Status: **Architecture narrowed; package topology not verified**
 
 ## Current architecture decision
@@ -11,7 +11,7 @@ This is not a component selection. Snapdragon X2 is a client-PC platform, and th
 
 ## Memory topology findings
 
-- Snapdragon 8 Elite Gen 5 is the stronger integration reference for a pocket device, but its public maximum memory is 24 GB. It cannot satisfy the 128 GB fallback.
+- Snapdragon 8 Elite Gen 5 and both Gen 6 mobile SKUs have integrated phone systems, but their public maximum memory is 24 GB. None can satisfy the approved 128 GB floor.
 - Snapdragon X2 Elite documentation lists 128 GB or 128+ GB maximum capacity depending on SKU. This supports research at the locked 128 GB tier; it does not support 256 GB or 512 GB.
 - Micron publicly describes 8–32 GB LPDDR5X packages for 2026 flagship smartphones, and Samsung advertises a 32 GB LPDDR5X capacity. A 128 GB topology therefore implies four 32 GB packages before controller, routing, package-height, power, thermal, and availability constraints.
 - A 512 GB topology would imply sixteen 32 GB packages and exceeds the documented memory maximum of the reviewed Snapdragon platforms. It remains aspirational and is not a Phase 1 product configuration.
@@ -33,6 +33,8 @@ Use an external 128 GB developer platform to characterize target models, runtime
 
 - [Qualcomm Snapdragon X2 Elite product brief](https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf)
 - [Qualcomm Snapdragon 8 Elite Gen 5 product brief](https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Gen-5-product-brief.pdf)
+- [Qualcomm Snapdragon 8 Elite Gen 6 product brief](https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Gen-6-Product-Brief.pdf)
+- [Qualcomm Snapdragon 8 Elite Extreme Gen 6 product brief](https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Extreme-Gen-6-Product-Brief.pdf)
 - [Micron 2026 flagship LPDDR5X package announcement](https://investors.micron.com/news/press-release/2025/Micron-Ships-Worlds-First-1-1-Gamma-Based-LPDDR5X-Enabling-Rich-Mobile-AI-Experiences-06-03-2025/default.aspx)
 - [Samsung LPDDR5X product page](https://semiconductor.samsung.com/dram/lpddr/lpddr5x/)
 - [AMD Ryzen AI Max product guide](https://www.amd.com/content/dam/amd/en/documents/partner-hub/ryzen/ryzen-consumer-master-quick-reference-competitive.pdf)

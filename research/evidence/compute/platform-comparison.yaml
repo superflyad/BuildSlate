@@ -1,6 +1,6 @@
 metadata:
   evidence_type: public_primary_source_screen
-  reviewed_on: 2026-10-31
+  reviewed_on: 2026-11-24
   status: available_not_verified
   selection_metric: measured_workload_performance_per_watt
 
@@ -14,7 +14,8 @@ slate_targets:
 candidates:
   qualcomm_snapdragon_8_elite_gen_5:
     platform_class: flagship_mobile
-    part_numbers: [SM8850-AC, SM8850-1-AD]
+    part_numbers: [SM8850-5-AC]
+    modem_integration: integrated
     process_nm: 3
     memory_type: LPDDR5X
     maximum_memory_gb: 24
@@ -30,13 +31,50 @@ candidates:
       - Public brief does not provide sustained workload power, tokens per second, package drawing, or NPU TOPS.
     disposition: mobile_architecture_reference_not_memory_fit
     source:
-      url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Gen-5-product-brief.pdf
+      url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Gen-5-SM8850-5-AC-Product-Brief.pdf
       source_type: manufacturer_product_brief
-      accessed: 2026-10-31
+      accessed: 2026-11-24
+
+  qualcomm_snapdragon_8_elite_gen_6:
+    platform_class: flagship_mobile
+    part_numbers: [SM8950]
+    modem_integration: integrated
+    process_nm: 2
+    memory_type: LPDDR5X_or_LPDDR6
+    maximum_memory_gb: 24
+    storage_interface: UFS_5_0
+    public_sustained_power_w: null
+    blockers:
+      - Public maximum memory is 24 GB, below the locked 128 GB fallback.
+      - Public brief does not release the package, reference design, sustained power, or validated pocket thermal limits.
+    disposition: mobile_architecture_reference_not_memory_fit
+    source:
+      url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Gen-6-Product-Brief.pdf
+      source_type: manufacturer_product_brief
+      accessed: 2026-11-24
+
+  qualcomm_snapdragon_8_elite_extreme_gen_6:
+    platform_class: flagship_mobile
+    part_numbers: [SM8975]
+    modem_integration: integrated
+    process_nm: 2
+    memory_type: LPDDR5X_or_LPDDR6
+    maximum_memory_gb: 24
+    storage_interface: UFS_5_0
+    public_sustained_power_w: null
+    blockers:
+      - Public maximum memory is 24 GB, below the locked 128 GB fallback.
+      - Public brief does not release the package, reference design, sustained power, or validated pocket thermal limits.
+    disposition: mobile_architecture_reference_not_memory_fit
+    source:
+      url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Extreme-Gen-6-Product-Brief.pdf
+      source_type: manufacturer_product_brief
+      accessed: 2026-11-24
 
   qualcomm_snapdragon_x2_elite_extreme:
     platform_class: client_pc
     representative_part: X2E-96-100
+    modem_integration: external_supported_not_designed
     process_nm: 3
     npu_tops_int8: 80
     memory_type: LPDDR5X
@@ -62,8 +100,10 @@ candidates:
 
   amd_ryzen_ai_max_plus_395:
     platform_class: high_power_client_pc
+    modem_integration: none
     npu_tops: 50
     maximum_unified_memory_gb: 128
+    public_configured_memory_gb: 128
     tdp_range_w: [45, 120]
     strengths:
       - Public 128 GB systems and developer platform provide a software experimentation path.
@@ -72,13 +112,15 @@ candidates:
       - Client-PC package and cooling requirements are not pocket-compatible evidence.
     disposition: external_prototype_reference_only
     source:
-      url: https://www.amd.com/content/dam/amd/en/documents/partner-hub/ryzen/ryzen-consumer-master-quick-reference-competitive.pdf
-      source_type: manufacturer_product_guide
-      accessed: 2026-10-31
+      url: https://www.amd.com/en/products/processors/desktops/ryzen/ryzen-ai-halo/ryzen-ai-max-plus-395.html
+      source_type: manufacturer_developer_platform_page
+      accessed: 2026-11-24
 
   nvidia_jetson_agx_thor:
     platform_class: robotics_edge_developer_platform
+    modem_integration: none
     memory_gb: 128
+    public_configured_memory_gb: 128
     power_range_w: [40, 130]
     developer_kit_dimensions_mm: [243.19, 112.40, 56.88]
     ai_compute_fp4_tflops: 2070
@@ -89,9 +131,9 @@ candidates:
       - FP4 TFLOPS cannot be compared directly with Qualcomm INT8 NPU TOPS.
     disposition: bench_workload_reference_only
     source:
-      url: https://developer.nvidia.com/blog/introducing-nvidia-jetson-thor-the-ultimate-platform-for-physical-ai
-      source_type: manufacturer_developer_documentation
-      accessed: 2026-10-31
+      url: https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/
+      source_type: manufacturer_module_and_developer_kit_specification
+      accessed: 2026-11-24
 
 memory_supplier_context:
   micron_mobile_lpddr5x:
@@ -110,6 +152,8 @@ memory_supplier_context:
 
 screening_conclusion:
   selected_platform: null
+  integrated_phone_platform_at_128gb_found: false
+  decision: Retain the 128 GB floor. Obtain a qualified 128 GB X2 memory configuration and pocket integration package, or identify a different platform with equivalent evidence.
   preferred_product_rfq: qualcomm_snapdragon_x2_elite_extreme
   preferred_memory_tier_for_rfq_gb: 128
   external_bench_options: [amd_ryzen_ai_max_plus_395, nvidia_jetson_agx_thor]

@@ -314,6 +314,7 @@ function renderHardware() {
     ["Design release", report.design_release],
     ["Functional EVT0", report.functional_evt0],
     ["Working phone", report.phone_function],
+    ["Public platform fit", report.platform_fit.status],
     [
       "Selected roles",
       `${report.selected_roles.filter((item) => item.selected).length}/${report.selected_roles.length}`,
@@ -328,6 +329,15 @@ function renderHardware() {
         `<div><strong class="hardware-status">${esc(value.replaceAll("_", " "))}</strong><span>${label}</span></div>`,
     )
     .join("");
+  const platform = report.platform_fit;
+  document.querySelector("#hardware-platforms").innerHTML =
+    `<div class="gate-item"><strong>Decision</strong><span>${esc(platform.decision)}</span></div>` +
+    platform.candidates
+      .map(
+        (item) =>
+          `<div class="gate-item"><strong>${esc(item.id.replaceAll("_", " "))}</strong><span>${item.public_maximum_memory_gb} GB public maximum · ${item.public_configured_memory_gb === null ? "no public configuration listed" : `${item.public_configured_memory_gb} GB public configuration`} · ${item.integrated_phone_path ? "integrated phone path" : "no integrated phone path"} · <a href="${esc(item.source)}" target="_blank" rel="noopener noreferrer">source</a></span></div>`,
+      )
+      .join("");
   document.querySelector("#hardware-parts").innerHTML =
     `<div class="gate-item"><strong>Released part set</strong><span>${esc(report.part_selection.status)}${report.part_selection.errors.length ? ` · ${esc(report.part_selection.errors.join("; "))}` : ""}</span></div>` +
     `<div class="gate-item"><strong>Supplier package review</strong><span>${esc(report.part_selection.supplier_packages_unverified.join(", ") || "Verified")}</span></div>` +

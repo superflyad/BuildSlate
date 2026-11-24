@@ -4,13 +4,13 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 from typing import Any
-
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
@@ -500,24 +500,57 @@ def main() -> int:
         raw_path.write_text(
             "elapsed_s,installed_bytes,usable_bytes,allocated_bytes,memory_errors,work_units_completed\n"
             "0,128000000000,120000000000,1000000000,0,0\n"
-            "10,128000000000,120000000000,100000000000,0,100\n",
+            "10,128000000000,120000000000,103079215104,0,25165824\n",
             encoding="utf-8",
             newline="\n",
         )
+        probe_path = memory_bundle / "analysis/memory-probe.json"
+        probe_path.parent.mkdir(parents=True, exist_ok=True)
+        probe = {
+            "status": "pass",
+            "unit_id": "UNIT-VALIDATION",
+            "build_id": "BUILD-VALIDATION",
+            "os_name": "Linux",
+            "os_total_physical_bytes": 120000000000,
+            "allocated_bytes": 103079215104,
+            "resident_delta_bytes": 103079215104,
+            "verified_pages": 25165824,
+            "memory_errors": 0,
+            "swap_used_delta_bytes": 0,
+        }
+        probe_path.write_text(json.dumps(probe), encoding="utf-8")
         result_path = memory_bundle / "result.yaml"
         result = load_yaml(result_path)
         result["time_range_utc"]["end"] = "2026-06-01T12:00:10Z"
         result["raw_data"][0]["sha256"] = sha256(raw_path)
+        result["analysis_artifacts"] = [
+            {"path": "analysis/memory-probe.json", "sha256": sha256(probe_path)}
+        ]
         result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
         require(
             repository.review_bundle(memory_bundle)["objective_disposition"]
             == "VALID_PASS",
-            "128 GB memory fixture records substantial usable and allocated capacity",
+            "128 GB memory fixture binds resident page exercise to M20 telemetry",
         )
+        probe["resident_delta_bytes"] = 1
+        probe_path.write_text(json.dumps(probe), encoding="utf-8")
+        result["analysis_artifacts"][0]["sha256"] = sha256(probe_path)
+        result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
+        require(
+            any(
+                "resident memory is below" in error
+                for error in repository.review_bundle(memory_bundle)["integrity_errors"]
+            ),
+            "reported allocation without resident pages cannot pass M20",
+        )
+        probe["resident_delta_bytes"] = 103079215104
+        probe_path.write_text(json.dumps(probe), encoding="utf-8")
+        result["analysis_artifacts"][0]["sha256"] = sha256(probe_path)
+        result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
         raw_path.write_text(
             "elapsed_s,installed_bytes,usable_bytes,allocated_bytes,memory_errors,work_units_completed\n"
             "0,128000000000,120000000000,1000000000,0,0\n"
-            "10,128000000000,120000000000,1000000000,0,100\n",
+            "10,128000000000,120000000000,1000000000,0,25165824\n",
             encoding="utf-8",
             newline="\n",
         )

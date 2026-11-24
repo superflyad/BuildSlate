@@ -66,13 +66,14 @@ def build_report() -> str:
         "Scope:",
         "  baseline: slate-pocket-v1r",
         "  evidence basis: public manufacturer product pages, briefs, catalogs, and technical specifications",
-        "  review date: 2026-10-31",
+        f"  compute review date: {compute['metadata']['reviewed_on']}",
         "  purpose: narrow supplier conversations without claiming component selection",
         "",
         "Executive decisions:",
         "  battery: retain 6000 mAh conditionally; pursue a custom Enovix AI-1-class RFQ; do not select a pack",
         "  charging: replace 100 W as a hard requirement with the highest supplier-validated level",
         "  compute: advance Snapdragon X2 Elite Extreme to supplier/NDA review at the 128 GB fallback",
+        "  phone platform: no reviewed integrated mobile SoC reaches the approved 128 GB floor; product decision required",
         "  memory: do not carry 512 GB into CAD as a credible first-build topology",
         "  display: issue RFQs; no exact public 7.5-inch 16:10 LTPO AMOLED module match was found",
         "  storage: use 1 TB as the reviewed single-package unit; 2 TB requires multi-device or NVMe architecture",
@@ -116,6 +117,8 @@ def build_report() -> str:
         [
             f"  preferred product RFQ: {compute_conclusion['preferred_product_rfq']}",
             f"  preferred RFQ memory tier: {compute_conclusion['preferred_memory_tier_for_rfq_gb']} GB",
+            f"  integrated phone platform at 128 GB found: {compute_conclusion['integrated_phone_platform_at_128gb_found']}",
+            f"  approved 128 GB path: {compute_conclusion['decision']}",
             "  unsupported by reviewed candidates:",
             *[
                 f"    - {item}"

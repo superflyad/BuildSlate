@@ -17,6 +17,8 @@ BuildSlate connects specifications, assumptions, evidence, models, and gate deci
 
 **Hardware status: no build package and no functional device proof.** The 41-solid [editable concept CAD](cad/slate-pocket-v1r/concept-cad/README.md) contains assumed placements. v1R has zero selected parts in its sourcing strategy, no released electrical or mechanical design, and no measured integrated prototype. A builder cannot use these files to make a demonstrated working phone. See the [build-to-function gate](docs/engineering/build_to_function.md), run `buildslate hardware`, or open the public viewer's [Hardware tab](https://superflyad.github.io/BuildSlate/?tab=hardware). The [dashboard](reports/program/dashboard.md) tracks the wider program blockers. Software release [v0.1.0](https://github.com/superflyad/BuildSlate/releases/tag/v0.1.0) does not change the hardware status.
 
+The approved 128 GB memory floor is retained. Qualcomm publishes an X2 controller maximum at or above that capacity; its public example is 48 GB, and no qualified 128 GB Slate topology is available. The [compute path](docs/engineering/compute_platform_decision.md) identifies the specific supplier and physical proof still required.
+
 ## Get started
 
 Use a checkout of this repository with Python 3.12 or newer. Node.js 20.19 or newer is needed for the viewer and the full validation gate.

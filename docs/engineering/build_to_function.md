@@ -18,6 +18,8 @@ The [readiness manifest](../../engineering/hardware/readiness.yaml) lists the re
 
 The selected BOM record is bound to the [part selection proof](selected_bom_proof.md). A status flag or candidate name cannot select a part: the proof requires a controlled released JSON BOM, exact manufacturer part numbers, hashed supplier artifacts for every required evidence type, and basic compute, memory, storage, display, and battery compatibility checks. Cellular requires its own released part and interface proof before the phone-function gate can use it.
 
+The approved memory floor remains 128 GB. The [compute path screen](compute_platform_decision.md) distinguishes an X2 controller maximum from an actual qualified 128 GB configuration. Current public mobile platforms cannot meet that floor; no reviewed public X2 package proves a pocket phone implementation. The Hardware view publishes this conflict without changing the product decision.
+
 The schematic netlist record has an additional [electrical proof](electrical_netlist_proof.md): its selected electrical BOM, critical endpoint contract, and exported XML netlist are checked together before that record can be accepted.
 
 The mechanical release record has a separate [STEP assembly proof](mechanical_release_proof.md). It requires source part and drawing hashes, released assembly identity, complete role coverage, and nominal interference and clearance checks. There is no released assembly to check yet.

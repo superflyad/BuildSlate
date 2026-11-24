@@ -53,7 +53,7 @@ nodes:
       reports/program/integration-contracts.yaml: 930c6504018801891c0a76f7a569d8ad0ab4ab37b669d6e82f1910fe1cfd9b63
   evt0_campaign:
     inputs:
-      buildslate/evt0.py: 6556321ec75c388f79cf06ab8a2ce111f0f2d5edc7d0d68c6f74c256463098cb
+      buildslate/evt0.py: 8b894cadacfacf8676119c0f121c6663c6fcd611f3cbc3a3dfc3ffbf4fad2d5a
       validation/evt0/campaigns/README.md: 4dbc4d419c59fe854090afcd52aab82b88f43293880bcefd69122cac0740e42d
       validation/evt0/instrumentation.yaml: 47c9e8942a533cc94c919e17581315fccd3e41ed668fe7091613460afd6c3004
       validation/evt0/metric-definitions.yaml: b02a8eaa62ddbbc88520545a070a84bd400375b9f4c8c3874009b3eab8d6a22d

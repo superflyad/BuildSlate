@@ -2,13 +2,21 @@
 
 from __future__ import annotations
 
+import mmap
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from buildslate.memory_probe import PAGE, run_probe  # noqa: E402
+from buildslate.memory_probe import (  # noqa: E402
+    PAGE,
+    PATTERN_ALGORITHM,
+    PATTERN_REGION,
+    _fill_block,
+    _verify_block,
+    run_probe,
+)
 
 
 def _reject(**overrides: object) -> None:
@@ -46,9 +54,18 @@ def main() -> int:
     if (
         result["status"] != "pass"
         or result["verified_pages"] != 32 * 1024**2 // PAGE
+        or result["verified_bytes"] != 32 * 1024**2
+        or result["pattern_algorithm"] != PATTERN_ALGORITHM
         or result["memory_errors"] != 0
     ):
         raise ValueError(f"Small resident memory smoke failed: {result}")
+    with mmap.mmap(-1, 2 * PATTERN_REGION) as block:
+        _fill_block(block, 7, len(block))
+        if _verify_block(block, 7, len(block)) != (len(block), 0):
+            raise ValueError("Full-byte pattern did not verify")
+        block[PATTERN_REGION + 100] ^= 1
+        if _verify_block(block, 7, len(block)) != (len(block), 1):
+            raise ValueError("Corruption outside the page marker was not detected")
     _reject(minimum_total_bytes=129 * 1024**3)
     _reject(
         read_memory=lambda: {
@@ -59,7 +76,7 @@ def main() -> int:
     )
     _reject(allocation_bytes=4 * 1024**2 + 1)
     _reject(unit_id="")
-    print("PASS: guarded memory probe and 32 MiB resident page exercise")
+    print("PASS: guarded memory probe and 32 MiB full-byte exercise")
     return 0
 
 

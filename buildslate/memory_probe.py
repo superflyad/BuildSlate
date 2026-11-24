@@ -18,6 +18,8 @@ DEFAULT_MIN_TOTAL = 120_000_000_000
 DEFAULT_ALLOCATION = 96 * 1024**3
 DEFAULT_RESERVE = 8 * 1024**3
 DEFAULT_CHUNK = 256 * 1024**2
+PATTERN_REGION = 1024**2
+PATTERN_ALGORITHM = "shake256-addressed-full-allocation-v1"
 PAGE = mmap.PAGESIZE
 
 
@@ -106,8 +108,26 @@ def resident_bytes() -> int:
     raise OSError("Memory probe supports Linux and Windows targets")
 
 
-def _pattern(block: int, page: int) -> bytes:
-    return struct.pack("<Q", ((block + 1) << 32) ^ page ^ 0x5A17E2C4)
+def _pattern(block: int, offset: int, length: int) -> bytes:
+    """Generate address-derived data for a bounded region."""
+    return hashlib.shake_256(struct.pack("<QQ", block, offset)).digest(length)
+
+
+def _fill_block(block: mmap.mmap, block_index: int, size: int) -> None:
+    for offset in range(0, size, PATTERN_REGION):
+        length = min(PATTERN_REGION, size - offset)
+        block[offset : offset + length] = _pattern(block_index, offset, length)
+
+
+def _verify_block(block: mmap.mmap, block_index: int, size: int) -> tuple[int, int]:
+    verified_bytes = 0
+    mismatched_regions = 0
+    for offset in range(0, size, PATTERN_REGION):
+        length = min(PATTERN_REGION, size - offset)
+        verified_bytes += length
+        if block[offset : offset + length] != _pattern(block_index, offset, length):
+            mismatched_regions += 1
+    return verified_bytes, mismatched_regions
 
 
 def run_probe(
@@ -121,7 +141,7 @@ def run_probe(
     read_memory: Callable[[], dict[str, int | None]] = system_memory,
     read_resident: Callable[[], int] = resident_bytes,
 ) -> dict:
-    """Touch and verify concurrently held pages, with physical headroom guards."""
+    """Write and verify every allocated byte, with physical headroom guards."""
     if not unit_id.strip() or not build_id.strip():
         raise ValueError("Unit and build IDs are required")
     if any(
@@ -141,7 +161,7 @@ def run_probe(
     blocks: list[mmap.mmap] = []
     lengths: list[int] = []
     started = time.monotonic()
-    verified_pages = 0
+    verified_bytes = 0
     errors = 0
     try:
         remaining = allocation_bytes
@@ -153,16 +173,16 @@ def run_probe(
             block = mmap.mmap(-1, size)
             blocks.append(block)
             lengths.append(size)
-            for page in range(0, size, PAGE):
-                block[page : page + 8] = _pattern(block_index, page)
+            _fill_block(block, block_index, size)
+            if read_memory()["available_bytes"] < reserve_bytes:
+                raise MemoryError("Physical reserve fell below the requested minimum")
             remaining -= size
         during = read_memory()
         resident_during = max(0, read_resident() - resident_before)
         for index, (block, size) in enumerate(zip(blocks, lengths, strict=True)):
-            for page in range(0, size, PAGE):
-                verified_pages += 1
-                if block[page : page + 8] != _pattern(index, page):
-                    errors += 1
+            checked, mismatches = _verify_block(block, index, size)
+            verified_bytes += checked
+            errors += mismatches
         after = read_memory()
         resident_after = max(0, read_resident() - resident_before)
         resident_delta = min(resident_during, resident_after)
@@ -181,6 +201,7 @@ def run_probe(
             "status": (
                 "pass"
                 if errors == 0
+                and verified_bytes == allocation_bytes
                 and resident_delta >= resident_floor
                 and (
                     swap_delta == 0 or (sys.platform == "win32" and swap_delta is None)
@@ -199,11 +220,14 @@ def run_probe(
             "resident_during_bytes": resident_during,
             "resident_after_bytes": resident_after,
             "resident_floor_bytes": resident_floor,
-            "verified_pages": verified_pages,
+            "verified_pages": verified_bytes // PAGE,
+            "verified_bytes": verified_bytes,
+            "pattern_algorithm": PATTERN_ALGORITHM,
+            "pattern_region_bytes": PATTERN_REGION,
             "memory_errors": errors,
             "swap_used_delta_bytes": swap_delta,
             "duration_s": round(time.monotonic() - started, 3),
-            "caveat": "OS capacity and resident page exercise do not identify DRAM MPNs, prove every physical bit, validate routing, or establish a Slate phone build. Windows swap use is not independently measured; the working-set threshold is enforced.",
+            "caveat": "The full allocated-byte exercise does not identify DRAM MPNs, cover unallocated physical memory, validate routing, or establish a Slate phone build. Windows swap use is not independently measured; the working-set threshold is enforced.",
         }
     finally:
         for block in blocks:

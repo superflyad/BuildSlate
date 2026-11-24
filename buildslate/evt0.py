@@ -15,7 +15,13 @@ from jsonschema import Draft202012Validator, FormatChecker
 from referencing import Registry, Resource
 
 from .io import dump_yaml, load_yaml
-from .memory_probe import DEFAULT_ALLOCATION, DEFAULT_MIN_TOTAL, PAGE
+from .memory_probe import (
+    DEFAULT_ALLOCATION,
+    DEFAULT_MIN_TOTAL,
+    PAGE,
+    PATTERN_ALGORITHM,
+    PATTERN_REGION,
+)
 
 HASH_LENGTH = 64
 INTERFACE_COUNTERS = (
@@ -587,11 +593,17 @@ class EVT0CampaignRepository:
             or probe.get("build_id") != manifest.get("build_id")
         ):
             errors.append("M20 memory probe status or build identity differs")
+        if (
+            probe.get("pattern_algorithm") != PATTERN_ALGORITHM
+            or probe.get("pattern_region_bytes") != PATTERN_REGION
+        ):
+            errors.append("M20 memory probe lacks full-allocation pattern proof")
         for field, floor in (
             ("os_total_physical_bytes", DEFAULT_MIN_TOTAL),
             ("allocated_bytes", DEFAULT_ALLOCATION),
             ("resident_delta_bytes", DEFAULT_ALLOCATION * 99 // 100),
             ("verified_pages", DEFAULT_ALLOCATION // PAGE),
+            ("verified_bytes", DEFAULT_ALLOCATION),
         ):
             value = probe.get(field)
             if not isinstance(value, int) or isinstance(value, bool) or value < floor:
@@ -609,10 +621,13 @@ class EVT0CampaignRepository:
         if isinstance(allocation, int) and allocation >= DEFAULT_ALLOCATION:
             resident = probe.get("resident_delta_bytes")
             pages = probe.get("verified_pages")
+            verified = probe.get("verified_bytes")
             if not isinstance(resident, int) or resident < allocation * 99 // 100:
                 errors.append("M20 resident memory is below 99 percent of allocation")
             if not isinstance(pages, int) or pages < (allocation + PAGE - 1) // PAGE:
                 errors.append("M20 page verification does not cover allocation")
+            if not isinstance(verified, int) or verified != allocation:
+                errors.append("M20 byte verification does not cover allocation")
         if rows and len(errors) == 0:
             final = rows[-1]
             total = probe["os_total_physical_bytes"]

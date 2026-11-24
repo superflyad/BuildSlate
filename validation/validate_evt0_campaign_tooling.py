@@ -18,6 +18,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from buildslate.evt0 import EVT0CampaignRepository, _coherent_coverage
 from buildslate.io import dump_yaml, load_yaml
+from buildslate.memory_probe import PATTERN_ALGORITHM, PATTERN_REGION
 
 
 def passed(message: str) -> None:
@@ -515,6 +516,9 @@ def main() -> int:
             "allocated_bytes": 103079215104,
             "resident_delta_bytes": 103079215104,
             "verified_pages": 25165824,
+            "verified_bytes": 103079215104,
+            "pattern_algorithm": PATTERN_ALGORITHM,
+            "pattern_region_bytes": PATTERN_REGION,
             "memory_errors": 0,
             "swap_used_delta_bytes": 0,
         }
@@ -530,8 +534,32 @@ def main() -> int:
         require(
             repository.review_bundle(memory_bundle)["objective_disposition"]
             == "VALID_PASS",
-            "128 GB memory fixture binds resident page exercise to M20 telemetry",
+            "128 GB memory fixture binds full-byte exercise to M20 telemetry",
         )
+        probe["verified_bytes"] = 8 * probe["verified_pages"]
+        probe_path.write_text(json.dumps(probe), encoding="utf-8")
+        result["analysis_artifacts"][0]["sha256"] = sha256(probe_path)
+        result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
+        require(
+            any(
+                "byte verification does not cover allocation" in error
+                for error in repository.review_bundle(memory_bundle)["integrity_errors"]
+            ),
+            "page-marker-only probe cannot pass M20",
+        )
+        probe["verified_bytes"] = 103079215104
+        probe["pattern_algorithm"] = "page-marker-only"
+        probe_path.write_text(json.dumps(probe), encoding="utf-8")
+        result["analysis_artifacts"][0]["sha256"] = sha256(probe_path)
+        result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
+        require(
+            any(
+                "lacks full-allocation pattern proof" in error
+                for error in repository.review_bundle(memory_bundle)["integrity_errors"]
+            ),
+            "legacy probe format cannot pass M20",
+        )
+        probe["pattern_algorithm"] = PATTERN_ALGORITHM
         probe["resident_delta_bytes"] = 1
         probe_path.write_text(json.dumps(probe), encoding="utf-8")
         result["analysis_artifacts"][0]["sha256"] = sha256(probe_path)

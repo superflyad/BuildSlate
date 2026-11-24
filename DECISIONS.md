@@ -71,3 +71,9 @@ The `firmware_boot` hardware record must name a controlled JSON release bundle w
 **Status:** Accepted
 
 The `erc_report` record must bind the approved editable schematic, KiCad project settings, and reviewed JSON report by hash. Rerun ERC with all severities and reject any findings, project exclusions, or ignored critical connection rules. Compare the fresh and reviewed sheet results while allowing generation timestamps to differ. A clean ERC remains a rule check, not proof that the circuit can operate safely.
+
+## ADR-013: Share controlled KiCad rules across ERC and PCB DRC
+
+**Status:** Accepted
+
+The routed PCB record must bind the same `.kicad_pro` bytes as the approved ERC record. The PCB auditor rejects DRC exclusions, ignored critical board rules, and zero fabrication design minima. It inspects the fresh DRC JSON for rule, unconnected-item, and schematic-parity findings in addition to checking KiCad's exit code. This establishes rule-set consistency and reproducible screening; fabricator review, signal and power integrity, and physical validation remain required.

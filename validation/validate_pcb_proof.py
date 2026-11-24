@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from buildslate.hardware_readiness import _evidence_result  # noqa: E402
-from buildslate.pcb_proof import audit  # noqa: E402
+from buildslate.pcb_proof import CRITICAL_RULES, POSITIVE_RULES, audit  # noqa: E402
 from validation.validate_netlist_proof import _write_fixture  # noqa: E402
 
 
@@ -31,6 +31,7 @@ def main() -> int:
         netlist, _, _, _ = _write_fixture(released)
         board = released / "board.kicad_pcb"
         schematic = released / "board.kicad_sch"
+        project = released / "board.kicad_pro"
         copper = ["F.Cu", *(f"In{index}.Cu" for index in range(1, 11)), "B.Cu"]
         layers = [*copper, "F.Mask", "B.Mask", "Edge.Cuts"]
         board_source = (
@@ -43,8 +44,21 @@ def main() -> int:
         )
         board.write_text(board_source, encoding="utf-8")
         schematic.write_text("synthetic schematic source", encoding="utf-8")
+        project_settings = {
+            "board": {
+                "design_settings": {
+                    "drc_exclusions": [],
+                    "rule_severities": {rule: "error" for rule in CRITICAL_RULES},
+                    "rules": {rule: 0.1 for rule in POSITIVE_RULES},
+                }
+            }
+        }
+        project.write_text(json.dumps(project_settings), encoding="utf-8")
         fault = {
             "drc": False,
+            "drc_json": False,
+            "drc_unconnected": False,
+            "drc_parity": False,
             "netlist": False,
             "gerber": False,
             "inner_gerber": False,
@@ -59,7 +73,38 @@ def main() -> int:
                     shutil.copyfile(netlist, destination)
             elif command[1:3] == ["pcb", "drc"]:
                 destination = Path(command[command.index("--output") + 1])
-                destination.write_text(json.dumps({"violations": []}), encoding="utf-8")
+                if (
+                    not {
+                        "--schematic-parity",
+                        "--severity-all",
+                        "--exit-code-violations",
+                        "--all-track-errors",
+                        "--units",
+                    }.issubset(command)
+                    or command[command.index("--units") + 1] != "mm"
+                ):
+                    raise AssertionError("DRC command omitted required scope")
+                destination.write_text(
+                    json.dumps(
+                        {
+                            "$schema": "https://schemas.kicad.org/drc.v1.json",
+                            "source": board.name,
+                            "date": "2026-11-24T00:00:00Z",
+                            "kicad_version": "9.0.1",
+                            "coordinate_units": "mm",
+                            "violations": [{"type": "shorting_items"}]
+                            if fault["drc_json"]
+                            else [],
+                            "unconnected_items": [{"type": "unconnected_items"}]
+                            if fault["drc_unconnected"]
+                            else [],
+                            "schematic_parity": [{"type": "footprint_symbol_mismatch"}]
+                            if fault["drc_parity"]
+                            else [],
+                        }
+                    ),
+                    encoding="utf-8",
+                )
                 if fault["drc"]:
                     return subprocess.CompletedProcess(command, 5, "", "DRC violation")
             elif command[1:4] == ["pcb", "export", "gerbers"]:
@@ -100,6 +145,28 @@ def main() -> int:
             if audit(board, schematic, netlist, runner=runner)["status"] != "fail":
                 raise ValueError(f"{key} fault passed PCB proof")
             fault[key] = False
+        project_settings["board"]["design_settings"]["drc_exclusions"] = [
+            "synthetic ignored violation"
+        ]
+        project.write_text(json.dumps(project_settings), encoding="utf-8")
+        if audit(board, schematic, netlist, runner=runner)["status"] != "fail":
+            raise ValueError("DRC exclusion passed project-settings proof")
+        project_settings["board"]["design_settings"]["drc_exclusions"] = []
+        project_settings["board"]["design_settings"]["rule_severities"]["clearance"] = (
+            "ignore"
+        )
+        project.write_text(json.dumps(project_settings), encoding="utf-8")
+        if audit(board, schematic, netlist, runner=runner)["status"] != "fail":
+            raise ValueError("Ignored critical DRC rule passed")
+        project_settings["board"]["design_settings"]["rule_severities"]["clearance"] = (
+            "error"
+        )
+        project_settings["board"]["design_settings"]["rules"]["min_clearance"] = 0
+        project.write_text(json.dumps(project_settings), encoding="utf-8")
+        if audit(board, schematic, netlist, runner=runner)["status"] != "fail":
+            raise ValueError("Zero fabrication clearance passed")
+        project_settings["board"]["design_settings"]["rules"]["min_clearance"] = 0.1
+        project.write_text(json.dumps(project_settings), encoding="utf-8")
         board.write_text('(kicad_pcb (layers (0 "F.Cu" signal)))', encoding="utf-8")
         if audit(board, schematic, netlist, runner=runner)["status"] != "fail":
             raise ValueError("Incomplete copper layer table passed PCB proof")
@@ -109,6 +176,7 @@ def main() -> int:
             "sha256": _hash(board),
             "schematic_sha256": _hash(schematic),
             "netlist_sha256": _hash(netlist),
+            "project_sha256": _hash(project),
             "revision": "fixture-A",
             "reviewed_by": "fixture reviewer",
             "disposition": "approved",
@@ -122,6 +190,11 @@ def main() -> int:
             "schematic_netlist": {
                 "path": "engineering/hardware/released/board.xml",
                 "sha256": _hash(netlist),
+                "disposition": "approved",
+            },
+            "erc_report": {
+                "project_sha256": _hash(project),
+                "schematic_sha256": _hash(schematic),
                 "disposition": "approved",
             },
         }
@@ -140,6 +213,25 @@ def main() -> int:
                 != "rejected"
             ):
                 raise ValueError("Stale schematic netlist binding passed")
+            changed = {**record, "project_sha256": "0" * 64}
+            if (
+                _evidence_result(root, requirement, changed, related_records=related)[
+                    "status"
+                ]
+                != "rejected"
+            ):
+                raise ValueError("Stale PCB project settings binding passed")
+            erc_mismatch = {
+                **related,
+                "erc_report": {**related["erc_report"], "project_sha256": "0" * 64},
+            }
+            if (
+                _evidence_result(
+                    root, requirement, record, related_records=erc_mismatch
+                )["status"]
+                != "rejected"
+            ):
+                raise ValueError("PCB project differed from approved ERC")
             changed = {**record, "path": "engineering/hardware/released/board.pdf"}
             (released / "board.pdf").write_text("reviewed picture", encoding="utf-8")
             changed["sha256"] = _hash(released / "board.pdf")

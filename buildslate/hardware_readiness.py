@@ -183,6 +183,7 @@ def _evidence_result(
             else:
                 schematic = target.with_suffix(".kicad_sch")
                 netlist = target.with_suffix(".xml")
+                project = target.with_suffix(".kicad_pro")
                 related = related_records or {}
                 for identifier, path, hash_field in (
                     ("schematic_source", schematic, "schematic_sha256"),
@@ -202,6 +203,20 @@ def _evidence_result(
                         reasons.append(
                             f"PCB is not bound to approved {identifier} bytes"
                         )
+                erc_record = related.get("erc_report")
+                if (
+                    not project.is_file()
+                    or record.get("project_sha256")
+                    != hashlib.sha256(project.read_bytes()).hexdigest()
+                    or not isinstance(erc_record, dict)
+                    or erc_record.get("disposition") != "approved"
+                    or erc_record.get("project_sha256") != record.get("project_sha256")
+                    or erc_record.get("schematic_sha256")
+                    != record.get("schematic_sha256")
+                ):
+                    reasons.append(
+                        "PCB project settings differ from approved ERC settings"
+                    )
                 if not reasons:
                     proof = audit_pcb(target, schematic, netlist)
                     if proof["status"] != "pass":

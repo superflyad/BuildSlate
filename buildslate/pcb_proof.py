@@ -9,7 +9,7 @@ import re
 import shutil
 import subprocess
 from collections.abc import Callable
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from tempfile import TemporaryDirectory
 
 from buildslate.netlist_proof import _netlist
@@ -20,6 +20,28 @@ LAYER_ENTRY = re.compile(
     r'(?:\s+"(?P<custom>[^"]+)")?\s*\)'
 )
 INNER_COPPER = re.compile(r"In([1-9]|[12][0-9]|30)\.Cu\Z")
+CRITICAL_RULES = (
+    "clearance",
+    "copper_edge_clearance",
+    "footprint_symbol_mismatch",
+    "hole_clearance",
+    "invalid_outline",
+    "missing_footprint",
+    "net_conflict",
+    "shorting_items",
+    "track_width",
+    "unconnected_items",
+    "unresolved_variable",
+    "via_dangling",
+)
+POSITIVE_RULES = (
+    "min_clearance",
+    "min_copper_edge_clearance",
+    "min_hole_clearance",
+    "min_track_width",
+    "min_via_diameter",
+    "min_via_drill",
+)
 
 
 def _sha(path: Path) -> str:
@@ -101,6 +123,68 @@ def _board_layers(path: Path) -> tuple[list[str], dict[str, str]]:
     return required, custom
 
 
+def _project_rules(path: Path) -> list[str]:
+    if not path.is_file() or not path.stat().st_size:
+        return ["Missing KiCad PCB project settings"]
+    try:
+        project = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        return [f"Invalid KiCad PCB project settings: {error}"]
+    if not isinstance(project, dict):
+        return ["KiCad PCB project settings must be an object"]
+    board = project.get("board")
+    settings = board.get("design_settings") if isinstance(board, dict) else None
+    if not isinstance(settings, dict):
+        return ["KiCad project has no board design settings"]
+    errors: list[str] = []
+    if settings.get("drc_exclusions") != []:
+        errors.append("KiCad project contains DRC exclusions")
+    severities = settings.get("rule_severities")
+    if not isinstance(severities, dict) or any(
+        severities.get(rule) not in ("error", "warning") for rule in CRITICAL_RULES
+    ):
+        errors.append("Critical DRC rules are missing or ignored")
+    rules = settings.get("rules")
+    if not isinstance(rules, dict) or any(
+        not isinstance(rules.get(rule), (int, float))
+        or isinstance(rules.get(rule), bool)
+        or rules[rule] <= 0
+        for rule in POSITIVE_RULES
+    ):
+        errors.append("PCB release needs positive fabrication design minima")
+    return errors
+
+
+def _drc_report(path: Path, board: Path) -> list[str]:
+    if not path.is_file() or not path.stat().st_size:
+        return ["KiCad did not produce a DRC report"]
+    try:
+        report = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        return [f"KiCad DRC report is not valid JSON: {error}"]
+    if not isinstance(report, dict):
+        return ["KiCad DRC report must be an object"]
+    errors: list[str] = []
+    source = report.get("source")
+    if not isinstance(source, str) or (
+        Path(source).name != board.name and PureWindowsPath(source).name != board.name
+    ):
+        errors.append("DRC report source is not the released board")
+    if report.get("$schema") != "https://schemas.kicad.org/drc.v1.json":
+        errors.append("DRC report has an unknown KiCad schema")
+    if not isinstance(report.get("kicad_version"), str) or not report["kicad_version"]:
+        errors.append("DRC report has no KiCad version")
+    if report.get("coordinate_units") != "mm":
+        errors.append("DRC report must use millimeters")
+    for field in ("violations", "unconnected_items", "schematic_parity"):
+        findings = report.get(field)
+        if not isinstance(findings, list):
+            errors.append(f"DRC report is missing {field}")
+        elif findings:
+            errors.append(f"DRC report has {len(findings)} {field} findings")
+    return errors
+
+
 def audit(
     board: Path,
     schematic: Path,
@@ -123,6 +207,10 @@ def audit(
             errors.append(f"Missing editable or exported KiCad source: {path.name}")
     if board.stem != schematic.stem or board.parent != schematic.parent:
         errors.append("PCB and schematic must share a project name and directory")
+    if errors:
+        return {"status": "fail", "errors": errors, "exports": []}
+    project = board.with_suffix(".kicad_pro")
+    errors.extend(_project_rules(project))
     if errors:
         return {"status": "fail", "errors": errors, "exports": []}
     try:
@@ -164,8 +252,11 @@ def audit(
                 "--schematic-parity",
                 "--severity-all",
                 "--exit-code-violations",
+                "--all-track-errors",
                 "--format",
                 "json",
+                "--units",
+                "mm",
                 "--output",
                 str(drc),
                 str(board),
@@ -227,13 +318,7 @@ def audit(
         else:
             if source_components != fresh_components or source_pins != fresh_pins:
                 errors.append("Released netlist differs from fresh schematic export")
-        if not drc.is_file() or not drc.read_bytes().strip():
-            errors.append("KiCad did not produce a DRC report")
-        else:
-            try:
-                json.loads(drc.read_text(encoding="utf-8"))
-            except (UnicodeError, json.JSONDecodeError):
-                errors.append("KiCad DRC report is not valid JSON")
+        errors.extend(_drc_report(drc, board))
         output_files = sorted(
             (
                 path
@@ -264,6 +349,7 @@ def audit(
             "status": "pass" if not errors else "fail",
             "errors": errors,
             "board_sha256": _sha(board),
+            "project_sha256": _sha(project),
             "schematic_sha256": _sha(schematic),
             "netlist_sha256": _sha(released_netlist),
             "copper_layer_count": len(required_layers) - 3,

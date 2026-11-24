@@ -32,7 +32,7 @@ requirements:
     title: Reproducible clean schematic ERC and controlled project settings
   - id: routed_pcb
     stage: design_release
-    title: Routed PCB, stackup, fabrication outputs and assembly drawings
+    title: Routed PCB with reviewed KiCad rules, DRC, stackup and fabrication outputs
   - id: interconnect
     stage: design_release
     title: Display, camera, USB, antenna and test connector or flex drawings

@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Bound routed PCB proof to the approved KiCad project settings and rejected DRC exclusions, disabled critical rules, zero fabrication minima, and report findings across all three DRC categories.
 - Made ERC evidence reproducible from the released KiCad schematic and hashed project settings, with a clean JSON report and no excluded or ignored critical rules.
 - Required a controlled firmware bundle with hashed images, boot/recovery sequence, driver coverage, flash readback plan, and approved BOM/PCB bindings before firmware evidence can enter the hardware gate.
 - Added nominal camera pupil path checks, then revised the concept rear cover and front display/touch openings to clear the assumed pupils; supplier optics and physical qualification remain open.

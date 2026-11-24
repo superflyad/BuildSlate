@@ -29,7 +29,7 @@ The [1 TB UFS candidate screen](docs/engineering/storage_candidate_fit.md) ties 
 
 The [battery candidate fit](docs/engineering/battery_candidate_fit.md) shows that the public AI1-M01 bare-cell box is already larger than the current complete-pack allocation. Its listed 2C category is for discharge; the candidate has no published charge limit. The battery and 100 W charging target therefore remain unresolved.
 
-The [camera path proof](docs/engineering/cad_proofing.md) finds a 0.16 mm nominal rear aperture radius deficit and a continuous display solid above the front camera pupil. The [public Proof view](https://superflyad.github.io/BuildSlate/?tab=proof) shows both findings. Neither camera has a released optical path or measured image performance.
+The [camera path proof](docs/engineering/cad_proofing.md) screens assumed pupil cylinders through three concept layers: the rear cover, display stack, and touch film. The revised model has a 5.0 mm rear opening and 3.1 mm front punch-hole, providing 0.84 mm and 0.54 mm nominal radial margins respectively. The [public Proof view](https://superflyad.github.io/BuildSlate/?tab=proof) reports exact solid overlap for each layer. Neither camera has a supplier-qualified optical path, cover seal, or measured image performance.
 
 ## Get started
 

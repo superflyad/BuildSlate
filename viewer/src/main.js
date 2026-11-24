@@ -311,7 +311,7 @@ function renderProof() {
   document.querySelector("#proof-optical-paths").innerHTML = proof.optical_paths
     .map(
       (item) =>
-        `<div class="proof-item">${proofPartButton(item.camera_id)}<span>↔</span>${proofPartButton(item.blocking_part_id)}<small>${item.solid_overlap_mm3} mm³ of the nominal pupil prism intersects the concept solid (${item.pupil_prism_overlap_percent}%). ${item.face === "rear" ? `Aperture radial margin ${item.aperture_radial_margin_mm} mm.` : "Panel transmission or a window is unverified."}</small></div>`,
+        `<div class="proof-item">${proofPartButton(item.camera_id)}<span>↔</span>${proofPartButton(item.blocking_part_id)}<small>${item.solid_overlap_mm3} mm³ of the nominal pupil prism intersects the concept solid (${item.pupil_prism_overlap_percent}%). Modeled aperture radial margin ${item.aperture_radial_margin_mm} mm. Supplier optical construction and physical performance are unverified.</small></div>`,
     )
     .join("");
   document.querySelector("#proof-reservations").innerHTML = proof.intersections
@@ -367,7 +367,7 @@ function renderHardware() {
     ["128 GB memory package", report.memory_package_fit.integration_status],
     [
       "Camera model paths",
-      `${state.proof.summary.optical_model_conflicts}/2 unresolved`,
+      `${state.proof.summary.optical_model_conflicts}/${state.proof.optical_paths.length} modeled obstructions; unqualified`,
     ],
     [
       "Selected roles",

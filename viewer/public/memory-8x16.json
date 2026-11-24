@@ -33,7 +33,7 @@
         111.0,
         76.5
       ],
-      "aperture_radius_mm": 4.0,
+      "aperture_radius_mm": 5.0,
       "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.rear_cover",
       "geometry_evidence_class": "design_assumption"
     },
@@ -150,6 +150,11 @@
       "screen_layer": null,
       "radius_mm": 2.0,
       "height_mm": 0.7,
+      "optical_aperture_center_mm": [
+        88.0,
+        87.0
+      ],
+      "optical_aperture_radius_mm": 3.1,
       "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.display_stack",
       "geometry_evidence_class": "design_assumption"
     },
@@ -525,7 +530,7 @@
       ],
       "evidence_class": "design_assumption",
       "source": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.battery_without_wireless_charging.layers.touch_layer",
-      "notes": "Separate touch film shares the source display-stack envelope.",
+      "notes": "Separate touch film shares the source display-stack envelope and an assumed front camera opening.",
       "active": true,
       "shape": "rounded_box",
       "roles": [
@@ -536,7 +541,12 @@
       "geometry_use": "solid",
       "screen_layer": null,
       "allowed_keepouts": [],
-      "radius_mm": 2.0
+      "radius_mm": 2.0,
+      "optical_aperture_radius_mm": 3.1,
+      "optical_aperture_center_mm": [
+        88.0,
+        87.0
+      ]
     },
     {
       "id": "battery_pack_shell_concept",
@@ -633,7 +643,7 @@
       ],
       "evidence_class": "design_assumption",
       "source": "engineering/components/component_library.yaml#components.front_camera_module",
-      "notes": "Under-display optical path; aperture and panel compatibility are unverified.",
+      "notes": "Punch-hole optical path; panel cutout, black mask, cover glass, and seal remain unqualified.",
       "active": true,
       "shape": "camera_module",
       "roles": [

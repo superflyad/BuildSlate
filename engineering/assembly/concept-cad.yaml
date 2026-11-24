@@ -6,9 +6,9 @@ description: >-
   These are design assumptions for visual and packaging review, not selected
   components, released drawings, or evidence of fit.
 source_overrides:
-  rear_cover: {shape: rear_panel, radius_mm: 3.0, aperture_center_mm: [111.0, 76.5], aperture_radius_mm: 4.0}
+  rear_cover: {shape: rear_panel, radius_mm: 3.0, aperture_center_mm: [111.0, 76.5], aperture_radius_mm: 5.0}
   cover_glass: {shape: rounded_box, radius_mm: 3.0}
-  display_stack: {shape: rounded_box, radius_mm: 2.0, height_mm: 0.70}
+  display_stack: {shape: rounded_box, radius_mm: 2.0, height_mm: 0.70, optical_aperture_center_mm: [88.0, 87.0], optical_aperture_radius_mm: 3.1}
   main_pcb_placeholder: {shape: pcb, radius_mm: 1.0}
   battery_reference: {shape: rounded_box, radius_mm: 2.0}
   rear_camera_placeholder: {shape: camera_module, lens_face: rear, lens_radius_mm: 4.16}
@@ -39,9 +39,11 @@ additional_parts:
     box_mm: [3, 3, 8.80, 174, 89, 0.15]
     shape: rounded_box
     radius_mm: 2.0
+    optical_aperture_center_mm: [88.0, 87.0]
+    optical_aperture_radius_mm: 3.1
     roles: [touch_digitizer]
     basis: cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.battery_without_wireless_charging.layers.touch_layer
-    assumption: Separate touch film shares the source display-stack envelope.
+    assumption: Separate touch film shares the source display-stack envelope and an assumed front camera opening.
   battery_pack_shell_concept:
     label: Battery pack envelope concept
     group: power
@@ -82,7 +84,7 @@ additional_parts:
     roles: [front_camera_module]
     screen_layer: component_planform
     basis: engineering/components/component_library.yaml#components.front_camera_module
-    assumption: Under-display optical path; aperture and panel compatibility are unverified.
+    assumption: Punch-hole optical path; panel cutout, black mask, cover glass, and seal remain unqualified.
   antenna_top_left_concept:
     label: Top-left antenna reservation
     group: radio

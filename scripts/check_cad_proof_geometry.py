@@ -80,6 +80,15 @@ def main() -> int:
             "id": "display_stack",
             "box_mm": [0, 0, 3, 4, 4, 0.5],
             "geometry_use": "solid",
+            "optical_aperture_center_mm": [2, 2],
+            "optical_aperture_radius_mm": 0.6,
+        },
+        {
+            "id": "touch_digitizer_concept",
+            "box_mm": [0, 0, 2.75, 4, 4, 0.1],
+            "geometry_use": "solid",
+            "optical_aperture_center_mm": [2, 2],
+            "optical_aperture_radius_mm": 0.6,
         },
         {
             "id": "front_camera_concept",
@@ -105,21 +114,29 @@ def main() -> int:
         .box(4, 4, 0.5, centered=False)
         .translate((0, 0, 3))
         .val(),
+        "touch_digitizer_concept": cq.Workplane("XY")
+        .box(4, 4, 0.1, centered=False)
+        .translate((0, 0, 2.75))
+        .val(),
     }
     paths = measure_optical_paths(optical_parts, optical_shapes)
     if (
         paths[0]["aperture_radial_margin_mm"] != -0.2
         or paths[0]["status"] != "model_path_conflict"
         or paths[1]["pupil_prism_overlap_percent"] != 100
+        or paths[2]["pupil_prism_overlap_percent"] != 100
     ):
         raise ValueError("Narrow rear aperture or opaque front path escaped proof")
     optical_parts[0]["aperture_radius_mm"] = 1.3
     optical_shapes["rear_cover"] = cover(1.3)
-    if (
-        measure_optical_paths(optical_parts, optical_shapes)[0]["status"]
-        != "nominal_prism_clear"
-    ):
-        raise ValueError("Clear rear aperture was reported as blocked")
+    opening = cq.Workplane("XY").center(2, 2).circle(0.6).extrude(4)
+    for part_id in ("display_stack", "touch_digitizer_concept"):
+        optical_shapes[part_id] = optical_shapes[part_id].cut(opening.val())
+    clear_paths = measure_optical_paths(optical_parts, optical_shapes)
+    if any(item["status"] != "nominal_prism_clear" for item in clear_paths):
+        raise ValueError("Clear camera openings were reported as blocked")
+    if [item["aperture_radial_margin_mm"] for item in clear_paths] != [0.1, 0.1, 0.1]:
+        raise ValueError("Camera aperture margins do not match concept geometry")
     print("PASS: exact overlap, nominal gap, reservation, and optical-path screens")
     return 0
 

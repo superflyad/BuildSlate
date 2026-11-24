@@ -158,7 +158,7 @@ def measure_nominal_gaps(
 
 
 def measure_optical_paths(parts: list[dict], shapes: dict[str, Any]) -> list[dict]:
-    """Screen a cylindrical camera pupil through the adjacent exterior layer."""
+    """Screen cylindrical camera pupils through adjacent opaque concept layers."""
     import cadquery as cq
 
     by_id = {part["id"]: part for part in parts}
@@ -166,6 +166,7 @@ def measure_optical_paths(parts: list[dict], shapes: dict[str, Any]) -> list[dic
     for camera_id, blocker_id, face in (
         ("rear_camera_placeholder", "rear_cover", "rear"),
         ("front_camera_concept", "display_stack", "front"),
+        ("front_camera_concept", "touch_digitizer_concept", "front"),
     ):
         camera = by_id[camera_id]
         blocker = by_id[blocker_id]
@@ -188,10 +189,16 @@ def measure_optical_paths(parts: list[dict], shapes: dict[str, Any]) -> list[dic
         )
         overlap = prism.intersect(shapes[blocker_id]).Volume()
         aperture_margin = None
-        if face == "rear":
-            aperture_x, aperture_y = blocker["aperture_center_mm"]
+        aperture_center = blocker.get(
+            "aperture_center_mm", blocker.get("optical_aperture_center_mm")
+        )
+        aperture_radius = blocker.get(
+            "aperture_radius_mm", blocker.get("optical_aperture_radius_mm")
+        )
+        if aperture_center is not None and aperture_radius is not None:
+            aperture_x, aperture_y = aperture_center
             aperture_margin = round(
-                float(blocker["aperture_radius_mm"])
+                float(aperture_radius)
                 - math.hypot(center_x - aperture_x, center_y - aperture_y)
                 - radius,
                 3,

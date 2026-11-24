@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -106,22 +107,44 @@ def _check_model(
         ):
             raise ValueError("CAD nominal gap finding is inconsistent")
     optical = proof["optical_paths"]
-    if {item["camera_id"] for item in optical} != {
-        "rear_camera_placeholder",
-        "front_camera_concept",
-    }:
+    if {(item["camera_id"], item["blocking_part_id"]) for item in optical} != {
+        ("rear_camera_placeholder", "rear_cover"),
+        ("front_camera_concept", "display_stack"),
+        ("front_camera_concept", "touch_digitizer_concept"),
+    } or len(optical) != 3:
         raise ValueError("CAD proof omits a camera optical path")
     by_part = {part["id"]: part for part in expected["parts"]}
     for path in optical:
         camera = by_part[path["camera_id"]]
         blocker = by_part[path["blocking_part_id"]]
         box = camera["box_mm"]
+        aperture_center = blocker.get(
+            "aperture_center_mm", blocker.get("optical_aperture_center_mm")
+        )
+        aperture_radius = blocker.get(
+            "aperture_radius_mm", blocker.get("optical_aperture_radius_mm")
+        )
+        expected_margin = round(
+            aperture_radius
+            - math.hypot(
+                box[0] + box[3] / 2 - aperture_center[0],
+                box[1] + box[4] / 2 - aperture_center[1],
+            )
+            - camera["lens_radius_mm"],
+            3,
+        )
         if (
             path["face"] != camera["lens_face"]
             or path["lens_radius_mm"] != camera["lens_radius_mm"]
             or path["axis_xy_mm"] != [box[0] + box[3] / 2, box[1] + box[4] / 2]
             or path["status"] not in {"model_path_conflict", "nominal_prism_clear"}
             or not 0 <= path["pupil_prism_overlap_percent"] <= 100
+            or path["aperture_radial_margin_mm"] != expected_margin
+            or (path["status"] == "nominal_prism_clear")
+            != (
+                path["solid_overlap_mm3"]
+                <= proof["thresholds"]["optical_prism_overlap_mm3"]
+            )
             or blocker["id"]
             not in next(item for item in part_reports if item["id"] == camera["id"])[
                 "optical_path_ids"

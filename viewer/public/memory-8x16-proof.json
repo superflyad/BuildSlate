@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "slate-pocket-v1r",
-  "model_sha256": "cea1ee80b932af2c4d5537d9d6c7204e9441f2fdd28046d76a76743bb31168a7",
+  "model_sha256": "752f9fd8025c754cb04b1a955f93035ca296561ff58ceea7e9b2939d8dde79ec",
   "status": "review_required",
   "method": "CadQuery BREP validity, exact Boolean intersections, nominal distances and camera pupil prisms, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
   "thresholds": {
@@ -20,8 +20,8 @@
     "step_roundtrip_passed": true,
     "interferences": 0,
     "nominal_contacts": 45,
-    "small_nominal_gaps": 23,
-    "optical_model_conflicts": 2,
+    "small_nominal_gaps": 22,
+    "optical_model_conflicts": 0,
     "reservation_conflicts": 2,
     "keepout_conflicts": 13,
     "stack_failures": 1,
@@ -38,8 +38,8 @@
         "source_anchor": true,
         "geometry_anchor": true
       },
-      "volume_mm3": 9373.105,
-      "surface_area_mm2": 34397.508,
+      "volume_mm3": 9357.554,
+      "surface_area_mm2": 34344.415,
       "faces": 11,
       "edges": 27,
       "interference_ids": [],
@@ -178,10 +178,10 @@
         "source_anchor": true,
         "geometry_anchor": true
       },
-      "volume_mm3": 10837.796,
-      "surface_area_mm2": 31330.929,
-      "faces": 10,
-      "edges": 24,
+      "volume_mm3": 10816.663,
+      "surface_area_mm2": 31284.182,
+      "faces": 11,
+      "edges": 27,
       "interference_ids": [],
       "nominal_gap_ids": [
         "frame_left",
@@ -189,8 +189,7 @@
         "frame_top",
         "frame_bottom",
         "cover_glass",
-        "touch_digitizer_concept",
-        "front_camera_concept"
+        "touch_digitizer_concept"
       ],
       "optical_path_ids": [
         "front_camera_concept"
@@ -609,10 +608,10 @@
         "source_anchor": true,
         "geometry_anchor": true
       },
-      "volume_mm3": 2322.385,
-      "surface_area_mm2": 31043.518,
-      "faces": 10,
-      "edges": 24,
+      "volume_mm3": 2317.856,
+      "surface_area_mm2": 30986.058,
+      "faces": 11,
+      "edges": 27,
       "interference_ids": [],
       "nominal_gap_ids": [
         "frame_left",
@@ -622,7 +621,9 @@
         "display_stack",
         "cover_glass"
       ],
-      "optical_path_ids": [],
+      "optical_path_ids": [
+        "front_camera_concept"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -721,11 +722,11 @@
       "edges": 18,
       "interference_ids": [],
       "nominal_gap_ids": [
-        "display_stack",
         "rear_camera_placeholder"
       ],
       "optical_path_ids": [
-        "display_stack"
+        "display_stack",
+        "touch_digitizer_concept"
       ],
       "reservation_conflict_ids": [],
       "keepout_ids": [
@@ -1684,12 +1685,6 @@
       "kind": "contact"
     },
     {
-      "first": "display_stack",
-      "second": "front_camera_concept",
-      "distance_mm": 0.2,
-      "kind": "small_gap"
-    },
-    {
       "first": "cover_glass",
       "second": "touch_digitizer_concept",
       "distance_mm": 0.0,
@@ -1940,10 +1935,10 @@
         76.5
       ],
       "lens_radius_mm": 4.16,
-      "aperture_radial_margin_mm": -0.16,
-      "solid_overlap_mm3": 2.256,
-      "pupil_prism_overlap_percent": 7.5,
-      "status": "model_path_conflict"
+      "aperture_radial_margin_mm": 0.84,
+      "solid_overlap_mm3": 0.0,
+      "pupil_prism_overlap_percent": 0.0,
+      "status": "nominal_prism_clear"
     },
     {
       "camera_id": "front_camera_concept",
@@ -1954,10 +1949,24 @@
         87.0
       ],
       "lens_radius_mm": 2.56,
-      "aperture_radial_margin_mm": null,
-      "solid_overlap_mm3": 14.412,
-      "pupil_prism_overlap_percent": 100.0,
-      "status": "model_path_conflict"
+      "aperture_radial_margin_mm": 0.54,
+      "solid_overlap_mm3": 0.0,
+      "pupil_prism_overlap_percent": 0.0,
+      "status": "nominal_prism_clear"
+    },
+    {
+      "camera_id": "front_camera_concept",
+      "blocking_part_id": "touch_digitizer_concept",
+      "face": "front",
+      "axis_xy_mm": [
+        88.0,
+        87.0
+      ],
+      "lens_radius_mm": 2.56,
+      "aperture_radial_margin_mm": 0.54,
+      "solid_overlap_mm3": 0.0,
+      "pupil_prism_overlap_percent": 0.0,
+      "status": "nominal_prism_clear"
     }
   ],
   "keepout_conflicts": [

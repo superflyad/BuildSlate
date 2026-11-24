@@ -4,7 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
-- Added nominal camera pupil path checks: the rear aperture clips the assumed lens, and the front panel has no modeled optical window.
+- Added nominal camera pupil path checks, then revised the concept rear cover and front display/touch openings to clear the assumed pupils; supplier optics and physical qualification remain open.
 - Added exact nominal contact and small-gap findings to both CAD proof reports and the public viewer.
 - Made routed PCB proof export and require every configured copper layer; a missing internal Gerber now blocks release.
 - Strengthened the guarded 128 GB memory exercise to write and verify every allocated byte and made M20 reject page-marker-only probe evidence.

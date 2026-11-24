@@ -79,11 +79,21 @@ def build_concept(repo_root: Path) -> dict:
             "screen_layer": spec.get("screen_layer"),
             "allowed_keepouts": spec.get("allowed_keepouts", []),
         }
-        for key in ("radius_mm", "band_mm", "wall_mm", "lens_radius_mm"):
+        for key in (
+            "radius_mm",
+            "band_mm",
+            "wall_mm",
+            "lens_radius_mm",
+            "optical_aperture_radius_mm",
+        ):
             if key in spec:
                 part[key] = float(spec[key])
         if "lens_face" in spec:
             part["lens_face"] = spec["lens_face"]
+        if "optical_aperture_center_mm" in spec:
+            part["optical_aperture_center_mm"] = [
+                float(value) for value in spec["optical_aperture_center_mm"]
+            ]
         parts.append(part)
     if len({part["id"] for part in parts}) != len(parts):
         raise ValueError("duplicate concept part ID")
@@ -120,6 +130,17 @@ def build_concept(repo_root: Path) -> dict:
             or not 0 < part.get("lens_radius_mm", 0) <= min(box[3], box[4]) / 2
         ):
             raise ValueError(f"invalid camera pupil assumption: {part['id']}")
+        if "optical_aperture_radius_mm" in part:
+            center = part.get("optical_aperture_center_mm")
+            radius = part["optical_aperture_radius_mm"]
+            if (
+                not isinstance(center, list)
+                or len(center) != 2
+                or radius <= 0
+                or not box[0] + radius < center[0] < box[0] + box[3] - radius
+                or not box[1] + radius < center[1] < box[1] + box[4] - radius
+            ):
+                raise ValueError(f"invalid optical aperture assumption: {part['id']}")
     roles = {item["id"] for item in source["component_coverage"]}
     if {role for part in parts for role in part.get("roles", [])} - roles:
         raise ValueError("unknown concept component role")
@@ -331,6 +352,16 @@ def _shape(cq, part: dict):
         body = body.cut(void)
     elif kind not in {"box", "rounded_box"}:
         raise ValueError(f"unknown CAD shape: {kind}")
+    if "optical_aperture_radius_mm" in part:
+        center_x, center_y = part["optical_aperture_center_mm"]
+        aperture = (
+            cq.Workplane("XY")
+            .center(center_x - x, center_y - y)
+            .circle(part["optical_aperture_radius_mm"])
+            .extrude(height + 2)
+            .translate((0, 0, -1))
+        )
+        body = body.cut(aperture)
     return body.translate((x, y, z))
 
 

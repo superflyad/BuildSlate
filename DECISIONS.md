@@ -53,3 +53,9 @@ The exact public 16 GB memory package needs eight outlines to reach the approved
 **Status:** Accepted
 
 The v1R floorplan and compute-zone stack specify a 0.8 mm PCB. The mechanical envelope still carried a 1.2 mm generic board allowance. Align the v1R envelope and assembly to 0.8 mm while keeping the board top at z = 4.0 mm, and enforce envelope/floorplan equality in the integration contract. This is an internal model correction. A fabricator-reviewed 12-layer stack, two-sided assembly limits, and physical tolerance evidence remain required.
+
+## ADR-010: Model provisional camera openings
+
+**Status:** Accepted for concept review
+
+The camera pupil proof found a rear cover opening smaller than the assumed pupil and a continuous display and touch film over the front pupil. Widen the modeled rear cover opening to 5.0 mm radius and add a 3.1 mm radius punch-hole to the display stack and touch film at the front camera axis. Screen all three modeled layers with exact solid intersections. These dimensions are concept assumptions, not a selected panel or camera design. Supplier panel construction, black mask, cover optics, seals, alignment tolerances, and measured image performance are required before the optical path can be qualified.

@@ -89,6 +89,20 @@ def main() -> int:
                 "evidence": documents,
                 "capabilities": capabilities[role],
             }
+        release["parts"]["memory"]["capabilities"]["qualified_topology"] = {
+            "id": "FIXTURE-128GB",
+            "controller_mpn": "FIXTURE-compute_platform",
+            "memory_mpn": "FIXTURE-memory",
+            "package_count": 4,
+            "capacity_bytes_per_package": 32_000_000_000,
+            "total_capacity_bytes": 128_000_000_000,
+            "controller_support_sha256": release["parts"]["memory"]["evidence"][
+                "controller_support"
+            ]["sha256"],
+            "reference_design_sha256": release["parts"]["compute_platform"]["evidence"][
+                "reference_design"
+            ]["sha256"],
+        }
         release_path = root / RELEASE
         release_path.parent.mkdir(parents=True, exist_ok=True)
         write_release(release_path, release)
@@ -139,6 +153,24 @@ def main() -> int:
                 result["status"] == "blocked"
                 and any(expected in reason for reason in result["errors"]),
                 f"{role} incompatibility blocks selected BOM proof",
+            )
+        write_release(release_path, release)
+        for mutation, expected in (
+            ({"package_count": 8}, "package count"),
+            ({"controller_mpn": "OTHER-HOST"}, "controller MPN"),
+            ({"controller_support_sha256": "stale"}, "controller_support_sha256"),
+            ({"total_capacity_bytes": 64_000_000_000}, "128 GB"),
+        ):
+            invalid = copy.deepcopy(release)
+            invalid["parts"]["memory"]["capabilities"]["qualified_topology"].update(
+                mutation
+            )
+            write_release(release_path, invalid)
+            result = audit(root, strategy)
+            require(
+                result["status"] == "blocked"
+                and any(expected in reason for reason in result["errors"]),
+                "unqualified or stale memory topology blocks selected BOM proof",
             )
         write_release(release_path, release)
         strategy["roles"]["cellular"]["status"] = "selected"

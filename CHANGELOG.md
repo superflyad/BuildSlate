@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Bound 128 GB selected-memory topology claims to exact compute and memory MPNs, package count and capacity, and hashes of the controller support and compute reference-design sources; a controller maximum alone cannot pass part selection.
 - Added an RF release audit for selected radio and antenna parts, host and firmware compatibility, schematic matching paths, released edge placement, Touchstone impedance and isolation sweeps, radiation efficiency, coexistence, and market scoping; public status remains missing.
 - Added a geometry- and power-bound thermal release audit with source-backed material and boundary properties, case heat maps, mesh and energy checks, supplier temperature limits, and public missing status.
 - Added a released power-design audit for selected pack ratings, charge input and conversion budget, complete rail and battery current loads, sequencing, fault-control declarations, and approved BOM/board bindings; public status remains missing.

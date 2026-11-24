@@ -54,6 +54,58 @@ def _document_error(root: Path, role: str, kind: str, record: Any) -> str | None
     return None
 
 
+def _memory_topology_errors(parts: dict[str, Any]) -> list[str]:
+    """Bind a declared 128 GB configuration to exact parts and source bytes."""
+    compute_part = parts["compute_platform"]
+    memory_part = parts["memory"]
+    compute = compute_part["capabilities"]
+    memory = memory_part["capabilities"]
+    topology = memory.get("qualified_topology")
+    if not isinstance(topology, dict):
+        return ["Missing supplier-qualified memory topology record"]
+    errors: list[str] = []
+    for field in ("id", "controller_mpn", "memory_mpn"):
+        if not _text(topology.get(field)):
+            errors.append(f"Memory topology is missing {field}")
+    if topology.get("controller_mpn") != compute_part.get("mpn"):
+        errors.append(
+            "Memory topology controller MPN differs from selected compute part"
+        )
+    if topology.get("memory_mpn") != memory_part.get("mpn"):
+        errors.append("Memory topology memory MPN differs from selected memory part")
+    if topology.get("package_count") != memory_part.get("quantity"):
+        errors.append("Memory topology package count differs from selected quantity")
+    if topology.get("capacity_bytes_per_package") != memory.get(
+        "capacity_bytes_per_package"
+    ):
+        errors.append("Memory topology package capacity differs from selected part")
+    package_count = topology.get("package_count")
+    package_capacity = topology.get("capacity_bytes_per_package")
+    total = (
+        package_count * package_capacity
+        if isinstance(package_count, int)
+        and not isinstance(package_count, bool)
+        and _positive_number(package_capacity)
+        else 0
+    )
+    if total < MEMORY_FLOOR_BYTES or topology.get("total_capacity_bytes") != total:
+        errors.append("Memory topology does not establish the 128 GB floor")
+    if not _positive_number(compute.get("max_memory_bytes")) or total > compute.get(
+        "max_memory_bytes", 0
+    ):
+        errors.append("Memory topology exceeds the selected controller limit")
+    for field, role, kind in (
+        ("controller_support_sha256", "memory", "controller_support"),
+        ("reference_design_sha256", "compute_platform", "reference_design"),
+    ):
+        evidence = parts[role].get("evidence")
+        source = evidence.get(kind) if isinstance(evidence, dict) else None
+        expected = source.get("sha256") if isinstance(source, dict) else None
+        if not _text(topology.get(field)) or topology[field] != expected:
+            errors.append(f"Memory topology {field} is not bound to selected source")
+    return errors
+
+
 def audit(root: Path, strategy: dict[str, Any] | None = None) -> dict[str, Any]:
     """Require exact MPNs, controlled sources, and basic interface compatibility."""
     root = root.resolve()
@@ -192,6 +244,8 @@ def audit(root: Path, strategy: dict[str, Any] | None = None) -> dict[str, Any]:
             incompatible(
                 "memory", "Memory interface is not supported by the compute platform"
             )
+        for problem in _memory_topology_errors(parts):
+            incompatible("memory", problem)
         if (
             not _positive_number(storage.get("capacity_bytes"))
             or storage["capacity_bytes"] < STORAGE_FLOOR_BYTES

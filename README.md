@@ -31,7 +31,7 @@ The [thermal release proof](docs/engineering/thermal_release_proof.md) checks a 
 
 The [RF release proof](docs/engineering/rf_release_proof.md) checks selected Wi-Fi/Bluetooth and antenna identities, the host and firmware interfaces, schematic feed paths, released CAD positions, band sweeps, radiation efficiency, isolation, and coexistence. The public Hardware view reports the release as missing. No integrated antennas, radio module, chamber result, or regulatory approval exists.
 
-The approved 128 GB memory floor is retained. Qualcomm publishes an X2 controller maximum at or above that capacity; its public example is 48 GB, and no qualified 128 GB Slate topology is available. The [compute path](docs/engineering/compute_platform_decision.md) identifies the specific supplier and physical proof still required.
+The approved 128 GB memory floor is retained. Qualcomm publishes an X2 controller maximum at or above that capacity; its public example is 48 GB, and no qualified 128 GB Slate topology is available. The [compute path](docs/engineering/compute_platform_decision.md) identifies the specific supplier and physical proof still required. The [selected BOM proof](docs/engineering/selected_bom_proof.md) now rejects package arithmetic unless a topology record names the exact controller and memory parts and binds their supplier support files.
 
 The [memory package screen](docs/engineering/memory_package_fit.md) compares the four assumed 32 GB sites with an exact public 16 GB LPDDR5X package. Eight of those would be needed for 128 GB, and their dimensions do not fit the current memory rectangles. The CAD sites remain planning geometry.
 

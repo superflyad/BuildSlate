@@ -62,7 +62,7 @@
             <div class="stage-metrics">
               <div>
                 <strong id="model-part-count">—</strong
-                ><small>modeled parts</small>
+                ><small>planning boxes</small>
               </div>
               <div>
                 <strong id="extent">—</strong><small>outer envelope</small>
@@ -82,9 +82,19 @@
               ><button data-view="rear">Rear</button
               ><button data-view="side">Side</button>
             </div>
-            <span class="stage-hint"
-              >Drag to rotate · Scroll to zoom · Click a part to inspect</span
-            >
+            <div class="stage-tools">
+              <button id="fit-model" class="fit-button" type="button">
+                Fit model
+              </button>
+              <button
+                id="immersive-view"
+                class="fit-button"
+                type="button"
+                aria-pressed="false"
+              >
+                Expand view
+              </button>
+            </div>
           </div>
           <div class="stage-bottom">
             <div class="control-row">
@@ -111,6 +121,29 @@
                   >Deferred concepts</span
                 ></label
               >
+            </div>
+            <div class="section-row">
+              <label class="section-enable" for="section-toggle"
+                ><input id="section-toggle" type="checkbox" /><span
+                  >Section cut</span
+                ></label
+              >
+              <div class="section-axis" role="group" aria-label="Section axis">
+                <button type="button" data-section-axis="x" class="active">
+                  X</button
+                ><button type="button" data-section-axis="y">Y</button
+                ><button type="button" data-section-axis="z">Z</button>
+              </div>
+              <label class="sr-only" for="section-position"
+                >Section position</label
+              ><input
+                id="section-position"
+                type="range"
+                min="0"
+                max="100"
+                value="50"
+                disabled
+              /><output id="section-value" for="section-position">X 50%</output>
             </div>
           </div>
         </section>
@@ -145,7 +178,7 @@
                 These are repository gate states, not physical approval.
               </p>
               <div id="program-summary" class="summary-grid"></div>
-              <div class="section-heading">Component coverage</div>
+              <div class="section-heading">Component library coverage</div>
               <div id="coverage" class="coverage-list"></div>
               <div class="section-heading">Local stack screens</div>
               <div id="zones" class="zone-list"></div>

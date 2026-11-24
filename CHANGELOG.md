@@ -4,6 +4,8 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Completed the assembly review controls with an expanded canvas, axis section cuts, part focus and isolation, and navigation across every component library role; kept unplaced and deferred roles explicit.
+- Made viewer asset loading follow the configured Vite base path and reject mismatched JSON and glTF part counts at runtime.
 - Reworked the README, architecture, contribution, viewer, and documentation guides around the actual review and change workflows; added a schematic cover and mobile-friendly repository entry points.
 - Indexed all active engineering guides and added a documentation coverage check; expanded CI to Windows and strengthened maintained Python checks.
 - Made generated text writers use LF consistently so Windows validation does not dirty tracked reports.

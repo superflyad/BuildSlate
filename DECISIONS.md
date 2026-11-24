@@ -35,3 +35,9 @@ Every `validation/validate_*.py` script must be registered in the suite. CI also
 **Status:** Accepted
 
 The Python wheel contains the CLI and its runtime dependency. Engineering files remain in a checkout selected by `--repo-root`; the package does not snapshot or promote source evidence. CI tests the installed command from outside the checkout. Software tags identify code and viewer builds, while the program dashboard retains engineering gate authority.
+
+## ADR-007: Separate visual inspection from engineering validation
+
+**Status:** Accepted
+
+Section cuts, isolation, focus, and expanded view operate only on generated planning geometry in the browser. The component library is shown in full, including roles without geometry. These controls expose the model's limits; they do not create a fit, interference, or release result. A geometry count mismatch stops loading rather than silently presenting an incomplete assembly.

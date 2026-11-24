@@ -41,6 +41,10 @@ const state = {
   keepouts: false,
   deferred: false,
   explode: 0,
+  isolated: null,
+  section: { enabled: false, axis: "x", fraction: 0.5 },
+  immersive: false,
+  view: "iso",
   tab: "inspect",
 };
 const meshes = new Map();
@@ -49,17 +53,18 @@ const keepoutMeshes = [];
 const viewport = document.querySelector("#viewport");
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x101d2b);
-const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 2000);
+const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 3000);
 camera.up.set(0, 0, 1);
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.localClippingEnabled = true;
 viewport.append(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
-controls.minDistance = 80;
-controls.maxDistance = 650;
+controls.minDistance = 8;
+controls.maxDistance = 1600;
 controls.target.set(90, 47.5, 4.75);
 camera.position.set(250, -185, 145);
 controls.update();
@@ -77,6 +82,25 @@ scene.add(ground);
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 let selectionBox = null;
+const sectionPlane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 90);
+const sectionGuide = new THREE.Group();
+const sectionFace = new THREE.Mesh(
+  new THREE.BufferGeometry(),
+  new THREE.MeshBasicMaterial({
+    color: 0x75c2d8,
+    transparent: true,
+    opacity: 0.08,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+  }),
+);
+const sectionEdge = new THREE.LineLoop(
+  new THREE.BufferGeometry(),
+  new THREE.LineBasicMaterial({ color: 0x75c2d8 }),
+);
+sectionGuide.add(sectionFace, sectionEdge);
+sectionGuide.visible = false;
+scene.add(sectionGuide);
 
 function resize() {
   const { width, height } = viewport.getBoundingClientRect();
@@ -84,6 +108,7 @@ function resize() {
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
   renderer.setSize(width, height);
+  if (state.assembly && state.view) setView(state.view);
 }
 new ResizeObserver(resize).observe(viewport);
 function animate() {
@@ -133,9 +158,11 @@ function renderGroups() {
         state.activeGroup === button.dataset.group
           ? null
           : button.dataset.group;
+      state.isolated = null;
       updateVisibility();
       renderGroups();
       renderParts();
+      renderDetail();
     }),
   );
 }
@@ -159,8 +186,38 @@ function renderDetail() {
   const part = state.assembly.parts.find((p) => p.id === state.selected);
   if (!part) return;
   document.querySelector("#part-detail").className = "detail-body";
-  document.querySelector("#part-detail").innerHTML =
-    `<div class="eyebrow">${esc(labels[part.group])} / ${esc(part.id)}</div><div class="detail-title-row"><h2>${esc(part.label)}</h2><span class="swatch large" style="--swatch:#${colors[part.group].toString(16).padStart(6, "0")}"></span></div><div class="detail-status">${part.active ? "In current planning model" : "Deferred from current build"}</div><div class="section-heading">Geometry</div><div class="property"><span>Envelope</span><strong>${textBox(part.box_mm)}</strong></div><div class="property"><span>Origin (x, y, z)</span><strong>${part.box_mm.slice(0, 3).join(", ")} mm</strong></div><div class="property"><span>Geometry type</span><strong>Provisional box</strong></div><div class="section-heading">Engineering basis</div><div class="property"><span>Evidence class</span><strong>${esc(part.evidence_class.replaceAll("_", " "))}</strong></div><div class="source-path"><span>Source</span><code>${esc(part.source)}</code></div>${part.notes ? `<div class="detail-note">${esc(part.notes.replaceAll("_", " "))}</div>` : ""}<p class="detail-caveat">This box is a planning envelope. Verify against supplier CAD and released drawings before treating it as a physical part.</p>`;
+  document.querySelector("#part-detail").innerHTML = `
+    <div class="eyebrow">${esc(labels[part.group])} / ${esc(part.id)}</div>
+    <div class="detail-title-row"><h2>${esc(part.label)}</h2><span class="swatch large" style="--swatch:#${colors[part.group].toString(16).padStart(6, "0")}"></span></div>
+    <div class="detail-status">${part.active ? "In current planning model" : "Deferred from current build"}</div>
+    <div class="detail-actions">
+      <button type="button" data-detail-action="focus">Focus part</button>
+      <button type="button" data-detail-action="isolate" aria-pressed="${state.isolated === part.id}">${state.isolated === part.id ? "Show assembly" : "Isolate part"}</button>
+    </div>
+    <div class="section-heading">Geometry</div>
+    <div class="property"><span>Envelope</span><strong>${textBox(part.box_mm)}</strong></div>
+    <div class="property"><span>Origin (x, y, z)</span><strong>${part.box_mm.slice(0, 3).join(", ")} mm</strong></div>
+    <div class="property"><span>Geometry type</span><strong>Provisional box</strong></div>
+    <div class="section-heading">Engineering basis</div>
+    <div class="property"><span>Evidence class</span><strong>${esc(part.evidence_class.replaceAll("_", " "))}</strong></div>
+    <div class="source-path"><span>Source</span><code>${esc(part.source)}</code></div>
+    ${part.notes ? `<div class="detail-note">${esc(part.notes.replaceAll("_", " "))}</div>` : ""}
+    <p class="detail-caveat">This box is a planning envelope. Verify against supplier CAD and released drawings before treating it as a physical part.</p>`;
+}
+function renderCoverageItem(component) {
+  const representedParts = component.part_ids
+    .map((id) => {
+      const label =
+        state.assembly.parts.find((part) => part.id === id)?.label || id;
+      return `<button type="button" data-cover-part="${esc(id)}">${esc(label)}</button>`;
+    })
+    .join("");
+  return `<details class="coverage-item">
+    <summary><strong>${esc(component.id.replaceAll("_", " "))}</strong><span class="coverage-tag">${esc(component.representation)}</span></summary>
+    <p>${esc(component.function)}</p>
+    <div class="coverage-parts">${representedParts || "No geometry or placement"}</div>
+    <code>${esc(component.source)}</code>
+  </details>`;
 }
 function renderProgram() {
   const { summary, gates, blockers } = state.assembly;
@@ -185,13 +242,7 @@ function renderProgram() {
   );
   document.querySelector("#coverage").innerHTML =
     `<p class="coverage-intro">${coverage.length} library roles · ${counts.box} box modeled · ${counts.aggregate} aggregate · ${counts.deferred} deferred · ${counts.unplaced} unplaced</p>` +
-    coverage
-      .filter((c) => c.representation === "unplaced")
-      .map(
-        (c) =>
-          `<div class="coverage-item"><strong>${esc(c.id.replaceAll("_", " "))}</strong><span>No geometry or placement</span></div>`,
-      )
-      .join("");
+    coverage.map(renderCoverageItem).join("");
   document.querySelector("#zones").innerHTML = Object.entries(
     state.assembly.zones,
   )
@@ -222,6 +273,7 @@ function updateVisibility() {
     const mesh = meshes.get(part.id);
     if (!mesh) continue;
     mesh.visible =
+      (!state.isolated || part.id === state.isolated) &&
       (!state.activeGroup || part.group === state.activeGroup) &&
       (state.shell || part.group !== "exterior") &&
       (state.deferred || part.active);
@@ -253,23 +305,141 @@ function updateVisibility() {
     mesh.material.depthWrite = mesh.material.opacity >= 1;
   }
   keepoutMeshes.forEach((mesh) => {
-    mesh.visible = state.keepouts;
+    mesh.visible = state.keepouts && !state.isolated;
   });
-  if (selectionBox) selectionBox.update();
+  if (selectionBox) {
+    selectionBox.visible = Boolean(meshes.get(state.selected)?.visible);
+    selectionBox.update();
+  }
+}
+function updateSection() {
+  if (!state.assembly) return;
+  const { axis, fraction, enabled } = state.section;
+  const normal = {
+    x: [-1, 0, 0],
+    y: [0, -1, 0],
+    z: [0, 0, -1],
+  }[axis];
+  sectionPlane.normal.set(...normal);
+  const limit = {
+    x: state.assembly.extent_mm.length,
+    y: state.assembly.extent_mm.width,
+    z: state.assembly.extent_mm.thickness,
+  }[axis];
+  const position = limit * fraction;
+  sectionPlane.constant = position;
+  const e = state.assembly.extent_mm;
+  const corners = {
+    x: [
+      [position, 0, 0],
+      [position, e.width, 0],
+      [position, e.width, e.thickness],
+      [position, 0, e.thickness],
+    ],
+    y: [
+      [0, position, 0],
+      [e.length, position, 0],
+      [e.length, position, e.thickness],
+      [0, position, e.thickness],
+    ],
+    z: [
+      [0, 0, position],
+      [e.length, 0, position],
+      [e.length, e.width, position],
+      [0, e.width, position],
+    ],
+  }[axis].map((corner) => new THREE.Vector3(...corner));
+  sectionFace.geometry.dispose();
+  sectionFace.geometry = new THREE.BufferGeometry().setFromPoints(corners);
+  sectionFace.geometry.setIndex([0, 1, 2, 0, 2, 3]);
+  sectionEdge.geometry.dispose();
+  sectionEdge.geometry = new THREE.BufferGeometry().setFromPoints(corners);
+  sectionGuide.visible = enabled;
+  const planes = enabled ? [sectionPlane] : [];
+  for (const mesh of [...meshes.values(), ...keepoutMeshes]) {
+    mesh.material.clippingPlanes = planes;
+    for (const child of mesh.children) child.material.clippingPlanes = planes;
+  }
+  if (selectionBox) selectionBox.material.clippingPlanes = planes;
+  document.querySelector("#section-position").disabled = !enabled;
+  document.querySelector("#section-value").textContent =
+    `${axis.toUpperCase()} ${position.toFixed(1)} mm`;
+  document.querySelectorAll("[data-section-axis]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.sectionAxis === axis);
+    button.setAttribute(
+      "aria-pressed",
+      String(button.dataset.sectionAxis === axis),
+    );
+  });
+}
+function revealPart(part) {
+  if (state.activeGroup && state.activeGroup !== part.group) {
+    state.activeGroup = null;
+    renderGroups();
+  }
+  if (state.isolated && state.isolated !== part.id) state.isolated = null;
+  if (
+    state.search &&
+    !`${part.label} ${part.group} ${part.id}`
+      .toLowerCase()
+      .includes(state.search)
+  ) {
+    state.search = "";
+    document.querySelector("#part-search").value = "";
+  }
+  if (part.group === "exterior") state.shell = true;
+  if (!part.active) state.deferred = true;
+  document.querySelector("#shell-toggle").checked = state.shell;
+  document.querySelector("#deferred-toggle").checked = state.deferred;
 }
 function selectPart(id) {
+  const part = state.assembly.parts.find((p) => p.id === id);
+  if (!part) return;
+  revealPart(part);
   state.selected = id;
   state.tab = "inspect";
   setTab();
   renderParts();
   renderDetail();
   updateVisibility();
-  if (selectionBox) scene.remove(selectionBox);
+  if (selectionBox) {
+    scene.remove(selectionBox);
+    selectionBox.geometry.dispose();
+    selectionBox.material.dispose();
+  }
   const mesh = meshes.get(id);
   if (mesh) {
     selectionBox = new THREE.BoxHelper(mesh, 0xffd47b);
+    selectionBox.material.depthTest = false;
+    selectionBox.material.clippingPlanes = state.section.enabled
+      ? [sectionPlane]
+      : [];
     scene.add(selectionBox);
   }
+}
+function focusSelected() {
+  const mesh = meshes.get(state.selected);
+  if (!mesh) return;
+  const bounds = new THREE.Box3().setFromObject(mesh);
+  const center = bounds.getCenter(new THREE.Vector3());
+  const size = bounds.getSize(new THREE.Vector3());
+  const direction = camera.position.clone().sub(controls.target).normalize();
+  const distance = Math.max(25, size.length() * 2.4);
+  controls.target.copy(center);
+  camera.position.copy(center).addScaledVector(direction, distance);
+  controls.update();
+  state.view = null;
+  document
+    .querySelectorAll("[data-view]")
+    .forEach((button) => button.classList.remove("active"));
+}
+function setImmersive(enabled) {
+  state.immersive = enabled;
+  document.querySelector("#app").classList.toggle("immersive", enabled);
+  const button = document.querySelector("#immersive-view");
+  button.textContent = enabled ? "Exit expanded view" : "Expand view";
+  button.setAttribute("aria-pressed", String(enabled));
+  resize();
 }
 function setTab() {
   for (const tab of ["inspect", "program"]) {
@@ -285,26 +455,48 @@ function setTab() {
   }
 }
 function setView(view) {
-  const target = new THREE.Vector3(90, 47.5, 4.75);
-  const delta = {
-    iso: [160, -175, 125],
-    front: [0, 0, 240],
-    rear: [0, 0, -240],
-    side: [250, 0, 0],
-  }[view];
-  camera.position.set(
-    target.x + delta[0],
-    target.y + delta[1],
-    target.z + delta[2],
+  const extent = state.assembly?.extent_mm || {
+    length: 180,
+    width: 95,
+    thickness: 9.5,
+  };
+  const target = new THREE.Vector3(
+    extent.length / 2,
+    extent.width / 2,
+    extent.thickness / 2,
   );
+  const direction = new THREE.Vector3(
+    ...{
+      iso: [160, -175, 125],
+      front: [0, 0, 240],
+      rear: [0, 0, -240],
+      side: [250, 0, 0],
+    }[view],
+  ).normalize();
+  const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+  const horizontalFov =
+    2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
+  const radius = Math.hypot(extent.length, extent.width, extent.thickness) / 2;
+  const distance =
+    (radius / Math.sin(Math.min(verticalFov, horizontalFov) / 2)) * 1.12;
+  camera.up.set(
+    0,
+    view === "front" || view === "rear" ? 1 : 0,
+    view === "front" || view === "rear" ? 0 : 1,
+  );
+  camera.position.copy(target).addScaledVector(direction, distance);
   controls.target.copy(target);
   controls.update();
+  state.view = view;
   document
     .querySelectorAll("[data-view]")
     .forEach((button) =>
       button.classList.toggle("active", button.dataset.view === view),
     );
 }
+controls.addEventListener("start", () => {
+  state.view = null;
+});
 function makeKeepouts() {
   for (const zone of state.assembly.keepouts) {
     const r = zone.rectangle_mm;
@@ -350,11 +542,36 @@ document.querySelector("#part-search").addEventListener("input", (event) => {
 });
 document.querySelector("#show-all").addEventListener("click", () => {
   state.activeGroup = null;
+  state.isolated = null;
   state.search = "";
   document.querySelector("#part-search").value = "";
   updateVisibility();
   renderGroups();
   renderParts();
+  renderDetail();
+});
+document
+  .querySelector("#fit-model")
+  .addEventListener("click", () => setView("iso"));
+document.querySelector("#immersive-view").addEventListener("click", () => {
+  setImmersive(!state.immersive);
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && state.immersive) setImmersive(false);
+});
+document.querySelector("#part-detail").addEventListener("click", (event) => {
+  const action = event.target.closest("[data-detail-action]")?.dataset
+    .detailAction;
+  if (action === "focus") focusSelected();
+  if (action === "isolate") {
+    state.isolated = state.isolated === state.selected ? null : state.selected;
+    updateVisibility();
+    renderDetail();
+  }
+});
+document.querySelector("#coverage").addEventListener("click", (event) => {
+  const id = event.target.closest("[data-cover-part]")?.dataset.coverPart;
+  if (id) selectPart(id);
 });
 document.querySelector("#explode").addEventListener("input", (event) => {
   state.explode = Number(event.target.value) / 100;
@@ -372,6 +589,24 @@ for (const [id, key] of [
     updateVisibility();
   });
 document
+  .querySelector("#section-toggle")
+  .addEventListener("change", (event) => {
+    state.section.enabled = event.target.checked;
+    updateSection();
+  });
+document
+  .querySelector("#section-position")
+  .addEventListener("input", (event) => {
+    state.section.fraction = Number(event.target.value) / 100;
+    updateSection();
+  });
+document.querySelectorAll("[data-section-axis]").forEach((button) =>
+  button.addEventListener("click", () => {
+    state.section.axis = button.dataset.sectionAxis;
+    updateSection();
+  }),
+);
+document
   .querySelectorAll("[data-view]")
   .forEach((button) =>
     button.addEventListener("click", () => setView(button.dataset.view)),
@@ -383,10 +618,12 @@ for (const tab of ["inspect", "program"])
   });
 
 try {
-  const response = await fetch("/assembly.json");
+  const response = await fetch(`${import.meta.env.BASE_URL}assembly.json`);
   if (!response.ok) throw new Error(`assembly data: HTTP ${response.status}`);
   state.assembly = await response.json();
-  const gltf = await new GLTFLoader().loadAsync("/assembly.gltf");
+  const gltf = await new GLTFLoader().loadAsync(
+    `${import.meta.env.BASE_URL}assembly.gltf`,
+  );
   gltf.scene.traverse((object) => {
     if (!object.isMesh) return;
     const id =
@@ -408,8 +645,14 @@ try {
     baseZ.set(id, object.position.z);
   });
   scene.add(gltf.scene);
+  if (meshes.size !== state.assembly.parts.length) {
+    throw new Error(
+      `expected ${state.assembly.parts.length} part meshes, found ${meshes.size}`,
+    );
+  }
   makeKeepouts();
   updateVisibility();
+  updateSection();
   renderGroups();
   renderParts();
   renderProgram();

@@ -47,7 +47,7 @@ npm ci
 npm run dev
 ```
 
-Open the local address printed by Vite. Drag to rotate, select a part to inspect its source and evidence class, and use filters, cutaway, or explode to examine the internal arrangement. The [viewer guide](viewer/README.md) covers the controls and generated assets. The viewer cannot establish physical fit or qualification.
+Open the local address printed by Vite. Drag to rotate, select a part to inspect its source and evidence class, and use section cuts, isolation, or explode to examine the internal arrangement. The Program tab includes every component library role and identifies roles without geometry. The [viewer guide](viewer/README.md) covers the controls and generated assets. The viewer cannot establish physical fit or qualification.
 
 ## How a change moves through the repository
 

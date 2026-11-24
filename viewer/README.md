@@ -21,12 +21,15 @@ Open the local address printed by Vite. If the assembly check reports stale outp
 | --- | --- |
 | Drag, scroll, select | Rotate, zoom, and inspect a part in the 3D viewport. |
 | 3D, Front, Rear, Side | Switch to a fixed camera orientation. |
+| Fit model, Expand view | Restore the assembly camera or give the model the full browser area. Press Escape to leave the expanded view. |
 | Search and Systems | Find components or filter a subsystem; **Show all** restores the list. |
 | Explode assembly | Separate the planning envelopes to see the internal arrangement. |
+| Section cut | Clip the model along X, Y, or Z; move the slider to position the cut in millimeters. The plane is a visual inspection aid, not an interference result. |
 | Exterior | Hide or show the outer shell to expose internal parts. |
 | Keepouts | Show reserved regions that should remain clear. |
 | Deferred concepts | Show items that are not part of the current build. |
-| Inspect and Program | Read part provenance or the generated gates and blockers. |
+| Inspect | Focus or isolate a selected part and read its dimensions, evidence class, and source. |
+| Program | Review every component library role, its box, aggregate, deferred, or unplaced representation, and the generated gates and blockers. Click a represented part to inspect it. |
 
 All displayed distances are in millimeters. The [assembly contract](../engineering/assembly/README.md) defines the coordinate frame, stable IDs, and source mapping.
 

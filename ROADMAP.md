@@ -19,7 +19,8 @@ This roadmap separates software work from engineering evidence. A completed repo
 
 - [x] Stable part IDs and a documented coordinate system
 - [x] Generated JSON and glTF from existing engineering sources
-- [x] Viewer with rotation, selection, filtering, cutaway, explode, keepouts, and gate context
+- [x] Viewer with rotation, selection, filtering, focus, isolation, axis sections, explode, keepouts, expanded view, and gate context
+- [x] Surface all component library roles and distinguish modeled boxes, aggregates, deferred concepts, and unplaced parts
 - [x] Generation and build checks in CI
 
 ## Next engineering inputs
@@ -42,7 +43,7 @@ Replace a provisional solid only when the source includes revision, units, coord
 ## Future viewer capabilities
 
 - Import reviewed supplier and design meshes alongside planning envelopes
-- Cross-section tools and interference overlays tied to the mechanical validation result
+- Engineering cross-section measurements and interference overlays tied to the mechanical validation result
 - Electrical and thermal paths tied to released netlists and measured data
 - Build and service sequences tied to authorized manufacturing instructions
 

@@ -74,6 +74,7 @@ Use this index to move from a question to the authoritative source. The root [RE
 | [CAD proofing](engineering/cad_proofing.md) | Solid, STEP, mesh, keepout, and stack checks with explicit limits |
 | [Build-to-function gate](engineering/build_to_function.md) | Required design release and physical EVT0 evidence |
 | [128 GB compute path](engineering/compute_platform_decision.md) | Public platform limits and evidence needed to prove the approved memory floor |
+| [1 TB UFS candidate screen](engineering/storage_candidate_fit.md) | Exact public package outline, rail requirements, and unresolved integration work |
 | [Selected BOM proof](engineering/selected_bom_proof.md) | Exact part identity, supplier source binding, and interface checks |
 | [Electrical netlist proof](engineering/electrical_netlist_proof.md) | Connectivity and selected electrical BOM audit contract |
 | [Routed PCB proof](engineering/routed_pcb_proof.md) | KiCad schematic parity, DRC, and reproducible fabrication exports |

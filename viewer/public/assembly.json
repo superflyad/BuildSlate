@@ -334,15 +334,15 @@
     },
     {
       "id": "storage_ufs_1tb_reference",
-      "label": "Storage reference",
+      "label": "KIOXIA UFS package reference",
       "group": "storage",
       "box_mm": [
-        159.0,
+        158.5,
         30.0,
         4.0,
-        7.5,
+        9.0,
         13.0,
-        1.0
+        0.85
       ],
       "evidence_class": "public_supplier_reference",
       "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.storage_ufs_1tb_reference",

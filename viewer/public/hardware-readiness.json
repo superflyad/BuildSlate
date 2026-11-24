@@ -139,6 +139,53 @@
     "decision": "The 128 GB floor is retained. X2 publishes controller capacity for it, but no reviewed public 128 GB configuration or pocket phone integration is established. Obtain supplier topology, package, power, software, and modem evidence before selection.",
     "caveat": "Published maximum memory and modem features do not prove a supported memory topology, purchasability, thermal fit, or a working phone."
   },
+  "storage_fit": {
+    "candidate": "kioxia_ufs_4_1_1tb",
+    "manufacturer_part_number": "THGJFRT3E88BATW",
+    "capacity_tb": 1,
+    "interface": "UFS_4_1",
+    "package_mm": [
+      9.0,
+      13.0,
+      0.85
+    ],
+    "ball_count": 153,
+    "outline_fit": "pass",
+    "board_boundary_clearance_mm": 0.5,
+    "nearest_component": "memory_c_32gb",
+    "component_clearance_mm": 0.5,
+    "rails": [
+      {
+        "id": "storage_vcc",
+        "required_voltage_v": [
+          2.4,
+          2.7
+        ],
+        "modeled_nominal_voltage_v": null,
+        "status": "undefined"
+      },
+      {
+        "id": "storage_vccq",
+        "required_voltage_v": [
+          1.14,
+          1.26
+        ],
+        "modeled_nominal_voltage_v": null,
+        "status": "undefined"
+      }
+    ],
+    "screen_errors": [],
+    "integration_status": "blocked",
+    "missing_design_evidence": [
+      "Selected platform UFS host support and boot compatibility",
+      "Controlled 153-ball pin map, land pattern, and assembly keepouts",
+      "Regulator selection, power sequence, decoupling, and PDN measurements",
+      "Sourcing, lifecycle, and controlled supplier acceptance",
+      "Routed signal-integrity review and physical read/write test"
+    ],
+    "source": "https://apac.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf",
+    "caveat": "A public package outline and supply range are candidate inputs, not a selected storage design or a functional device."
+  },
   "selected_roles": [
     {
       "id": "compute_platform",

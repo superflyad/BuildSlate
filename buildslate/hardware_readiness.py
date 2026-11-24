@@ -21,6 +21,7 @@ from buildslate.part_selection import RELEASE as SELECTED_BOM_RELEASE
 from buildslate.part_selection import audit as audit_part_selection
 from buildslate.pcb_proof import audit as audit_pcb
 from buildslate.platform_fit import audit as audit_platform_fit
+from buildslate.storage_fit import audit as audit_storage_fit
 
 MANIFEST = Path("engineering/hardware/readiness.yaml")
 STRATEGY = Path("validation/evt0/bom-strategy.yaml")
@@ -250,6 +251,7 @@ def build_report(root: Path) -> dict:
         raise ValueError("Evidence record does not match a requirement")
     selection = audit_part_selection(root, strategy)
     platform_fit = audit_platform_fit(root)
+    storage_fit = audit_storage_fit(root)
     selected_roles = []
     for role in manifest["selected_roles"]:
         item = strategy["roles"].get(role)
@@ -340,6 +342,7 @@ def build_report(root: Path) -> dict:
             "supplier_packages_unverified": supplier_gaps,
         },
         "platform_fit": platform_fit,
+        "storage_fit": storage_fit,
         "selected_roles": selected_roles,
         "cellular": {"status": cellular["status"], "selected": cellular_selected},
         "requirements": entries,

@@ -51,7 +51,7 @@ parts:
       memory_b_32gb: {label: Memory B, group: memory}
       memory_c_32gb: {label: Memory C, group: memory}
       memory_d_32gb: {label: Memory D, group: memory}
-      storage_ufs_1tb_reference: {label: Storage reference, group: storage}
+      storage_ufs_1tb_reference: {label: KIOXIA UFS package reference, group: storage, height_mm: 0.85}
       platform_pmic: {label: Platform PMIC, group: power}
       battery_charger: {label: Battery charger, group: power}
       usb_pd_controller: {label: USB PD controller, group: power}

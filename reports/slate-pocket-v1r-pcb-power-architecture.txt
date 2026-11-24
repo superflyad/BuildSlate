@@ -10,7 +10,7 @@ Architecture basis:
 
 Floorplan screen:
   planning blocks: 12
-  component-side occupancy before passives/routing: 47.6%
+  component-side occupancy before passives/routing: 48.1%
   containment failures: 0
   placement overlaps: 0
 

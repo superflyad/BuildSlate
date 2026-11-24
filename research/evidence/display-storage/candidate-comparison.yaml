@@ -83,11 +83,19 @@ storage_candidates:
     max_data_rate_mb_s: 4640
     package_mm: [9.0, 13.0, 0.85]
     operating_temperature_c: [-25, 85]
+    ball_count: 153
+    supply_voltage_v:
+      vcc: [2.4, 2.7]
+      vccq: [1.14, 1.26]
+    vccq2_required: false
     disposition: current_embedded_candidate
     source:
       url: https://apac.kioxia.com/en-apac/business/memory/mlc-nand/ufs4.html
       source_type: manufacturer_product_table
       accessed: 2026-10-31
+    product_brief:
+      url: https://apac.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf
+      revision: '3.0'
 
   micron_2650_1tb_2230:
     supplier: Micron

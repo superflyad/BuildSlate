@@ -315,6 +315,7 @@ function renderHardware() {
     ["Functional EVT0", report.functional_evt0],
     ["Working phone", report.phone_function],
     ["Public platform fit", report.platform_fit.status],
+    ["Storage integration", report.storage_fit.integration_status],
     [
       "Selected roles",
       `${report.selected_roles.filter((item) => item.selected).length}/${report.selected_roles.length}`,
@@ -340,6 +341,8 @@ function renderHardware() {
       .join("");
   document.querySelector("#hardware-parts").innerHTML =
     `<div class="gate-item"><strong>Released part set</strong><span>${esc(report.part_selection.status)}${report.part_selection.errors.length ? ` · ${esc(report.part_selection.errors.join("; "))}` : ""}</span></div>` +
+    `<div class="gate-item"><strong>1 TB UFS candidate</strong><span>${esc(report.storage_fit.manufacturer_part_number)} · ${esc(report.storage_fit.package_mm.join(" × "))} mm · ${esc(report.storage_fit.outline_fit)} outline fit · ${esc(report.storage_fit.board_boundary_clearance_mm)} mm board-edge clearance · <a href="${esc(report.storage_fit.source)}" target="_blank" rel="noopener noreferrer">manufacturer brief</a></span></div>` +
+    `<div class="gate-item"><strong>Storage integration blockers</strong><span>${esc(report.storage_fit.rails.map((rail) => `${rail.id}: ${rail.status} (${rail.required_voltage_v.join("–")} V)`).join("; "))} · ${esc(report.storage_fit.missing_design_evidence.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>Supplier package review</strong><span>${esc(report.part_selection.supplier_packages_unverified.join(", ") || "Verified")}</span></div>` +
     report.selected_roles
       .map(

@@ -8,7 +8,7 @@ The 78 x 55 mm board placeholder can contain the current planning rectangles wit
 
 The only memory configuration modeled is the locked 128 GB fallback: four 32 GB planning sites around the compute package. Public supplier evidence supports 32 GB package capacity, but the exact package drawings, controller topology, pinout, signal rules, power, and platform qualification are missing. The 512 GB target is not carried into this floorplan.
 
-The 1 TB UFS outline is a public geometry reference. A 2 TB product fallback would require a second qualified device or another architecture; 4 TB remains unsupported by the reviewed embedded candidates. Neither multi-device host support nor routing has been established.
+The 1 TB UFS outline now corresponds to KIOXIA THGJFRT3E88BATW (9 × 13 × 0.85 mm). The package fits the provisional board-side rectangle with 0.5 mm nominal clearance to the boundary and nearest memory planning block. This does not establish a manufacturable land pattern or escape. The public product brief calls for 2.4–2.7 V VCC and 1.14–1.26 V VCCQ; neither rail has a regulator or power sequence in the current tree. The 153-ball pin map, host compatibility, supply, and boot path remain unverified. A 2 TB product fallback would require a second qualified device or another architecture; 4 TB remains unsupported by the reviewed embedded candidates.
 
 ## Routing posture
 

@@ -34,10 +34,11 @@ placements:
     function: lpddr5x_32gb_planning_site
     evidence_class: placeholder
   storage_ufs_1tb_reference:
-    rectangle_mm: {x: 67.0, y: 18.0, length: 7.5, width: 13.0}
+    rectangle_mm: {x: 66.5, y: 18.0, length: 9.0, width: 13.0}
     function: embedded_storage
     evidence_class: public_supplier_reference
-    source: research/evidence/display-storage/candidate-comparison.yaml#samsung_ufs_5_0_1tb
+    candidate_id: kioxia_ufs_4_1_1tb
+    source: research/evidence/display-storage/candidate-comparison.yaml#kioxia_ufs_4_1_1tb
   platform_pmic:
     rectangle_mm: {x: 30.0, y: 41.0, length: 16.0, width: 10.0}
     function: platform_power

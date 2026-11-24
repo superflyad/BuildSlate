@@ -8,6 +8,8 @@
 
 BuildSlate connects specifications, assumptions, evidence, models, and gate decisions for the proposed Slate Pocket v1R device. It provides a traceable Python CLI and a local 3D assembly viewer.
 
+**Public site:** [Explore the 3D model](https://superflyad.github.io/BuildSlate/) · [Inspect CAD proof](https://superflyad.github.io/BuildSlate/?tab=proof) · [Review hardware readiness](https://superflyad.github.io/BuildSlate/?tab=hardware). The site is published from `main` after validation and CAD export pass. It shows an editable concept model and the current evidence gaps; it is not a released device design.
+
 ## Start here
 
 - **Review the program:** [current dashboard](reports/program/dashboard.md) and `buildslate blockers`
@@ -18,6 +20,8 @@ BuildSlate connects specifications, assumptions, evidence, models, and gate deci
 **Hardware status: no build package and no functional device proof.** The 41-solid [editable concept CAD](cad/slate-pocket-v1r/concept-cad/README.md) contains assumed placements. v1R has zero selected parts in its sourcing strategy, no released electrical or mechanical design, and no measured integrated prototype. A builder cannot use these files to make a demonstrated working phone. See the [build-to-function gate](docs/engineering/build_to_function.md), run `buildslate hardware`, or open the public viewer's [Hardware tab](https://superflyad.github.io/BuildSlate/?tab=hardware). The [dashboard](reports/program/dashboard.md) tracks the wider program blockers. Software release [v0.1.0](https://github.com/superflyad/BuildSlate/releases/tag/v0.1.0) does not change the hardware status.
 
 The approved 128 GB memory floor is retained. Qualcomm publishes an X2 controller maximum at or above that capacity; its public example is 48 GB, and no qualified 128 GB Slate topology is available. The [compute path](docs/engineering/compute_platform_decision.md) identifies the specific supplier and physical proof still required.
+
+The [1 TB UFS candidate screen](docs/engineering/storage_candidate_fit.md) ties one exact KIOXIA part to its public package outline and voltage requirements. Its nominal outline fits the concept board, while the required storage rails, host support, and routed design remain unproven. The result is visible on the site's [Hardware tab](https://superflyad.github.io/BuildSlate/?tab=hardware).
 
 ## Get started
 

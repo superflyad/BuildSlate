@@ -30,8 +30,8 @@ nodes:
       cad/slate-pocket-v1r/envelope-model/keepouts.yaml: e3dba136016905f26f50bb664e19e90e7d2eeb406355cb00b198299a24102d02
       cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml: f9a67c9ec0b46eb3d7366ca0dfda4bddfc3d5774bb2f34722eea35fc43e19eda
       configs/devices/slate-pocket-v1r.yaml: a0e4e3bbf41e266fd55866c1c9ad436e4f498f98edc33349e2108e4db4c67ae1
-      engineering/pcb/power-tree.yaml: 0d06861e1524e1158b440961ec6d96c7dba35404b8de6af4801fc1fc35b2ac6c
-      engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml: 8d97cf5d635e423a5fea7d90b9c52b815be67d807ce5490016bc0784eb18d58b
+      engineering/pcb/power-tree.yaml: b7295f811582e3ed7ca9ac2f4e83daadfd792087c2650462d161276fa11b73a2
+      engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml: adbef5a8a3fa4af6693d6e5134b16612c15dfaed5475809922cfbe54234188e9
       engineering/program/integration_contracts.yaml: 2b2d767960ca78f44e64d2db557dfdf138b96d59ab0fed0719a777a27c61732a
       engineering/rf/keepout-map/map.yaml: 5f94e0422a298e5a937a3955d3a248a69f6c7ee8d17e69306d1751121415ec8d
       manufacturing/compliance-pretest-plan.yaml: 18042f3db64517b6fe1abc222a5ccf8cb8e3e14afa7581db33d48ad51a49e0c3
@@ -137,11 +137,11 @@ nodes:
   pcb_power:
     inputs:
       engineering/pcb/generate_v1r_pcb_power_report.py: 5606a601cd45ff38524b0d20c4798739d7aa0a73bb46f53bf3248bd11e69ca4a
-      engineering/pcb/power-tree.yaml: 0d06861e1524e1158b440961ec6d96c7dba35404b8de6af4801fc1fc35b2ac6c
-      engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml: 8d97cf5d635e423a5fea7d90b9c52b815be67d807ce5490016bc0784eb18d58b
+      engineering/pcb/power-tree.yaml: b7295f811582e3ed7ca9ac2f4e83daadfd792087c2650462d161276fa11b73a2
+      engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml: adbef5a8a3fa4af6693d6e5134b16612c15dfaed5475809922cfbe54234188e9
       reports/program/configuration-resolution.yaml: c59e257abba32ad8317027a4d02ca123689ce3e614c2fed3903d2236ed5cf598
     outputs:
-      reports/slate-pocket-v1r-pcb-power-architecture.txt: b0e06302a8e1e6ec4af39c4da75e553536382ac613f15ee4f8786db5748ac7f5
+      reports/slate-pocket-v1r-pcb-power-architecture.txt: 46d59a8ec36a19740fddaf6d6139d0c523b5df8b3a9cf40b20ced498fdb23bee
   thermal_readiness:
     inputs:
       reports/program/configuration-resolution.yaml: c59e257abba32ad8317027a4d02ca123689ce3e614c2fed3903d2236ed5cf598
@@ -223,13 +223,13 @@ nodes:
       cad/slate-pocket-v1r/envelope-model/envelope.yaml: d894c1d9c0bac3ffe3f16fcb884e1a0e29d7ca33e3b331a64b1d15d561078006
       cad/slate-pocket-v1r/envelope-model/keepouts.yaml: e3dba136016905f26f50bb664e19e90e7d2eeb406355cb00b198299a24102d02
       cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml: f9a67c9ec0b46eb3d7366ca0dfda4bddfc3d5774bb2f34722eea35fc43e19eda
-      engineering/assembly/assembly.yaml: 1fdc005034419d3aa2a0ef88aeda700ac33ac7910f4ba9315d9a532f22c91912
+      engineering/assembly/assembly.yaml: 1b3577fa51cdb5825eea556136b75a46aad91b65e1b704580bad0f20aef073cd
       engineering/components/component_library.yaml: f5e18ac5d498f5f3f303080452a6340d9930ed830dbf87031fca780b221f8672
-      engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml: 8d97cf5d635e423a5fea7d90b9c52b815be67d807ce5490016bc0784eb18d58b
+      engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml: adbef5a8a3fa4af6693d6e5134b16612c15dfaed5475809922cfbe54234188e9
       reports/program/buildslate-program-snapshot.yaml: f4696fc3844fdd1e646b7686ccbb219e1facb8081cb52ea91f059fd672c9cf57
       reports/program/dashboard.yaml: 468e726c041bb4cd6873b6620508be48af193f1d90b1ce1d85e197b31989282d
     outputs:
-      viewer/public/assembly.gltf: f76ed4f3524f31d9868267ab6a448cf6d17e9c0ee715b6ccc7395017ea5f1adf
-      viewer/public/assembly.json: 001f22223d4f6c5dbc46a75627e78ed931c9ab53800cceaf4ecff5d664cd3c9b
+      viewer/public/assembly.gltf: bf5b884287e64c8ababa138b488073de1fd0d60765a3b07c634be803a5c690c1
+      viewer/public/assembly.json: 49d9cc651773476e041ec06ab82bb24084fa1f46725bd14c3f57ba805a76ac72
 caveat: Text hashes canonicalize line endings for cross-platform staleness; binary hashes preserve exact bytes. Neither verifies
   engineering evidence or physical results.

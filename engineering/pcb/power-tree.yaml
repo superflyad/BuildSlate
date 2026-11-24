@@ -65,11 +65,16 @@ rail_hypotheses:
     peak_power_w: 16.0
     maximum_droop_percent: null
     status: supplier_reference_design_required
-  storage:
+  storage_vcc:
     nominal_voltage_v: null
     peak_power_w: 7.0
     maximum_droop_percent: null
-    status: selected_device_data_required
+    status: regulator_and_pdn_design_required
+  storage_vccq:
+    nominal_voltage_v: null
+    peak_power_w: null
+    maximum_droop_percent: null
+    status: regulator_and_pdn_design_required
   display_and_io:
     nominal_voltage_v: null
     peak_power_w: 19.0

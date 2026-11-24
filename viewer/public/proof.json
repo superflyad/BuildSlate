@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "slate-pocket-v1r",
-  "model_sha256": "2d6165cf84e4ae18859b0266c0ecab2da69c53d9a0ae7101810677af49d61769",
+  "model_sha256": "a508bebf18b993592845be5028563d1546d6f7aa921deb18225504de610562b9",
   "status": "review_required",
   "method": "CadQuery BREP validity, exact Boolean intersections, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
   "thresholds": {
@@ -385,8 +385,8 @@
         "source_anchor": true,
         "geometry_anchor": true
       },
-      "volume_mm3": 91.553,
-      "surface_area_mm2": 238.896,
+      "volume_mm3": 92.087,
+      "surface_area_mm2": 274.536,
       "faces": 11,
       "edges": 24,
       "interference_ids": [],

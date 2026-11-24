@@ -1,0 +1,81 @@
+schema_version: 1
+device: slate-pocket-v1r
+policy: >-
+  A concept solid, candidate, calculation, or prepared test plan is not a
+  released design or a measured device. An approved evidence record binds a
+  reviewed revision to the exact artifact bytes. Human engineering review and
+  physical testing remain necessary.
+selected_roles:
+  - compute_platform
+  - memory
+  - storage
+  - battery_pack
+  - display_module
+requirements:
+  - id: selected_bom
+    stage: design_release
+    title: Selected, purchasable v1R BOM with alternates and revisions
+  - id: platform_reference
+    stage: design_release
+    title: Selected compute, memory, PMIC and storage reference design and pin maps
+  - id: power_safety
+    stage: design_release
+    title: Battery, protection, charge path, rail sequencing and fault analysis
+  - id: schematic_netlist
+    stage: design_release
+    title: Reviewed schematic, netlist and electrical rules result
+  - id: routed_pcb
+    stage: design_release
+    title: Routed PCB, stackup, fabrication outputs and assembly drawings
+  - id: interconnect
+    stage: design_release
+    title: Display, camera, USB, antenna and test connector or flex drawings
+  - id: mechanical_release
+    stage: design_release
+    title: Selected part CAD, enclosure sections, tolerances and interference review
+  - id: thermal_release
+    stage: design_release
+    title: Geometry specific thermal design and operating limits
+  - id: rf_release
+    stage: design_release
+    title: Antenna design, matching, coexistence and regulatory scope
+  - id: firmware_boot
+    stage: design_release
+    title: Boot chain, firmware images, drivers, flash and recovery instructions
+  - id: assembly_release
+    stage: design_release
+    title: Build traveler, tooling, torque, adhesive and inspection instructions
+  - id: bench_safety
+    stage: design_release
+    title: Energized bring-up procedure, current limits and safe fault response
+  - id: power_on
+    stage: functional_evt0
+    title: Serialized unit power-on, rails and boot logs with calibrated instruments
+  - id: charge_discharge
+    stage: functional_evt0
+    title: Battery protection, charging, discharge and fault measurements
+  - id: interfaces
+    stage: functional_evt0
+    title: Display, touch, storage, cameras, audio, USB and radio test records
+  - id: thermal_measurements
+    stage: functional_evt0
+    title: Sustained workload temperatures, throttling and model correlation
+  - id: rf_measurements
+    stage: functional_evt0
+    title: Antenna, coexistence and emissions measurements for the build configuration
+  - id: mechanical_measurements
+    stage: functional_evt0
+    title: As-built dimensions, fit, assembly defects and rework log
+  - id: evt0_review
+    stage: functional_evt0
+    title: Reviewed deviations, failures and signed EVT0 disposition
+  - id: cellular_design
+    stage: phone_function
+    title: Selected modem, SIM, antenna, RF, power and carrier integration design
+  - id: telephony_software
+    stage: phone_function
+    title: Modem firmware, drivers and working telephony software integration
+  - id: phone_validation
+    stage: phone_function
+    title: Measured calling, data, network, emergency and regulatory test evidence
+evidence: {}

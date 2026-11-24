@@ -19,10 +19,18 @@
           ><span class="brand-subtitle">Assembly viewer</span>
         </div>
         <div class="topbar-right">
-          <span class="status-dot"></span><span>Slate Pocket v1R</span
-          ><span class="topbar-pill">PROVISIONAL MODEL</span>
+          <span>Slate Pocket v1R</span
+          ><span class="topbar-pill">DESIGN NOT RELEASED</span>
         </div>
       </header>
+      <div class="readiness-banner" role="status">
+        <strong>Concept CAD only.</strong>
+        <span
+          >No released build package, proven prototype, or working phone
+          evidence exists.</span
+        >
+        <a href="?tab=hardware">Review missing proof</a>
+      </div>
       <main class="workspace">
         <aside class="left-panel">
           <div class="panel-heading">
@@ -181,7 +189,9 @@
             ><button id="tab-program" role="tab" aria-selected="false">
               Program</button
             ><button id="tab-proof" role="tab" aria-selected="false">
-              Proof
+              Proof</button
+            ><button id="tab-hardware" role="tab" aria-selected="false">
+              Hardware
             </button>
           </div>
           <div id="inspect-panel" role="tabpanel">
@@ -243,6 +253,47 @@
               <div class="section-heading">Component role proof</div>
               <div id="proof-roles" class="coverage-list"></div>
               <p id="proof-caveat" class="detail-caveat"></p>
+            </div>
+          </div>
+          <div id="hardware-panel" class="hidden" role="tabpanel">
+            <div class="detail-body">
+              <div class="eyebrow">BUILD TO FUNCTION</div>
+              <h2>Hardware readiness</h2>
+              <p class="muted">
+                A builder cannot use this concept model as a released design
+                package. The gate below tracks selected parts, reviewed design
+                artifacts, and measured EVT0 results.
+              </p>
+              <div id="hardware-summary" class="summary-grid"></div>
+              <div class="proof-links">
+                <a
+                  href="https://github.com/superflyad/BuildSlate/blob/main/buildslate/hardware_readiness.py"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Gate code</a
+                >
+                <a
+                  href="https://github.com/superflyad/BuildSlate/blob/main/engineering/hardware/readiness.yaml"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Requirements</a
+                >
+                <a
+                  href="https://superflyad.github.io/BuildSlate/hardware-readiness.json"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Raw status</a
+                >
+              </div>
+              <div class="section-heading">Part selections</div>
+              <div id="hardware-parts" class="gate-list"></div>
+              <div class="section-heading">Design release evidence</div>
+              <div id="hardware-design" class="gate-list"></div>
+              <div class="section-heading">Functional EVT0 evidence</div>
+              <div id="hardware-evt0" class="gate-list"></div>
+              <div class="section-heading">Phone function evidence</div>
+              <div id="hardware-phone" class="gate-list"></div>
+              <p id="hardware-caveat" class="detail-caveat"></p>
             </div>
           </div>
           <div class="evidence-note">

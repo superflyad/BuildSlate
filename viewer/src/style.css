@@ -89,11 +89,23 @@ summary:focus-visible {
   color: #afc0d1;
   font-size: 14px;
 }
-.status-dot {
-  height: 7px;
-  width: 7px;
-  border-radius: 50%;
-  background: #78bba2;
+.readiness-banner {
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px 9px;
+  padding: 8px 18px;
+  background: #34251f;
+  border-bottom: 1px solid #895847;
+  color: #f0d6c6;
+  font-size: 13px;
+  text-align: center;
+}
+.readiness-banner a {
+  color: #f7c996;
+  margin-left: 8px;
 }
 .topbar-pill {
   font:
@@ -138,7 +150,7 @@ summary:focus-visible {
 .workspace {
   display: grid;
   grid-template-columns: 285px minmax(0, 1fr) 320px;
-  height: calc(100vh - 66px);
+  height: calc(100vh - 120px);
   min-height: 660px;
 }
 .left-panel,
@@ -728,6 +740,11 @@ summary:focus-visible {
     monospace;
   color: #f1f4f7;
 }
+.summary-grid strong.hardware-status {
+  font-size: 13px;
+  text-transform: capitalize;
+  color: #f2ac91;
+}
 .summary-grid span {
   color: #9db1c3;
   font-size: 11px;
@@ -885,6 +902,7 @@ summary:focus-visible {
   color: #c4c9c8;
 }
 #app.immersive .topbar,
+#app.immersive .readiness-banner,
 #app.immersive .left-panel,
 #app.immersive .right-panel {
   display: none;

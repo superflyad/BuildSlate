@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "device": "slate-pocket-v1r",
+  "design_release": "blocked",
+  "functional_evt0": "blocked",
+  "phone_function": "blocked",
+  "selected_roles": [
+    {
+      "id": "compute_platform",
+      "status": "selection_required",
+      "selected": false
+    },
+    {
+      "id": "memory",
+      "status": "selection_required",
+      "selected": false
+    },
+    {
+      "id": "storage",
+      "status": "selection_required",
+      "selected": false
+    },
+    {
+      "id": "battery_pack",
+      "status": "selection_required",
+      "selected": false
+    },
+    {
+      "id": "display_module",
+      "status": "selection_required",
+      "selected": false
+    }
+  ],
+  "cellular": {
+    "status": "deferred_from_EVT0",
+    "selected": false
+  },
+  "requirements": [
+    {
+      "id": "selected_bom",
+      "stage": "design_release",
+      "title": "Selected, purchasable v1R BOM with alternates and revisions",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "platform_reference",
+      "stage": "design_release",
+      "title": "Selected compute, memory, PMIC and storage reference design and pin maps",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "power_safety",
+      "stage": "design_release",
+      "title": "Battery, protection, charge path, rail sequencing and fault analysis",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "schematic_netlist",
+      "stage": "design_release",
+      "title": "Reviewed schematic, netlist and electrical rules result",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "routed_pcb",
+      "stage": "design_release",
+      "title": "Routed PCB, stackup, fabrication outputs and assembly drawings",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "interconnect",
+      "stage": "design_release",
+      "title": "Display, camera, USB, antenna and test connector or flex drawings",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "mechanical_release",
+      "stage": "design_release",
+      "title": "Selected part CAD, enclosure sections, tolerances and interference review",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "thermal_release",
+      "stage": "design_release",
+      "title": "Geometry specific thermal design and operating limits",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "rf_release",
+      "stage": "design_release",
+      "title": "Antenna design, matching, coexistence and regulatory scope",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "firmware_boot",
+      "stage": "design_release",
+      "title": "Boot chain, firmware images, drivers, flash and recovery instructions",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "assembly_release",
+      "stage": "design_release",
+      "title": "Build traveler, tooling, torque, adhesive and inspection instructions",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "bench_safety",
+      "stage": "design_release",
+      "title": "Energized bring-up procedure, current limits and safe fault response",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "power_on",
+      "stage": "functional_evt0",
+      "title": "Serialized unit power-on, rails and boot logs with calibrated instruments",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "charge_discharge",
+      "stage": "functional_evt0",
+      "title": "Battery protection, charging, discharge and fault measurements",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "interfaces",
+      "stage": "functional_evt0",
+      "title": "Display, touch, storage, cameras, audio, USB and radio test records",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "thermal_measurements",
+      "stage": "functional_evt0",
+      "title": "Sustained workload temperatures, throttling and model correlation",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "rf_measurements",
+      "stage": "functional_evt0",
+      "title": "Antenna, coexistence and emissions measurements for the build configuration",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "mechanical_measurements",
+      "stage": "functional_evt0",
+      "title": "As-built dimensions, fit, assembly defects and rework log",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "evt0_review",
+      "stage": "functional_evt0",
+      "title": "Reviewed deviations, failures and signed EVT0 disposition",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "cellular_design",
+      "stage": "phone_function",
+      "title": "Selected modem, SIM, antenna, RF, power and carrier integration design",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "telephony_software",
+      "stage": "phone_function",
+      "title": "Modem firmware, drivers and working telephony software integration",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "phone_validation",
+      "stage": "phone_function",
+      "title": "Measured calling, data, network, emergency and regulatory test evidence",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    }
+  ],
+  "caveat": "Accepted files and recorded review are necessary evidence, not proof of correctness. A functional device requires an actual built unit and measured results; no concept model can establish that outcome."
+}

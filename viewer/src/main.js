@@ -37,6 +37,7 @@ const state = {
   assembly: null,
   assets: null,
   proof: null,
+  hardware: null,
   model: "concept",
   selected: null,
   search: "",
@@ -50,7 +51,7 @@ const state = {
   section: { enabled: false, axis: "x", fraction: 0.5 },
   immersive: false,
   view: "iso",
-  tab: ["inspect", "program", "proof"].includes(requestedTab)
+  tab: ["inspect", "program", "proof", "hardware"].includes(requestedTab)
     ? requestedTab
     : "inspect",
 };
@@ -297,6 +298,57 @@ function renderProof() {
     )
     .join("");
   document.querySelector("#proof-caveat").textContent = proof.caveat;
+}
+function renderHardware() {
+  const report = state.hardware;
+  const design = report.requirements.filter(
+    (item) => item.stage === "design_release",
+  );
+  const evt0 = report.requirements.filter(
+    (item) => item.stage === "functional_evt0",
+  );
+  const phone = report.requirements.filter(
+    (item) => item.stage === "phone_function",
+  );
+  document.querySelector("#hardware-summary").innerHTML = [
+    ["Design release", report.design_release],
+    ["Functional EVT0", report.functional_evt0],
+    ["Working phone", report.phone_function],
+    [
+      "Selected roles",
+      `${report.selected_roles.filter((item) => item.selected).length}/${report.selected_roles.length}`,
+    ],
+    [
+      "Evidence records",
+      `${report.requirements.filter((item) => item.status === "accepted").length}/${report.requirements.length}`,
+    ],
+  ]
+    .map(
+      ([label, value]) =>
+        `<div><strong class="hardware-status">${esc(value.replaceAll("_", " "))}</strong><span>${label}</span></div>`,
+    )
+    .join("");
+  document.querySelector("#hardware-parts").innerHTML =
+    report.selected_roles
+      .map(
+        (item) =>
+          `<div class="gate-item"><strong>${esc(item.id.replaceAll("_", " "))}</strong><span>${item.selected ? "Selected" : "Selection required"}</span></div>`,
+      )
+      .join("") +
+    `<div class="gate-item"><strong>Cellular modem</strong><span>${report.cellular.selected ? "Selected" : esc(report.cellular.status.replaceAll("_", " "))}</span></div>`;
+  for (const [selector, items] of [
+    ["#hardware-design", design],
+    ["#hardware-evt0", evt0],
+    ["#hardware-phone", phone],
+  ]) {
+    document.querySelector(selector).innerHTML = items
+      .map(
+        (item) =>
+          `<div class="gate-item"><strong>${esc(item.title)}</strong><span>${esc(item.status)}${item.reasons.length ? ` · ${esc(item.reasons.join("; "))}` : ""}</span></div>`,
+      )
+      .join("");
+  }
+  document.querySelector("#hardware-caveat").textContent = report.caveat;
 }
 function renderCoverageItem(component) {
   const representedParts = (
@@ -552,7 +604,7 @@ function setImmersive(enabled) {
   resize();
 }
 function setTab() {
-  for (const tab of ["inspect", "program", "proof"]) {
+  for (const tab of ["inspect", "program", "proof", "hardware"]) {
     document
       .querySelector(`#tab-${tab}`)
       .classList.toggle("active", state.tab === tab);
@@ -728,7 +780,7 @@ document
   .forEach((button) =>
     button.addEventListener("click", () => setView(button.dataset.view)),
   );
-for (const tab of ["inspect", "program", "proof"])
+for (const tab of ["inspect", "program", "proof", "hardware"])
   document.querySelector(`#tab-${tab}`).addEventListener("click", () => {
     state.tab = tab;
     setTab();
@@ -787,6 +839,7 @@ function displayModel(model) {
   renderParts();
   renderProgram();
   renderProof();
+  renderHardware();
   setTab();
   document.querySelector("#proof-toggle").disabled = model !== "concept";
   document.querySelector("#model-part-count").textContent =
@@ -819,6 +872,12 @@ try {
   if (!proofResponse.ok)
     throw new Error(`proof data: HTTP ${proofResponse.status}`);
   state.proof = await proofResponse.json();
+  const hardwareResponse = await fetch(
+    `${import.meta.env.BASE_URL}hardware-readiness.json`,
+  );
+  if (!hardwareResponse.ok)
+    throw new Error(`hardware status: HTTP ${hardwareResponse.status}`);
+  state.hardware = await hardwareResponse.json();
   const loader = new GLTFLoader();
   const assets = await Promise.all(
     ["concept", "assembly"].map(async (name) => {

@@ -28,6 +28,8 @@ This roadmap separates software work from engineering evidence. A completed repo
 
 ## Next engineering inputs
 
+The [build-to-function gate](docs/engineering/build_to_function.md) now enumerates the release and functional evidence. Both stages remain blocked; `buildslate hardware` reports each missing item.
+
 - Supplier complete-pack battery drawing and protection geometry
 - Selected compute and memory package drawings, reference design, and routing constraints
 - Selected display, camera, storage, connector, speaker, and antenna drawings

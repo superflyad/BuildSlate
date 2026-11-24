@@ -13,6 +13,7 @@ from .configuration import ConfigurationChangeController, ConfigurationResolver
 from .contracts import IntegrationContractRepository
 from .dashboard import ProgramDashboard
 from .evt0 import EVT0CampaignRepository
+from .hardware_readiness import build_report as build_hardware_report
 from .io import dump_json, dump_yaml
 from .manufacturing import ManufacturingAnalyticsRepository
 from .migrations import MigrationRegistry
@@ -77,6 +78,36 @@ def command_status(args: argparse.Namespace) -> int:
     for gate in gates:
         print(f"  {gate['entity_id']}: {gate['status']}")
     print(f"caveat: {snapshot.caveat}")
+    return 0
+
+
+def command_hardware(args: argparse.Namespace) -> int:
+    report = build_hardware_report(Path(args.repo_root))
+    if args.format in {"json", "yaml"}:
+        _emit(report, args.format)
+    else:
+        print(f"design_release: {report['design_release']}")
+        print(f"functional_evt0: {report['functional_evt0']}")
+        print(f"phone_function: {report['phone_function']}")
+        print(
+            "selected_roles: "
+            f"{sum(item['selected'] for item in report['selected_roles'])}/"
+            f"{len(report['selected_roles'])}"
+        )
+        print(
+            "accepted_evidence: "
+            f"{sum(item['status'] == 'accepted' for item in report['requirements'])}/"
+            f"{len(report['requirements'])}"
+        )
+        for item in report["requirements"]:
+            if item["status"] != "accepted":
+                print(f"  {item['id']}: {item['title']} [{item['status']}]")
+    if args.require_functional_evt0 and report["functional_evt0"] == "blocked":
+        return 1
+    if args.require_design_release and report["design_release"] == "blocked":
+        return 1
+    if args.require_phone_function and report["phone_function"] == "blocked":
+        return 1
     return 0
 
 
@@ -457,6 +488,23 @@ def build_parser() -> argparse.ArgumentParser:
         "--format", choices=("text", "json", "yaml"), default="text"
     )
     status_parser.set_defaults(handler=command_status)
+
+    hardware_parser = subparsers.add_parser(
+        "hardware", help="show build package and functional EVT0 evidence status"
+    )
+    hardware_parser.add_argument(
+        "--format", choices=("text", "json", "yaml"), default="text"
+    )
+    hardware_parser.add_argument(
+        "--require-design-release", action="store_true", help="fail if blocked"
+    )
+    hardware_parser.add_argument(
+        "--require-functional-evt0", action="store_true", help="fail if blocked"
+    )
+    hardware_parser.add_argument(
+        "--require-phone-function", action="store_true", help="fail if blocked"
+    )
+    hardware_parser.set_defaults(handler=command_hardware)
 
     blocker_parser = subparsers.add_parser(
         "blockers", help="list or explain external blockers"

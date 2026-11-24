@@ -6,7 +6,7 @@ Use this index to move from a question to the authoritative source. The root [RE
 
 | Task | Start with | Then inspect |
 | --- | --- | --- |
-| Understand current readiness | [Program dashboard](../reports/program/dashboard.md) | [External blockers](engineering/slate-pocket-v1r-external-blockers.md) and the source registries linked by the dashboard |
+| Understand current readiness | [Build-to-function gate](engineering/build_to_function.md) | [Program dashboard](../reports/program/dashboard.md), [external blockers](engineering/slate-pocket-v1r-external-blockers.md), and the source registries linked by the dashboard |
 | Change a profile or engineering input | [Repository standards](standards/repository.md) | [Program manifest](../engineering/program/program_model.yaml) and [regeneration manifest](../engineering/program/regeneration.yaml) |
 | Review a calculated claim | [Engineering review standard](engineering/review_standard.md) | [Calculation core](engineering/calculation_core.md) and the cited input file |
 | Inspect or extend the 3D model | [Assembly viewer](../viewer/README.md) | [CAD proofing](engineering/cad_proofing.md), [assembly contract](../engineering/assembly/README.md), and [architecture](../ARCHITECTURE.md) |
@@ -72,5 +72,6 @@ Use this index to move from a question to the authoritative source. The root [RE
 | [Manufacturing and reliability](engineering/manufacturing_and_reliability.md) | Build and reliability screening |
 | [Assembly contract](../engineering/assembly/README.md) | Provisional 3D data and coordinate frame |
 | [CAD proofing](engineering/cad_proofing.md) | Solid, STEP, mesh, keepout, and stack checks with explicit limits |
+| [Build-to-function gate](engineering/build_to_function.md) | Required design release and physical EVT0 evidence |
 
 The previous all-in-one overview is retained as an [archived snapshot](archive/2026-10-repository-overview.md). It is useful for history; the current program dashboard and source registries determine present status. Generated reports are views of the tracked inputs. A current hash or visible 3D solid does not promote a planning value to verified evidence.

@@ -15,7 +15,7 @@ BuildSlate connects specifications, assumptions, evidence, models, and gate deci
 - **Understand the system:** [architecture](ARCHITECTURE.md) and [documentation index](docs/README.md)
 - **Contribute:** [repository standards](docs/standards/repository.md) and [contribution guide](CONTRIBUTING.md)
 
-**Engineering status:** the device design is not released. The 41-solid [editable concept CAD](cad/slate-pocket-v1r/concept-cad/README.md) includes explicitly assumed placements; the original 26 source planning envelopes remain available. Supplier, mechanical, electrical, test, and manufacturing evidence remains unresolved. The [dashboard](reports/program/dashboard.md) is the current source for gate status. Software release [v0.1.0](https://github.com/superflyad/BuildSlate/releases/tag/v0.1.0) does not change that engineering status.
+**Hardware status: no build package and no functional device proof.** The 41-solid [editable concept CAD](cad/slate-pocket-v1r/concept-cad/README.md) contains assumed placements. v1R has zero selected parts in its sourcing strategy, no released electrical or mechanical design, and no measured integrated prototype. A builder cannot use these files to make a demonstrated working phone. See the [build-to-function gate](docs/engineering/build_to_function.md), run `buildslate hardware`, or open the public viewer's [Hardware tab](https://superflyad.github.io/BuildSlate/?tab=hardware). The [dashboard](reports/program/dashboard.md) tracks the wider program blockers. Software release [v0.1.0](https://github.com/superflyad/BuildSlate/releases/tag/v0.1.0) does not change the hardware status.
 
 ## Get started
 
@@ -28,6 +28,7 @@ python -m pip install -e .
 buildslate validate
 buildslate status
 buildslate blockers
+buildslate hardware
 ```
 
 The package contains CLI code, not the engineering input files. From another working directory, point an installed CLI at a checkout:

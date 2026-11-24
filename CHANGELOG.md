@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Made routed PCB proof export and require every configured copper layer; a missing internal Gerber now blocks release.
 - Strengthened the guarded 128 GB memory exercise to write and verify every allocated byte and made M20 reject page-marker-only probe evidence.
 - Aligned the provisional v1R mechanical PCB with the 0.8 mm floorplan and compute-zone stack; added a cross-domain thickness contract.
 - Added a separately proofed eight-package 128 GB reference CAD variant and 3D viewer switch; kept the fabrication and hardware qualification gates blocked.

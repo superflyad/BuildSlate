@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 from collections.abc import Callable
@@ -14,6 +15,11 @@ from tempfile import TemporaryDirectory
 from buildslate.netlist_proof import _netlist
 
 Runner = Callable[[list[str]], subprocess.CompletedProcess[str]]
+LAYER_ENTRY = re.compile(
+    r'\(\s*\d+\s+"(?P<canonical>[^"]+)"\s+(?:jumper|mixed|power|signal|user)'
+    r'(?:\s+"(?P<custom>[^"]+)")?\s*\)'
+)
+INNER_COPPER = re.compile(r"In([1-9]|[12][0-9]|30)\.Cu\Z")
 
 
 def _sha(path: Path) -> str:
@@ -24,6 +30,75 @@ def _run(command: list[str]) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         command, capture_output=True, text=True, timeout=180, check=False
     )
+
+
+def _board_layers(path: Path) -> tuple[list[str], dict[str, str]]:
+    """Read the board's top-level KiCad layer table, not footprint layer lists."""
+    source = path.read_text(encoding="utf-8-sig")
+    if not source.lstrip().startswith("(kicad_pcb"):
+        raise ValueError("KiCad board source has no kicad_pcb root")
+    depth = 0
+    quoted = False
+    escaped = False
+    start: int | None = None
+    section: str | None = None
+    for index, character in enumerate(source):
+        if quoted:
+            if escaped:
+                escaped = False
+            elif character == "\\":
+                escaped = True
+            elif character == '"':
+                quoted = False
+            continue
+        if character == '"':
+            quoted = True
+        elif character == "(":
+            if (
+                depth == 1
+                and source.startswith("layers", index + 1)
+                and source[index + 7 : index + 8] in {" ", "\t", "\r", "\n", "("}
+            ):
+                start = index
+            depth += 1
+        elif character == ")":
+            depth -= 1
+            if depth < 0:
+                raise ValueError("KiCad board has unbalanced layer structure")
+            if start is not None and depth == 1:
+                section = source[start : index + 1]
+                break
+    if section is None:
+        raise ValueError("KiCad board has no top-level layers section")
+    body = section[len("(layers") : -1]
+    entries = list(LAYER_ENTRY.finditer(body))
+    if LAYER_ENTRY.sub("", body).strip() or not entries:
+        raise ValueError("KiCad board layer table is malformed")
+    names = [item.group("canonical") for item in entries]
+    if len(names) != len(set(names)):
+        raise ValueError("KiCad board has duplicate layer names")
+    copper = [
+        name
+        for name in names
+        if name in {"F.Cu", "B.Cu"} or INNER_COPPER.fullmatch(name)
+    ]
+    inner = [name for name in copper if INNER_COPPER.fullmatch(name)]
+    expected = [
+        "F.Cu",
+        *(f"In{index}.Cu" for index in range(1, len(inner) + 1)),
+        "B.Cu",
+    ]
+    if copper != expected or len(copper) > 32 or len(copper) % 2:
+        raise ValueError("KiCad board has an incomplete copper layer sequence")
+    required = [*copper, "F.Mask", "B.Mask", "Edge.Cuts"]
+    if any(name not in names for name in required):
+        raise ValueError("KiCad board lacks a required mask or outline layer")
+    custom = {
+        item.group("canonical"): item.group("custom")
+        for item in entries
+        if item.group("custom")
+    }
+    return required, custom
 
 
 def audit(
@@ -50,6 +125,10 @@ def audit(
         errors.append("PCB and schematic must share a project name and directory")
     if errors:
         return {"status": "fail", "errors": errors, "exports": []}
+    try:
+        required_layers, custom_names = _board_layers(board)
+    except (OSError, UnicodeError, ValueError) as error:
+        return {"status": "fail", "errors": [str(error)], "exports": []}
     if runner is None and shutil.which("kicad-cli") is None:
         return {
             "status": "fail",
@@ -97,7 +176,8 @@ def audit(
                 "export",
                 "gerbers",
                 "--layers",
-                "F.Cu,B.Cu,F.Mask,B.Mask,Edge.Cuts",
+                ",".join(required_layers),
+                "--no-protel-ext",
                 "--output",
                 str(gerbers),
                 str(board),
@@ -162,9 +242,12 @@ def audit(
             ),
             key=lambda path: str(path),
         )
-        for layer in ("F_Cu", "B_Cu", "F_Mask", "B_Mask", "Edge_Cuts"):
+        for layer in required_layers:
+            names = {layer.replace(".", "_")}
+            if layer in custom_names:
+                names.add(custom_names[layer].replace(".", "_"))
             if not any(
-                layer in path.stem
+                any(path.stem.endswith(f"-{name}") for name in names)
                 and path.suffix.lower() == ".gbr"
                 and path.stat().st_size
                 for path in output_files
@@ -183,6 +266,8 @@ def audit(
             "board_sha256": _sha(board),
             "schematic_sha256": _sha(schematic),
             "netlist_sha256": _sha(released_netlist),
+            "copper_layer_count": len(required_layers) - 3,
+            "required_gerber_layers": required_layers,
             "exports": [
                 {"name": path.name, "sha256": _sha(path)}
                 for path in output_files

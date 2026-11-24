@@ -31,9 +31,24 @@ def main() -> int:
         netlist, _, _, _ = _write_fixture(released)
         board = released / "board.kicad_pcb"
         schematic = released / "board.kicad_sch"
-        board.write_text("synthetic board source", encoding="utf-8")
+        copper = ["F.Cu", *(f"In{index}.Cu" for index in range(1, 11)), "B.Cu"]
+        layers = [*copper, "F.Mask", "B.Mask", "Edge.Cuts"]
+        board_source = (
+            "(kicad_pcb\n  (layers\n"
+            + "".join(
+                f'    ({number} "{name}" {"signal" if name.endswith(".Cu") else "user"})\n'
+                for number, name in enumerate(layers)
+            )
+            + "  )\n)\n"
+        )
+        board.write_text(board_source, encoding="utf-8")
         schematic.write_text("synthetic schematic source", encoding="utf-8")
-        fault = {"drc": False, "netlist": False, "gerber": False}
+        fault = {
+            "drc": False,
+            "netlist": False,
+            "gerber": False,
+            "inner_gerber": False,
+        }
 
         def runner(command: list[str]) -> subprocess.CompletedProcess[str]:
             if command[1:4] == ["sch", "export", "netlist"]:
@@ -49,9 +64,17 @@ def main() -> int:
                     return subprocess.CompletedProcess(command, 5, "", "DRC violation")
             elif command[1:4] == ["pcb", "export", "gerbers"]:
                 directory = Path(command[command.index("--output") + 1])
-                layers = ["F_Cu", "B_Cu", "F_Mask", "B_Mask", "Edge_Cuts"]
-                for layer in layers[:-1] if fault["gerber"] else layers:
-                    (directory / f"board-{layer}.gbr").write_text(
+                selected = command[command.index("--layers") + 1].split(",")
+                if selected != layers or "--no-protel-ext" not in command:
+                    raise AssertionError(
+                        "Gerber export omitted a configured board layer"
+                    )
+                for layer in selected:
+                    if (fault["gerber"] and layer == "Edge.Cuts") or (
+                        fault["inner_gerber"] and layer == "In5.Cu"
+                    ):
+                        continue
+                    (directory / f"board-{layer.replace('.', '_')}.gbr").write_text(
                         "G04 fixture*", encoding="utf-8"
                     )
             elif command[1:4] == ["pcb", "export", "drill"]:
@@ -65,13 +88,22 @@ def main() -> int:
             return subprocess.CompletedProcess(command, 0, "", "")
 
         proof = audit(board, schematic, netlist, runner=runner)
-        if proof["status"] != "pass" or len(proof["exports"]) != 7:
+        if (
+            proof["status"] != "pass"
+            or proof["copper_layer_count"] != 12
+            or proof["required_gerber_layers"] != layers
+            or len(proof["exports"]) != 17
+        ):
             raise ValueError("Complete synthetic KiCad command sequence failed")
         for key in fault:
             fault[key] = True
             if audit(board, schematic, netlist, runner=runner)["status"] != "fail":
                 raise ValueError(f"{key} fault passed PCB proof")
             fault[key] = False
+        board.write_text('(kicad_pcb (layers (0 "F.Cu" signal)))', encoding="utf-8")
+        if audit(board, schematic, netlist, runner=runner)["status"] != "fail":
+            raise ValueError("Incomplete copper layer table passed PCB proof")
+        board.write_text(board_source, encoding="utf-8")
         record = {
             "path": "engineering/hardware/released/board.kicad_pcb",
             "sha256": _hash(board),

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from itertools import combinations
 from pathlib import Path
 from typing import Any
@@ -20,6 +21,7 @@ MESH_BOUNDS_MAX_TOLERANCE_MM = 0.25
 INTERFERENCE_THRESHOLD_MM3 = 0.01
 NOMINAL_GAP_SCREEN_MM = 0.5
 CONTACT_TOLERANCE_MM = 0.005
+OPTICAL_PRISM_OVERLAP_MM3 = 0.01
 
 
 def _source_exists(root: Path, reference: str) -> bool:
@@ -155,6 +157,63 @@ def measure_nominal_gaps(
     return findings
 
 
+def measure_optical_paths(parts: list[dict], shapes: dict[str, Any]) -> list[dict]:
+    """Screen a cylindrical camera pupil through the adjacent exterior layer."""
+    import cadquery as cq
+
+    by_id = {part["id"]: part for part in parts}
+    results = []
+    for camera_id, blocker_id, face in (
+        ("rear_camera_placeholder", "rear_cover", "rear"),
+        ("front_camera_concept", "display_stack", "front"),
+    ):
+        camera = by_id[camera_id]
+        blocker = by_id[blocker_id]
+        if camera["lens_face"] != face or blocker["geometry_use"] != "solid":
+            raise ValueError(
+                f"camera optical path has inconsistent geometry: {camera_id}"
+            )
+        x, y, z, length, width, height = camera["box_mm"]
+        center_x, center_y = x + length / 2, y + width / 2
+        radius = float(camera["lens_radius_mm"])
+        blocker_z, blocker_height = blocker["box_mm"][2], blocker["box_mm"][5]
+        if (face == "rear" and blocker_z + blocker_height > z) or (
+            face == "front" and blocker_z < z + height
+        ):
+            raise ValueError(f"camera optical layer is not outside lens: {camera_id}")
+        prism = cq.Solid.makeCylinder(
+            radius,
+            blocker_height,
+            cq.Vector(center_x, center_y, blocker_z),
+        )
+        overlap = prism.intersect(shapes[blocker_id]).Volume()
+        aperture_margin = None
+        if face == "rear":
+            aperture_x, aperture_y = blocker["aperture_center_mm"]
+            aperture_margin = round(
+                float(blocker["aperture_radius_mm"])
+                - math.hypot(center_x - aperture_x, center_y - aperture_y)
+                - radius,
+                3,
+            )
+        results.append(
+            {
+                "camera_id": camera_id,
+                "blocking_part_id": blocker_id,
+                "face": face,
+                "axis_xy_mm": [center_x, center_y],
+                "lens_radius_mm": radius,
+                "aperture_radial_margin_mm": aperture_margin,
+                "solid_overlap_mm3": round(overlap, 3),
+                "pupil_prism_overlap_percent": round(100 * overlap / prism.Volume(), 1),
+                "status": "model_path_conflict"
+                if overlap > OPTICAL_PRISM_OVERLAP_MM3
+                else "nominal_prism_clear",
+            }
+        )
+    return results
+
+
 def _zone_screen(root: Path, model: dict) -> list[dict]:
     stackups = load_yaml(root / model["sources"]["stackups"])
     budget = float(stackups["metadata"]["device_thickness_mm"])
@@ -245,6 +304,7 @@ def build_proof(
             "edges": len(shape.Edges()),
             "interference_ids": [],
             "nominal_gap_ids": [],
+            "optical_path_ids": [],
             "reservation_conflict_ids": [],
             "keepout_ids": [],
         }
@@ -263,6 +323,10 @@ def build_proof(
     for item in nominal_gaps:
         by_id[item["first"]]["nominal_gap_ids"].append(item["second"])
         by_id[item["second"]]["nominal_gap_ids"].append(item["first"])
+    optical_paths = measure_optical_paths(model["parts"], shape_by_id)
+    for item in optical_paths:
+        by_id[item["camera_id"]]["optical_path_ids"].append(item["blocking_part_id"])
+        by_id[item["blocking_part_id"]]["optical_path_ids"].append(item["camera_id"])
     keepout_conflicts = []
     keepout_specs = load_yaml(root / model["sources"]["keepouts"])["keepouts"]
     for part in model["parts"]:
@@ -326,13 +390,14 @@ def build_proof(
         "device": model["device"],
         "model_sha256": model_sha256,
         "status": "review_required",
-        "method": "CadQuery BREP validity, exact Boolean intersections and nominal distances, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
+        "method": "CadQuery BREP validity, exact Boolean intersections, nominal distances and camera pupil prisms, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
         "thresholds": {
             "declared_bounds_tolerance_mm": DECLARED_BOUNDS_TOLERANCE_MM,
             "mesh_bounds_max_tolerance_mm": MESH_BOUNDS_MAX_TOLERANCE_MM,
             "interference_volume_mm3": INTERFERENCE_THRESHOLD_MM3,
             "nominal_gap_screen_mm": NOMINAL_GAP_SCREEN_MM,
             "contact_tolerance_mm": CONTACT_TOLERANCE_MM,
+            "optical_prism_overlap_mm3": OPTICAL_PRISM_OVERLAP_MM3,
         },
         "summary": {
             "parts_checked": len(part_reports),
@@ -347,6 +412,9 @@ def build_proof(
             "small_nominal_gaps": sum(
                 item["kind"] == "small_gap" for item in nominal_gaps
             ),
+            "optical_model_conflicts": sum(
+                item["status"] == "model_path_conflict" for item in optical_paths
+            ),
             "reservation_conflicts": len(reserves),
             "keepout_conflicts": len(keepout_conflicts),
             "stack_failures": sum(item["status"] == "fail" for item in zones),
@@ -356,7 +424,8 @@ def build_proof(
         "roles": role_reports,
         "intersections": intersections,
         "nominal_gaps": nominal_gaps,
+        "optical_paths": optical_paths,
         "keepout_conflicts": keepout_conflicts,
         "zones": zones,
-        "caveat": "Nominal contacts and small gaps are review findings, not tolerance clearances. Interferences and keepout overlaps remain unresolved. No fit, performance, or release approval is implied.",
+        "caveat": "Camera pupil prisms screen nominal solid geometry, not optical transmission. Contacts and small gaps are not tolerance clearances. No fit, performance, or release approval is implied.",
     }

@@ -242,6 +242,7 @@
       "geometry_use": "solid",
       "screen_layer": "component_planform",
       "lens_face": "rear",
+      "lens_radius_mm": 4.16,
       "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.rear_camera_placeholder",
       "geometry_evidence_class": "design_assumption"
     },
@@ -642,7 +643,9 @@
       "geometry_evidence_class": "design_assumption",
       "geometry_use": "solid",
       "screen_layer": "component_planform",
-      "allowed_keepouts": []
+      "allowed_keepouts": [],
+      "lens_radius_mm": 2.56,
+      "lens_face": "front"
     },
     {
       "id": "antenna_top_left_concept",

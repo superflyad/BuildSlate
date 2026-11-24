@@ -35,7 +35,7 @@ Open the local address printed by Vite. If the assembly check reports stale outp
 | Proof conflicts | Color concept solids with keepout or reservation conflicts. |
 | Inspect | Focus or isolate a selected part and read its dimensions, evidence class, and source. |
 | Program | Review every component library role, its source evidence status, concept solids, gates, and blockers. Click a represented part to inspect it. |
-| Proof | Review solid integrity, STEP round trip, intersections, keepouts, and local thickness results. Select a finding to inspect its part. |
+| Proof | Review solid integrity, STEP round trip, intersections, nominal gaps, camera pupil paths, keepouts, and local thickness results. Select a finding to inspect its part. |
 | Hardware | Review selected parts, the 128 GB platform gap, the 1 TB UFS and battery candidate screens, design release requirements, and physical test status. |
 
 All displayed distances are in millimeters. The [assembly contract](../engineering/assembly/README.md) defines the coordinate frame, stable IDs, and source mapping.

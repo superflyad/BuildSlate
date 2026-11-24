@@ -14,6 +14,7 @@ import cadquery as cq  # noqa: E402
 from buildslate.cad_proof import (  # noqa: E402
     measure_intersections,
     measure_nominal_gaps,
+    measure_optical_paths,
 )
 
 
@@ -61,7 +62,65 @@ def main() -> int:
         or any("reserve" in pair for pair in by_gap)
     ):
         raise ValueError("Exact nominal contact and small-gap screen failed")
-    print("PASS: exact overlap, nominal gap, and reservation classification")
+    optical_parts = [
+        {
+            "id": "rear_cover",
+            "box_mm": [0, 0, 0, 4, 4, 0.5],
+            "geometry_use": "solid",
+            "aperture_center_mm": [2, 2],
+            "aperture_radius_mm": 1.0,
+        },
+        {
+            "id": "rear_camera_placeholder",
+            "box_mm": [0.5, 0.5, 1, 3, 3, 1],
+            "lens_face": "rear",
+            "lens_radius_mm": 1.2,
+        },
+        {
+            "id": "display_stack",
+            "box_mm": [0, 0, 3, 4, 4, 0.5],
+            "geometry_use": "solid",
+        },
+        {
+            "id": "front_camera_concept",
+            "box_mm": [1, 1, 1, 2, 2, 1.5],
+            "lens_face": "front",
+            "lens_radius_mm": 0.5,
+        },
+    ]
+
+    def cover(radius: float):
+        opening = (
+            cq.Workplane("XY")
+            .center(2, 2)
+            .circle(radius)
+            .extrude(1)
+            .translate((0, 0, -0.25))
+        )
+        return cq.Workplane("XY").box(4, 4, 0.5, centered=False).cut(opening).val()
+
+    optical_shapes = {
+        "rear_cover": cover(1.0),
+        "display_stack": cq.Workplane("XY")
+        .box(4, 4, 0.5, centered=False)
+        .translate((0, 0, 3))
+        .val(),
+    }
+    paths = measure_optical_paths(optical_parts, optical_shapes)
+    if (
+        paths[0]["aperture_radial_margin_mm"] != -0.2
+        or paths[0]["status"] != "model_path_conflict"
+        or paths[1]["pupil_prism_overlap_percent"] != 100
+    ):
+        raise ValueError("Narrow rear aperture or opaque front path escaped proof")
+    optical_parts[0]["aperture_radius_mm"] = 1.3
+    optical_shapes["rear_cover"] = cover(1.3)
+    if (
+        measure_optical_paths(optical_parts, optical_shapes)[0]["status"]
+        != "nominal_prism_clear"
+    ):
+        raise ValueError("Clear rear aperture was reported as blocked")
+    print("PASS: exact overlap, nominal gap, reservation, and optical-path screens")
     return 0
 
 

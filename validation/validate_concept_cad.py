@@ -83,6 +83,10 @@ def _check_model(
         != sum(item["kind"] == "contact" for item in proof["nominal_gaps"])
         or summary["small_nominal_gaps"]
         != sum(item["kind"] == "small_gap" for item in proof["nominal_gaps"])
+        or summary["optical_model_conflicts"]
+        != sum(
+            item["status"] == "model_path_conflict" for item in proof["optical_paths"]
+        )
         or summary["keepout_conflicts"] != len(proof["keepout_conflicts"])
         or summary["stack_failures"]
         != sum(item["status"] == "fail" for item in proof["zones"])
@@ -101,6 +105,29 @@ def _check_model(
             ]
         ):
             raise ValueError("CAD nominal gap finding is inconsistent")
+    optical = proof["optical_paths"]
+    if {item["camera_id"] for item in optical} != {
+        "rear_camera_placeholder",
+        "front_camera_concept",
+    }:
+        raise ValueError("CAD proof omits a camera optical path")
+    by_part = {part["id"]: part for part in expected["parts"]}
+    for path in optical:
+        camera = by_part[path["camera_id"]]
+        blocker = by_part[path["blocking_part_id"]]
+        box = camera["box_mm"]
+        if (
+            path["face"] != camera["lens_face"]
+            or path["lens_radius_mm"] != camera["lens_radius_mm"]
+            or path["axis_xy_mm"] != [box[0] + box[3] / 2, box[1] + box[4] / 2]
+            or path["status"] not in {"model_path_conflict", "nominal_prism_clear"}
+            or not 0 <= path["pupil_prism_overlap_percent"] <= 100
+            or blocker["id"]
+            not in next(item for item in part_reports if item["id"] == camera["id"])[
+                "optical_path_ids"
+            ]
+        ):
+            raise ValueError("CAD optical path finding is inconsistent")
     unverified = sum(part["evidence_class"] != "verified" for part in expected["parts"])
     if (
         proof["status"] != "review_required"

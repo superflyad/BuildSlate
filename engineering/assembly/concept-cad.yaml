@@ -11,7 +11,7 @@ source_overrides:
   display_stack: {shape: rounded_box, radius_mm: 2.0, height_mm: 0.70}
   main_pcb_placeholder: {shape: pcb, radius_mm: 1.0}
   battery_reference: {shape: rounded_box, radius_mm: 2.0}
-  rear_camera_placeholder: {shape: camera_module, lens_face: rear}
+  rear_camera_placeholder: {shape: camera_module, lens_face: rear, lens_radius_mm: 4.16}
   speaker_a_placeholder: {shape: speaker}
   speaker_b_placeholder: {shape: speaker}
   wireless_charging_placeholder: {shape: coil, geometry_use: reservation}
@@ -77,6 +77,8 @@ additional_parts:
     group: camera
     box_mm: [84, 83, 5.50, 8, 8, 2.40]
     shape: camera_module
+    lens_face: front
+    lens_radius_mm: 2.56
     roles: [front_camera_module]
     screen_layer: component_planform
     basis: engineering/components/component_library.yaml#components.front_camera_module

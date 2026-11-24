@@ -1,15 +1,16 @@
 {
   "schema_version": 1,
   "device": "slate-pocket-v1r",
-  "model_sha256": "4ea3805d1fa2903064e47de471a2bea4ac6c2d76da587f4560a85577edb8f6f8",
+  "model_sha256": "e53e889385ddedef00e08b25ec565172e7c8aa0bd8f81de7db26d7de742d6daa",
   "status": "review_required",
-  "method": "CadQuery BREP validity, exact Boolean intersections and nominal distances, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
+  "method": "CadQuery BREP validity, exact Boolean intersections, nominal distances and camera pupil prisms, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
   "thresholds": {
     "declared_bounds_tolerance_mm": 0.01,
     "mesh_bounds_max_tolerance_mm": 0.25,
     "interference_volume_mm3": 0.01,
     "nominal_gap_screen_mm": 0.5,
-    "contact_tolerance_mm": 0.005
+    "contact_tolerance_mm": 0.005,
+    "optical_prism_overlap_mm3": 0.01
   },
   "summary": {
     "parts_checked": 41,
@@ -20,6 +21,7 @@
     "interferences": 0,
     "nominal_contacts": 41,
     "small_nominal_gaps": 21,
+    "optical_model_conflicts": 2,
     "reservation_conflicts": 2,
     "keepout_conflicts": 13,
     "stack_failures": 1,
@@ -46,6 +48,9 @@
         "frame_right",
         "frame_top",
         "frame_bottom"
+      ],
+      "optical_path_ids": [
+        "rear_camera_placeholder"
       ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
@@ -74,6 +79,7 @@
         "touch_digitizer_concept",
         "perimeter_gasket_concept"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -101,6 +107,7 @@
         "touch_digitizer_concept",
         "perimeter_gasket_concept"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -128,6 +135,7 @@
         "touch_digitizer_concept",
         "perimeter_gasket_concept"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -156,6 +164,7 @@
         "usb_c_port_concept",
         "perimeter_gasket_concept"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -181,6 +190,9 @@
         "frame_bottom",
         "cover_glass",
         "touch_digitizer_concept",
+        "front_camera_concept"
+      ],
+      "optical_path_ids": [
         "front_camera_concept"
       ],
       "reservation_conflict_ids": [],
@@ -210,6 +222,7 @@
         "touch_digitizer_concept",
         "perimeter_gasket_concept"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -231,6 +244,7 @@
       "nominal_gap_ids": [
         "battery_pack_shell_concept"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [
         "wireless_charging_placeholder"
       ],
@@ -266,6 +280,7 @@
         "wifi_bluetooth",
         "security_controller"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": [
         "bottom_connector_zone"
@@ -289,6 +304,9 @@
       "nominal_gap_ids": [
         "front_camera_concept"
       ],
+      "optical_path_ids": [
+        "rear_cover"
+      ],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -310,6 +328,7 @@
       "nominal_gap_ids": [
         "haptics_concept"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -331,6 +350,7 @@
       "nominal_gap_ids": [
         "battery_pack_shell_concept"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": [
         "top_rf_edge"
@@ -352,6 +372,7 @@
       "edges": 24,
       "interference_ids": [],
       "nominal_gap_ids": [],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [
         "battery_reference",
         "battery_pack_shell_concept"
@@ -388,6 +409,7 @@
         "graphite_spreader_concept",
         "phase_change_material_concept"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -411,6 +433,7 @@
         "thermal_spreader_placeholder",
         "graphite_spreader_concept"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -433,6 +456,7 @@
         "main_pcb_placeholder",
         "thermal_spreader_placeholder"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -455,6 +479,7 @@
         "main_pcb_placeholder",
         "thermal_spreader_placeholder"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -478,6 +503,7 @@
         "thermal_spreader_placeholder",
         "storage_ufs_1tb_reference"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -501,6 +527,7 @@
         "thermal_spreader_placeholder",
         "storage_ufs_1tb_reference"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -525,6 +552,7 @@
         "memory_c_32gb",
         "memory_d_32gb"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -547,6 +575,7 @@
         "main_pcb_placeholder",
         "thermal_spreader_placeholder"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -569,6 +598,7 @@
         "main_pcb_placeholder",
         "thermal_spreader_placeholder"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -591,6 +621,7 @@
         "main_pcb_placeholder",
         "thermal_spreader_placeholder"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -610,6 +641,7 @@
       "edges": 24,
       "interference_ids": [],
       "nominal_gap_ids": [],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -632,6 +664,7 @@
         "main_pcb_placeholder",
         "thermal_spreader_placeholder"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -654,6 +687,7 @@
         "main_pcb_placeholder",
         "thermal_spreader_placeholder"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -680,6 +714,7 @@
         "display_stack",
         "cover_glass"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -702,6 +737,7 @@
         "battery_reference",
         "speaker_b_placeholder"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [
         "wireless_charging_placeholder"
       ],
@@ -730,6 +766,7 @@
         "compute_soc",
         "phase_change_material_concept"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -752,6 +789,7 @@
         "thermal_spreader_placeholder",
         "graphite_spreader_concept"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -773,6 +811,9 @@
       "nominal_gap_ids": [
         "display_stack",
         "rear_camera_placeholder"
+      ],
+      "optical_path_ids": [
+        "display_stack"
       ],
       "reservation_conflict_ids": [],
       "keepout_ids": [
@@ -796,6 +837,7 @@
       "edges": 24,
       "interference_ids": [],
       "nominal_gap_ids": [],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -815,6 +857,7 @@
       "edges": 24,
       "interference_ids": [],
       "nominal_gap_ids": [],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -834,6 +877,7 @@
       "edges": 24,
       "interference_ids": [],
       "nominal_gap_ids": [],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -853,6 +897,7 @@
       "edges": 24,
       "interference_ids": [],
       "nominal_gap_ids": [],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -872,6 +917,7 @@
       "edges": 3,
       "interference_ids": [],
       "nominal_gap_ids": [],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": [
         "bottom_rf_edge",
@@ -894,6 +940,7 @@
       "edges": 3,
       "interference_ids": [],
       "nominal_gap_ids": [],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": [
         "top_rf_edge"
@@ -917,6 +964,7 @@
       "nominal_gap_ids": [
         "speaker_a_placeholder"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     },
@@ -938,6 +986,7 @@
       "nominal_gap_ids": [
         "frame_bottom"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": [
         "bottom_rf_edge"
@@ -959,6 +1008,7 @@
       "edges": 24,
       "interference_ids": [],
       "nominal_gap_ids": [],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": [
         "top_rf_edge",
@@ -987,6 +1037,7 @@
         "frame_bottom",
         "cover_glass"
       ],
+      "optical_path_ids": [],
       "reservation_conflict_ids": [],
       "keepout_ids": []
     }
@@ -1743,6 +1794,36 @@
       "kind": "contact"
     }
   ],
+  "optical_paths": [
+    {
+      "camera_id": "rear_camera_placeholder",
+      "blocking_part_id": "rear_cover",
+      "face": "rear",
+      "axis_xy_mm": [
+        111.0,
+        76.5
+      ],
+      "lens_radius_mm": 4.16,
+      "aperture_radial_margin_mm": -0.16,
+      "solid_overlap_mm3": 2.256,
+      "pupil_prism_overlap_percent": 7.5,
+      "status": "model_path_conflict"
+    },
+    {
+      "camera_id": "front_camera_concept",
+      "blocking_part_id": "display_stack",
+      "face": "front",
+      "axis_xy_mm": [
+        88.0,
+        87.0
+      ],
+      "lens_radius_mm": 2.56,
+      "aperture_radial_margin_mm": null,
+      "solid_overlap_mm3": 14.412,
+      "pupil_prism_overlap_percent": 100.0,
+      "status": "model_path_conflict"
+    }
+  ],
   "keepout_conflicts": [
     {
       "part_id": "battery_reference",
@@ -1853,5 +1934,5 @@
       "basis": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml"
     }
   ],
-  "caveat": "Nominal contacts and small gaps are review findings, not tolerance clearances. Interferences and keepout overlaps remain unresolved. No fit, performance, or release approval is implied."
+  "caveat": "Camera pupil prisms screen nominal solid geometry, not optical transmission. Contacts and small gaps are not tolerance clearances. No fit, performance, or release approval is implied."
 }

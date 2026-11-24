@@ -234,6 +234,7 @@ function renderDetail() {
     <div class="property"><span>Integrity checks</span><strong>${Object.values(proof.checks).filter(Boolean).length}/${Object.keys(proof.checks).length} passed</strong></div>
     <div class="property"><span>Solid intersections</span><strong>${proof.interference_ids.length}</strong></div>
     <div class="property"><span>Contacts and gaps ≤0.5 mm</span><strong>${proof.nominal_gap_ids.length}</strong></div>
+    <div class="property"><span>Camera path findings</span><strong>${proof.optical_path_ids.length}</strong></div>
     <div class="property"><span>Keepout conflicts</span><strong>${proof.keepout_ids.length}</strong></div>
     ${proof.nominal_gap_ids.length ? `<p class="detail-note">Nominally near: ${esc(proof.nominal_gap_ids.join(", "))}</p>` : ""}
     ${proof.keepout_ids.length ? `<p class="detail-note">Reserved regions: ${esc(proof.keepout_ids.join(", "))}</p>` : ""}
@@ -274,6 +275,7 @@ function renderProof() {
     ["Solid intersections", summary.interferences],
     ["Nominal contacts", summary.nominal_contacts],
     ["Gaps ≤0.5 mm", summary.small_nominal_gaps],
+    ["Camera path conflicts", summary.optical_model_conflicts],
     ["Keepout conflicts", summary.keepout_conflicts],
     ["Reservation overlaps", summary.reservation_conflicts],
     ["Stack failures", summary.stack_failures],
@@ -306,6 +308,12 @@ function renderProof() {
   document.querySelector("#proof-nominal-gaps").innerHTML =
     `<details class="coverage-item" open><summary><strong>Gaps through 0.5 mm</strong><span class="coverage-tag">${smallGaps.length}</span></summary><div class="proof-list">${smallGaps.map(gapItem).join("") || '<p class="muted">No small nominal gaps.</p>'}</div></details>` +
     `<details class="coverage-item"><summary><strong>Nominal contacts</strong><span class="coverage-tag">${contacts.length}</span></summary><div class="proof-list">${contacts.map(gapItem).join("") || '<p class="muted">No nominal contacts.</p>'}</div></details>`;
+  document.querySelector("#proof-optical-paths").innerHTML = proof.optical_paths
+    .map(
+      (item) =>
+        `<div class="proof-item">${proofPartButton(item.camera_id)}<span>↔</span>${proofPartButton(item.blocking_part_id)}<small>${item.solid_overlap_mm3} mm³ of the nominal pupil prism intersects the concept solid (${item.pupil_prism_overlap_percent}%). ${item.face === "rear" ? `Aperture radial margin ${item.aperture_radial_margin_mm} mm.` : "Panel transmission or a window is unverified."}</small></div>`,
+    )
+    .join("");
   document.querySelector("#proof-reservations").innerHTML = proof.intersections
     .filter((item) => item.kind === "reservation_conflict")
     .map(
@@ -357,6 +365,10 @@ function renderHardware() {
     ["Storage integration", report.storage_fit.integration_status],
     ["Battery integration", report.battery_fit.integration_status],
     ["128 GB memory package", report.memory_package_fit.integration_status],
+    [
+      "Camera model paths",
+      `${state.proof.summary.optical_model_conflicts}/2 unresolved`,
+    ],
     [
       "Selected roles",
       `${report.selected_roles.filter((item) => item.selected).length}/${report.selected_roles.length}`,

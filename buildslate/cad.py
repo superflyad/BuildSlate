@@ -79,9 +79,11 @@ def build_concept(repo_root: Path) -> dict:
             "screen_layer": spec.get("screen_layer"),
             "allowed_keepouts": spec.get("allowed_keepouts", []),
         }
-        for key in ("radius_mm", "band_mm", "wall_mm"):
+        for key in ("radius_mm", "band_mm", "wall_mm", "lens_radius_mm"):
             if key in spec:
                 part[key] = float(spec[key])
+        if "lens_face" in spec:
+            part["lens_face"] = spec["lens_face"]
         parts.append(part)
     if len({part["id"] for part in parts}) != len(parts):
         raise ValueError("duplicate concept part ID")
@@ -113,6 +115,11 @@ def build_concept(repo_root: Path) -> dict:
             raise ValueError(f"unknown keepout screen layer: {part['id']}")
         if set(part.get("allowed_keepouts", [])) - set(keepouts):
             raise ValueError(f"unknown keepout allowance: {part['id']}")
+        if part["shape"] == "camera_module" and (
+            part.get("lens_face") not in {"front", "rear"}
+            or not 0 < part.get("lens_radius_mm", 0) <= min(box[3], box[4]) / 2
+        ):
+            raise ValueError(f"invalid camera pupil assumption: {part['id']}")
     roles = {item["id"] for item in source["component_coverage"]}
     if {role for part in parts for role in part.get("roles", [])} - roles:
         raise ValueError("unknown concept component role")
@@ -275,7 +282,7 @@ def _shape(cq, part: dict):
             .box(length, width, height * 0.65, centered=False)
             .translate((0, 0, base_z))
         )
-        lens_radius = min(length, width) * 0.32
+        lens_radius = float(part["lens_radius_mm"])
         lens = (
             cq.Workplane("XY")
             .center(length / 2, width / 2)

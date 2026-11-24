@@ -34,6 +34,8 @@ def main() -> int:
         raise ValueError(
             "Public hardware report must not imply a released thermal design"
         )
+    if expected["rf_release"]["status"] != "missing":
+        raise ValueError("Public hardware report must not imply a released RF design")
     if (
         expected["functional_evt0"] != "blocked"
         and expected["design_release"] == "blocked"

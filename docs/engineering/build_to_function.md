@@ -34,6 +34,8 @@ The [power safety proof](power_safety_proof.md) requires selected battery rating
 
 The [thermal release proof](thermal_release_proof.md) requires released mechanical and power identities, sourced material and boundary properties, case-specific heat maps, reviewed solver tables, and temperature-limit screens. It checks mesh refinement and energy balance, while the separate EVT0 gate requires calibrated physical temperature measurements and model correlation. No released v1R thermal model exists yet.
 
+The [RF release proof](rf_release_proof.md) requires a selected Wi-Fi/Bluetooth module and two antennas, released board and mechanical identities, connected schematic matching paths, region-specific bands and lab scope, and source-backed RF sweep and coexistence margins. It does not substitute for conducted, chamber, RF-exposure, EMC, or certification evidence. No released v1R RF design exists yet.
+
 The mechanical release record has a separate [STEP assembly proof](mechanical_release_proof.md). It requires source part and drawing hashes, released assembly identity, complete role coverage, and nominal interference and clearance checks. There is no released assembly to check yet.
 
 The firmware boot record has a separate [firmware bundle proof](firmware_release_proof.md). It requires exact image hashes, boot and recovery order, driver coverage, flash readback instructions, and binding to the approved selected BOM and routed board. There is no released firmware bundle; the proof cannot establish boot or recovery on hardware.

@@ -89,3 +89,9 @@ The `power_safety` record must name a controlled JSON release whose revision and
 **Status:** Accepted
 
 The `thermal_release` record must name a controlled model package and solver result table. The auditor binds selected parts, mechanical assembly, board, and power design by exact hashes, requires sourced material/interface/boundary inputs and case-specific heat maps, and checks mesh drift, energy balance, and recorded skin, battery, and junction limits. The separate EVT0 gate still requires calibrated physical measurements and model correlation. A numerical screen cannot establish safe operation without those results.
+
+## ADR-016: Bind RF design margins to selected radio and device geometry
+
+**Status:** Accepted
+
+The `rf_release` record must name a controlled part and sweep package bound to the selected compute platform, electrical netlist and BOM, routed board, mechanical proof, and firmware bundle. The auditor checks module target capabilities, host and driver compatibility, feed connectivity through selected matching parts, antenna placement and separation, market-scoped bands, Touchstone and efficiency sweeps, and coexistence margins. Wireless charging, UWB, and cellular remain disabled for EVT0. Physical RF performance and regulatory obligations remain separate gates.

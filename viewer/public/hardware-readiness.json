@@ -549,6 +549,12 @@
       "No released thermal design"
     ]
   },
+  "rf_release": {
+    "status": "missing",
+    "errors": [
+      "No released RF design"
+    ]
+  },
   "selected_roles": [
     {
       "id": "compute_platform",

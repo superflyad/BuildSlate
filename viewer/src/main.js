@@ -365,6 +365,7 @@ function renderHardware() {
     ["Routed PCB DRC", design.find((item) => item.id === "routed_pcb").status],
     ["Power design proof", report.power_safety.status],
     ["Thermal design proof", report.thermal_release.status],
+    ["RF design proof", report.rf_release.status],
     ["Public platform fit", report.platform_fit.status],
     ["Storage integration", report.storage_fit.integration_status],
     ["Battery integration", report.battery_fit.integration_status],
@@ -401,6 +402,7 @@ function renderHardware() {
     `<div class="gate-item"><strong>Released part set</strong><span>${esc(report.part_selection.status)}${report.part_selection.errors.length ? ` · ${esc(report.part_selection.errors.join("; "))}` : ""}</span></div>` +
     `<div class="gate-item"><strong>Power design proof</strong><span>${esc(report.power_safety.status)} · ${esc(report.power_safety.errors.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>Thermal design proof</strong><span>${esc(report.thermal_release.status)} · ${esc(report.thermal_release.errors.join("; "))}</span></div>` +
+    `<div class="gate-item"><strong>RF design proof</strong><span>${esc(report.rf_release.status)} · ${esc(report.rf_release.errors.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>Firmware bundle integrity</strong><span>${esc(report.firmware_bundle.status)} · ${esc(report.firmware_bundle.errors.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>1 TB UFS candidate</strong><span>${esc(report.storage_fit.manufacturer_part_number)} · ${esc(report.storage_fit.package_mm.join(" × "))} mm · ${esc(report.storage_fit.outline_fit)} outline fit · ${esc(report.storage_fit.board_boundary_clearance_mm)} mm board-edge clearance · <a href="${esc(report.storage_fit.source)}" target="_blank" rel="noopener noreferrer">manufacturer brief</a></span></div>` +
     `<div class="gate-item"><strong>Storage integration blockers</strong><span>${esc(report.storage_fit.rails.map((rail) => `${rail.id}: ${rail.status} (${rail.required_voltage_v.join("–")} V)`).join("; "))} · ${esc(report.storage_fit.missing_design_evidence.join("; "))}</span></div>` +

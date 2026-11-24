@@ -21,9 +21,15 @@ requirements:
   - id: power_safety
     stage: design_release
     title: Battery, protection, charge path, rail sequencing and fault analysis
+  - id: schematic_source
+    stage: design_release
+    title: Reviewed editable schematic source at the released revision
   - id: schematic_netlist
     stage: design_release
-    title: Reviewed schematic, netlist and electrical rules result
+    title: Reviewed schematic netlist and selected electrical BOM with endpoint proof
+  - id: erc_report
+    stage: design_release
+    title: Reviewed schematic electrical rules report and deviations
   - id: routed_pcb
     stage: design_release
     title: Routed PCB, stackup, fabrication outputs and assembly drawings

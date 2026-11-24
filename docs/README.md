@@ -73,5 +73,6 @@ Use this index to move from a question to the authoritative source. The root [RE
 | [Assembly contract](../engineering/assembly/README.md) | Provisional 3D data and coordinate frame |
 | [CAD proofing](engineering/cad_proofing.md) | Solid, STEP, mesh, keepout, and stack checks with explicit limits |
 | [Build-to-function gate](engineering/build_to_function.md) | Required design release and physical EVT0 evidence |
+| [Electrical netlist proof](engineering/electrical_netlist_proof.md) | Connectivity and selected electrical BOM audit contract |
 
 The previous all-in-one overview is retained as an [archived snapshot](archive/2026-10-repository-overview.md). It is useful for history; the current program dashboard and source registries determine present status. Generated reports are views of the tracked inputs. A current hash or visible 3D solid does not promote a planning value to verified evidence.

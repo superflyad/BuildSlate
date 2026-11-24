@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 from buildslate.io import load_yaml
+from buildslate.netlist_proof import audit as audit_netlist
 
 MANIFEST = Path("engineering/hardware/readiness.yaml")
 STRATEGY = Path("validation/evt0/bom-strategy.yaml")
@@ -21,7 +22,9 @@ REQUIRED = {
         "selected_bom",
         "platform_reference",
         "power_safety",
+        "schematic_source",
         "schematic_netlist",
+        "erc_report",
         "routed_pcb",
         "interconnect",
         "mechanical_release",
@@ -67,6 +70,7 @@ def _evidence_result(root: Path, requirement: dict, record: object) -> dict:
     for field in ("path", "sha256", "revision", "reviewed_by"):
         if not isinstance(record.get(field), str) or not record[field].strip():
             reasons.append(f"Missing {field}")
+    proof: dict | None = None
     if "Missing path" not in reasons:
         relative = Path(record["path"])
         allowed = (root / ROOTS[stage]).resolve()
@@ -77,14 +81,43 @@ def _evidence_result(root: Path, requirement: dict, record: object) -> dict:
             reasons.append("Artifact file does not exist")
         elif target.suffix.lower() in {".md", ".yaml", ".yml"}:
             reasons.append("Plans and status files are not release evidence")
+        elif (
+            requirement.get("id") == "schematic_source"
+            and target.suffix.lower() != ".kicad_sch"
+        ):
+            reasons.append("Schematic source must be an editable KiCad schematic")
         elif "Missing sha256" not in reasons:
             digest = hashlib.sha256(target.read_bytes()).hexdigest()
             if digest != record["sha256"]:
                 reasons.append("Artifact hash does not match")
-    return {
+        if not reasons and requirement.get("id") == "schematic_netlist":
+            if target.suffix.lower() != ".xml":
+                reasons.append("Schematic netlist must be a KiCad XML export")
+            else:
+                contract = target.with_suffix(".contract.yaml")
+                bom = target.with_suffix(".bom.csv")
+                for key, path in (("contract_sha256", contract), ("bom_sha256", bom)):
+                    if not path.is_file():
+                        reasons.append(f"Missing electrical bundle file: {path.name}")
+                    elif hashlib.sha256(path.read_bytes()).hexdigest() != record.get(
+                        key
+                    ):
+                        reasons.append(f"Missing or mismatched {key}")
+                if not reasons:
+                    try:
+                        proof = audit_netlist(target, contract, bom)
+                    except (ValueError, OSError) as error:
+                        reasons.append(f"Electrical proof could not run: {error}")
+                    else:
+                        if proof["status"] != "pass":
+                            reasons.extend(proof["errors"])
+    result = {
         "status": "accepted" if not reasons else "rejected",
         "reasons": reasons,
     }
+    if proof is not None:
+        result["technical_proof"] = proof
+    return result
 
 
 def build_report(root: Path) -> dict:

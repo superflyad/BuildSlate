@@ -16,6 +16,8 @@ The planning geometry was created before supplier selection and controlled drawi
 
 The [readiness manifest](../../engineering/hardware/readiness.yaml) lists the required artifacts. The [gate code](../../buildslate/hardware_readiness.py) checks the selected sourcing roles and each evidence record. A record must identify an approved revision, reviewer, controlled file path, and matching SHA-256. Planning Markdown/YAML and files outside the controlled release or test directories are rejected. An accepted record means the listed file and review metadata exist; the gate cannot independently verify that the engineering judgment or test result is correct. Its positive state is therefore **ready for review**, not certification.
 
+The schematic netlist record has an additional [electrical proof](electrical_netlist_proof.md): its selected electrical BOM, critical endpoint contract, and exported XML netlist are checked together before that record can be accepted.
+
 ```bash
 buildslate hardware
 buildslate hardware --format json

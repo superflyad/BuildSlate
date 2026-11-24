@@ -64,9 +64,27 @@
       ]
     },
     {
+      "id": "schematic_source",
+      "stage": "design_release",
+      "title": "Reviewed editable schematic source at the released revision",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
       "id": "schematic_netlist",
       "stage": "design_release",
-      "title": "Reviewed schematic, netlist and electrical rules result",
+      "title": "Reviewed schematic netlist and selected electrical BOM with endpoint proof",
+      "status": "missing",
+      "reasons": [
+        "No evidence record"
+      ]
+    },
+    {
+      "id": "erc_report",
+      "stage": "design_release",
+      "title": "Reviewed schematic electrical rules report and deviations",
       "status": "missing",
       "reasons": [
         "No evidence record"

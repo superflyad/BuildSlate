@@ -11,6 +11,10 @@ import json
 from pathlib import Path
 
 from buildslate.io import load_yaml
+from buildslate.mechanical_proof import ASSEMBLY as MECHANICAL_ASSEMBLY
+from buildslate.mechanical_proof import MANIFEST as MECHANICAL_MANIFEST
+from buildslate.mechanical_proof import REPORT as MECHANICAL_REPORT
+from buildslate.mechanical_proof import REQUIRED_ROLES as MECHANICAL_ROLES
 from buildslate.netlist_proof import audit as audit_netlist
 
 MANIFEST = Path("engineering/hardware/readiness.yaml")
@@ -111,6 +115,29 @@ def _evidence_result(root: Path, requirement: dict, record: object) -> dict:
                     else:
                         if proof["status"] != "pass":
                             reasons.extend(proof["errors"])
+        if not reasons and requirement.get("id") == "mechanical_release":
+            if target != (root / MECHANICAL_ASSEMBLY).resolve():
+                reasons.append(
+                    "Mechanical release must name the controlled assembly STEP"
+                )
+            else:
+                manifest_path = root / MECHANICAL_MANIFEST
+                proof_path = root / MECHANICAL_REPORT
+                if not manifest_path.is_file() or not proof_path.is_file():
+                    reasons.append("Mechanical manifest or CAD proof is missing")
+                else:
+                    proof = json.loads(proof_path.read_text(encoding="utf-8"))
+                    if (
+                        proof.get("status") != "pass"
+                        or proof.get("assembly_sha256") != record["sha256"]
+                        or proof.get("manifest_sha256") != record.get("manifest_sha256")
+                        or proof.get("manifest_sha256")
+                        != hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+                        or not set(MECHANICAL_ROLES).issubset(
+                            proof.get("roles_covered", [])
+                        )
+                    ):
+                        reasons.append("Released mechanical proof is missing or stale")
     result = {
         "status": "accepted" if not reasons else "rejected",
         "reasons": reasons,

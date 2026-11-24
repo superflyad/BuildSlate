@@ -60,9 +60,12 @@ jobs:
       - run: npm ci --prefix viewer
       - run: python -m buildslate.cad
       - run: python scripts/check_cad_proof_geometry.py
+      - run: python -m buildslate.mechanical_proof --write
+      - run: python scripts/check_mechanical_proof_geometry.py
       - run: python validation/validate_concept_cad.py
+      - run: python validation/validate_mechanical_proof.py
       - run: npm run check:model --prefix viewer
-      - run: git diff --exit-code -- viewer/public/concept.json viewer/public/proof.json
+      - run: git diff --exit-code -- viewer/public/concept.json viewer/public/proof.json viewer/public/mechanical-proof.json
 
   deploy:
     name: Publish viewer to GitHub Pages

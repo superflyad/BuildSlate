@@ -18,6 +18,8 @@ The [readiness manifest](../../engineering/hardware/readiness.yaml) lists the re
 
 The schematic netlist record has an additional [electrical proof](electrical_netlist_proof.md): its selected electrical BOM, critical endpoint contract, and exported XML netlist are checked together before that record can be accepted.
 
+The mechanical release record has a separate [STEP assembly proof](mechanical_release_proof.md). It requires source part and drawing hashes, released assembly identity, complete role coverage, and nominal interference and clearance checks. There is no released assembly to check yet.
+
 ```bash
 buildslate hardware
 buildslate hardware --format json

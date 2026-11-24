@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "device": "slate-pocket-v1r",
+  "status": "missing",
+  "assembly_sha256": null,
+  "manifest_sha256": null,
+  "part_count": 0,
+  "roles_covered": [],
+  "findings": [
+    "No released mechanical STEP assembly and manifest"
+  ],
+  "caveat": "Concept CAD and supplier envelopes do not establish released fit."
+}

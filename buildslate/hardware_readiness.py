@@ -19,6 +19,7 @@ from buildslate.mechanical_proof import REQUIRED_ROLES as MECHANICAL_ROLES
 from buildslate.netlist_proof import audit as audit_netlist
 from buildslate.part_selection import RELEASE as SELECTED_BOM_RELEASE
 from buildslate.part_selection import audit as audit_part_selection
+from buildslate.pcb_proof import audit as audit_pcb
 
 MANIFEST = Path("engineering/hardware/readiness.yaml")
 STRATEGY = Path("validation/evt0/bom-strategy.yaml")
@@ -69,7 +70,11 @@ ROOTS = {
 
 
 def _evidence_result(
-    root: Path, requirement: dict, record: object, selection_proof: dict | None = None
+    root: Path,
+    requirement: dict,
+    record: object,
+    selection_proof: dict | None = None,
+    related_records: dict | None = None,
 ) -> dict:
     """Require a reviewed, revisioned artifact under the stage's controlled root."""
     reasons: list[str] = []
@@ -136,6 +141,35 @@ def _evidence_result(
                     else:
                         if proof["status"] != "pass":
                             reasons.extend(proof["errors"])
+        if not reasons and requirement.get("id") == "routed_pcb":
+            if target.suffix.lower() != ".kicad_pcb":
+                reasons.append("Routed PCB must be an editable KiCad board")
+            else:
+                schematic = target.with_suffix(".kicad_sch")
+                netlist = target.with_suffix(".xml")
+                related = related_records or {}
+                for identifier, path, hash_field in (
+                    ("schematic_source", schematic, "schematic_sha256"),
+                    ("schematic_netlist", netlist, "netlist_sha256"),
+                ):
+                    upstream = related.get(identifier)
+                    if (
+                        not isinstance(upstream, dict)
+                        or upstream.get("disposition") != "approved"
+                        or not isinstance(upstream.get("path"), str)
+                        or (root / upstream["path"]).resolve() != path
+                        or not path.is_file()
+                        or upstream.get("sha256") != record.get(hash_field)
+                        or record.get(hash_field)
+                        != hashlib.sha256(path.read_bytes()).hexdigest()
+                    ):
+                        reasons.append(
+                            f"PCB is not bound to approved {identifier} bytes"
+                        )
+                if not reasons:
+                    proof = audit_pcb(target, schematic, netlist)
+                    if proof["status"] != "pass":
+                        reasons.extend(proof["errors"])
         if not reasons and requirement.get("id") == "mechanical_release":
             if target != (root / MECHANICAL_ASSEMBLY).resolve():
                 reasons.append(
@@ -234,7 +268,7 @@ def build_report(root: Path) -> dict:
             "id": item["id"],
             "stage": item["stage"],
             "title": item["title"],
-            **_evidence_result(root, item, records.get(item["id"]), selection),
+            **_evidence_result(root, item, records.get(item["id"]), selection, records),
         }
         for item in requirements
     ]

@@ -104,6 +104,8 @@ jobs:
           for attempt in {1..12}; do
             visible="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" --jq '.artifacts | any(.name == "github-pages" and .expired == false)' || true)"
             if [[ "$visible" == "true" ]]; then
+              # The deploy action can read a different artifact index shortly after upload.
+              sleep 15
               exit 0
             fi
             sleep 5

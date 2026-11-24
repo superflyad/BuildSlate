@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Added a separately proofed eight-package 128 GB reference CAD variant and 3D viewer switch; preserved the board stack conflict and unqualified hardware status.
 - Added per-solid CAD proofing with anchored source checks, BREP/mesh bounds, STEP round-trip volume, exact intersections, planform keepouts, and local stack results; exposed findings in the viewer.
 - Detailed the concept board, packages, battery tray, cameras, speakers, rear cover, frame, and gasket while preserving each added feature's assumption status.
 - Published the concept CAD viewer through GitHub Pages after the validation and CAD export jobs pass.

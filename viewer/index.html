@@ -88,6 +88,9 @@
             >
               Concept CAD
             </button>
+            <button type="button" data-model="memory8" aria-pressed="false">
+              128 GB study
+            </button>
             <button type="button" data-model="assembly" aria-pressed="false">
               Source envelopes
             </button>
@@ -235,13 +238,15 @@
                   >Proof code</a
                 >
                 <a
-                  href="https://superflyad.github.io/BuildSlate/proof.json"
+                  id="proof-raw-link"
+                  href="./proof.json"
                   target="_blank"
                   rel="noopener noreferrer"
-                  >Raw findings</a
+                  >Baseline proof JSON</a
                 >
               </div>
               <div id="proof-summary" class="summary-grid"></div>
+              <div id="proof-memory-study" class="gate-list"></div>
               <div class="section-heading">Physical intersections</div>
               <div id="proof-intersections" class="proof-list"></div>
               <div class="section-heading">Reservation overlaps</div>
@@ -297,6 +302,12 @@
                   target="_blank"
                   rel="noopener noreferrer"
                   >128 GB test code</a
+                >
+                <a
+                  href="https://github.com/superflyad/BuildSlate/blob/main/cad/slate-pocket-v1r/concept-cad/memory-8x16.step"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Eight-package STEP</a
                 >
                 <a
                   href="https://superflyad.github.io/BuildSlate/mechanical-proof.json"

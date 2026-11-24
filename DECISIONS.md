@@ -41,3 +41,9 @@ The Python wheel contains the CLI and its runtime dependency. Engineering files 
 **Status:** Accepted
 
 Section cuts, isolation, focus, and expanded view operate only on generated planning geometry in the browser. The component library is shown in full, including roles without geometry. These controls expose the model's limits; they do not create a fit, interference, or release result. A geometry count mismatch stops loading rather than silently presenting an incomplete assembly.
+
+## ADR-008: Keep the 128 GB reference layout separate from the baseline
+
+**Status:** Accepted
+
+The exact public 16 GB memory package needs eight outlines to reach the approved 128 GB capacity. The baseline retains four assumed 32 GB sites. A separate CAD variant replaces those four solids with eight two-sided reference boxes and receives its own STEP, glTF, and proof report. This allows geometry review without treating the public package as X2-qualified or silently changing the baseline board architecture. The thickness discrepancy, routing, power, thermal path, and boot proof remain unresolved.

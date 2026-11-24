@@ -65,7 +65,7 @@ jobs:
       - run: python validation/validate_concept_cad.py
       - run: python validation/validate_mechanical_proof.py
       - run: npm run check:model --prefix viewer
-      - run: git diff --exit-code -- viewer/public/concept.json viewer/public/proof.json viewer/public/mechanical-proof.json
+      - run: git diff --exit-code -- viewer/public/concept.json viewer/public/proof.json viewer/public/memory-8x16.json viewer/public/memory-8x16.gltf viewer/public/memory-8x16-proof.json cad/slate-pocket-v1r/concept-cad/memory-8x16.step viewer/public/mechanical-proof.json
 
   deploy:
     name: Publish viewer to GitHub Pages

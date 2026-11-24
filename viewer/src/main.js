@@ -33,10 +33,12 @@ const labels = {
 };
 const groups = Object.keys(labels);
 const requestedTab = new URLSearchParams(window.location.search).get("tab");
+const requestedModel = new URLSearchParams(window.location.search).get("model");
 const state = {
   assembly: null,
   assets: null,
   proof: null,
+  proofs: null,
   hardware: null,
   model: "concept",
   selected: null,
@@ -209,7 +211,7 @@ function renderDetail() {
   const part = state.assembly.parts.find((p) => p.id === state.selected);
   if (!part) return;
   const proof =
-    state.model === "concept"
+    state.model !== "assembly"
       ? state.proof.parts.find((item) => item.id === part.id)
       : null;
   document.querySelector("#part-detail").className = "detail-body";
@@ -244,17 +246,26 @@ function renderDetail() {
     <p class="detail-caveat">${esc(state.assembly.caveat)}</p>`;
 }
 function proofPartButton(id) {
-  const part = state.assets.concept.data.parts.find((item) => item.id === id);
+  const proofModel = state.model === "assembly" ? "concept" : state.model;
+  const part = state.assets[proofModel].data.parts.find(
+    (item) => item.id === id,
+  );
   return `<button type="button" class="proof-part" data-proof-part="${esc(id)}">${esc(part?.label || id)}</button>`;
 }
 function renderProof() {
   const proof = state.proof;
   const summary = proof.summary;
-  document.querySelector("#proof-method").textContent = proof.method;
+  const proofModel = state.model === "assembly" ? "concept" : state.model;
+  document.querySelector("#proof-method").textContent =
+    `${proofModel === "memory8" ? "Eight-package reference · " : "Baseline concept · "}${proof.method}`;
+  const rawLink = document.querySelector("#proof-raw-link");
+  rawLink.href = `${import.meta.env.BASE_URL}${proofModel === "memory8" ? "memory-8x16-proof.json" : "proof.json"}`;
+  rawLink.textContent =
+    proofModel === "memory8" ? "Reference proof JSON" : "Baseline proof JSON";
   document.querySelector("#proof-summary").innerHTML = [
     [
       "Solids checked",
-      `${summary.parts_checked}/${state.assets.concept.data.parts.length}`,
+      `${summary.parts_checked}/${state.assets[proofModel].data.parts.length}`,
     ],
     ["STEP round trip", summary.step_roundtrip_passed ? "PASS" : "FAIL"],
     ["Integrity", summary.integrity_passed ? "PASS" : "FAIL"],
@@ -269,6 +280,10 @@ function renderProof() {
         `<div><strong>${value}</strong><span>${label}</span></div>`,
     )
     .join("");
+  const memoryStudy = proof.memory_study;
+  document.querySelector("#proof-memory-study").innerHTML = memoryStudy
+    ? `<div class="gate-item"><strong>Eight-package outline</strong><span>${esc(memoryStudy.status.replaceAll("_", " "))} · ${esc(memoryStudy.minimum_screened_planar_gap_mm)} mm minimum screened planar gap</span></div><div class="gate-item"><strong>PCB stack conflict</strong><span>${esc(memoryStudy.floorplan_board_thickness_mm)} mm floorplan versus ${esc(memoryStudy.mechanical_board_height_mm)} mm mechanical board · ${esc(memoryStudy.stack_issues.join("; "))}</span></div>`
+    : "";
   document.querySelector("#proof-intersections").innerHTML =
     proof.intersections
       .filter((item) => item.kind === "interference")
@@ -307,7 +322,8 @@ function renderProof() {
       </details>`,
     )
     .join("");
-  document.querySelector("#proof-caveat").textContent = proof.caveat;
+  document.querySelector("#proof-caveat").textContent =
+    `${proof.caveat} ${state.assets[proofModel].data.caveat}`;
 }
 function renderHardware() {
   const report = state.hardware;
@@ -370,6 +386,7 @@ function renderHardware() {
   const study = report.memory_package_fit.eight_package_study;
   document.querySelector("#hardware-memory-layout").innerHTML =
     `<p class="muted">Eight ${esc(report.memory_package_fit.public_reference_capacity_gb)} GB reference outlines: ${esc(study.packages_per_side.component)} on the component side, ${esc(study.packages_per_side.reverse)} on the reverse. Minimum screened planar gap ${esc(study.minimum_screened_planar_gap_mm)} mm under an assumed ${esc(study.assumed_planar_clearance_mm)} mm rule. Geometry status: ${esc(study.status.replaceAll("_", " "))}.</p>` +
+    `<p><a href="?model=memory8&tab=hardware">Open the 3D eight-package model</a></p>` +
     `<div class="memory-board-grid">${memoryBoard(study, "component")}${memoryBoard(study, "reverse")}</div>` +
     `<p class="detail-caveat">Board thickness conflict: ${esc(study.floorplan_board_thickness_mm)} mm in the floorplan versus ${esc(study.mechanical_board_height_mm)} mm in the mechanical model. ${esc(study.caveat)} <a href="https://github.com/superflyad/BuildSlate/blob/main/${esc(study.source)}" target="_blank" rel="noopener noreferrer">Study coordinates</a></p>`;
   const campaign = report.evt0_campaign;
@@ -395,7 +412,7 @@ function renderHardware() {
 }
 function renderCoverageItem(component) {
   const representedParts = (
-    state.model === "concept" ? component.concept_part_ids : component.part_ids
+    state.model === "assembly" ? component.part_ids : component.concept_part_ids
   )
     .map((id) => {
       const label =
@@ -432,7 +449,7 @@ function renderProgram() {
     ]),
   );
   document.querySelector("#coverage").innerHTML =
-    `<p class="coverage-intro">${coverage.length} library roles · ${state.model === "concept" ? "all represented in concept CAD; source evidence status follows" : "source envelope status follows"} · ${counts.box} box modeled · ${counts.aggregate} aggregate · ${counts.deferred} deferred · ${counts.unplaced} unplaced</p>` +
+    `<p class="coverage-intro">${coverage.length} library roles · ${state.model !== "assembly" ? "all represented in concept CAD; source evidence status follows" : "source envelope status follows"} · ${counts.box} box modeled · ${counts.aggregate} aggregate · ${counts.deferred} deferred · ${counts.unplaced} unplaced</p>` +
     coverage.map(renderCoverageItem).join("");
   document.querySelector("#zones").innerHTML = Object.entries(
     state.assembly.zones,
@@ -464,7 +481,7 @@ function updateVisibility() {
     const mesh = meshes.get(part.id);
     if (!mesh) continue;
     const proof =
-      state.model === "concept"
+      state.model !== "assembly"
         ? state.proof.parts.find((item) => item.id === part.id)
         : null;
     const highlight = state.proofConflicts && proof;
@@ -781,7 +798,7 @@ document.querySelector("#coverage").addEventListener("click", (event) => {
 document.querySelector("#proof-panel").addEventListener("click", (event) => {
   const id = event.target.closest("[data-proof-part]")?.dataset.proofPart;
   if (!id) return;
-  if (state.model !== "concept") displayModel("concept");
+  if (state.model === "assembly") displayModel("concept");
   selectPart(id);
 });
 document.querySelector("#explode").addEventListener("input", (event) => {
@@ -841,6 +858,7 @@ function displayModel(model) {
   meshes.clear();
   baseZ.clear();
   state.model = model;
+  state.proof = state.proofs[model === "assembly" ? "concept" : model];
   state.assembly = state.assets[model].data;
   state.selected = null;
   state.isolated = null;
@@ -884,15 +902,17 @@ function displayModel(model) {
   renderProof();
   renderHardware();
   setTab();
-  document.querySelector("#proof-toggle").disabled = model !== "concept";
+  document.querySelector("#proof-toggle").disabled = model === "assembly";
   document.querySelector("#model-part-count").textContent =
     state.assembly.parts.length;
   document.querySelector("#geometry-label").textContent =
-    model === "concept" ? "concept solids" : "source envelopes";
+    model === "assembly" ? "source envelopes" : "concept solids";
   document.querySelector("#model-basis").textContent =
     model === "concept"
       ? "Editable assumptions and source geometry"
-      : "Traceable source planning envelopes";
+      : model === "memory8"
+        ? "Eight reference packages · stack and topology unresolved"
+        : "Traceable source planning envelopes";
   document.querySelector("#part-detail").className = "detail-placeholder";
   document.querySelector("#part-detail").innerHTML =
     '<div class="detail-icon">◇</div><h2>Select a component</h2><p>Inspect geometry, evidence, and its source.</p>';
@@ -914,7 +934,15 @@ try {
   const proofResponse = await fetch(`${import.meta.env.BASE_URL}proof.json`);
   if (!proofResponse.ok)
     throw new Error(`proof data: HTTP ${proofResponse.status}`);
-  state.proof = await proofResponse.json();
+  const memoryProofResponse = await fetch(
+    `${import.meta.env.BASE_URL}memory-8x16-proof.json`,
+  );
+  if (!memoryProofResponse.ok)
+    throw new Error(`memory CAD proof: HTTP ${memoryProofResponse.status}`);
+  state.proofs = {
+    concept: await proofResponse.json(),
+    memory8: await memoryProofResponse.json(),
+  };
   const hardwareResponse = await fetch(
     `${import.meta.env.BASE_URL}hardware-readiness.json`,
   );
@@ -923,12 +951,16 @@ try {
   state.hardware = await hardwareResponse.json();
   const loader = new GLTFLoader();
   const assets = await Promise.all(
-    ["concept", "assembly"].map(async (name) => {
+    [
+      ["concept", "concept"],
+      ["memory8", "memory-8x16"],
+      ["assembly", "assembly"],
+    ].map(async ([key, name]) => {
       const response = await fetch(`${import.meta.env.BASE_URL}${name}.json`);
       if (!response.ok)
         throw new Error(`${name} data: HTTP ${response.status}`);
       return [
-        name,
+        key,
         {
           data: await response.json(),
           gltf: await loader.loadAsync(
@@ -941,7 +973,11 @@ try {
   state.assets = Object.fromEntries(assets);
   state.assembly = state.assets.concept.data;
   makeKeepouts();
-  displayModel("concept");
+  displayModel(
+    ["concept", "memory8", "assembly"].includes(requestedModel)
+      ? requestedModel
+      : "concept",
+  );
 } catch (error) {
   document
     .querySelector("#viewport")

@@ -1,6 +1,6 @@
 # Concept CAD proofing
 
-The [concept assembly](../../cad/slate-pocket-v1r/concept-cad/README.md) is checked as geometry, not certified as a device. `buildslate.cad` builds the solids from the [source assembly](../../engineering/assembly/assembly.yaml) and [concept manifest](../../engineering/assembly/concept-cad.yaml), exports STEP and glTF, then writes the [proof report](../../viewer/public/proof.json). The [public Proof view](https://superflyad.github.io/BuildSlate/?tab=proof) presents that report beside the model.
+The [concept assemblies](../../cad/slate-pocket-v1r/concept-cad/README.md) are checked as geometry, not certified as devices. `buildslate.cad` builds the baseline from the [source assembly](../../engineering/assembly/assembly.yaml) and [concept manifest](../../engineering/assembly/concept-cad.yaml), then replaces the four planning DRAM solids with the [eight-package study](memory_package_fit.md) for a separate alternative. Each receives STEP, glTF, and its own proof report. The [public Proof view](https://superflyad.github.io/BuildSlate/?tab=proof) presents the selected model's report.
 
 ## Checks
 
@@ -21,7 +21,7 @@ The [CAD proof fixture](../../scripts/check_cad_proof_geometry.py) checks that t
 
 `proof.json` records every part's volume, surface area, face and edge counts, six integrity checks, intersecting part IDs, and keepout IDs. All 22 component roles have linked checked solids and retain their source library's unresolved evidence list. The report also lists each measured overlap and each local stack result. The viewer's **Proof conflicts** control colors affected concept solids; select a finding to inspect its source and geometry basis.
 
-The current concept has no positive volume intersections between active solids at nominal placement. It retains keepout conflicts, deferred wireless charging reservation overlaps, a failed wireless charging thickness stack, and unverified component evidence. The report status remains `review_required`. Replacing an assumed shape or moving a part requires a manifest change, CAD regeneration, proof review, and the normal repository gate.
+The baseline and eight-package reference variant have no positive volume intersections between active solids at nominal placement. They retain keepout conflicts, deferred wireless charging reservation overlaps, a failed wireless charging thickness stack, and unverified component evidence. The memory variant also retains the floorplan/mechanical PCB thickness disagreement outside the solid proof. Both report statuses remain `review_required`. Replacing an assumed shape or moving a part requires a manifest change, CAD regeneration, proof review, and the normal repository gate.
 
 The older [CAD budget](../../reports/slate-pocket-v1r-cad-budget.txt) screens seven source placements. The proof report also screens applicable concept and board parts, so its keepout count can be higher without contradicting that source report.
 

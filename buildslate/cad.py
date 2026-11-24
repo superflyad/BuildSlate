@@ -13,12 +13,18 @@ from pathlib import Path
 from .assembly import build_assembly
 from .cad_proof import PROOF, build_proof
 from .io import load_yaml
+from .memory_package_fit import CANDIDATES, PUBLIC_PART, STUDY
+from .memory_package_fit import audit as audit_memory
 from .program import DEFAULT_REPO_ROOT
 
 MANIFEST = Path("engineering/assembly/concept-cad.yaml")
 STEP = Path("cad/slate-pocket-v1r/concept-cad/assembly.step")
 MODEL = Path("viewer/public/concept.json")
 GLTF = Path("viewer/public/concept.gltf")
+MEMORY_STEP = Path("cad/slate-pocket-v1r/concept-cad/memory-8x16.step")
+MEMORY_MODEL = Path("viewer/public/memory-8x16.json")
+MEMORY_GLTF = Path("viewer/public/memory-8x16.gltf")
+MEMORY_PROOF = Path("viewer/public/memory-8x16-proof.json")
 
 
 def build_concept(repo_root: Path) -> dict:
@@ -125,6 +131,78 @@ def build_concept(repo_root: Path) -> dict:
         "component_coverage": coverage,
         "caveat": "Editable concept CAD. Assumed placements and packages are not supplier CAD or verified fit.",
     }
+
+
+def build_memory_variant(repo_root: Path) -> dict:
+    """Replace planning DRAM solids with eight unqualified reference outlines."""
+    model = build_concept(repo_root)
+    report = audit_memory(repo_root)
+    study = report["eight_package_study"]
+    if study["placement_conflicts"] or study["package_count"] != 8:
+        raise ValueError(
+            "eight-package reference outline has unresolved planar conflicts"
+        )
+    floorplan = load_yaml(repo_root / model["sources"]["pcb"])
+    planning_ids = {
+        part_id
+        for part_id, placement in floorplan["placements"].items()
+        if placement["function"] == "lpddr5x_32gb_planning_site"
+    }
+    if len(planning_ids) != 4:
+        raise ValueError("unexpected baseline memory planning sites")
+    model["parts"] = [part for part in model["parts"] if part["id"] not in planning_ids]
+    supplier = load_yaml(repo_root / CANDIDATES)["memory_supplier_context"][PUBLIC_PART]
+    supplier_source = f"{CANDIDATES.as_posix()}#memory_supplier_context.{PUBLIC_PART}"
+    for item in study["placements"]:
+        part_id = item["id"]
+        model["parts"].append(
+            {
+                "id": part_id,
+                "label": f"16 GB memory · {part_id.removeprefix('memory_').replace('_', ' ')}",
+                "group": "memory",
+                "box_mm": item["assembly_box_mm"],
+                "evidence_class": "design_assumption",
+                "source": supplier_source,
+                "active": True,
+                "notes": (
+                    f"{supplier['part_number']} public package outline; {item['side']} "
+                    "placement and X2 support are unqualified."
+                ),
+                "shape": "chip",
+                "geometry_use": "solid",
+                "screen_layer": "component_planform"
+                if item["side"] == "component"
+                else None,
+                "roles": ["memory_packages"],
+                "geometry_source": f"{STUDY.as_posix()}#placements.{part_id}",
+                "geometry_evidence_class": "design_assumption",
+            }
+        )
+    model["component_coverage"] = [
+        {
+            **item,
+            "concept_part_ids": [
+                part["id"]
+                for part in model["parts"]
+                if "memory_packages" in part.get("roles", [])
+            ],
+        }
+        if item["id"] == "memory_packages"
+        else item
+        for item in model["component_coverage"]
+    ]
+    if len({part["id"] for part in model["parts"]}) != len(model["parts"]):
+        raise ValueError("duplicate part ID in memory variant")
+    model["status"] = "eight_package_reference_unqualified"
+    model["description"] = (
+        "Two-sided eight-package reference alternative. Public package outlines "
+        "replace the four 32 GB planning sites; all other concept parts remain."
+    )
+    model["caveat"] = (
+        "Editable outline study only. The PCB thickness sources disagree, and "
+        "memory topology, routing, thermal path, and physical function are unproven."
+    )
+    return model
 
 
 def _shape(cq, part: dict):
@@ -362,13 +440,15 @@ def _gltf(solids: list[tuple[dict, object]]) -> dict:
     }
 
 
-def generate(repo_root: Path = DEFAULT_REPO_ROOT) -> tuple[int, Path]:
-    try:
-        import cadquery as cq
-    except ImportError as error:
-        raise RuntimeError("Install requirements-cad.txt with Python 3.12") from error
-    root = repo_root.resolve()
-    model = build_concept(root)
+def _export(
+    cq,
+    root: Path,
+    model: dict,
+    step: Path,
+    output: Path,
+    gltf: Path,
+    proof_output: Path,
+) -> None:
     cad = cq.Assembly(name=model["device"])
     solids = []
     for part in model["parts"]:
@@ -388,7 +468,7 @@ def generate(repo_root: Path = DEFAULT_REPO_ROOT) -> tuple[int, Path]:
             box.ymax,
             box.zmax,
         ]
-    step_path = root / STEP
+    step_path = root / step
     step_path.parent.mkdir(parents=True, exist_ok=True)
     cad.export(str(step_path))
     step_text, count = re.subn(
@@ -402,18 +482,32 @@ def generate(repo_root: Path = DEFAULT_REPO_ROOT) -> tuple[int, Path]:
     imported_solids = cq.importers.importStep(str(step_path)).solids().vals()
     geometry = _gltf(solids)
     proof = build_proof(root, model, solids, geometry, imported_solids, exact_bounds)
-    (root / MODEL).write_text(
+    if model["status"] == "eight_package_reference_unqualified":
+        proof["memory_study"] = audit_memory(root)["eight_package_study"]
+    (root / output).write_text(
         json.dumps(model, indent=2) + "\n", encoding="utf-8", newline="\n"
     )
-    (root / GLTF).write_text(
+    (root / gltf).write_text(
         json.dumps(geometry, separators=(",", ":")) + "\n",
         encoding="utf-8",
         newline="\n",
     )
-    (root / PROOF).write_text(
+    (root / proof_output).write_text(
         json.dumps(proof, indent=2) + "\n", encoding="utf-8", newline="\n"
     )
-    return len(solids), step_path
+
+
+def generate(repo_root: Path = DEFAULT_REPO_ROOT) -> tuple[int, Path]:
+    try:
+        import cadquery as cq
+    except ImportError as error:
+        raise RuntimeError("Install requirements-cad.txt with Python 3.12") from error
+    root = repo_root.resolve()
+    model = build_concept(root)
+    _export(cq, root, model, STEP, MODEL, GLTF, PROOF)
+    variant = build_memory_variant(root)
+    _export(cq, root, variant, MEMORY_STEP, MEMORY_MODEL, MEMORY_GLTF, MEMORY_PROOF)
+    return len(model["parts"]), root / STEP
 
 
 def main() -> int:
@@ -421,7 +515,8 @@ def main() -> int:
     parser.add_argument("--repo-root", type=Path, default=DEFAULT_REPO_ROOT)
     args = parser.parse_args()
     count, path = generate(args.repo_root)
-    print(f"Exported {count} editable concept solids to {path}")
+    print(f"Exported {count} baseline solids to {path}")
+    print(f"Exported eight-package reference STEP to {args.repo_root / MEMORY_STEP}")
     return 0
 
 

@@ -1,0 +1,1604 @@
+{
+  "schema_version": 1,
+  "device": "slate-pocket-v1r",
+  "model_sha256": "44eda795969df39ac6a0c9217e01f0e6fdac7cc812142540d9978fa674412898",
+  "status": "review_required",
+  "method": "CadQuery BREP validity, exact Boolean intersections, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
+  "thresholds": {
+    "declared_bounds_tolerance_mm": 0.01,
+    "mesh_bounds_max_tolerance_mm": 0.25,
+    "interference_volume_mm3": 0.01
+  },
+  "summary": {
+    "parts_checked": 45,
+    "roles_covered": 22,
+    "roles_checked": 22,
+    "integrity_passed": true,
+    "step_roundtrip_passed": true,
+    "interferences": 0,
+    "reservation_conflicts": 2,
+    "keepout_conflicts": 13,
+    "stack_failures": 1,
+    "unverified_parts": 45
+  },
+  "parts": [
+    {
+      "id": "rear_cover",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 9373.105,
+      "surface_area_mm2": 34397.508,
+      "faces": 11,
+      "edges": 27,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "frame_left",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 2379.75,
+      "surface_area_mm2": 2206.6,
+      "faces": 6,
+      "edges": 12,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "frame_right",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 2379.75,
+      "surface_area_mm2": 2206.6,
+      "faces": 6,
+      "edges": 12,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "frame_top",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 4358.7,
+      "surface_area_mm2": 3999.9,
+      "faces": 6,
+      "edges": 12,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "frame_bottom",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 4250.7,
+      "surface_area_mm2": 4017.9,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "display_stack",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 10837.796,
+      "surface_area_mm2": 31330.929,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "cover_glass",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 9400.751,
+      "surface_area_mm2": 34484.216,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "battery_reference",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 29026.569,
+      "surface_area_mm2": 12249.385,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [
+        "wireless_charging_placeholder"
+      ],
+      "keepout_ids": [
+        "bottom_connector_zone"
+      ]
+    },
+    {
+      "id": "main_pcb_placeholder",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 5134.755,
+      "surface_area_mm2": 8902.209,
+      "faces": 14,
+      "edges": 36,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "bottom_connector_zone"
+      ]
+    },
+    {
+      "id": "rear_camera_placeholder",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 1695.847,
+      "surface_area_mm2": 1370.731,
+      "faces": 10,
+      "edges": 18,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "speaker_a_placeholder",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 641.585,
+      "surface_area_mm2": 670.493,
+      "faces": 25,
+      "edges": 60,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "speaker_b_placeholder",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 641.585,
+      "surface_area_mm2": 670.493,
+      "faces": 25,
+      "edges": 60,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "top_rf_edge"
+      ]
+    },
+    {
+      "id": "wireless_charging_placeholder",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 1588.884,
+      "surface_area_mm2": 4276.595,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [
+        "battery_reference",
+        "battery_pack_shell_concept"
+      ],
+      "keepout_ids": []
+    },
+    {
+      "id": "thermal_spreader_placeholder",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 1342.627,
+      "surface_area_mm2": 6806.159,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "compute_soc",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 451.725,
+      "surface_area_mm2": 902.016,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "storage_ufs_1tb_reference",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 92.087,
+      "surface_area_mm2": 274.536,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "platform_pmic",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 149.581,
+      "surface_area_mm2": 375.776,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "battery_charger",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 201.485,
+      "surface_area_mm2": 496.416,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "usb_pd_controller",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 75.213,
+      "surface_area_mm2": 198.496,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "wireless_charge_controller",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 75.213,
+      "surface_area_mm2": 198.496,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "wifi_bluetooth",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 130.989,
+      "surface_area_mm2": 331.456,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "security_controller",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 60.301,
+      "surface_area_mm2": 162.176,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "touch_digitizer_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 2322.385,
+      "surface_area_mm2": 31043.518,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "battery_pack_shell_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 2567.15,
+      "surface_area_mm2": 14852.5,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [
+        "wireless_charging_placeholder"
+      ],
+      "keepout_ids": [
+        "camera_service_zone",
+        "bottom_connector_zone"
+      ]
+    },
+    {
+      "id": "graphite_spreader_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 402.788,
+      "surface_area_mm2": 6741.041,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "phase_change_material_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 79.828,
+      "surface_area_mm2": 813.94,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "front_camera_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 116.263,
+      "surface_area_mm2": 193.053,
+      "faces": 10,
+      "edges": 18,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "top_rf_edge",
+        "camera_service_zone"
+      ]
+    },
+    {
+      "id": "antenna_top_left_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 83.657,
+      "surface_area_mm2": 450.396,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "antenna_top_right_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 83.657,
+      "surface_area_mm2": 450.396,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "antenna_bottom_left_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 83.657,
+      "surface_area_mm2": 450.396,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "antenna_bottom_right_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 83.657,
+      "surface_area_mm2": 450.396,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "microphone_bottom_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 8.482,
+      "surface_area_mm2": 25.447,
+      "faces": 3,
+      "edges": 3,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "bottom_rf_edge",
+        "bottom_connector_zone"
+      ]
+    },
+    {
+      "id": "microphone_top_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 8.482,
+      "surface_area_mm2": 25.447,
+      "faces": 3,
+      "edges": 3,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "top_rf_edge"
+      ]
+    },
+    {
+      "id": "haptics_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 97.854,
+      "surface_area_mm2": 143.991,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "usb_c_port_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 126.9,
+      "surface_area_mm2": 350.1,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "bottom_rf_edge"
+      ]
+    },
+    {
+      "id": "sensors_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 31.785,
+      "surface_area_mm2": 86.712,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "top_rf_edge",
+        "camera_service_zone"
+      ]
+    },
+    {
+      "id": "perimeter_gasket_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 54.2,
+      "surface_area_mm2": 2222.2,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "memory_left_lower_component",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 202.493,
+      "surface_area_mm2": 457.696,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "memory_left_upper_component",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 202.493,
+      "surface_area_mm2": 457.696,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "memory_right_lower_component",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 202.493,
+      "surface_area_mm2": 457.696,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "memory_right_upper_component",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 202.493,
+      "surface_area_mm2": 457.696,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "memory_left_lower_reverse",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 202.493,
+      "surface_area_mm2": 457.696,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "memory_left_upper_reverse",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 202.493,
+      "surface_area_mm2": 457.696,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "memory_right_lower_reverse",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 202.493,
+      "surface_area_mm2": 457.696,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "memory_right_upper_reverse",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 202.493,
+      "surface_area_mm2": 457.696,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    }
+  ],
+  "roles": [
+    {
+      "id": "display_module",
+      "part_ids": [
+        "display_stack"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "aggregate",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "exact panel supplier stackup",
+        "display driver location and flex geometry",
+        "luminance-dependent power curve"
+      ]
+    },
+    {
+      "id": "cover_glass",
+      "part_ids": [
+        "cover_glass"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "glass chemistry and strengthening process",
+        "edge radius and exposed-area geometry",
+        "optical coating stack"
+      ]
+    },
+    {
+      "id": "touch_digitizer",
+      "part_ids": [
+        "display_stack",
+        "touch_digitizer_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "aggregate",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "in-cell versus separate digitizer approach",
+        "touch controller package location",
+        "ESD structure area"
+      ]
+    },
+    {
+      "id": "main_pcb",
+      "part_ids": [
+        "main_pcb_placeholder"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 1,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "board layer count and rigid-flex split",
+        "final component placement density",
+        "shielding can sizes and keep-outs"
+      ]
+    },
+    {
+      "id": "soc_package",
+      "part_ids": [
+        "compute_soc"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "actual SoC or NPU package dimensions",
+        "sustained power at target workloads",
+        "memory interface width and routing topology"
+      ]
+    },
+    {
+      "id": "memory_packages",
+      "part_ids": [
+        "memory_left_lower_component",
+        "memory_left_upper_component",
+        "memory_right_lower_component",
+        "memory_right_upper_component",
+        "memory_left_lower_reverse",
+        "memory_left_upper_reverse",
+        "memory_right_lower_reverse",
+        "memory_right_upper_reverse"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "memory technology and package count",
+        "achievable capacity in phone-class footprint",
+        "workload-dependent bandwidth power"
+      ]
+    },
+    {
+      "id": "storage_package",
+      "part_ids": [
+        "storage_ufs_1tb_reference"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "storage capacity and package size",
+        "sustained write workload",
+        "controller integration level"
+      ]
+    },
+    {
+      "id": "battery_pack",
+      "part_ids": [
+        "battery_reference",
+        "battery_pack_shell_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 3,
+      "source_representation": "aggregate",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "final cell chemistry and safety stack",
+        "pouch versus prismatic packaging",
+        "usable energy after protection and cycle-life limits"
+      ]
+    },
+    {
+      "id": "vapor_chamber",
+      "part_ids": [
+        "thermal_spreader_placeholder"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "aggregate",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "vapor chamber supplier limits at target thickness",
+        "wick structure and allowable bending",
+        "interface material thickness and compression"
+      ]
+    },
+    {
+      "id": "graphite_spreader",
+      "part_ids": [
+        "graphite_spreader_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "actual graphite grade and anisotropic conductivity",
+        "adhesive thickness",
+        "allowed cutouts near antennas"
+      ]
+    },
+    {
+      "id": "phase_change_material",
+      "part_ids": [
+        "phase_change_material_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "phase-change temperature",
+        "latent heat capacity in thin form",
+        "long-term reliability under cycling"
+      ]
+    },
+    {
+      "id": "rear_camera_module",
+      "part_ids": [
+        "rear_camera_placeholder"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "aggregate",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "sensor size and optics target",
+        "autofocus or stabilization choice",
+        "camera bump allowance"
+      ]
+    },
+    {
+      "id": "front_camera_module",
+      "part_ids": [
+        "front_camera_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 2,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "aperture strategy",
+        "image quality target",
+        "under-display feasibility"
+      ]
+    },
+    {
+      "id": "antenna_modules",
+      "part_ids": [
+        "antenna_top_left_concept",
+        "antenna_top_right_concept",
+        "antenna_bottom_left_concept",
+        "antenna_bottom_right_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "radio bands and MIMO count",
+        "chassis material and window strategy",
+        "certified RF performance after integration"
+      ]
+    },
+    {
+      "id": "wireless_charging_coil",
+      "part_ids": [
+        "wireless_charging_placeholder"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "deferred",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "charging standard and power target",
+        "coil diameter and ferrite thickness",
+        "rear-cover material and thermal coupling"
+      ]
+    },
+    {
+      "id": "speakers",
+      "part_ids": [
+        "speaker_a_placeholder",
+        "speaker_b_placeholder"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 1,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "acoustic loudness target",
+        "number of drivers",
+        "waterproofing target"
+      ]
+    },
+    {
+      "id": "microphones",
+      "part_ids": [
+        "microphone_bottom_concept",
+        "microphone_top_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 3,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "microphone count and array geometry",
+        "always-on wake-word power target",
+        "ingress protection design"
+      ]
+    },
+    {
+      "id": "haptics",
+      "part_ids": [
+        "haptics_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "actuator type and size",
+        "desired haptic strength",
+        "chassis coupling design"
+      ]
+    },
+    {
+      "id": "usb_c_port",
+      "part_ids": [
+        "usb_c_port_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 1,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "USB speed and charging power target",
+        "waterproofing and port reinforcement strategy",
+        "connector supplier geometry"
+      ]
+    },
+    {
+      "id": "sensors",
+      "part_ids": [
+        "sensors_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 2,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "final sensor suite",
+        "always-on duty cycle",
+        "calibration and placement limits"
+      ]
+    },
+    {
+      "id": "tpm_or_security_chip",
+      "part_ids": [
+        "security_controller"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "discrete chip versus SoC-integrated root of trust",
+        "certification requirements",
+        "secure manufacturing flow"
+      ]
+    },
+    {
+      "id": "fasteners_adhesives_gaskets",
+      "part_ids": [
+        "perimeter_gasket_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "ingress protection target",
+        "assembly sequence and serviceability",
+        "tolerance stack and adhesive compression"
+      ]
+    }
+  ],
+  "intersections": [
+    {
+      "first": "battery_reference",
+      "second": "wireless_charging_placeholder",
+      "volume_mm3": 198.611,
+      "kind": "reservation_conflict"
+    },
+    {
+      "first": "wireless_charging_placeholder",
+      "second": "battery_pack_shell_concept",
+      "volume_mm3": 595.832,
+      "kind": "reservation_conflict"
+    }
+  ],
+  "keepout_conflicts": [
+    {
+      "part_id": "battery_reference",
+      "keepout_id": "bottom_connector_zone",
+      "category": "connector",
+      "overlap_area_mm2": 14.0
+    },
+    {
+      "part_id": "main_pcb_placeholder",
+      "keepout_id": "bottom_connector_zone",
+      "category": "connector",
+      "overlap_area_mm2": 12.0
+    },
+    {
+      "part_id": "speaker_b_placeholder",
+      "keepout_id": "top_rf_edge",
+      "category": "rf",
+      "overlap_area_mm2": 88.0
+    },
+    {
+      "part_id": "battery_pack_shell_concept",
+      "keepout_id": "camera_service_zone",
+      "category": "service",
+      "overlap_area_mm2": 11.5
+    },
+    {
+      "part_id": "battery_pack_shell_concept",
+      "keepout_id": "bottom_connector_zone",
+      "category": "connector",
+      "overlap_area_mm2": 30.0
+    },
+    {
+      "part_id": "front_camera_concept",
+      "keepout_id": "top_rf_edge",
+      "category": "rf",
+      "overlap_area_mm2": 40.0
+    },
+    {
+      "part_id": "front_camera_concept",
+      "keepout_id": "camera_service_zone",
+      "category": "service",
+      "overlap_area_mm2": 4.0
+    },
+    {
+      "part_id": "microphone_bottom_concept",
+      "keepout_id": "bottom_rf_edge",
+      "category": "rf",
+      "overlap_area_mm2": 9.0
+    },
+    {
+      "part_id": "microphone_bottom_concept",
+      "keepout_id": "bottom_connector_zone",
+      "category": "connector",
+      "overlap_area_mm2": 9.0
+    },
+    {
+      "part_id": "microphone_top_concept",
+      "keepout_id": "top_rf_edge",
+      "category": "rf",
+      "overlap_area_mm2": 9.0
+    },
+    {
+      "part_id": "usb_c_port_concept",
+      "keepout_id": "bottom_rf_edge",
+      "category": "rf",
+      "overlap_area_mm2": 36.0
+    },
+    {
+      "part_id": "sensors_concept",
+      "keepout_id": "top_rf_edge",
+      "category": "rf",
+      "overlap_area_mm2": 16.0
+    },
+    {
+      "part_id": "sensors_concept",
+      "keepout_id": "camera_service_zone",
+      "category": "service",
+      "overlap_area_mm2": 8.0
+    }
+  ],
+  "zones": [
+    {
+      "id": "battery_without_wireless_charging",
+      "status": "warning",
+      "total_mm": 9.04,
+      "margin_mm": 0.46,
+      "basis": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml"
+    },
+    {
+      "id": "battery_with_wireless_charging",
+      "status": "fail",
+      "total_mm": 9.84,
+      "margin_mm": -0.34,
+      "basis": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml"
+    },
+    {
+      "id": "compute_hotspot",
+      "status": "pass",
+      "total_mm": 5.5,
+      "margin_mm": 4.0,
+      "basis": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml"
+    },
+    {
+      "id": "rear_camera",
+      "status": "pass",
+      "total_mm": 7.75,
+      "margin_mm": 1.75,
+      "basis": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml"
+    }
+  ],
+  "caveat": "Integrity checks establish that the concept artifacts agree. Interferences and keepout overlaps are unresolved design work. No fit, tolerance, performance, or release approval is implied.",
+  "memory_study": {
+    "status": "outline_clear_stack_unresolved",
+    "package_count": 8,
+    "packages_per_side": {
+      "component": 4,
+      "reverse": 4
+    },
+    "assumed_planar_clearance_mm": 1.0,
+    "minimum_screened_planar_gap_mm": 1.5,
+    "board_outline_mm": [
+      78.0,
+      55.0
+    ],
+    "component_side_placements": [
+      {
+        "id": "compute_soc",
+        "rect_mm": [
+          28.0,
+          18.0,
+          20.0,
+          20.0
+        ]
+      },
+      {
+        "id": "storage_ufs_1tb_reference",
+        "rect_mm": [
+          66.5,
+          18.0,
+          9.0,
+          13.0
+        ]
+      },
+      {
+        "id": "platform_pmic",
+        "rect_mm": [
+          30.0,
+          41.0,
+          16.0,
+          10.0
+        ]
+      },
+      {
+        "id": "battery_charger",
+        "rect_mm": [
+          2.0,
+          2.0,
+          18.0,
+          12.0
+        ]
+      },
+      {
+        "id": "usb_pd_controller",
+        "rect_mm": [
+          22.0,
+          2.0,
+          10.0,
+          8.0
+        ]
+      },
+      {
+        "id": "wireless_charge_controller",
+        "rect_mm": [
+          34.0,
+          2.0,
+          10.0,
+          8.0
+        ]
+      },
+      {
+        "id": "wifi_bluetooth",
+        "rect_mm": [
+          48.0,
+          2.0,
+          14.0,
+          10.0
+        ]
+      },
+      {
+        "id": "security_controller",
+        "rect_mm": [
+          64.0,
+          2.0,
+          8.0,
+          8.0
+        ]
+      }
+    ],
+    "floorplan_board_thickness_mm": 0.8,
+    "mechanical_board_height_mm": 1.2,
+    "board_z_mm": [
+      2.8,
+      4.0
+    ],
+    "placement_conflicts": [],
+    "stack_issues": [
+      "Mechanical board height differs from floorplan stack thickness"
+    ],
+    "placements": [
+      {
+        "id": "memory_left_lower_component",
+        "side": "component",
+        "rect_mm": [
+          10.0,
+          16.0,
+          14.0,
+          14.0
+        ],
+        "assembly_box_mm": [
+          102.0,
+          28.0,
+          4.0,
+          14.0,
+          14.0,
+          1.1
+        ]
+      },
+      {
+        "id": "memory_left_upper_component",
+        "side": "component",
+        "rect_mm": [
+          10.0,
+          32.0,
+          14.0,
+          14.0
+        ],
+        "assembly_box_mm": [
+          102.0,
+          44.0,
+          4.0,
+          14.0,
+          14.0,
+          1.1
+        ]
+      },
+      {
+        "id": "memory_right_lower_component",
+        "side": "component",
+        "rect_mm": [
+          51.0,
+          16.0,
+          14.0,
+          14.0
+        ],
+        "assembly_box_mm": [
+          143.0,
+          28.0,
+          4.0,
+          14.0,
+          14.0,
+          1.1
+        ]
+      },
+      {
+        "id": "memory_right_upper_component",
+        "side": "component",
+        "rect_mm": [
+          51.0,
+          32.0,
+          14.0,
+          14.0
+        ],
+        "assembly_box_mm": [
+          143.0,
+          44.0,
+          4.0,
+          14.0,
+          14.0,
+          1.1
+        ]
+      },
+      {
+        "id": "memory_left_lower_reverse",
+        "side": "reverse",
+        "rect_mm": [
+          10.0,
+          16.0,
+          14.0,
+          14.0
+        ],
+        "assembly_box_mm": [
+          102.0,
+          28.0,
+          1.7,
+          14.0,
+          14.0,
+          1.1
+        ]
+      },
+      {
+        "id": "memory_left_upper_reverse",
+        "side": "reverse",
+        "rect_mm": [
+          10.0,
+          32.0,
+          14.0,
+          14.0
+        ],
+        "assembly_box_mm": [
+          102.0,
+          44.0,
+          1.7,
+          14.0,
+          14.0,
+          1.1
+        ]
+      },
+      {
+        "id": "memory_right_lower_reverse",
+        "side": "reverse",
+        "rect_mm": [
+          51.0,
+          16.0,
+          14.0,
+          14.0
+        ],
+        "assembly_box_mm": [
+          143.0,
+          28.0,
+          1.7,
+          14.0,
+          14.0,
+          1.1
+        ]
+      },
+      {
+        "id": "memory_right_upper_reverse",
+        "side": "reverse",
+        "rect_mm": [
+          51.0,
+          32.0,
+          14.0,
+          14.0
+        ],
+        "assembly_box_mm": [
+          143.0,
+          44.0,
+          1.7,
+          14.0,
+          14.0,
+          1.1
+        ]
+      }
+    ],
+    "source": "engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml",
+    "caveat": "Planar package boxes do not include solder lands, via escape, decoupling, shields, thermal contacts, or X2 memory-channel rules."
+  }
+}

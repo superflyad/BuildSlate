@@ -2,35 +2,47 @@
 
 from __future__ import annotations
 
-import json
 import hashlib
+import json
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from buildslate.cad import GLTF, MODEL, STEP, build_concept  # noqa: E402
+from buildslate.cad import (  # noqa: E402
+    GLTF,
+    MEMORY_GLTF,
+    MEMORY_MODEL,
+    MEMORY_PROOF,
+    MEMORY_STEP,
+    MODEL,
+    STEP,
+    build_concept,
+    build_memory_variant,
+)
 from buildslate.cad_proof import PROOF  # noqa: E402
 from buildslate.io import load_yaml  # noqa: E402
+from buildslate.memory_package_fit import audit as audit_memory  # noqa: E402
 
 
-def main() -> int:
-    expected = build_concept(ROOT)
-    committed = json.loads((ROOT / MODEL).read_text(encoding="utf-8"))
+def _check_model(
+    expected: dict, model_path: Path, gltf_path: Path, step_path: Path, proof_path: Path
+) -> dict:
+    committed = json.loads((ROOT / model_path).read_text(encoding="utf-8"))
     if committed != expected:
         raise ValueError(
             "concept JSON is stale; regenerate with Python 3.12 CAD environment"
         )
-    geometry = json.loads((ROOT / GLTF).read_text(encoding="utf-8"))
+    geometry = json.loads((ROOT / gltf_path).read_text(encoding="utf-8"))
     ids = {part["id"] for part in expected["parts"]}
     node_ids = {node["extras"]["part_id"] for node in geometry["nodes"]}
     if node_ids != ids or len(geometry["meshes"]) != len(ids):
         raise ValueError("concept glTF part identities drifted")
-    step = (ROOT / STEP).read_text(encoding="utf-8")
+    step = (ROOT / step_path).read_text(encoding="utf-8")
     if step.count("MANIFOLD_SOLID_BREP") != len(ids):
         raise ValueError("concept STEP solid count drifted")
-    proof = json.loads((ROOT / PROOF).read_text(encoding="utf-8"))
+    proof = json.loads((ROOT / proof_path).read_text(encoding="utf-8"))
     expected_hash = hashlib.sha256(
         (json.dumps(expected, indent=2) + "\n").encode("utf-8")
     ).hexdigest()
@@ -78,7 +90,36 @@ def main() -> int:
         or summary["unverified_parts"] != unverified
     ):
         raise ValueError("concept proof must preserve the evidence boundary")
-    print(f"PASS: {len(ids)} concept solids and {len(part_reports)} part proof records")
+    return proof
+
+
+def main() -> int:
+    baseline = build_concept(ROOT)
+    primary_proof = _check_model(baseline, MODEL, GLTF, STEP, PROOF)
+    variant = build_memory_variant(ROOT)
+    reference_proof = _check_model(
+        variant, MEMORY_MODEL, MEMORY_GLTF, MEMORY_STEP, MEMORY_PROOF
+    )
+    baseline_memory = {
+        part["id"] for part in baseline["parts"] if part["group"] == "memory"
+    }
+    variant_memory = [part for part in variant["parts"] if part["group"] == "memory"]
+    if (
+        len(baseline_memory) != 4
+        or len(variant_memory) != 8
+        or baseline_memory & {part["id"] for part in variant_memory}
+        or len(variant["parts"]) != len(baseline["parts"]) + 4
+        or reference_proof["summary"]["interferences"] != 0
+        or reference_proof.get("memory_study")
+        != audit_memory(ROOT)["eight_package_study"]
+    ):
+        raise ValueError(
+            "eight-package CAD variant does not replace the planning solids cleanly"
+        )
+    print(
+        f"PASS: {primary_proof['summary']['parts_checked']} baseline and "
+        f"{reference_proof['summary']['parts_checked']} reference CAD solids"
+    )
     return 0
 
 

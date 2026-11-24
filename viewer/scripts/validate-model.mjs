@@ -12,7 +12,7 @@ globalThis.ProgressEvent ??= class ProgressEvent {
 };
 
 const root = resolve(import.meta.dirname, "..");
-for (const model of ["assembly", "concept"]) {
+for (const model of ["assembly", "concept", "memory-8x16"]) {
   const assembly = JSON.parse(
     readFileSync(resolve(root, `public/${model}.json`), "utf8"),
   );
@@ -51,7 +51,7 @@ for (const model of ["assembly", "concept"]) {
       }
     }
   }
-  if (model === "concept") {
+  if (model !== "assembly") {
     assert.equal(assembly.component_coverage.length, 22);
     assert.ok(
       assembly.component_coverage.every((role) => role.concept_part_ids.length),
@@ -59,23 +59,28 @@ for (const model of ["assembly", "concept"]) {
   }
   console.log(`PASS: ${model} glTF loads ${names.size} distinct meshes`);
 }
-const proof = JSON.parse(
-  readFileSync(resolve(root, "public/proof.json"), "utf8"),
-);
-const concept = JSON.parse(
-  readFileSync(resolve(root, "public/concept.json"), "utf8"),
-);
-assert.deepEqual(
-  new Set(proof.parts.map((part) => part.id)),
-  new Set(concept.parts.map((part) => part.id)),
-);
-assert.ok(
-  proof.parts.every((part) => Object.values(part.checks).every(Boolean)),
-);
-assert.equal(proof.summary.parts_checked, concept.parts.length);
-assert.deepEqual(
-  new Set(proof.roles.map((role) => role.id)),
-  new Set(concept.component_coverage.map((role) => role.id)),
-);
-assert.equal(proof.summary.keepout_conflicts, proof.keepout_conflicts.length);
-console.log(`PASS: ${proof.parts.length} CAD proof records load`);
+for (const [modelName, proofName] of [
+  ["concept", "proof"],
+  ["memory-8x16", "memory-8x16-proof"],
+]) {
+  const proof = JSON.parse(
+    readFileSync(resolve(root, `public/${proofName}.json`), "utf8"),
+  );
+  const concept = JSON.parse(
+    readFileSync(resolve(root, `public/${modelName}.json`), "utf8"),
+  );
+  assert.deepEqual(
+    new Set(proof.parts.map((part) => part.id)),
+    new Set(concept.parts.map((part) => part.id)),
+  );
+  assert.ok(
+    proof.parts.every((part) => Object.values(part.checks).every(Boolean)),
+  );
+  assert.equal(proof.summary.parts_checked, concept.parts.length);
+  assert.deepEqual(
+    new Set(proof.roles.map((role) => role.id)),
+    new Set(concept.component_coverage.map((role) => role.id)),
+  );
+  assert.equal(proof.summary.keepout_conflicts, proof.keepout_conflicts.length);
+  console.log(`PASS: ${modelName} has ${proof.parts.length} CAD proof records`);
+}

@@ -25,6 +25,7 @@ This roadmap separates software work from engineering evidence. A completed repo
 - [x] Editable, 41-solid concept STEP assembly with explicit assumptions for all 22 component roles
 - [x] Tessellated concept CAD in the browser with a source-envelope comparison view
 - [x] Per-solid CAD proof, source-anchor and STEP checks, exact nominal intersections, and visible keepout and stack findings
+- [x] Separately exported 45-solid two-sided 128 GB package-outline alternative with its own STEP, glTF, proof report, and viewer switch
 
 ## Next engineering inputs
 

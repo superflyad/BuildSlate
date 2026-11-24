@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Record and reject an exact obsolete 32 GB Micron LPDDR5X part; show its four-site and 192-bit bus conflicts in hardware readiness.
 - Screen a public 5G voice-optional module outline against both sides of the 128 GB concept board and publish the unresolved phone package conflict.
 - Require hash-bound, build-matched raw phone test records before the phone-function evidence gate can become review ready.
 - Added a display active-area fit gate: the 7.5-inch 16:10 target exceeds the current body and CAD reserve, and the source 3200×1800 resolution is 16:9; design release remains blocked pending an approved geometry decision.

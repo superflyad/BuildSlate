@@ -14,7 +14,7 @@ The product decision is to retain **128 GB** as Slate Pocket v1R's minimum memor
 
 The inference from these public specifications is narrow: a 128 GB *controller maximum* exists in the preferred X2 family, and separate 128 GB development systems exist. No reviewed source proves a qualified 128 GB X2 board that fits the 180 × 95 × 9.5 mm Slate envelope, sustains its workload within the thermal limit, and operates as a phone. The [candidate data](../../research/evidence/compute/platform-comparison.yaml) records each source and the unresolved limits.
 
-The [package screen](memory_package_fit.md) tests the board's four assumed 32 GB sites against an exact public 16 GB Micron LPDDR5X package. That alternative requires eight packages and does not fit the present rectangles. Eight independent x64 connections would also exceed the X2 Extreme's published 192-bit bus; a supported shared-channel or other topology remains unverified. It does not change the 128 GB decision or select memory.
+The [package screen](memory_package_fit.md) tests the board's four assumed 32 GB sites against exact public Micron LPDDR5X packages. Its 32 GB reference is obsolete, does not fit the sites, and four independent x64 connections would exceed the X2 Extreme's 192-bit bus. The 16 GB alternative needs eight packages and also does not fit those four rectangles; eight independent x64 connections would need 512 bits. A supplier-supported shared-channel or other topology remains unverified. Neither reference changes the 128 GB decision or selects memory.
 
 ## Proof required for Slate
 

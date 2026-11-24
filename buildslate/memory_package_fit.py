@@ -15,6 +15,7 @@ FLOORPLAN = Path("engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml")
 ASSEMBLY = Path("engineering/assembly/assembly.yaml")
 STUDY = Path("engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml")
 PUBLIC_PART = "micron_lpddr5x_16gb_public_part"
+OBSOLETE_32GB_PART = "micron_lpddr5x_32gb_obsolete_reference"
 
 
 def _rectangle_gap(a: list[float], b: list[float]) -> float:
@@ -160,6 +161,7 @@ def audit_data(
         if placement["function"] == "lpddr5x_32gb_planning_site"
     }
     part = candidates["memory_supplier_context"][PUBLIC_PART]
+    obsolete = candidates["memory_supplier_context"][OBSOLETE_32GB_PART]
     controller = candidates["candidates"]["qualcomm_snapdragon_x2_elite_extreme"]
     capacity = int(part["capacity_gb"])
     package = [float(value) for value in part["package_mm"]]
@@ -207,6 +209,8 @@ def audit_data(
         errors.append("Unqualified memory site was promoted beyond placeholder")
     if part["density_gbit"] != capacity * 8:
         errors.append("Manufacturer gigabit density was confused with gigabytes")
+    if obsolete["density_gbit"] != obsolete["capacity_gb"] * 8:
+        errors.append("Obsolete 32 GB package density was confused with gigabytes")
     if not widths_valid:
         errors.append("Controller or memory package bus width is invalid")
     else:
@@ -231,6 +235,47 @@ def audit_data(
         "public_reference_density_gbit": part["density_gbit"],
         "public_reference_package_mm": package,
         "public_reference_ball_count": part["ball_count"],
+        "obsolete_32gb_reference": {
+            "part_number": obsolete["part_number"],
+            "capacity_gb": obsolete["capacity_gb"],
+            "density_gbit": obsolete["density_gbit"],
+            "package_mm": obsolete["package_mm"],
+            "ball_count": obsolete["ball_count"],
+            "public_part_status": obsolete["public_part_status"],
+            "packages_for_128gb": math.ceil(target / obsolete["capacity_gb"]),
+            "site_outline_fits": all(
+                (
+                    obsolete["package_mm"][0] <= float(site["rectangle_mm"]["length"])
+                    and obsolete["package_mm"][1]
+                    <= float(site["rectangle_mm"]["width"])
+                )
+                or (
+                    obsolete["package_mm"][1] <= float(site["rectangle_mm"]["length"])
+                    and obsolete["package_mm"][0]
+                    <= float(site["rectangle_mm"]["width"])
+                )
+                for site in sites.values()
+            ),
+            "site_nominal_height_fits": all(
+                obsolete["package_mm"][2]
+                <= float(
+                    assembly["parts"]["pcb"]["parts"][name].get(
+                        "height_mm", assembly["parts"]["pcb"]["default_height_mm"]
+                    )
+                )
+                for name in sites
+            ),
+            "independent_bus_width_bits": (
+                math.ceil(target / obsolete["capacity_gb"]) * obsolete["bus_width_bits"]
+            ),
+            "independent_bus_width_fits": (
+                math.ceil(target / obsolete["capacity_gb"]) * obsolete["bus_width_bits"]
+                <= controller_width
+            ),
+            "status": "rejected_obsolete_not_x2_qualified",
+            "source": obsolete["source"]["url"],
+            "caveat": "This exact 32 GB part is obsolete; package capacity does not establish X2 channel/rank support or procurement.",
+        },
         "bus_topology_screen": {
             "controller_bus_width_bits": controller_width,
             "public_reference_package_bus_width_bits": package_width,
@@ -259,7 +304,7 @@ def audit_data(
         "source_errors": errors,
         "integration_status": "blocked",
         "missing_design_evidence": [
-            "Exact 32 GB package MPN, drawing, and availability, or a new eight-package board architecture",
+            "Current-production 32 GB package MPN, drawing, and availability, or a new eight-package board architecture",
             "X2-qualified 128 GB shared-channel or other package topology, ranks, and signal rules",
             "Fabricator-reviewed 0.8 mm 12-layer HDI stack and two-sided assembly limits",
             "Memory rails, power sequence, routed SI/PI, and thermal measurements",

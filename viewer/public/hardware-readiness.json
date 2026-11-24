@@ -347,6 +347,26 @@
       1.1
     ],
     "public_reference_ball_count": 441,
+    "obsolete_32gb_reference": {
+      "part_number": "MT62F4G64DAFL-023 WT:C",
+      "capacity_gb": 32,
+      "density_gbit": 256,
+      "package_mm": [
+        14.0,
+        12.4,
+        0.96
+      ],
+      "ball_count": 496,
+      "public_part_status": "obsolete",
+      "packages_for_128gb": 4,
+      "site_outline_fits": false,
+      "site_nominal_height_fits": true,
+      "independent_bus_width_bits": 256,
+      "independent_bus_width_fits": false,
+      "status": "rejected_obsolete_not_x2_qualified",
+      "source": "https://www.micron.com/products/obsolete/obsolete-lpddr5x/part-catalog/part-detail/mt62f4g64dafl-023-wt-c",
+      "caveat": "This exact 32 GB part is obsolete; package capacity does not establish X2 channel/rank support or procurement."
+    },
     "bus_topology_screen": {
       "controller_bus_width_bits": 192,
       "public_reference_package_bus_width_bits": 64,
@@ -651,7 +671,7 @@
     "source_errors": [],
     "integration_status": "blocked",
     "missing_design_evidence": [
-      "Exact 32 GB package MPN, drawing, and availability, or a new eight-package board architecture",
+      "Current-production 32 GB package MPN, drawing, and availability, or a new eight-package board architecture",
       "X2-qualified 128 GB shared-channel or other package topology, ranks, and signal rules",
       "Fabricator-reviewed 0.8 mm 12-layer HDI stack and two-sided assembly limits",
       "Memory rails, power sequence, routed SI/PI, and thermal measurements",

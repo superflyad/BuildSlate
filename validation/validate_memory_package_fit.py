@@ -24,6 +24,7 @@ from buildslate.memory_package_fit import (  # noqa: E402
 
 def main() -> int:
     report = audit(ROOT)
+    obsolete = report["obsolete_32gb_reference"]
     if (
         report["target_gb"] != 128
         or report["planning_sites"] != 4
@@ -37,6 +38,17 @@ def main() -> int:
         ]
         or report["additional_nominal_area_mm2"] != 1008
         or report["source_consistency"] != "pass"
+        or obsolete["part_number"] != "MT62F4G64DAFL-023 WT:C"
+        or obsolete["capacity_gb"] != 32
+        or obsolete["density_gbit"] != 256
+        or obsolete["package_mm"] != [14.0, 12.4, 0.96]
+        or obsolete["public_part_status"] != "obsolete"
+        or obsolete["packages_for_128gb"] != 4
+        or obsolete["site_outline_fits"]
+        or not obsolete["site_nominal_height_fits"]
+        or obsolete["independent_bus_width_bits"] != 256
+        or obsolete["independent_bus_width_fits"]
+        or obsolete["status"] != "rejected_obsolete_not_x2_qualified"
         or report["integration_status"] != "blocked"
         or any(
             item["public_part_outline_fits"] or item["public_part_height_fits"]
@@ -66,6 +78,12 @@ def main() -> int:
             ]["height_mm"]
         )
     )
+    altered = copy.deepcopy(data)
+    altered[1]["memory_supplier_context"]["micron_lpddr5x_32gb_obsolete_reference"][
+        "density_gbit"
+    ] = 128
+    if audit_data(*altered)["source_consistency"] != "fail":
+        raise ValueError("Obsolete part gigabit density was accepted as 32 GB")
     altered = copy.deepcopy(data)
     altered[1]["candidates"]["qualcomm_snapdragon_x2_elite_extreme"][
         "memory_bus_width_bits"

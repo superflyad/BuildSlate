@@ -138,6 +138,21 @@ candidates:
       accessed: 2026-11-24
 
 memory_supplier_context:
+  micron_lpddr5x_32gb_obsolete_reference:
+    supplier: Micron
+    part_number: 'MT62F4G64DAFL-023 WT:C'
+    density_gbit: 256
+    capacity_gb: 32
+    interface: LPDDR5X
+    bus_width_bits: 64
+    ball_count: 496
+    package_mm: [14.0, 12.4, 0.96]
+    public_part_status: obsolete
+    disposition: rejected_obsolete_geometry_reference_not_qualified_for_x2
+    source:
+      url: https://www.micron.com/products/obsolete/obsolete-lpddr5x/part-catalog/part-detail/mt62f4g64dafl-023-wt-c
+      source_type: manufacturer_obsolete_part_detail
+      accessed: 2026-11-24
   micron_lpddr5x_16gb_public_part:
     supplier: Micron
     part_number: 'MT62F2G64D8EK-023 WT:C'

@@ -15,7 +15,7 @@ Keep the approved 128 GB floor. Advance Snapdragon X2 Elite Extreme to supplier/
 - The X2 Elite Extreme public brief states a 128+ GB controller maximum, but its example configuration is 48 GB. That establishes research headroom, not a shipped or qualified 128 GB X2 board.
 - NVIDIA's Jetson AGX Thor developer kit and AMD's Ryzen AI Halo developer platform publicly list 128 GB configurations. They prove that external 128 GB development hardware exists, not that Slate's enclosure, power target, or phone functions are achievable.
 - AMD Ryzen AI Max and NVIDIA Jetson AGX Thor expose useful 128 GB development environments but start above the Slate power target and are not physical candidates.
-- Public 32 GB LPDDR5X packages make a four-package 128 GB hypothesis conceivable; controller support, placement, routing, power, thermals, and procurement remain unverified.
+- An exact public 32 GB Micron LPDDR5X MPN exists, but Micron marks it obsolete. It does not fit the four planning sites or an independent x64-per-package connection to the X2 Extreme's 192-bit bus. Current-production package selection, controller topology, placement, routing, power, thermals, and procurement remain unverified.
 
 ## Gate impact
 

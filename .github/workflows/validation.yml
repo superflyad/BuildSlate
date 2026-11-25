@@ -66,7 +66,7 @@ jobs:
       - run: python validation/validate_mechanical_proof.py
       - run: npm run check:model --prefix viewer
       # CadQuery tessellation can differ by platform; check mesh identities and bounds above.
-      - run: git diff --exit-code -- viewer/public/concept.json viewer/public/proof.json viewer/public/memory-8x16.json viewer/public/memory-8x16-proof.json cad/slate-pocket-v1r/concept-cad/memory-8x16.step viewer/public/phone-fit-conflict.json viewer/public/phone-fit-conflict-proof.json cad/slate-pocket-v1r/concept-cad/phone-fit-conflict.step viewer/public/usb4525-outline.json viewer/public/usb4525-outline.gltf viewer/public/usb4525-outline-proof.json cad/slate-pocket-v1r/concept-cad/usb4525-outline.step viewer/public/mechanical-proof.json
+      - run: git diff --exit-code -- viewer/public/concept.json viewer/public/proof.json viewer/public/memory-8x16.json viewer/public/memory-8x16-proof.json cad/slate-pocket-v1r/concept-cad/memory-8x16.step viewer/public/phone-fit-conflict.json viewer/public/phone-fit-conflict-proof.json cad/slate-pocket-v1r/concept-cad/phone-fit-conflict.step viewer/public/usb4525-outline.json viewer/public/usb4525-outline-proof.json cad/slate-pocket-v1r/concept-cad/usb4525-outline.step viewer/public/mechanical-proof.json
 
   deploy:
     name: Publish viewer to GitHub Pages

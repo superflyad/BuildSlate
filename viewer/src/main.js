@@ -461,6 +461,7 @@ function renderHardware() {
       })
       .join("");
   document.querySelector("#hardware-parts").innerHTML =
+    `<div class="gate-item"><strong>Incoming physical inspection</strong><span>Current B00 upper limits: ${esc(report.evt0_campaign.incoming_inspection_limits.length_mm)} × ${esc(report.evt0_campaign.incoming_inspection_limits.width_mm)} × ${esc(report.evt0_campaign.incoming_inspection_limits.thickness_mm)} mm external dimensions and ${esc(report.evt0_campaign.incoming_inspection_limits.mass_g)} g whole-device mass. ${report.evt0_campaign.missing_tests.includes("B00") ? "No B00 pass is credited to the current campaign." : "A B00 objective pass is credited to the current campaign."} An oversized result is a physical failure; a reported pass is rejected. <a href="https://github.com/superflyad/BuildSlate/blob/main/validation/evt0/README.md" target="_blank" rel="noopener noreferrer">Inspection contract</a></span></div>` +
     `<div class="gate-item"><strong>Released part set</strong><span>${esc(report.part_selection.status)}${report.part_selection.errors.length ? ` · ${esc(report.part_selection.errors.join("; "))}` : ""}</span></div>` +
     `<div class="gate-item"><strong>Platform reference and memory map</strong><span>${esc(report.platform_reference.status)} · ${esc(report.platform_reference.errors.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>Power design proof</strong><span>${esc(report.power_safety.status)} · ${esc(report.power_safety.errors.join("; "))}</span></div>` +

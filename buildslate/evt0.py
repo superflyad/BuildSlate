@@ -146,6 +146,25 @@ class EVT0CampaignRepository:
             raise ValueError(
                 "Every required EVT0 test needs an objective measurement contract"
             )
+        profile = load_yaml(self.repo_root / "configs/devices/slate-pocket-v1r.yaml")
+        physical_limits = {
+            "mass_g": profile["mass_targets"]["acceptable_range_g"]["max"],
+            "length_mm": profile["geometry"]["length_mm"],
+            "width_mm": profile["geometry"]["width_mm"],
+            "thickness_mm": profile["geometry"]["thickness_mm"],
+        }
+        if (
+            any(
+                not isinstance(value, (int, float))
+                or isinstance(value, bool)
+                or not math.isfinite(value)
+                or value <= 0
+                for value in physical_limits.values()
+            )
+            or self.objective_measurements["B00"].get("physical_maximum_columns")
+            != physical_limits
+        ):
+            raise ValueError("B00 physical limits differ from the active v1R profile")
         schemas = {
             name: load_yaml(self.evt_root / "schemas" / f"{name}.schema.yaml")
             for name in ("run-manifest", "test-result", "calibration", "deviation")
@@ -835,9 +854,17 @@ class EVT0CampaignRepository:
             limit_events.append("maximum_skin_c")
         if isinstance(max_battery, (int, float)) and max_battery >= 40.0:
             limit_events.append("pre_supplier_battery_abort_c")
+        physical_limit_events: list[str] = []
+        if manifest.get("test_id") == "B00" and rows:
+            for column, ceiling in self.objective_measurements["B00"][
+                "physical_maximum_columns"
+            ].items():
+                if any(row[column] > ceiling for row in rows):
+                    physical_limit_events.append(f"{column}_over_profile")
         objective_failure = bool(
             hard_stops
             or limit_events
+            or physical_limit_events
             or channel_failures
             or any(not item["passed"] for item in correlations)
         )
@@ -851,6 +878,8 @@ class EVT0CampaignRepository:
             disposition = "ABORTED_OR_HARD_STOP"
         elif channel_failures:
             disposition = "BLOCKED_EVIDENCE_QUALITY"
+        elif physical_limit_events:
+            disposition = "VALID_FAIL"
         elif (
             any(not item["passed"] for item in correlations)
             or open_deviations
@@ -865,7 +894,7 @@ class EVT0CampaignRepository:
             disposition = "BLOCKED"
         if objective_failure and result.get("disposition") == "pass":
             errors.append(
-                "reported pass contradicts objective hard-stop, channel, or correlation evidence"
+                "reported pass contradicts objective hard-stop, channel, correlation, or physical limit evidence"
             )
             disposition = "REJECTED_INVALID_EVIDENCE"
         return {
@@ -888,6 +917,7 @@ class EVT0CampaignRepository:
             "required_channel_failures": channel_failures,
             "hard_stop_event_count": len(hard_stops),
             "calculated_limit_events": limit_events,
+            "calculated_physical_limit_events": physical_limit_events,
             "reported_validity": result.get("validity"),
             "reported_disposition": result.get("disposition"),
             "objective_disposition": disposition,

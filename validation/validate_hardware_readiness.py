@@ -66,6 +66,13 @@ def main() -> int:
     ):
         raise ValueError("Phone function cannot precede functional EVT0")
     campaign = expected["evt0_campaign"]
+    if campaign["incoming_inspection_limits"] != {
+        "mass_g": 350,
+        "length_mm": 180,
+        "width_mm": 95,
+        "thickness_mm": 9.5,
+    }:
+        raise ValueError("Public B00 limits differ from the active v1R profile")
     if campaign["gate"] == "EMPTY_CAMPAIGN" and (
         campaign["passing_required_tests"] != 0
         or len(campaign["missing_tests"]) != campaign["required_tests"]

@@ -5,6 +5,12 @@
   "functional_evt0": "blocked",
   "evt0_campaign": {
     "gate": "EMPTY_CAMPAIGN",
+    "incoming_inspection_limits": {
+      "mass_g": 350,
+      "length_mm": 180,
+      "width_mm": 95,
+      "thickness_mm": 9.5
+    },
     "required_tests": 17,
     "passing_required_tests": 0,
     "missing_tests": [

@@ -70,6 +70,7 @@ objective_measurements:
   B00:
     required_columns: [elapsed_s, mass_g, length_mm, width_mm, thickness_mm]
     positive_columns: [mass_g, length_mm, width_mm, thickness_mm]
+    physical_maximum_columns: {mass_g: 350, length_mm: 180, width_mm: 95, thickness_mm: 9.5}
     analysis_artifacts_min: 1
   B01:
     required_columns: [elapsed_s, build_inspection_pass, electrical_safety_review_pass, protection_check_pass]

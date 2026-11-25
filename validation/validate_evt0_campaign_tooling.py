@@ -160,6 +160,11 @@ def copy_engine_inputs(destination_root: Path) -> None:
         shutil.copy2(REPO_ROOT / "validation/evt0" / name, evt_destination / name)
     shutil.copytree(REPO_ROOT / "validation/evt0/schemas", evt_destination / "schemas")
     (evt_destination / "campaigns").mkdir()
+    profile_destination = destination_root / "configs/devices"
+    profile_destination.mkdir(parents=True)
+    shutil.copy2(
+        REPO_ROOT / "configs/devices/slate-pocket-v1r.yaml", profile_destination
+    )
 
 
 def main() -> int:
@@ -351,6 +356,106 @@ def main() -> int:
             temp_repository.build_campaign_report()["EVT0_CAMPAIGN_GATE"]
             == "BLOCKED_INVALID_EVIDENCE",
             "post-ingestion hash tampering blocks the campaign",
+        )
+        profile_path = temp_repo / "configs/devices/slate-pocket-v1r.yaml"
+        altered_profile = load_yaml(profile_path)
+        altered_profile["geometry"]["thickness_mm"] = 10.2
+        profile_path.write_text(
+            dump_yaml(altered_profile), encoding="utf-8", newline="\n"
+        )
+        try:
+            EVT0CampaignRepository(temp_repo)
+        except ValueError as exc:
+            require(
+                "B00 physical limits differ" in str(exc),
+                "B00 bounds must track the active profile through change control",
+            )
+        else:
+            raise AssertionError("B00 accepted stale physical limits")
+
+    with tempfile.TemporaryDirectory() as temp_directory:
+        inspection_bundle = create_bundle(Path(temp_directory))
+        manifest_path = inspection_bundle / "manifest.yaml"
+        manifest = load_yaml(manifest_path)
+        manifest["test_id"] = "B00"
+        manifest["workload"]["workload_id"] = "none"
+        manifest_path.write_text(dump_yaml(manifest), encoding="utf-8", newline="\n")
+        result_path = inspection_bundle / "result.yaml"
+        result = load_yaml(result_path)
+        result["time_range_utc"]["end"] = "2026-06-01T12:01:00Z"
+        analysis_path = inspection_bundle / "analysis/incoming-inspection.txt"
+        analysis_path.parent.mkdir(parents=True, exist_ok=True)
+        analysis_path.write_text(
+            "Synthetic incoming inspection for validation only.\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+        result["analysis_artifacts"] = [
+            {
+                "path": "analysis/incoming-inspection.txt",
+                "sha256": sha256(analysis_path),
+            }
+        ]
+        raw_path = inspection_bundle / "raw/telemetry.csv"
+
+        def inspect(mass: float, length: float, width: float, thickness: float) -> dict:
+            raw_path.write_text(
+                "elapsed_s,mass_g,length_mm,width_mm,thickness_mm\n"
+                f"0,{mass},{length},{width},{thickness}\n"
+                f"60,{mass},{length},{width},{thickness}\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            result["raw_data"][0]["sha256"] = sha256(raw_path)
+            result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
+            return repository.review_bundle(inspection_bundle)
+
+        require(
+            inspect(350, 180, 95, 9.5)["objective_disposition"] == "VALID_PASS",
+            "B00 accepts measurements at the active physical limits",
+        )
+        for label, values in (
+            ("mass_g", (350.1, 180, 95, 9.5)),
+            ("length_mm", (350, 180.1, 95, 9.5)),
+            ("width_mm", (350, 180, 95.1, 9.5)),
+            ("thickness_mm", (350, 180, 95, 9.6)),
+        ):
+            review = inspect(*values)
+            require(
+                review["objective_disposition"] == "REJECTED_INVALID_EVIDENCE"
+                and f"{label}_over_profile"
+                in review["calculated_physical_limit_events"],
+                f"B00 rejects a false pass for {label} beyond the active profile",
+            )
+        result["disposition"] = "fail"
+        failed_review = inspect(350, 180, 95, 9.6)
+        require(
+            failed_review["objective_disposition"] == "VALID_FAIL"
+            and not failed_review["integrity_errors"]
+            and failed_review["calculated_physical_limit_events"]
+            == ["thickness_mm_over_profile"],
+            "B00 preserves a real over-thickness measurement as a valid failure",
+        )
+        result["disposition"] = "review_required"
+        require(
+            inspect(350, 180, 95, 9.6)["objective_disposition"] == "VALID_FAIL",
+            "B00 physical failure cannot be downgraded to review required",
+        )
+        result["disposition"] = "fail"
+        inspect(350, 180, 95, 9.6)
+        failed_repo_root = Path(temp_directory) / "failed-repo"
+        copy_engine_inputs(failed_repo_root)
+        failed_repository = EVT0CampaignRepository(failed_repo_root)
+        receipt, ingested_review = failed_repository.ingest(
+            inspection_bundle, "2026-06-02T12:00:00Z", "validation-operator"
+        )
+        failed_campaign = failed_repository.build_campaign_report()
+        require(
+            receipt.is_file()
+            and ingested_review["objective_disposition"] == "VALID_FAIL"
+            and failed_campaign["EVT0_CAMPAIGN_GATE"] == "CAMPAIGN_INCOMPLETE"
+            and "B00" in failed_campaign["missing_or_nonpassing_required_tests"],
+            "failed physical inspection remains preserved but cannot count as a pass",
         )
 
     with tempfile.TemporaryDirectory() as temp_directory:

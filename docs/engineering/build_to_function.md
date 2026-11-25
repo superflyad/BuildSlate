@@ -56,6 +56,8 @@ The assembly and bench-safety records have an [ordered build procedure proof](bu
 
 The functional gate also reads the [EVT0 campaign](../../reports/program/evt0-campaign.yaml) directly. Passing required tests must belong to one serialized unit, build revision, configuration, and campaign. Each required test has a raw measurement contract, including integrated display, touch, camera, audio playback/capture, and USB activity; charge input power; and separately measured memory capacity and allocation. These checks confirm the presence and internal consistency of recorded evidence; engineering review and physical observation remain necessary.
 
+The B00 incoming inspection additionally compares hash-bound measured length, width, thickness, and mass with the active v1R profile. The current limits are 180 × 95 × 9.5 mm and 350 g. A larger integration mule cannot pass that physical contract as a pocket device; use of the approved 10.2 mm thickness fallback first requires a controlled profile and test-contract update.
+
 The [phone-function proof](phone_function_proof.md) requires raw, hash-bound network, two-way call/audio, data, radio-kill, and authorized emergency-lab results. It binds their unit and configuration to the passing EVT0 campaign and the selected cellular, design, and software records. No phone test result exists.
 
 ```bash

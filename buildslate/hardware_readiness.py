@@ -679,7 +679,8 @@ def build_report(root: Path) -> dict:
             if entry["stage"] == "design_release"
         )
     )
-    campaign = EVT0CampaignRepository(root).build_campaign_report()
+    campaign_repository = EVT0CampaignRepository(root)
+    campaign = campaign_repository.build_campaign_report()
     prerequisite_gaps = _evt0_prerequisites(root)
     evt0 = (
         design
@@ -723,6 +724,9 @@ def build_report(root: Path) -> dict:
         "functional_evt0": "evidence_ready_for_review" if evt0 else "blocked",
         "evt0_campaign": {
             "gate": campaign["EVT0_CAMPAIGN_GATE"],
+            "incoming_inspection_limits": campaign_repository.objective_measurements[
+                "B00"
+            ]["physical_maximum_columns"],
             "required_tests": campaign["summary"]["required_test_count"],
             "passing_required_tests": campaign["summary"][
                 "passing_required_test_count"

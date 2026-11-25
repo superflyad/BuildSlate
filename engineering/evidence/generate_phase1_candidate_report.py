@@ -70,7 +70,7 @@ def build_report() -> str:
         "  purpose: narrow supplier conversations without claiming component selection",
         "",
         "Executive decisions:",
-        "  battery: retain 6000 mAh conditionally; pursue a custom Enovix AI-1-class RFQ; do not select a pack",
+        "  battery: retain 6000 mAh conditionally; no preferred supplier path after Enovix paused AI-1 smartphone field testing; do not select a pack",
         "  charging: replace 100 W as a hard requirement with the highest supplier-validated level",
         "  compute: advance Snapdragon X2 Elite Extreme to supplier/NDA review at the 128 GB fallback",
         "  phone platform: no reviewed integrated mobile SoC reaches the approved 128 GB floor; product decision required",
@@ -84,6 +84,7 @@ def build_report() -> str:
         f"  required complete-pack density: {battery_target['required_complete_pack_density_wh_l']:.1f} Wh/L",
         f"  100 W / nominal target energy: {battery_target['wired_target_power_to_nominal_energy_per_hour']:.2f} per hour (screening ratio, not a cell charge limit)",
         "  AI1-M01 public 2C category: maximum continuous discharge; charge limit not published",
+        f"  Enovix smartphone program: {battery['candidates']['enovix_ai1_platform']['latest_supplier_update']['status']} ({battery['candidates']['enovix_ai1_platform']['latest_supplier_update']['source']})",
     ]
     for candidate_id, candidate in battery["candidates"].items():
         fit = candidate.get("target_fit", {})

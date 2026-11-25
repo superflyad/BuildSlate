@@ -43,7 +43,12 @@ candidates:
   enovix_ai1_platform:
     supplier: Enovix
     product: AI-1 smartphone platform
-    public_status: qualification_and_system_deployment_stage
+    public_status: smartphone_field_testing_paused
+    latest_supplier_update:
+      status: smartphone_field_testing_paused
+      filed_on: 2026-11-13
+      source: https://ir.enovix.com/static-files/1557353f-642c-46da-a6d1-751d46e16aeb
+      finding: Enovix ended system-level AI-1 smartphone field testing with its lead OEM after the tested version no longer met that customer's energy-density requirements; development shifted toward smaller cells.
     independently_reported_density_wh_l: 935
     public_claims:
       - Smartphone cell platform uses a 100 percent active silicon anode.
@@ -56,7 +61,10 @@ candidates:
       - url: https://ir.enovix.com/news-releases/news-release-details/enovix-reports-first-quarter-2026-results
         source_type: manufacturer_financial_release
         accessed: 2026-10-31
-    caveat: Energy-density evidence does not establish Slate-specific dimensions, swelling, safety, price, yield, lifecycle, or supply availability.
+      - url: https://ir.enovix.com/static-files/1557353f-642c-46da-a6d1-751d46e16aeb
+        source_type: manufacturer_form_10q
+        accessed: 2026-11-24
+    caveat: The AI1-M01 catalog dimensions remain a geometry benchmark. Enovix's change for its lead OEM does not prove that Slate supply is impossible, but it removes the basis for treating a custom AI-1 smartphone cell as the preferred near-term sourcing path.
 
   amprius_sa117:
     supplier: Amprius Technologies
@@ -113,7 +121,8 @@ candidates:
 
 screening_conclusion:
   selected_candidate: null
-  preferred_supplier_conversation: enovix_custom_ai1
+  preferred_supplier_conversation: null
+  sourcing_status: no_supplier_committed_slate_fit_pack
   rejected_as_geometry_candidates: [amprius_sa117, panasonic_ncr2270b]
   retained_as_density_benchmarks: [enovix_ai1_m01, enovix_ai1_platform, amprius_sa117]
   unresolved:

@@ -20,6 +20,8 @@ def audit_data(
     profile: dict, evidence: dict, envelope: dict, concept: dict, pack: dict
 ) -> dict:
     candidate = evidence["candidates"][CANDIDATE_ID]
+    platform = evidence["candidates"]["enovix_ai1_platform"]
+    supplier_update = platform["latest_supplier_update"]
     cell = candidate["dimensions_mm"]
     dimensions = [float(cell[key]) for key in ("length", "width", "thickness")]
     cell_volume = dimensions[0] * dimensions[1] * dimensions[2]
@@ -48,6 +50,16 @@ def audit_data(
         errors.append("Discharge category is still recorded as a charge rating")
     if candidate.get("max_charge_rate") != "unknown_public_source_does_not_state":
         errors.append("Public candidate charge rating must remain unknown")
+    if (
+        supplier_update.get("status") != "smartphone_field_testing_paused"
+        or platform.get("public_status") != supplier_update["status"]
+        or not str(supplier_update.get("source", "")).startswith(
+            "https://ir.enovix.com/"
+        )
+        or evidence["screening_conclusion"].get("preferred_supplier_conversation")
+        is not None
+    ):
+        errors.append("Battery sourcing disposition contradicts latest supplier update")
     if (
         candidate["target_fit"].get("wired_100w_charge")
         != "unverified_public_charge_limit_absent"
@@ -86,6 +98,9 @@ def audit_data(
         "concept_pack_over_allocation_mm3": round(shell_volume - allocation, 3),
         "public_charge_limit": "not_published_for_this_cell",
         "public_discharge_category": candidate["max_continuous_discharge_band"],
+        "supplier_path_status": supplier_update["status"],
+        "supplier_path_finding": supplier_update["finding"],
+        "supplier_path_source": supplier_update["source"],
         "wired_target_equivalent_c_at_nominal_energy": round(equivalent_c, 2),
         "source_consistency": "pass" if not errors else "fail",
         "source_errors": errors,

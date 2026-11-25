@@ -29,6 +29,7 @@ def main() -> int:
         or report["cell_over_allocation_mm3"] != 221.248
         or report["concept_pack_over_allocation_mm3"] != 6001.4
         or report["public_charge_limit"] != "not_published_for_this_cell"
+        or report["supplier_path_status"] != "smartphone_field_testing_paused"
         or report["source_consistency"] != "pass"
         or report["integration_status"] != "blocked"
     ):
@@ -50,6 +51,12 @@ def main() -> int:
     altered[1]["candidates"]["enovix_ai1_m01"]["charge_rate"] = "up_to_2c"
     if audit_data(*altered)["source_consistency"] != "fail":
         raise ValueError("Discharge limit was accepted as a charge rating")
+    altered = copy.deepcopy(data)
+    altered[1]["screening_conclusion"]["preferred_supplier_conversation"] = (
+        "enovix_custom_ai1"
+    )
+    if audit_data(*altered)["source_consistency"] != "fail":
+        raise ValueError("Paused supplier route remained preferred")
     altered = copy.deepcopy(data)
     altered[0]["battery"]["physical_volume_mm3"] = 30000
     if audit_data(*altered)["source_consistency"] != "fail":

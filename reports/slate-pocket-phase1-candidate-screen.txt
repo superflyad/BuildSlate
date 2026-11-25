@@ -8,7 +8,7 @@ Scope:
   purpose: narrow supplier conversations without claiming component selection
 
 Executive decisions:
-  battery: retain 6000 mAh conditionally; pursue a custom Enovix AI-1-class RFQ; do not select a pack
+  battery: retain 6000 mAh conditionally; no preferred supplier path after Enovix paused AI-1 smartphone field testing; do not select a pack
   charging: replace 100 W as a hard requirement with the highest supplier-validated level
   compute: advance Snapdragon X2 Elite Extreme to supplier/NDA review at the 128 GB fallback
   phone platform: no reviewed integrated mobile SoC reaches the approved 128 GB floor; product decision required
@@ -22,8 +22,9 @@ Battery screen:
   required complete-pack density: 801.4 Wh/L
   100 W / nominal target energy: 4.33 per hour (screening ratio, not a cell charge limit)
   AI1-M01 public 2C category: maximum continuous discharge; charge limit not published
+  Enovix smartphone program: smartphone_field_testing_paused (https://ir.enovix.com/static-files/1557353f-642c-46da-a6d1-751d46e16aeb)
   - enovix_ai1_m01: capacity=exceeds_target, raw_volume=exceeds_target_pack_allocation_by_221_mm3, thickness=plausible_only_with_full_stackup_review, wired_100w_charge=unverified_public_charge_limit_absent
-  - enovix_ai1_platform: qualification_and_system_deployment_stage
+  - enovix_ai1_platform: smartphone_field_testing_paused
   - amprius_sa117: capacity=meets_6000_mah, energy=below_23_1_wh_target, thickness=reject_21_65_mm_diameter, wired_100w_charge=reject_public_max_is_0_7c
   - panasonic_ncr2270b: capacity=meets_6000_mah, energy=below_23_1_wh_target, thickness=reject_21_8_mm_diameter
   pack decision: capacity=retain_as_conditional; charge=fallback_to_highest_supplier_validated_level

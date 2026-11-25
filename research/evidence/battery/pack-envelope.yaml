@@ -25,7 +25,7 @@ enovix_921_wh_l_custom_cell_hypothesis:
   calculated_cell_volume_cm3: 25.08
   remaining_non_cell_volume_cm3: 3.74
   maximum_non_cell_volume_fraction_percent: 13.0
-  status: plausible_hypothesis_requires_supplier_quote_and_pack_cad
+  status: density_arithmetic_only_not_a_supplier_pack_design
 
 charge_pressure:
   wired_target_w: 100
@@ -48,4 +48,4 @@ decision:
   capacity_target: retain_as_conditional
   charge_target: fallback_to_highest_supplier_validated_level
   selected_pack: null
-  next_gate: supplier_rfq_and_custom_pack_envelope
+  next_gate: identify_current_supplier_path_and_qualify_complete_pack

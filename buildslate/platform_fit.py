@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 
 from buildslate.io import load_yaml
 
 PROFILE = Path("configs/devices/slate-pocket-v1r.yaml")
 CANDIDATES = Path("research/evidence/compute/platform-comparison.yaml")
+FLOORPLAN = Path("engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml")
 MODES = {"integrated", "external_supported_not_designed", "none"}
 
 
@@ -28,6 +30,7 @@ def _capacity(candidate: dict) -> int:
 def audit(root: Path) -> dict:
     profile = load_yaml(root / PROFILE)
     source = load_yaml(root / CANDIDATES)
+    floorplan = load_yaml(root / FLOORPLAN)
     floor = profile["decision_baseline"]["locked_trade_rules"]["memory"][
         "fallback_tiers_gb"
     ][-1]
@@ -39,6 +42,13 @@ def audit(root: Path) -> dict:
         ),
         reverse=True,
     )
+    board_outline = floorplan["board"]["outline_mm"]
+    board_face = sorted(
+        (float(board_outline["length"]), float(board_outline["width"])),
+        reverse=True,
+    )
+    if any(not math.isfinite(side) or side <= 0 for side in board_face):
+        raise ValueError("Current PCB face is invalid")
     sustained_target = float(profile["compute"]["sustained_power_w"])
     if not isinstance(floor, int) or floor <= 0 or configured != floor:
         raise ValueError("Operational memory differs from the approved fallback floor")
@@ -76,6 +86,8 @@ def audit(root: Path) -> dict:
             raise ValueError(f"{identifier}: invalid CPU core count")
         outline = candidate.get("module_outline_mm")
         outline_fit = None
+        board_fit = None
+        board_overrun = None
         if outline is not None:
             if (
                 not isinstance(outline, list)
@@ -93,6 +105,14 @@ def audit(root: Path) -> dict:
                 module <= available
                 for module, available in zip(module_sides, face, strict=True)
             )
+            board_fit = all(
+                module <= available
+                for module, available in zip(module_sides, board_face, strict=True)
+            )
+            board_overrun = [
+                round(max(0, module - available), 2)
+                for module, available in zip(module_sides, board_face, strict=True)
+            ]
         power_range = candidate.get("power_range_w", candidate.get("tdp_range_w"))
         minimum_power_mode = None
         if power_range is not None:
@@ -233,6 +253,8 @@ def audit(root: Path) -> dict:
                 ),
                 "module_outline_mm": outline,
                 "module_outline_fits_body_face": outline_fit,
+                "module_outline_fits_current_board_face": board_fit,
+                "module_over_current_board_mm": board_overrun,
                 "minimum_published_power_mode_w": minimum_power_mode,
                 "minimum_published_mode_over_slate_w": (
                     round(minimum_power_mode - sustained_target, 2)
@@ -269,6 +291,7 @@ def audit(root: Path) -> dict:
         "status": "public_candidate_found" if matches else "supplier_proof_required",
         "memory_floor_gb": floor,
         "slate_body_face_mm": face,
+        "slate_current_board_face_mm": board_face,
         "slate_sustained_screen_w": sustained_target,
         "integrated_phone_matches": matches,
         "largest_reviewed_x2_oem_memory_gb": largest_x2_oem["observed_oem_memory_gb"],

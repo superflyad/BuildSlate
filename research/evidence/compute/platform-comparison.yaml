@@ -306,6 +306,31 @@ candidates:
       source_type: manufacturer_module_and_developer_kit_specification
       accessed: 2026-11-24
 
+  congatec_conga_hpc_miq_x7_64g:
+    platform_class: embedded_arm_module
+    part_numbers: ['053100']
+    modem_integration: none
+    memory_type: LPDDR5X
+    maximum_memory_gb: 64
+    public_configured_memory_gb: 64
+    module_outline_mm: [95, 70]
+    power_range_w: [28, 45]
+    public_sustained_power_w: null
+    strengths:
+      - Exact Qualcomm Dragonwing IQ-X7 COM-HPC Mini module part with 64 GB soldered LPDDR5X, 95 x 70 mm outline, camera and display interfaces, and published OS support.
+      - A compact ARM module offers a carrier-board architecture reference for supplier discussion.
+    blockers:
+      - The exact module has half of Slate's required 128 GB; no 128 GB variant is cataloged.
+      - Its bare 95 x 70 mm face exceeds the current 78 x 55 mm PCB before connector, carrier, cooling, and enclosure clearances.
+      - The 28 W minimum published TDP equals Slate's entire sustained compute screen; it is not measured Slate power or system power.
+      - The reviewed preliminary datasheet says the product was not yet released for mass production; current lifecycle and supply need confirmation.
+      - Cellular and phone software are not integrated or validated.
+    disposition: compact_module_reference_below_memory_floor_not_selected
+    source:
+      url: https://www.congatec.com/fileadmin/user_upload/Documents/Datasheets/conga-HPC-mIQ-X.pdf
+      source_type: manufacturer_module_datasheet
+      accessed: 2026-11-24
+
   congatec_conga_hpc_crx1_x199_128g:
     platform_class: high_power_embedded_module
     part_numbers: ['053700']

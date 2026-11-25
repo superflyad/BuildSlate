@@ -13,11 +13,16 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from buildslate.platform_fit import CANDIDATES, PROFILE, audit  # noqa: E402
+from buildslate.io import load_yaml  # noqa: E402
+from buildslate.platform_fit import CANDIDATES, FLOORPLAN, PROFILE, audit  # noqa: E402
 
 
 def _write(root: Path, profile: dict, candidates: dict) -> None:
-    for name, data in ((PROFILE, profile), (CANDIDATES, candidates)):
+    for name, data in (
+        (PROFILE, profile),
+        (CANDIDATES, candidates),
+        (FLOORPLAN, load_yaml(ROOT / FLOORPLAN)),
+    ):
         path = root / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
@@ -37,7 +42,8 @@ def main() -> int:
         report["status"] != "supplier_proof_required"
         or report["memory_floor_gb"] != 128
         or report["integrated_phone_matches"]
-        or len(report["candidates"]) != 11
+        or len(report["candidates"]) != 12
+        or report["slate_current_board_face_mm"] != [78.0, 55.0]
         or report["largest_reviewed_x2_oem_memory_gb"] != 64
         or report["largest_reviewed_x2_oem_part"] != "X2E-90-100"
         or report["remaining_to_memory_floor_gb"] != 64
@@ -100,6 +106,23 @@ def main() -> int:
         raise ValueError(
             "128 GB N1X laptop reference was mistaken for Slate phone proof"
         )
+    mini = next(
+        item
+        for item in report["candidates"]
+        if item["id"] == "congatec_conga_hpc_miq_x7_64g"
+    )
+    if (
+        mini["part"] != "053100"
+        or mini["public_maximum_memory_gb"] != 64
+        or mini["module_outline_mm"] != [95, 70]
+        or not mini["module_outline_fits_body_face"]
+        or mini["module_outline_fits_current_board_face"]
+        or mini["module_over_current_board_mm"] != [17.0, 15.0]
+        or mini["minimum_published_power_mode_w"] != 28
+        or mini["published_capacity_permits_floor"]
+        or mini["combined_public_fit"]
+    ):
+        raise ValueError("Compact 64 GB module was promoted to a Slate platform")
     plus = {
         item["id"]: item
         for item in report["candidates"]
@@ -139,6 +162,8 @@ def main() -> int:
     if (
         not congatec["public_128gb_configuration"]
         or congatec["module_outline_fits_body_face"] is not False
+        or congatec["module_outline_fits_current_board_face"] is not False
+        or congatec["module_over_current_board_mm"] != [82.0, 65.0]
         or congatec["minimum_published_mode_over_slate_w"] != 17
         or congatec["combined_public_fit"]
     ):
@@ -148,6 +173,8 @@ def main() -> int:
     )
     if (
         thor["module_outline_fits_body_face"] is not True
+        or thor["module_outline_fits_current_board_face"] is not False
+        or thor["module_over_current_board_mm"] != [22.0, 32.0]
         or thor["minimum_published_mode_over_slate_w"] != 12
     ):
         raise ValueError("Jetson module outline or power screen changed")
@@ -160,6 +187,14 @@ def main() -> int:
     candidates = yaml.safe_load((ROOT / CANDIDATES).read_text(encoding="utf-8"))
     with TemporaryDirectory() as temporary:
         root = Path(temporary)
+        altered = copy.deepcopy(candidates)
+        _write(root, profile, altered)
+        board = load_yaml(root / FLOORPLAN)
+        board["board"]["outline_mm"]["width"] = 0
+        (root / FLOORPLAN).write_text(
+            yaml.safe_dump(board, sort_keys=False), encoding="utf-8"
+        )
+        _must_fail(root)
         altered = copy.deepcopy(candidates)
         altered["candidates"]["nvidia_rtx_spark_n1x_128gb_reference"][
             "observed_oem_configuration"

@@ -40,6 +40,7 @@ Compute and memory screen:
   - nvidia_rtx_spark_n1x_128gb_reference: memory=128 GB; AI metric=not_public; disposition=configured_128gb_laptop_reference_not_selected_phone_platform
   - amd_ryzen_ai_max_plus_395: memory=128 GB; AI metric=50; disposition=external_prototype_reference_only
   - nvidia_jetson_agx_thor: memory=128 GB; AI metric=2070; disposition=bench_workload_reference_only
+  - congatec_conga_hpc_miq_x7_64g: memory=64 GB; AI metric=not_public; disposition=compact_module_reference_below_memory_floor_not_selected
   - congatec_conga_hpc_crx1_x199_128g: memory=128 GB; AI metric=not_public; disposition=external_bench_reference_rejected_for_slate_envelope
   preferred product RFQ: qualcomm_snapdragon_x2_elite_extreme
   preferred RFQ memory tier: 128 GB

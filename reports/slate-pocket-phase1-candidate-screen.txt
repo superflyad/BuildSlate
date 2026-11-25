@@ -34,6 +34,8 @@ Compute and memory screen:
   - qualcomm_snapdragon_8_elite_gen_6: memory=24 GB; AI metric=not_public; disposition=mobile_architecture_reference_not_memory_fit
   - qualcomm_snapdragon_8_elite_extreme_gen_6: memory=24 GB; AI metric=not_public; disposition=mobile_architecture_reference_not_memory_fit
   - qualcomm_snapdragon_x2_elite_extreme: memory=128_plus GB; AI metric=80; disposition=preferred_product_rfq_subject_to_package_and_power_evidence
+  - qualcomm_snapdragon_x2_plus_10_core: memory=128 GB; AI metric=80; disposition=parallel_128gb_supplier_rfi_not_selected
+  - qualcomm_snapdragon_x2_plus_6_core: memory=128 GB; AI metric=80; disposition=parallel_128gb_supplier_rfi_not_selected
   - amd_ryzen_ai_max_plus_395: memory=128 GB; AI metric=50; disposition=external_prototype_reference_only
   - nvidia_jetson_agx_thor: memory=128 GB; AI metric=2070; disposition=bench_workload_reference_only
   - congatec_conga_hpc_crx1_x199_128g: memory=128 GB; AI metric=not_public; disposition=external_bench_reference_rejected_for_slate_envelope

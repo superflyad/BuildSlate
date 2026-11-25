@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from buildslate.io import load_yaml
+from buildslate.supplier_source import controlled_source_error
 
 RELEASE = Path("engineering/hardware/released/selected-bom.json")
 STRATEGY = Path("validation/evt0/bom-strategy.yaml")
@@ -38,21 +39,10 @@ def _positive_number(value: Any) -> bool:
 
 
 def _document_error(root: Path, role: str, kind: str, record: Any) -> str | None:
-    if not isinstance(record, dict) or not _text(record.get("path")):
-        return f"{kind}: missing controlled source path"
-    if not _text(record.get("sha256")):
-        return f"{kind}: missing source SHA-256"
-    allowed = (root / "engineering/hardware/released/parts" / role).resolve()
-    target = (root / record["path"]).resolve()
-    if not target.is_relative_to(allowed) or target == allowed:
-        return f"{kind}: source is outside the released part directory"
-    if target.suffix.lower() in {".md", ".yaml", ".yml", ".json"}:
-        return f"{kind}: planning or status file is not supplier evidence"
-    if not target.is_file():
-        return f"{kind}: source file is missing"
-    if hashlib.sha256(target.read_bytes()).hexdigest() != record["sha256"].lower():
-        return f"{kind}: source hash mismatch"
-    return None
+    problem = controlled_source_error(
+        root, Path("engineering/hardware/released/parts") / role, record
+    )
+    return f"{kind}: {problem}" if problem else None
 
 
 def _memory_topology_errors(parts: dict[str, Any]) -> list[str]:

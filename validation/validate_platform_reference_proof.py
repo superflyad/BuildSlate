@@ -22,6 +22,7 @@ from buildslate.platform_reference_proof import (  # noqa: E402
     SOURCE_BINDINGS,
     audit,
 )
+from validation.source_fixtures import pdf_source  # noqa: E402
 
 
 def _write(path: Path, data: dict) -> str:
@@ -65,7 +66,7 @@ def _fixture(root: Path) -> tuple[dict, dict, str]:
     source_bindings = {}
     for label, (role, kind) in SOURCE_BINDINGS.items():
         path = Path(f"engineering/hardware/released/parts/{role}/{kind}.pdf")
-        record = _source(root, path, f"synthetic {label}\n".encode())
+        record = _source(root, path, pdf_source(label))
         selected["parts"][role]["evidence"][kind] = record
         source_bindings[label] = record["sha256"]
     selected_digest = _write(root / SELECTED_BOM, selected)
@@ -87,7 +88,7 @@ def _fixture(root: Path) -> tuple[dict, dict, str]:
     pmic_evidence = {}
     for kind in PMIC_DOCUMENTS:
         pmic_evidence[kind] = _source(
-            root, PMIC_ROOT / f"{kind}.pdf", f"synthetic PMIC {kind}\n".encode()
+            root, PMIC_ROOT / f"{kind}.pdf", pdf_source(f"PMIC {kind}")
         )
     release = {
         "schema_version": 1,
@@ -211,7 +212,7 @@ def main() -> int:
         _write(release_path, on_package_release)
         if audit(root)["status"] != "blocked":
             raise ValueError("48 GB compute package passed a 128 GB map")
-        _, release, selected_digest = _fixture(root)
+        selected, release, selected_digest = _fixture(root)
         digest = _write(release_path, release)
         selected_record = {
             "disposition": "approved",
@@ -293,6 +294,29 @@ def main() -> int:
         _write(release_path, invalid)
         if audit(root)["status"] != "blocked":
             raise ValueError("Changed supplier source binding was accepted")
+        _write(release_path, release)
+        source_path = (
+            root
+            / "engineering/hardware/released/parts/compute_platform/package_drawing.pdf"
+        )
+        source_path.write_bytes(b"renamed text, not a supplier PDF\n")
+        invalid_selected = copy.deepcopy(selected)
+        invalid_selected["parts"]["compute_platform"]["evidence"]["package_drawing"][
+            "sha256"
+        ] = hashlib.sha256(source_path.read_bytes()).hexdigest()
+        invalid = copy.deepcopy(release)
+        invalid["selected_bom_sha256"] = _write(root / SELECTED_BOM, invalid_selected)
+        invalid["source_bindings"]["compute_package_drawing"] = invalid_selected[
+            "parts"
+        ]["compute_platform"]["evidence"]["package_drawing"]["sha256"]
+        _write(release_path, invalid)
+        result = audit(root)
+        if result["status"] != "blocked" or not any(
+            "PDF signature or trailer" in error for error in result["errors"]
+        ):
+            raise ValueError("Matched source digests accepted a renamed text file")
+        source_path.write_bytes(pdf_source("compute_package_drawing"))
+        _write(root / SELECTED_BOM, selected)
         _write(release_path, release)
         electrical_path = root / ELECTRICAL_BOM
         electrical_path.write_text(

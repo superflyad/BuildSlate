@@ -8,6 +8,7 @@ import json
 import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from zipfile import ZipFile
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -15,6 +16,8 @@ sys.path.insert(0, str(ROOT))
 from buildslate.hardware_readiness import _evidence_result  # noqa: E402
 from buildslate.io import load_yaml  # noqa: E402
 from buildslate.part_selection import CORE_ROLES, RELEASE, audit  # noqa: E402
+from buildslate.supplier_source import source_format_error  # noqa: E402
+from validation.source_fixtures import pdf_source  # noqa: E402
 
 
 def require(condition: bool, message: str) -> None:
@@ -41,6 +44,23 @@ def main() -> int:
     )
     with TemporaryDirectory() as temporary:
         root = Path(temporary)
+        step_path = root / "supplier-outline.step"
+        step_path.write_bytes(
+            b"ISO-10303-21;\nHEADER;\nENDSEC;\nDATA;\nENDSEC;\nEND-ISO-10303-21;\n"
+        )
+        archive_path = root / "reference-design.zip"
+        with ZipFile(archive_path, "w") as archive:
+            archive.writestr("readme.txt", "synthetic reference design")
+        require(
+            source_format_error(step_path) is None
+            and source_format_error(archive_path) is None,
+            "STEP and intact ZIP supplier containers pass format screening",
+        )
+        archive_path.write_bytes(b"renamed text")
+        require(
+            source_format_error(archive_path) is not None,
+            "renamed text cannot pass as a ZIP supplier container",
+        )
         strategy = load_yaml(ROOT / "validation/evt0/bom-strategy.yaml")
         strategy["metadata"]["selected_parts"] = len(CORE_ROLES)
         capabilities = {
@@ -76,7 +96,7 @@ def main() -> int:
                     root / f"engineering/hardware/released/parts/{role}/{kind}.pdf"
                 )
                 document_path.parent.mkdir(parents=True, exist_ok=True)
-                document_path.write_bytes(f"synthetic {role} {kind}\n".encode())
+                document_path.write_bytes(pdf_source(f"{role} {kind}"))
                 documents[kind] = {
                     "path": document_path.relative_to(root).as_posix(),
                     "sha256": hashlib.sha256(document_path.read_bytes()).hexdigest(),
@@ -196,7 +216,34 @@ def main() -> int:
             audit(root, strategy)["status"] == "blocked",
             "changed source drawing invalidates part selection",
         )
-        source_path.write_bytes(b"synthetic storage package_drawing\n")
+        source_path.write_bytes(pdf_source("storage package_drawing"))
+        invalid = copy.deepcopy(release)
+        source_path.write_bytes(b"supplier-looking text with a .pdf filename\n")
+        invalid["parts"]["storage"]["evidence"]["package_drawing"]["sha256"] = (
+            hashlib.sha256(source_path.read_bytes()).hexdigest()
+        )
+        write_release(release_path, invalid)
+        result = audit(root, strategy)
+        require(
+            result["status"] == "blocked"
+            and any(
+                "PDF signature or trailer" in reason for reason in result["errors"]
+            ),
+            "matching hash cannot make renamed text into supplier PDF evidence",
+        )
+        source_path.write_bytes(b"%PDF-1.4\nnot a PDF\nstartxref\n0\n%%EOF\n")
+        invalid["parts"]["storage"]["evidence"]["package_drawing"]["sha256"] = (
+            hashlib.sha256(source_path.read_bytes()).hexdigest()
+        )
+        write_release(release_path, invalid)
+        result = audit(root, strategy)
+        require(
+            result["status"] == "blocked"
+            and any("PDF cannot be parsed" in reason for reason in result["errors"]),
+            "PDF markers without a readable document cannot pass part selection",
+        )
+        source_path.write_bytes(pdf_source("storage package_drawing"))
+        write_release(release_path, release)
         for role, mutation, expected in (
             ("memory", {"capacity_bytes_per_package": 16_000_000_000}, "128 GB"),
             ("storage", {"interface": "unsupported"}, "interface"),
@@ -245,7 +292,7 @@ def main() -> int:
                 root / f"engineering/hardware/released/parts/cellular/{kind}.pdf"
             )
             document_path.parent.mkdir(parents=True, exist_ok=True)
-            document_path.write_bytes(f"synthetic cellular {kind}\n".encode())
+            document_path.write_bytes(pdf_source(f"cellular {kind}"))
             documents[kind] = {
                 "path": document_path.relative_to(root).as_posix(),
                 "sha256": hashlib.sha256(document_path.read_bytes()).hexdigest(),

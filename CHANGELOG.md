@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Reject selected-part and platform-reference supplier files whose bytes do not parse as PDF or match their declared STEP or ZIP format, even when release hashes are updated to match the mislabeled file.
 - Screen Hongguang's preliminary HG070FH002 display drawing against the body and CAD reserve; publish its nominal overrun and format mismatch in hardware readiness, with the target and design release still blocked.
 - Allow a source-bound 128 GB memory-on-package release path with exact compute SKU capacity and internal DRAM map, while rejecting a 48 GB package or on-package DRAM represented as separate board parts.
 - Record ASUS's 48 GB X2 memory-on-package configuration and physical three-package analysis; distinguish the external 128 GB CAD study from an orderable X2 package.

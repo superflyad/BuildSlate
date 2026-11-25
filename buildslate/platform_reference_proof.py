@@ -15,6 +15,7 @@ from typing import Any
 
 from buildslate.part_selection import MEMORY_PLACEMENTS
 from buildslate.part_selection import RELEASE as SELECTED_BOM
+from buildslate.supplier_source import controlled_source_error
 
 RELEASE = Path("engineering/hardware/released/platform/platform-reference.json")
 PMIC_ROOT = Path("engineering/hardware/released/platform/pmic")
@@ -55,21 +56,8 @@ def _sha(path: Path) -> str:
 
 
 def _pmic_document_error(root: Path, name: str, record: Any) -> str | None:
-    if (
-        not isinstance(record, dict)
-        or not _text(record.get("path"))
-        or not _text(record.get("sha256"))
-    ):
-        return f"PMIC {name} needs a controlled path and SHA-256"
-    allowed = (root / PMIC_ROOT).resolve()
-    target = (root / record["path"]).resolve()
-    if not target.is_relative_to(allowed) or target == allowed:
-        return f"PMIC {name} is outside the controlled PMIC directory"
-    if target.suffix.lower() in {".md", ".yaml", ".yml", ".json"}:
-        return f"PMIC {name} is a planning or status file"
-    if not target.is_file() or _sha(target) != record["sha256"].lower():
-        return f"PMIC {name} source is missing or changed"
-    return None
+    problem = controlled_source_error(root, PMIC_ROOT, record)
+    return f"PMIC {name}: {problem}" if problem else None
 
 
 def _electrical_parts(path: Path) -> dict[str, str]:
@@ -277,6 +265,11 @@ def audit(root: Path) -> dict[str, Any]:
         expected = record.get("sha256") if isinstance(record, dict) else None
         if not _text(expected) or sources.get(label) != expected:
             errors.append(f"Platform {label} differs from selected supplier source")
+        problem = controlled_source_error(
+            root, Path("engineering/hardware/released/parts") / role, record
+        )
+        if problem:
+            errors.append(f"Platform {label}: {problem}")
     pmic = release.get("pmic")
     if not isinstance(pmic, dict):
         errors.append("Platform PMIC selection is missing")

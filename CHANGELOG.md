@@ -4,6 +4,8 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Reject mislabeled mechanical supplier drawings and zero clearance or uncertainty claims before a released STEP assembly can pass the physical design gate.
+
 - Shift the compact eight-package reverse placement to admit a nominal 5G module outline on the current board; export a separate 46-solid CAD and proof while keeping memory, modem, RF, electrical, and phone-function release blocked.
 
 - Screen an exact production-cataloged compact Micron 16 GB LPDDR5X package and its separate eight-package editable CAD and browser proof; publish the improved nominal fit and the still-blocked X2 topology, height, routing, and procurement status.

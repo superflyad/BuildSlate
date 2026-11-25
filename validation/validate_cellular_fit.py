@@ -37,6 +37,10 @@ def main() -> int:
         or report["package_mm"] != [29.0, 32.0, 2.4]
         or report["board_outline_mm"] != [78.0, 55.0, 0.8]
         or report["voice"] != "optional_VoNR_and_VoLTE"
+        or any(
+            item["access"] != "login_required" or item["content_reviewed"]
+            for item in report["supplier_design_documents"].values()
+        )
         or report["source_errors"]
         or any(side["outline_fits"] for side in report["sides"].values())
         or extension["minimum_whole_mm_board_width"] != 78.0
@@ -74,6 +78,7 @@ def main() -> int:
         or not compact_placement["module_above_rear_cover"]
         or compact_placement["module_bottom_to_rear_cover_mm"] != 0.25
         or compact["source_errors"]
+        or compact["supplier_design_documents"] != report["supplier_design_documents"]
     ):
         raise ValueError("Compact memory and 5G outline study drifted")
     if published["cellular_compact_memory_fit"] != compact:

@@ -526,11 +526,13 @@ function renderHardware() {
   const compactPhone = report.cellular_compact_memory_fit;
   const compactPlacement = compactPhone.reverse_board_extension;
   const compactSummary = `Shifted ${esc(compactPhone.memory_reference_part)} outlines leave a reverse-side location for the same ${esc(compactPhone.candidate)} module on the existing ${esc(compactPhone.board_outline_mm.slice(0, 2).join(" × "))} mm board. Its local origin is ${esc(compactPlacement.module_local_origin_mm.join(", "))} mm, with a ${esc(compactPhone.assumed_nominal_package_clearance_mm)} mm assumed planar rule and ${esc(compactPlacement.module_bottom_to_rear_cover_mm)} mm nominal rear-cover gap. The full CAD reports ${esc(state.proofs.compactphone.summary.interferences)} positive-volume intersections. <a href="?model=compactphone&tab=proof">Inspect the 3D proof</a>. The modem, 128 GB controller map, routing, RF, power, and tolerance fit are unqualified.`;
+  const modemDocs = compactPhone.supplier_design_documents;
+  const modemDocsSummary = `Quectel lists <a href="${esc(modemDocs.hardware_design.url)}" target="_blank" rel="noopener noreferrer">Hardware Design v${esc(modemDocs.hardware_design.revision)}</a> and <a href="${esc(modemDocs.reference_design.url)}" target="_blank" rel="noopener noreferrer">Reference Design v${esc(modemDocs.reference_design.revision)}</a>. Both require login; their contents and mounting tolerances have not been reviewed.`;
   document
     .querySelector("#hardware-parts")
     .insertAdjacentHTML(
       "beforeend",
-      `<div class="gate-item"><strong>Larger memory and 5G outline</strong><span>${cellularSummary}</span></div><div class="gate-item"><strong>Larger memory board expansion conflict</strong><span>${boardExtensionSummary}</span></div><div class="gate-item"><strong>Compact memory and 5G outline</strong><span>${compactSummary}</span></div>`,
+      `<div class="gate-item"><strong>Larger memory and 5G outline</strong><span>${cellularSummary}</span></div><div class="gate-item"><strong>Larger memory board expansion conflict</strong><span>${boardExtensionSummary}</span></div><div class="gate-item"><strong>Compact memory and 5G outline</strong><span>${compactSummary}</span></div><div class="gate-item"><strong>Modem supplier design files</strong><span>${modemDocsSummary}</span></div>`,
     );
   const study = report.memory_package_fit.eight_package_study;
   const compactStudy =

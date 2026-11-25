@@ -320,6 +320,7 @@ def audit_data(
         "sides": sides,
         "reverse_board_extension": extension,
         "voice": module["voice"],
+        "supplier_design_documents": module["supplier_design_documents"],
         "source_errors": errors,
         "required_before_selection": candidate["screen"]["required_before_selection"],
         "source": module["source"]["url"],

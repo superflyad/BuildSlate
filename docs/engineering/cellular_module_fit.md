@@ -4,6 +4,8 @@ The phone-function gate needs a selected cellular platform and measured calling 
 
 Quectel's [RG255C Series specification, revision 1.1](https://www.quectel.com/content/uploads/2024/03/Quectel_RG255C_Series_5G_Module_Specification_V1.1.pdf) lists a 29 × 32 × 2.4 mm LGA outline, 3.3–4.3 V supply, USB 2.0 and other host interfaces, two cellular antenna ports, and optional VoNR/VoLTE. The specification calls the series industrial/commercial and marks listed carrier and regulatory certifications as in progress. The exact voice-enabled variant, firmware, carrier support, handheld suitability, power transients, and current certification state require supplier confirmation. This reference is **not** a selected modem or a phone-function proof.
 
+Quectel lists [RG255C Hardware Design v1.3](https://www.quectel.com/download/quectel_rg255c_series_hardware_design_v1-3/) and [Reference Design v1.1](https://www.quectel.com/download/quectel_rg255c_series_reference_design_v1-1/), but both download pages require login. Their contents have not been reviewed or bound to this model. The public two-page specification does not supply the soldered-height or complete tolerance stack needed to release the 0.25 mm rear-cover gap.
+
 ## Larger-package board result
 
 | Screen | Result |

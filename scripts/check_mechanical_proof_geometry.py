@@ -10,6 +10,7 @@ from tempfile import TemporaryDirectory
 
 import cadquery as cq
 import yaml
+from pypdf import PdfWriter
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -37,7 +38,9 @@ def _fixture(root: Path) -> tuple[Path, dict]:
         drawing = parts_dir / f"{part_id}.pdf"
         shape = cq.Workplane("XY").box(2, 2, 2, centered=False).val()
         cq.exporters.export(shape, str(source))
-        drawing.write_bytes(f"synthetic drawing for {part_id}".encode())
+        pdf = PdfWriter()
+        pdf.add_blank_page(width=72, height=72)
+        pdf.write(drawing)
         bodies.append(shape.translate(cq.Vector(x, 1, 1)))
         parts.append(
             {
@@ -90,6 +93,58 @@ def main() -> int:
         )
         if result["status"] != "pass" or result["part_count"] != 2:
             raise ValueError(f"Valid STEP assembly did not pass: {result['findings']}")
+        drawing = root / manifest["parts"][0]["drawing"]
+        original_pdf = drawing.read_bytes()
+        drawing.write_bytes(b"renamed text is not a supplier drawing")
+        manifest["parts"][0]["drawing_sha256"] = _hash(drawing)
+        manifest_path.write_text(
+            yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8"
+        )
+        try:
+            audit(
+                root,
+                required_roles=("main_pcb", "battery_pack"),
+                expected_envelope=(20, 10, 5),
+            )
+        except ValueError as error:
+            if "source PDF" not in str(error):
+                raise
+        else:
+            raise ValueError("Hash-matched text passed as a supplier PDF")
+        drawing.write_bytes(original_pdf)
+        manifest["parts"][0]["drawing_sha256"] = _hash(drawing)
+        manifest["minimum_clearance_mm"] = 0
+        manifest_path.write_text(
+            yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8"
+        )
+        try:
+            audit(
+                root,
+                required_roles=("main_pcb", "battery_pack"),
+                expected_envelope=(20, 10, 5),
+            )
+        except ValueError as error:
+            if "clearance must be positive" not in str(error):
+                raise
+        else:
+            raise ValueError("Zero non-contact clearance passed mechanical release")
+        manifest["minimum_clearance_mm"] = 0.1
+        manifest["parts"][0]["radial_uncertainty_mm"] = 0
+        manifest_path.write_text(
+            yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8"
+        )
+        try:
+            audit(
+                root,
+                required_roles=("main_pcb", "battery_pack"),
+                expected_envelope=(20, 10, 5),
+            )
+        except ValueError as error:
+            if "uncertainty must be positive" not in str(error):
+                raise
+        else:
+            raise ValueError("Zero part uncertainty passed mechanical release")
+        manifest["parts"][0]["radial_uncertainty_mm"] = 0.1
         manifest["envelope_mm"][0] = 21
         manifest_path.write_text(
             yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8"

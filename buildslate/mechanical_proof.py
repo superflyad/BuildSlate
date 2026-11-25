@@ -10,6 +10,7 @@ from pathlib import Path
 
 from .io import load_yaml
 from .program import DEFAULT_REPO_ROOT
+from .supplier_source import source_format_error
 
 ASSEMBLY = Path("engineering/hardware/released/mechanical/assembly.step")
 MANIFEST = Path("engineering/hardware/released/mechanical/assembly.manifest.yaml")
@@ -144,8 +145,10 @@ def audit(
         )
     min_clearance = float(manifest["minimum_clearance_mm"])
     contact_gap = float(manifest["maximum_contact_gap_mm"])
-    if min_clearance < 0 or contact_gap < 0:
-        raise ValueError("Clearance and contact limits must be nonnegative")
+    if min_clearance <= 0 or contact_gap < 0:
+        raise ValueError(
+            "Non-contact clearance must be positive; contact gap cannot be negative"
+        )
     contacts = [frozenset(pair) for pair in manifest.get("contact_pairs", [])]
     if len(contacts) != len(set(contacts)) or any(
         len(pair) != 2 or not pair.issubset(ids) for pair in contacts
@@ -174,6 +177,14 @@ def audit(
             or _sha256(drawing) != part["drawing_sha256"]
         ):
             raise ValueError(f"{part_id}: STEP or drawing hash mismatch")
+        if source.suffix.lower() not in {".step", ".stp"}:
+            raise ValueError(f"{part_id}: source geometry must be a STEP file")
+        if drawing.suffix.lower() != ".pdf":
+            raise ValueError(f"{part_id}: supplier drawing must be a PDF file")
+        for source_file in (source, drawing):
+            format_error = source_format_error(source_file)
+            if format_error is not None:
+                raise ValueError(f"{part_id}: {format_error}")
         solids = cq.importers.importStep(str(source)).solids().vals()
         if len(solids) != 1 or not solids[0].isValid() or solids[0].Volume() <= 0:
             raise ValueError(
@@ -193,8 +204,10 @@ def audit(
         if len(translation) != 3 or len(rotation) != 3:
             raise ValueError(f"{part_id}: incomplete placement transform")
         uncertainty = float(part["radial_uncertainty_mm"])
-        if uncertainty < 0:
-            raise ValueError(f"{part_id}: negative position or size uncertainty")
+        if uncertainty <= 0:
+            raise ValueError(
+                f"{part_id}: position and size uncertainty must be positive"
+            )
         shape = source_shape
         for axis, degrees in zip(
             ((1, 0, 0), (0, 1, 0), (0, 0, 1)), rotation, strict=True
@@ -278,7 +291,8 @@ def audit(
         "findings": findings,
         "caveat": (
             "This checks source STEP identity, nominal assembly geometry, exact penetration, "
-            "and conservative clearance allowances. It does not prove supplier tolerances, "
+            "basic source-file format, and conservative clearance allowances. It does not "
+            "authenticate supplier identity or prove supplier tolerances, "
             "flex motion, material response, thermal expansion, assembly process, or physical fit."
         ),
     }

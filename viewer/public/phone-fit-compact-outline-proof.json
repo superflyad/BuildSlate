@@ -2455,6 +2455,22 @@
       "caveat": "Whole-mm board-width search and nominal boxes only; this is not a qualified modem site, board, or phone design."
     },
     "voice": "optional_VoNR_and_VoLTE",
+    "supplier_design_documents": {
+      "hardware_design": {
+        "document": "Quectel RG255C Series Hardware Design",
+        "revision": "1.3",
+        "url": "https://www.quectel.com/download/quectel_rg255c_series_hardware_design_v1-3/",
+        "access": "login_required",
+        "content_reviewed": false
+      },
+      "reference_design": {
+        "document": "Quectel RG255C Series Reference Design",
+        "revision": "1.1",
+        "url": "https://www.quectel.com/download/quectel_rg255c_series_reference_design_v1-1/",
+        "access": "login_required",
+        "content_reviewed": false
+      }
+    },
     "source_errors": [],
     "required_before_selection": [
       "Orderable voice-enabled hardware and firmware variant with carrier support for approved markets.",

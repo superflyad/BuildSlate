@@ -17,7 +17,13 @@ from .cad_proof import PROOF, build_proof
 from .cellular_fit import CANDIDATE as CELLULAR_CANDIDATE
 from .cellular_fit import audit as audit_cellular
 from .io import load_yaml
-from .memory_package_fit import CANDIDATES, PUBLIC_PART, STUDY
+from .memory_package_fit import (
+    CANDIDATES,
+    COMPACT_PART,
+    COMPACT_STUDY,
+    PUBLIC_PART,
+    STUDY,
+)
 from .memory_package_fit import audit as audit_memory
 from .program import DEFAULT_REPO_ROOT
 
@@ -29,6 +35,10 @@ MEMORY_STEP = Path("cad/slate-pocket-v1r/concept-cad/memory-8x16.step")
 MEMORY_MODEL = Path("viewer/public/memory-8x16.json")
 MEMORY_GLTF = Path("viewer/public/memory-8x16.gltf")
 MEMORY_PROOF = Path("viewer/public/memory-8x16-proof.json")
+COMPACT_MEMORY_STEP = Path("cad/slate-pocket-v1r/concept-cad/memory-8x16-compact.step")
+COMPACT_MEMORY_MODEL = Path("viewer/public/memory-8x16-compact.json")
+COMPACT_MEMORY_GLTF = Path("viewer/public/memory-8x16-compact.gltf")
+COMPACT_MEMORY_PROOF = Path("viewer/public/memory-8x16-compact-proof.json")
 PHONE_STEP = Path("cad/slate-pocket-v1r/concept-cad/phone-fit-conflict.step")
 PHONE_MODEL = Path("viewer/public/phone-fit-conflict.json")
 PHONE_GLTF = Path("viewer/public/phone-fit-conflict.gltf")
@@ -337,6 +347,46 @@ def build_memory_variant(repo_root: Path) -> dict:
         "Editable outline study only. The 0.8 mm PCB stack remains an unreviewed "
         "fabrication assumption; memory topology, routing, thermal path, and "
         "physical function are unproven."
+    )
+    return model
+
+
+def build_compact_memory_variant(repo_root: Path) -> dict:
+    """Place the exact compact 16 GB package outlines in the full concept."""
+    model = build_memory_variant(repo_root)
+    screen = audit_memory(repo_root)["compact_16gb_reference"]
+    study = screen["placement_study"]
+    if study["status"] != "outline_clear" or study["package_count"] != 8:
+        raise ValueError("compact eight-package outline has planar conflicts")
+    supplier = load_yaml(repo_root / CANDIDATES)["memory_supplier_context"][
+        COMPACT_PART
+    ]
+    source = f"{CANDIDATES.as_posix()}#memory_supplier_context.{COMPACT_PART}"
+    placements = {item["id"]: item for item in study["placements"]}
+    replaced = 0
+    for part in model["parts"]:
+        if part["id"] not in placements:
+            continue
+        item = placements[part["id"]]
+        part["box_mm"] = item["assembly_box_mm"]
+        part["source"] = source
+        part["geometry_source"] = f"{COMPACT_STUDY.as_posix()}#placements.{part['id']}"
+        part["notes"] = (
+            f"{supplier['part_number']} public package outline; {item['side']} "
+            "placement and X2 support are unqualified."
+        )
+        replaced += 1
+    if replaced != 8:
+        raise ValueError("compact memory variant did not replace eight packages")
+    model["status"] = "eight_package_compact_reference_unqualified"
+    model["description"] = (
+        "Two-sided compact eight-package reference alternative. Published Micron "
+        "outlines replace the four 32 GB planning sites in the full concept."
+    )
+    model["caveat"] = (
+        "Editable nominal outline study only. The 1.2 mm package exceeds the "
+        "original 1.0 mm memory block height. Land patterns, X2 topology, routing, "
+        "thermal path, procurement, and physical function are unproven."
     )
     return model
 
@@ -697,6 +747,10 @@ def _export(
         "phone_integration_collision_study",
     }:
         proof["memory_study"] = audit_memory(root)["eight_package_study"]
+    if model["status"] == "eight_package_compact_reference_unqualified":
+        proof["memory_study"] = audit_memory(root)["compact_16gb_reference"][
+            "placement_study"
+        ]
     if model["status"] == "phone_integration_collision_study":
         proof["phone_extension"] = audit_cellular(root)["reverse_board_extension"]
     if model["status"] == "usb_connector_outline_conflict_study":
@@ -733,6 +787,16 @@ def generate(repo_root: Path = DEFAULT_REPO_ROOT) -> tuple[int, Path]:
     _export(cq, root, model, STEP, MODEL, GLTF, PROOF)
     variant = build_memory_variant(root)
     _export(cq, root, variant, MEMORY_STEP, MEMORY_MODEL, MEMORY_GLTF, MEMORY_PROOF)
+    compact = build_compact_memory_variant(root)
+    _export(
+        cq,
+        root,
+        compact,
+        COMPACT_MEMORY_STEP,
+        COMPACT_MEMORY_MODEL,
+        COMPACT_MEMORY_GLTF,
+        COMPACT_MEMORY_PROOF,
+    )
     phone = build_phone_conflict_variant(root)
     _export(cq, root, phone, PHONE_STEP, PHONE_MODEL, PHONE_GLTF, PHONE_PROOF)
     usb = build_usb_connector_variant(root)
@@ -749,6 +813,9 @@ def main() -> int:
     count, path = generate(args.repo_root)
     print(f"Exported {count} baseline solids to {path}")
     print(f"Exported eight-package reference STEP to {args.repo_root / MEMORY_STEP}")
+    print(
+        f"Exported compact eight-package STEP to {args.repo_root / COMPACT_MEMORY_STEP}"
+    )
     print(f"Exported phone collision study STEP to {args.repo_root / PHONE_STEP}")
     print(f"Exported USB connector outline STEP to {args.repo_root / USB_STEP}")
     print(f"Exported battery pack outline STEP to {args.repo_root / BATTERY_STEP}")

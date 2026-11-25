@@ -16,6 +16,10 @@ from buildslate.cad import (  # noqa: E402
     BATTERY_MODEL,
     BATTERY_PROOF,
     BATTERY_STEP,
+    COMPACT_MEMORY_GLTF,
+    COMPACT_MEMORY_MODEL,
+    COMPACT_MEMORY_PROOF,
+    COMPACT_MEMORY_STEP,
     GLTF,
     MEMORY_GLTF,
     MEMORY_MODEL,
@@ -34,6 +38,7 @@ from buildslate.cad import (  # noqa: E402
     USB_STEP,
     build_battery_pack_variant,
     build_concept,
+    build_compact_memory_variant,
     build_memory_variant,
     build_phone_conflict_variant,
     build_usb_connector_variant,
@@ -201,6 +206,23 @@ def main() -> int:
         raise ValueError(
             "eight-package CAD variant does not replace the planning solids cleanly"
         )
+    compact = build_compact_memory_variant(ROOT)
+    compact_proof = _check_model(
+        compact,
+        COMPACT_MEMORY_MODEL,
+        COMPACT_MEMORY_GLTF,
+        COMPACT_MEMORY_STEP,
+        COMPACT_MEMORY_PROOF,
+    )
+    compact_parts = [part for part in compact["parts"] if part["group"] == "memory"]
+    if (
+        len(compact_parts) != 8
+        or len(compact["parts"]) != len(variant["parts"])
+        or compact_proof["summary"]["interferences"] != 0
+        or compact_proof.get("memory_study")
+        != audit_memory(ROOT)["compact_16gb_reference"]["placement_study"]
+    ):
+        raise ValueError("compact memory CAD variant drifted from package study")
     phone = build_phone_conflict_variant(ROOT)
     phone_proof = _check_model(phone, PHONE_MODEL, PHONE_GLTF, PHONE_STEP, PHONE_PROOF)
     extension = audit_cellular(ROOT)["reverse_board_extension"]
@@ -283,6 +305,7 @@ def main() -> int:
     print(
         f"PASS: {primary_proof['summary']['parts_checked']} baseline and "
         f"{reference_proof['summary']['parts_checked']} memory and "
+        f"{compact_proof['summary']['parts_checked']} compact memory and "
         f"{phone_proof['summary']['parts_checked']} phone and "
         f"{usb_proof['summary']['parts_checked']} USB and "
         f"{battery_proof['summary']['parts_checked']} battery study CAD solids"

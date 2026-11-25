@@ -1130,6 +1130,278 @@
       "source": "https://www.micron.com/products/obsolete/obsolete-lpddr5x/part-catalog/part-detail/mt62f4g64dafl-023-wt-c",
       "caveat": "This exact 32 GB part is obsolete; package capacity does not establish X2 channel/rank support or procurement."
     },
+    "compact_16gb_reference": {
+      "part_number": "MT62F2G64D8CZ-023 WT:C",
+      "capacity_gb": 16,
+      "density_gbit": 128,
+      "package_mm": [
+        8.0,
+        12.4,
+        1.2
+      ],
+      "board_orientation_mm": [
+        12.4,
+        8.0,
+        1.2
+      ],
+      "ball_count": 561,
+      "public_part_status": "production_catalog_listing",
+      "packages_for_128gb": 8,
+      "existing_site_outline_fits": true,
+      "additional_package_sites_required": 4,
+      "nominal_height_over_existing_blocks_mm": 0.2,
+      "eight_package_area_mm2": 793.6,
+      "additional_area_over_four_sites_mm2": 233.6,
+      "independent_bus_width_bits": 512,
+      "independent_bus_width_fits": false,
+      "placement_study": {
+        "status": "outline_clear",
+        "package_count": 8,
+        "packages_per_side": {
+          "component": 4,
+          "reverse": 4
+        },
+        "assumed_planar_clearance_mm": 1.0,
+        "minimum_screened_planar_gap_mm": 2.0,
+        "board_outline_mm": [
+          78.0,
+          55.0
+        ],
+        "component_side_placements": [
+          {
+            "id": "compute_soc",
+            "rect_mm": [
+              28.0,
+              18.0,
+              20.0,
+              20.0
+            ]
+          },
+          {
+            "id": "storage_ufs_1tb_reference",
+            "rect_mm": [
+              66.5,
+              18.0,
+              9.0,
+              13.0
+            ]
+          },
+          {
+            "id": "platform_pmic",
+            "rect_mm": [
+              30.0,
+              41.0,
+              16.0,
+              10.0
+            ]
+          },
+          {
+            "id": "battery_charger",
+            "rect_mm": [
+              2.0,
+              2.0,
+              18.0,
+              12.0
+            ]
+          },
+          {
+            "id": "usb_pd_controller",
+            "rect_mm": [
+              22.0,
+              2.0,
+              10.0,
+              8.0
+            ]
+          },
+          {
+            "id": "wireless_charge_controller",
+            "rect_mm": [
+              34.0,
+              2.0,
+              10.0,
+              8.0
+            ]
+          },
+          {
+            "id": "wifi_bluetooth",
+            "rect_mm": [
+              48.0,
+              2.0,
+              14.0,
+              10.0
+            ]
+          },
+          {
+            "id": "security_controller",
+            "rect_mm": [
+              64.0,
+              2.0,
+              8.0,
+              8.0
+            ]
+          }
+        ],
+        "floorplan_board_thickness_mm": 0.8,
+        "mechanical_board_height_mm": 0.8,
+        "board_z_mm": [
+          3.2,
+          4.0
+        ],
+        "placement_conflicts": [],
+        "stack_issues": [],
+        "placements": [
+          {
+            "id": "memory_left_lower_component",
+            "side": "component",
+            "rect_mm": [
+              10.0,
+              16.0,
+              12.4,
+              8.0
+            ],
+            "assembly_box_mm": [
+              102.0,
+              28.0,
+              4.0,
+              12.4,
+              8.0,
+              1.2
+            ]
+          },
+          {
+            "id": "memory_left_upper_component",
+            "side": "component",
+            "rect_mm": [
+              10.0,
+              32.0,
+              12.4,
+              8.0
+            ],
+            "assembly_box_mm": [
+              102.0,
+              44.0,
+              4.0,
+              12.4,
+              8.0,
+              1.2
+            ]
+          },
+          {
+            "id": "memory_right_lower_component",
+            "side": "component",
+            "rect_mm": [
+              51.0,
+              16.0,
+              12.4,
+              8.0
+            ],
+            "assembly_box_mm": [
+              143.0,
+              28.0,
+              4.0,
+              12.4,
+              8.0,
+              1.2
+            ]
+          },
+          {
+            "id": "memory_right_upper_component",
+            "side": "component",
+            "rect_mm": [
+              51.0,
+              32.0,
+              12.4,
+              8.0
+            ],
+            "assembly_box_mm": [
+              143.0,
+              44.0,
+              4.0,
+              12.4,
+              8.0,
+              1.2
+            ]
+          },
+          {
+            "id": "memory_left_lower_reverse",
+            "side": "reverse",
+            "rect_mm": [
+              10.0,
+              16.0,
+              12.4,
+              8.0
+            ],
+            "assembly_box_mm": [
+              102.0,
+              28.0,
+              2.0,
+              12.4,
+              8.0,
+              1.2
+            ]
+          },
+          {
+            "id": "memory_left_upper_reverse",
+            "side": "reverse",
+            "rect_mm": [
+              10.0,
+              32.0,
+              12.4,
+              8.0
+            ],
+            "assembly_box_mm": [
+              102.0,
+              44.0,
+              2.0,
+              12.4,
+              8.0,
+              1.2
+            ]
+          },
+          {
+            "id": "memory_right_lower_reverse",
+            "side": "reverse",
+            "rect_mm": [
+              51.0,
+              16.0,
+              12.4,
+              8.0
+            ],
+            "assembly_box_mm": [
+              143.0,
+              28.0,
+              2.0,
+              12.4,
+              8.0,
+              1.2
+            ]
+          },
+          {
+            "id": "memory_right_upper_reverse",
+            "side": "reverse",
+            "rect_mm": [
+              51.0,
+              32.0,
+              12.4,
+              8.0
+            ],
+            "assembly_box_mm": [
+              143.0,
+              44.0,
+              2.0,
+              12.4,
+              8.0,
+              1.2
+            ]
+          }
+        ],
+        "source": "engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-compact-study.yaml",
+        "caveat": "Planar package boxes do not include solder lands, via escape, decoupling, shields, thermal contacts, or X2 memory-channel rules."
+      },
+      "status": "outline_study_only_not_x2_qualified",
+      "source": "https://in.micron.com/products/memory/dram-components/lpddr5x/part-catalog",
+      "caveat": "Micron's catalog listing and these rectangles do not establish procurement, a supported X2 memory map, routing, thermal closure, or a booted 128 GB unit."
+    },
     "adata_unit_reconciliation": {
       "status": "source_unit_conflict",
       "parts": [

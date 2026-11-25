@@ -262,6 +262,7 @@ function renderProof() {
   const proofTitles = {
     concept: "Baseline concept",
     memory8: "Eight-package reference",
+    compact8: "Compact eight-package reference",
     phonefit: "Rejected phone layout",
     usbfit: "USB connector outline",
     batteryfit: "Battery pack conflict",
@@ -269,6 +270,7 @@ function renderProof() {
   const proofFiles = {
     concept: "proof.json",
     memory8: "memory-8x16-proof.json",
+    compact8: "memory-8x16-compact-proof.json",
     phonefit: "phone-fit-conflict-proof.json",
     usbfit: "usb4525-outline-proof.json",
     batteryfit: "lp4473109-pack-outline-proof.json",
@@ -413,6 +415,7 @@ function renderHardware() {
   const platform = report.platform_fit;
   const memoryBus = report.memory_package_fit.bus_topology_screen;
   const obsolete32 = report.memory_package_fit.obsolete_32gb_reference;
+  const compact16 = report.memory_package_fit.compact_16gb_reference;
   const adataUnits = report.memory_package_fit.adata_unit_reconciliation;
   const oemEvidence = (item) =>
     item.observed_oem_memory_gb === null
@@ -482,6 +485,7 @@ function renderHardware() {
     `<div class="gate-item"><strong>Display geometry conflict</strong><span>Target ${esc(report.display_fit.target_diagonal_in)} in ${esc(report.display_fit.target_aspect_ratio)} needs an active rectangle of ${esc(report.display_fit.target_active_mm.join(" × "))} mm. The body is ${esc(report.display_fit.device_face_mm.join(" × "))} mm and the CAD display reserve is ${esc(report.display_fit.cad_display_reserve_mm.join(" × "))} mm. The active short side exceeds the body by ${esc(report.display_fit.short_side_overrun_mm.device_face)} mm and the reserve by ${esc(report.display_fit.short_side_overrun_mm.cad_reserve)} mm. ${esc(report.display_fit.resolution_px.join(" × "))} pixels are ${esc(report.display_fit.resolution_aspect_ratio)}, not the declared ${esc(report.display_fit.target_aspect_ratio)}. Design release stays blocked. <a href="https://github.com/superflyad/BuildSlate/blob/main/docs/engineering/display_geometry_fit.md" target="_blank" rel="noopener noreferrer">Geometry proof</a></span></div>` +
     `<div class="gate-item"><strong>Drawing-based display candidate rejected</strong><span>${esc(report.display_fit.drawing_candidate.supplier)} ${esc(report.display_fit.drawing_candidate.part_number)} is a ${esc(report.display_fit.drawing_candidate.diagonal_in)} in ${esc(report.display_fit.drawing_candidate.pixel_aspect_ratio)} touch AMOLED. Its published ${esc(report.display_fit.drawing_candidate.panel_outline_mm.join(" × "))} mm panel outline exceeds the CAD reserve by ${esc(report.display_fit.drawing_candidate.nominal_short_side_reserve_overrun_mm)} mm on the short side. It also misses the approved 7.5 in 16:10 format. The A0 specification is preliminary; flex, tolerances, and integration remain unqualified. No display is selected. <a href="${esc(report.display_fit.drawing_candidate.source)}" target="_blank" rel="noopener noreferrer">Manufacturer specification</a></span></div>` +
     `<div class="gate-item"><strong>128 GB memory geometry</strong><span>${esc(report.memory_package_fit.planning_sites)} assumed 32 GB sites; exact public ${esc(report.memory_package_fit.public_reference_part)} is ${esc(report.memory_package_fit.public_reference_capacity_gb)} GB and ${esc(report.memory_package_fit.public_reference_package_mm.join(" × "))} mm. It needs ${esc(report.memory_package_fit.required_public_reference_packages)} packages for 128 GB; the current sites fit neither its outline nor height. These separate memory boxes do not represent the observed X2 48 GB memory-on-package configuration. <a href="${esc(report.memory_package_fit.source)}" target="_blank" rel="noopener noreferrer">Manufacturer part</a></span></div>` +
+    `<div class="gate-item"><strong>Compact 16 GB memory outline</strong><span>Micron ${esc(compact16.part_number)} is cataloged as ${esc(compact16.public_part_status.replaceAll("_", " "))}: ${esc(compact16.package_mm.join(" × "))} mm, 561 balls, x64. Rotated, its outline fits each current 14 × 10 mm planning site, but its body is ${esc(compact16.nominal_height_over_existing_blocks_mm)} mm above the modeled height. Eight packages total 128 GB and need ${esc(compact16.additional_package_sites_required)} added sites. The two-sided outline study has ${esc(compact16.placement_study.minimum_screened_planar_gap_mm)} mm minimum screened planar gap; eight independent x64 links need ${esc(compact16.independent_bus_width_bits)} data bits, beyond the X2 bus. Procurement, shared-channel support, routing, and boot are unverified. This part is not selected, and the current 3D memory variant depicts a different package. <a href="${esc(compact16.source)}" target="_blank" rel="noopener noreferrer">Micron catalog</a> · <a href="https://github.com/superflyad/BuildSlate/blob/main/docs/engineering/memory_package_fit.md" target="_blank" rel="noopener noreferrer">Geometry proof</a></span></div>` +
     adataUnits.parts
       .map(
         (item) =>
@@ -1059,13 +1063,15 @@ function displayModel(model) {
       ? "Editable assumptions and source geometry"
       : model === "memory8"
         ? "Eight reference packages · stack and topology unresolved"
-        : model === "phonefit"
-          ? "Rejected modem layout · four measured solid collisions"
-          : model === "usbfit"
-            ? "GCT drawing envelope · port and frame collision screen"
-            : model === "batteryfit"
-              ? "6 Ah pack drawing · body and power conflict screen"
-              : "Traceable source planning envelopes";
+        : model === "compact8"
+          ? "Compact Micron outlines · height and topology unresolved"
+          : model === "phonefit"
+            ? "Rejected modem layout · four measured solid collisions"
+            : model === "usbfit"
+              ? "GCT drawing envelope · port and frame collision screen"
+              : model === "batteryfit"
+                ? "6 Ah pack drawing · body and power conflict screen"
+                : "Traceable source planning envelopes";
   document.querySelector("#part-detail").className = "detail-placeholder";
   document.querySelector("#part-detail").innerHTML =
     '<div class="detail-icon">◇</div><h2>Select a component</h2><p>Inspect geometry, evidence, and its source.</p>';
@@ -1092,6 +1098,13 @@ try {
   );
   if (!memoryProofResponse.ok)
     throw new Error(`memory CAD proof: HTTP ${memoryProofResponse.status}`);
+  const compactProofResponse = await fetch(
+    `${import.meta.env.BASE_URL}memory-8x16-compact-proof.json`,
+  );
+  if (!compactProofResponse.ok)
+    throw new Error(
+      `compact memory CAD proof: HTTP ${compactProofResponse.status}`,
+    );
   const phoneProofResponse = await fetch(
     `${import.meta.env.BASE_URL}phone-fit-conflict-proof.json`,
   );
@@ -1110,6 +1123,7 @@ try {
   state.proofs = {
     concept: await proofResponse.json(),
     memory8: await memoryProofResponse.json(),
+    compact8: await compactProofResponse.json(),
     phonefit: await phoneProofResponse.json(),
     usbfit: await usbProofResponse.json(),
     batteryfit: await batteryProofResponse.json(),
@@ -1125,6 +1139,7 @@ try {
     [
       ["concept", "concept"],
       ["memory8", "memory-8x16"],
+      ["compact8", "memory-8x16-compact"],
       ["phonefit", "phone-fit-conflict"],
       ["usbfit", "usb4525-outline"],
       ["batteryfit", "lp4473109-pack-outline"],
@@ -1151,6 +1166,7 @@ try {
     [
       "concept",
       "memory8",
+      "compact8",
       "phonefit",
       "usbfit",
       "batteryfit",

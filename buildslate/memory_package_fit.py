@@ -14,7 +14,11 @@ CANDIDATES = Path("research/evidence/compute/platform-comparison.yaml")
 FLOORPLAN = Path("engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml")
 ASSEMBLY = Path("engineering/assembly/assembly.yaml")
 STUDY = Path("engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml")
+COMPACT_STUDY = Path(
+    "engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-compact-study.yaml"
+)
 PUBLIC_PART = "micron_lpddr5x_16gb_public_part"
+COMPACT_PART = "micron_lpddr5x_16gb_compact_part"
 OBSOLETE_32GB_PART = "micron_lpddr5x_32gb_obsolete_reference"
 ADATA_PARTS = ("adata_lpddr5x_32gbit", "adata_lpddr5x_64gbit")
 X2_CONTROLLERS = (
@@ -203,6 +207,8 @@ def _placement_study(
     board_height: float,
     package: list[float],
     required: int,
+    reference_part: str,
+    source_path: Path,
 ) -> dict:
     boundary = floorplan["board"]["component_side_boundary_mm"]
     limit = [
@@ -218,7 +224,7 @@ def _placement_study(
     origin = floorplan["board"]["origin_in_mechanical_model_mm"]
     placed = []
     conflicts = []
-    if study["metadata"]["reference_part"] != PUBLIC_PART:
+    if study["metadata"]["reference_part"] != reference_part:
         conflicts.append("Study reference part does not match the screened package")
     if len(study["placements"]) != required:
         conflicts.append("Study package count does not cover the memory target")
@@ -310,7 +316,7 @@ def _placement_study(
         "placement_conflicts": conflicts,
         "stack_issues": stack_issues,
         "placements": placed,
-        "source": STUDY.as_posix(),
+        "source": source_path.as_posix(),
         "caveat": "Planar package boxes do not include solder lands, via escape, decoupling, shields, thermal contacts, or X2 memory-channel rules.",
     }
 
@@ -321,6 +327,7 @@ def audit_data(
     floorplan: dict,
     assembly: dict,
     study: dict,
+    compact_study: dict,
     board_height: float,
 ) -> dict:
     memory = profile["memory"]
@@ -332,6 +339,7 @@ def audit_data(
         if placement["function"] == "lpddr5x_32gb_planning_site"
     }
     part = candidates["memory_supplier_context"][PUBLIC_PART]
+    compact = candidates["memory_supplier_context"][COMPACT_PART]
     obsolete = candidates["memory_supplier_context"][OBSOLETE_32GB_PART]
     controller = candidates["candidates"]["qualcomm_snapdragon_x2_elite_extreme"]
     capacity = int(part["capacity_gb"])
@@ -371,6 +379,40 @@ def audit_data(
         for item in sites.values()
     )
     public_part_area = required * package[0] * package[1]
+    compact_capacity = compact["capacity_gb"]
+    compact_source_package = compact["package_mm"]
+    if (
+        not isinstance(compact_capacity, int)
+        or isinstance(compact_capacity, bool)
+        or compact_capacity <= 0
+        or not isinstance(compact_source_package, list)
+        or len(compact_source_package) != 3
+        or any(
+            not isinstance(value, (int, float))
+            or isinstance(value, bool)
+            or not math.isfinite(value)
+            or value <= 0
+            for value in compact_source_package
+        )
+    ):
+        raise ValueError("Compact memory capacity or package dimensions are invalid")
+    compact_package = [float(value) for value in compact_source_package]
+    compact_required = math.ceil(target / compact_capacity)
+    compact_oriented = [compact_package[1], compact_package[0], compact_package[2]]
+    compact_outline_fit = all(
+        compact_oriented[0] <= float(site["rectangle_mm"]["length"])
+        and compact_oriented[1] <= float(site["rectangle_mm"]["width"])
+        for site in sites.values()
+    )
+    compact_height_overrun = max(
+        compact_package[2]
+        - float(
+            assembly["parts"]["pcb"]["parts"][name].get(
+                "height_mm", assembly["parts"]["pcb"]["default_height_mm"]
+            )
+        )
+        for name in sites
+    )
     errors = []
     if floorplan["metadata"]["modeled_memory_tier_gb"] != target:
         errors.append("Floorplan and profile memory capacities differ")
@@ -380,6 +422,22 @@ def audit_data(
         errors.append("Unqualified memory site was promoted beyond placeholder")
     if part["density_gbit"] != capacity * 8:
         errors.append("Manufacturer gigabit density was confused with gigabytes")
+    if compact["density_gbit"] != compact_capacity * 8:
+        errors.append(
+            "Compact manufacturer gigabit density was confused with gigabytes"
+        )
+    if (
+        not isinstance(compact["bus_width_bits"], int)
+        or isinstance(compact["bus_width_bits"], bool)
+        or compact["bus_width_bits"] <= 0
+        or not isinstance(compact["ball_count"], int)
+        or isinstance(compact["ball_count"], bool)
+        or compact["ball_count"] <= 0
+        or compact["bus_width_bits"] != part["bus_width_bits"]
+        or compact["interface"] != part["interface"]
+        or not compact["source"]["url"].startswith("https://in.micron.com/")
+    ):
+        errors.append("Compact memory package interface or manufacturer source changed")
     if obsolete["density_gbit"] != obsolete["capacity_gb"] * 8:
         errors.append("Obsolete 32 GB package density was confused with gigabytes")
     x2_controllers, x2_errors = _x2_controller_screen(
@@ -463,6 +521,48 @@ def audit_data(
             "source": obsolete["source"]["url"],
             "caveat": "This exact 32 GB part is obsolete; package capacity does not establish X2 channel/rank support or procurement.",
         },
+        "compact_16gb_reference": {
+            "part_number": compact["part_number"],
+            "capacity_gb": compact_capacity,
+            "density_gbit": compact["density_gbit"],
+            "package_mm": compact_package,
+            "board_orientation_mm": compact_oriented,
+            "ball_count": compact["ball_count"],
+            "public_part_status": compact["public_part_status"],
+            "packages_for_128gb": compact_required,
+            "existing_site_outline_fits": compact_outline_fit,
+            "additional_package_sites_required": max(0, compact_required - len(sites)),
+            "nominal_height_over_existing_blocks_mm": round(
+                max(0.0, compact_height_overrun), 3
+            ),
+            "eight_package_area_mm2": round(
+                compact_required * compact_package[0] * compact_package[1], 3
+            ),
+            "additional_area_over_four_sites_mm2": round(
+                compact_required * compact_package[0] * compact_package[1]
+                - reserved_area,
+                3,
+            ),
+            "independent_bus_width_bits": (
+                compact_required * compact["bus_width_bits"]
+            ),
+            "independent_bus_width_fits": (
+                compact_required * compact["bus_width_bits"] <= controller_width
+            ),
+            "placement_study": _placement_study(
+                compact_study,
+                floorplan,
+                assembly,
+                board_height,
+                compact_oriented,
+                compact_required,
+                COMPACT_PART,
+                COMPACT_STUDY,
+            ),
+            "status": "outline_study_only_not_x2_qualified",
+            "source": compact["source"]["url"],
+            "caveat": "Micron's catalog listing and these rectangles do not establish procurement, a supported X2 memory map, routing, thermal closure, or a booted 128 GB unit.",
+        },
         "adata_unit_reconciliation": adata,
         "bus_topology_screen": {
             "controller_bus_width_bits": controller_width,
@@ -487,7 +587,14 @@ def audit_data(
         ),
         "site_geometry": geometry,
         "eight_package_study": _placement_study(
-            study, floorplan, assembly, board_height, package, required
+            study,
+            floorplan,
+            assembly,
+            board_height,
+            package,
+            required,
+            PUBLIC_PART,
+            STUDY,
         ),
         "source_consistency": "pass" if not errors else "fail",
         "source_errors": errors,
@@ -505,13 +612,15 @@ def audit_data(
 
 
 def audit(root: Path) -> dict:
-    profile, candidates, floorplan, assembly, study = (
+    profile, candidates, floorplan, assembly, study, compact_study = (
         load_yaml(root / path)
-        for path in (PROFILE, CANDIDATES, FLOORPLAN, ASSEMBLY, STUDY)
+        for path in (PROFILE, CANDIDATES, FLOORPLAN, ASSEMBLY, STUDY, COMPACT_STUDY)
     )
     envelope = load_yaml(root / assembly["sources"]["envelope"])
     board_height = float(envelope["placements"]["main_pcb_placeholder"]["height_mm"])
-    return audit_data(profile, candidates, floorplan, assembly, study, board_height)
+    return audit_data(
+        profile, candidates, floorplan, assembly, study, compact_study, board_height
+    )
 
 
 def main() -> int:

@@ -1,0 +1,16 @@
+metadata:
+  status: unqualified_compact_package_outline_study
+  reference_part: micron_lpddr5x_16gb_compact_part
+  purpose: Screen eight Micron 561-ball 16 GB package outlines on the present two-sided board.
+  caveat: Coordinates and orientation are a geometry experiment, not a land pattern, X2 topology, routable board, or released design.
+
+assumed_planar_clearance_mm: 1.0
+placements:
+  memory_left_lower_component: {side: component, x_mm: 10.0, y_mm: 16.0}
+  memory_left_upper_component: {side: component, x_mm: 10.0, y_mm: 32.0}
+  memory_right_lower_component: {side: component, x_mm: 51.0, y_mm: 16.0}
+  memory_right_upper_component: {side: component, x_mm: 51.0, y_mm: 32.0}
+  memory_left_lower_reverse: {side: reverse, x_mm: 10.0, y_mm: 16.0}
+  memory_left_upper_reverse: {side: reverse, x_mm: 10.0, y_mm: 32.0}
+  memory_right_lower_reverse: {side: reverse, x_mm: 51.0, y_mm: 16.0}
+  memory_right_upper_reverse: {side: reverse, x_mm: 51.0, y_mm: 32.0}

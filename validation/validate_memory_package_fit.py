@@ -14,6 +14,7 @@ from buildslate.io import load_yaml  # noqa: E402
 from buildslate.memory_package_fit import (  # noqa: E402
     ASSEMBLY,
     CANDIDATES,
+    COMPACT_STUDY,
     FLOORPLAN,
     PROFILE,
     STUDY,
@@ -25,6 +26,7 @@ from buildslate.memory_package_fit import (  # noqa: E402
 def main() -> int:
     report = audit(ROOT)
     obsolete = report["obsolete_32gb_reference"]
+    compact = report["compact_16gb_reference"]
     adata = report["adata_unit_reconciliation"]
     comparison = report["x2_controller_comparison"]
     expected_controllers = {
@@ -73,6 +75,24 @@ def main() -> int:
         or obsolete["independent_bus_width_bits"] != 256
         or obsolete["independent_bus_width_fits"]
         or obsolete["status"] != "rejected_obsolete_not_x2_qualified"
+        or compact["part_number"] != "MT62F2G64D8CZ-023 WT:C"
+        or compact["capacity_gb"] != 16
+        or compact["density_gbit"] != 128
+        or compact["package_mm"] != [8.0, 12.4, 1.2]
+        or compact["board_orientation_mm"] != [12.4, 8.0, 1.2]
+        or compact["ball_count"] != 561
+        or compact["public_part_status"] != "production_catalog_listing"
+        or compact["packages_for_128gb"] != 8
+        or not compact["existing_site_outline_fits"]
+        or compact["additional_package_sites_required"] != 4
+        or compact["nominal_height_over_existing_blocks_mm"] != 0.2
+        or compact["eight_package_area_mm2"] != 793.6
+        or compact["additional_area_over_four_sites_mm2"] != 233.6
+        or compact["independent_bus_width_bits"] != 512
+        or compact["independent_bus_width_fits"]
+        or compact["placement_study"]["status"] != "outline_clear"
+        or compact["placement_study"]["minimum_screened_planar_gap_mm"] != 2.0
+        or compact["placement_study"]["placements"][4]["assembly_box_mm"][2] != 2.0
         or report["integration_status"] != "blocked"
         or adata["status"] != "source_unit_conflict"
         or [part["part_number"] for part in adata["parts"]]
@@ -106,7 +126,7 @@ def main() -> int:
         raise ValueError("Published memory package screen is stale")
     data = [
         load_yaml(ROOT / path)
-        for path in (PROFILE, CANDIDATES, FLOORPLAN, ASSEMBLY, STUDY)
+        for path in (PROFILE, CANDIDATES, FLOORPLAN, ASSEMBLY, STUDY, COMPACT_STUDY)
     ]
     data.append(
         float(
@@ -174,7 +194,20 @@ def main() -> int:
     if audit_data(*altered)["eight_package_study"]["status"] != "outline_conflict":
         raise ValueError("Reverse-side boundary breach was accepted")
     altered = copy.deepcopy(data)
-    altered[5] = 1.2
+    altered[1]["memory_supplier_context"]["micron_lpddr5x_16gb_compact_part"][
+        "density_gbit"
+    ] = 256
+    if audit_data(*altered)["source_consistency"] != "fail":
+        raise ValueError("Compact part gigabit density was accepted as 32 GB")
+    altered = copy.deepcopy(data)
+    altered[5]["placements"]["memory_right_lower_component"]["x_mm"] = 70.0
+    if (
+        audit_data(*altered)["compact_16gb_reference"]["placement_study"]["status"]
+        != "outline_conflict"
+    ):
+        raise ValueError("Compact package board-boundary conflict was accepted")
+    altered = copy.deepcopy(data)
+    altered[6] = 1.2
     if not audit_data(*altered)["eight_package_study"]["stack_issues"]:
         raise ValueError("Board thickness disagreement was not detected")
     print("PASS: 128 GB public memory package count and geometry screen")

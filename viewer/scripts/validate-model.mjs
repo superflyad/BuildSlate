@@ -16,6 +16,7 @@ for (const model of [
   "assembly",
   "concept",
   "memory-8x16",
+  "memory-8x16-compact",
   "phone-fit-conflict",
   "usb4525-outline",
   "lp4473109-pack-outline",
@@ -69,6 +70,7 @@ for (const model of [
 for (const [modelName, proofName] of [
   ["concept", "proof"],
   ["memory-8x16", "memory-8x16-proof"],
+  ["memory-8x16-compact", "memory-8x16-compact-proof"],
   ["phone-fit-conflict", "phone-fit-conflict-proof"],
   ["usb4525-outline", "usb4525-outline-proof"],
   ["lp4473109-pack-outline", "lp4473109-pack-outline-proof"],

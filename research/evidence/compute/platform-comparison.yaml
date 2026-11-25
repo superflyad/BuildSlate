@@ -425,6 +425,21 @@ memory_supplier_context:
       url: https://www.micron.com/products/memory/lpddr-components/lpddr5x/part-catalog/part-detail/mt62f2g64d8ek-023-wt-c
       source_type: manufacturer_part_detail
       accessed: 2026-11-24
+  micron_lpddr5x_16gb_compact_part:
+    supplier: Micron
+    part_number: 'MT62F2G64D8CZ-023 WT:C'
+    density_gbit: 128
+    capacity_gb: 16
+    interface: LPDDR5X
+    bus_width_bits: 64
+    ball_count: 561
+    package_mm: [8.0, 12.4, 1.2]
+    public_part_status: production_catalog_listing
+    disposition: compact_public_package_geometry_reference_not_qualified_for_x2
+    source:
+      url: https://in.micron.com/products/memory/dram-components/lpddr5x/part-catalog
+      source_type: manufacturer_part_catalog
+      accessed: 2026-11-24
   micron_mobile_lpddr5x:
     public_capacity_range_gb: [8, 32]
     public_status: 2026_flagship_offering_range

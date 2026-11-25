@@ -37,7 +37,7 @@ def main() -> int:
         report["status"] != "supplier_proof_required"
         or report["memory_floor_gb"] != 128
         or report["integrated_phone_matches"]
-        or len(report["candidates"]) != 7
+        or len(report["candidates"]) != 9
     ):
         raise ValueError("Current 128 GB phone platform gap is misstated")
     mobile = [item for item in report["candidates"] if item["integrated_phone_path"]]
@@ -61,6 +61,28 @@ def main() -> int:
         or not x2["physical_package_source"]
     ):
         raise ValueError("Observed ASUS X2 package evidence is absent")
+    plus = {
+        item["id"]: item
+        for item in report["candidates"]
+        if item["id"].startswith("qualcomm_snapdragon_x2_plus_")
+    }
+    if set(plus) != {
+        "qualcomm_snapdragon_x2_plus_10_core",
+        "qualcomm_snapdragon_x2_plus_6_core",
+    } or any(
+        item["public_maximum_memory_gb"] != 128
+        or item["public_memory_bus_width_bits"] != 128
+        or item["public_128gb_configuration"]
+        or item["integrated_phone_path"]
+        or item["minimum_published_power_mode_w"] is not None
+        for item in plus.values()
+    ):
+        raise ValueError("X2 Plus controller maximum was promoted to a build")
+    if (
+        plus["qualcomm_snapdragon_x2_plus_10_core"]["cpu_cores"] != 10
+        or plus["qualcomm_snapdragon_x2_plus_6_core"]["cpu_cores"] != 6
+    ):
+        raise ValueError("X2 Plus platform identities changed")
     congatec = next(
         item
         for item in report["candidates"]

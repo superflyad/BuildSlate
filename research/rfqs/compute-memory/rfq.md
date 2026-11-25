@@ -1,7 +1,7 @@
 # Compute and Memory Platform RFI/NDA Data Request
 
 Status: **Prepared, not sent**  
-Initial target: **Qualcomm Snapdragon X2 Elite platform team**
+Initial target: **Qualcomm Snapdragon X2 platform team**
 
 ## Purpose
 
@@ -22,7 +22,7 @@ Please identify supported precision, runtime, memory use, bandwidth, sustained p
 ## Required engineering data
 
 - Orderable platform/SKU, package drawing, height, keepouts, mounting, and thermal-interface requirements.
-- Orderable 128 GB X2 SKU and memory packaging: on package, off package, or mixed. ASUS's public Zenbook A16 X2 configuration uses 48 GB memory on package; physical analysis reports three co-packaged 16 GB DRAM packages. Identify any supplier-supported route beyond that observed configuration. Provide exact current-production qualified memory part numbers, package count/capacity, package dimensions and heights, ball maps, bus width, placement, routing, termination, and bandwidth. State whether a four by 32 GB topology is supported with a supplier-qualified connection to the 192-bit controller. Micron's public `MT62F4G64DAFL-023 WT:C` is obsolete and does not fit the current sites; do not propose it as a released part. If only 16 GB packages are qualified, state whether an eight-package topology is supported and provide its board and channel layout.
+- Orderable 128 GB X2 SKU and memory packaging: on package, off package, or mixed. Compare X2 Elite Extreme `X2E-96-100`, X2 Plus 10-core `X2P-64-100`, and X2 Plus 6-core `X2P-42-100`; Qualcomm publishes 192-bit and 128-bit memory buses respectively, but no reviewed 128 GB configuration for any of these SKUs. ASUS's public Zenbook A16 X2 configuration uses 48 GB memory on package; physical analysis reports three co-packaged 16 GB DRAM packages. Identify any supplier-supported route beyond that observed configuration. Provide exact current-production qualified memory part numbers, package count/capacity, package dimensions and heights, ball maps, bus width, placement, routing, termination, and bandwidth. State whether a four by 32 GB topology is supported on the chosen controller. Micron's public `MT62F4G64DAFL-023 WT:C` is obsolete and does not fit the current sites; do not propose it as a released part. ADATA's US listing labels `L5CG32D2023MCAS` and `L5EG32D4023MCAS` as 32GB/64GB while its UK listing and organization fields establish 32Gb/64Gb (4GB/8GB); request a supplier-confirmed density and do not count the US GB labels as capacity. If only 16 GB packages are qualified, state whether an eight-package topology is supported and provide its board and channel layout.
 - Memory-controller maximums and any 256/512 GB roadmap support, clearly separated from production support.
 - PMIC/rail map, sequencing, reference schematic, average/peak/transient current, regulator losses, and reference decoupling.
 - Sustained/peak CPU, GPU, NPU, memory, and total platform power under defined workloads and temperatures.

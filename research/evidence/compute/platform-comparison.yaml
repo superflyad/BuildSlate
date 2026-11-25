@@ -120,6 +120,62 @@ candidates:
       source_type: manufacturer_product_brief
       accessed: 2026-11-24
 
+  qualcomm_snapdragon_x2_plus_10_core:
+    platform_class: client_pc
+    representative_part: X2P-64-100
+    cpu_cores: 10
+    modem_integration: external_supported_not_designed
+    process_nm: 3
+    npu_tops_int8: 80
+    memory_type: LPDDR5X
+    maximum_memory_gb: 128
+    memory_bus_width_bits: 128
+    memory_transfer_rate_mt_s: 9523
+    memory_bandwidth_gb_s: 152
+    storage_interfaces: [dual_pcie_5_0, UFS_4_0]
+    on_device_display: eDP_1_5
+    public_sustained_power_w: null
+    strengths:
+      - Qualcomm lists a 128 GB controller ceiling and USB4 on this exact 10-core platform.
+      - Fewer CPU cores than the X2 Elite Extreme create a separate power characterization path.
+    blockers:
+      - No reviewed 128 GB orderable configuration, package topology, or qualified memory parts.
+      - Fewer cores do not establish lower sustained power; no 28 W Slate workload result is published.
+      - The supported external X75 M.2 modem path is not a released Slate phone integration.
+    disposition: parallel_128gb_supplier_rfi_not_selected
+    source:
+      url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Plus-Product-Brief.pdf
+      source_type: manufacturer_product_brief
+      accessed: 2026-11-24
+
+  qualcomm_snapdragon_x2_plus_6_core:
+    platform_class: client_pc
+    representative_part: X2P-42-100
+    cpu_cores: 6
+    modem_integration: external_supported_not_designed
+    process_nm: 3
+    npu_tops_int8: 80
+    memory_type: LPDDR5X
+    maximum_memory_gb: 128
+    memory_bus_width_bits: 128
+    memory_transfer_rate_mt_s: 9523
+    memory_bandwidth_gb_s: 152
+    storage_interfaces: [dual_pcie_5_0, UFS_4_0]
+    on_device_display: eDP_1_5
+    public_sustained_power_w: null
+    strengths:
+      - Qualcomm lists a 128 GB controller ceiling and USB4 on this exact 6-core platform.
+      - Its lower GPU clock and core count warrant a separate pocket-power measurement request.
+    blockers:
+      - No reviewed 128 GB orderable configuration, package topology, or qualified memory parts.
+      - No package drawing, board area, or measured 28 W sustained Slate workload is public.
+      - The supported external X75 M.2 modem path is not a released Slate phone integration.
+    disposition: parallel_128gb_supplier_rfi_not_selected
+    source:
+      url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Plus-Product-Brief.pdf
+      source_type: manufacturer_product_brief
+      accessed: 2026-11-24
+
   amd_ryzen_ai_max_plus_395:
     platform_class: high_power_client_pc
     modem_integration: none
@@ -183,6 +239,30 @@ candidates:
       accessed: 2026-11-24
 
 memory_supplier_context:
+  adata_lpddr5x_32gbit:
+    supplier: ADATA
+    part_number: L5CG32D2023MCAS
+    us_labeled_capacity_gb: 32
+    uk_labeled_density_gbit: 32
+    organization_megawords: 1024
+    organization_width_bits: 32
+    package_outline_mm: [12.4, 15.0]
+    ball_count: 315
+    source_us: https://www.adata.com/us/embedded/lpddr5x/
+    source_uk: https://www.adata.com/uk/embedded/lpddr5x/
+    disposition: reject_us_gb_label_as_unit_error_not_x2_qualified
+  adata_lpddr5x_64gbit:
+    supplier: ADATA
+    part_number: L5EG32D4023MCAS
+    us_labeled_capacity_gb: 64
+    uk_labeled_density_gbit: 64
+    organization_megawords: 2048
+    organization_width_bits: 32
+    package_outline_mm: [12.4, 15.0]
+    ball_count: 315
+    source_us: https://www.adata.com/us/embedded/lpddr5x/
+    source_uk: https://www.adata.com/uk/embedded/lpddr5x/
+    disposition: reject_us_gb_label_as_unit_error_not_x2_qualified
   micron_lpddr5x_32gb_obsolete_reference:
     supplier: Micron
     part_number: 'MT62F4G64DAFL-023 WT:C'

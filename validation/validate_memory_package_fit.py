@@ -25,6 +25,7 @@ from buildslate.memory_package_fit import (  # noqa: E402
 def main() -> int:
     report = audit(ROOT)
     obsolete = report["obsolete_32gb_reference"]
+    adata = report["adata_unit_reconciliation"]
     if (
         report["target_gb"] != 128
         or report["planning_sites"] != 4
@@ -50,6 +51,19 @@ def main() -> int:
         or obsolete["independent_bus_width_fits"]
         or obsolete["status"] != "rejected_obsolete_not_x2_qualified"
         or report["integration_status"] != "blocked"
+        or adata["status"] != "source_unit_conflict"
+        or [part["part_number"] for part in adata["parts"]]
+        != ["L5CG32D2023MCAS", "L5EG32D4023MCAS"]
+        or [part["reconciled_package_capacity_gb"] for part in adata["parts"]] != [4, 8]
+        or [part["four_package_capacity_gb"] for part in adata["parts"]] != [16, 32]
+        or [part["packages_for_target"] for part in adata["parts"]] != [32, 16]
+        or [part["independent_data_width_bits"] for part in adata["parts"]]
+        != [1024, 512]
+        or any(part["planning_sites_fit"] for part in adata["parts"])
+        or any(
+            any(part["independent_width_fits_controllers"].values())
+            for part in adata["parts"]
+        )
         or any(
             item["public_part_outline_fits"] or item["public_part_height_fits"]
             for item in report["site_geometry"]
@@ -78,6 +92,18 @@ def main() -> int:
             ]["height_mm"]
         )
     )
+    altered = copy.deepcopy(data)
+    altered[1]["memory_supplier_context"]["adata_lpddr5x_32gbit"][
+        "organization_megawords"
+    ] = 8192
+    if audit_data(*altered)["source_consistency"] != "fail":
+        raise ValueError("ADATA US gigabyte label was accepted over organization")
+    altered = copy.deepcopy(data)
+    altered[1]["memory_supplier_context"]["adata_lpddr5x_64gbit"][
+        "uk_labeled_density_gbit"
+    ] = 512
+    if audit_data(*altered)["source_consistency"] != "fail":
+        raise ValueError("ADATA UK density disagreement was accepted")
     altered = copy.deepcopy(data)
     altered[1]["memory_supplier_context"]["micron_lpddr5x_32gb_obsolete_reference"][
         "density_gbit"

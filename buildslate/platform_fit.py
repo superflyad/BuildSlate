@@ -60,6 +60,20 @@ def audit(root: Path) -> dict:
         ):
             raise ValueError(f"{identifier}: manufacturer source is missing")
         maximum = _capacity(candidate)
+        bus_width = candidate.get("memory_bus_width_bits")
+        if bus_width is not None and (
+            not isinstance(bus_width, int)
+            or isinstance(bus_width, bool)
+            or bus_width <= 0
+        ):
+            raise ValueError(f"{identifier}: invalid memory bus width")
+        cpu_cores = candidate.get("cpu_cores")
+        if cpu_cores is not None and (
+            not isinstance(cpu_cores, int)
+            or isinstance(cpu_cores, bool)
+            or cpu_cores <= 0
+        ):
+            raise ValueError(f"{identifier}: invalid CPU core count")
         outline = candidate.get("module_outline_mm")
         outline_fit = None
         if outline is not None:
@@ -164,6 +178,8 @@ def audit(root: Path) -> dict:
                 )[0],
                 "platform_class": candidate.get("platform_class"),
                 "public_maximum_memory_gb": maximum,
+                "public_memory_bus_width_bits": bus_width,
+                "cpu_cores": cpu_cores,
                 "public_configured_memory_gb": configured,
                 "observed_oem_memory_gb": observed_memory,
                 "observed_oem_memory_placement": (
@@ -198,7 +214,8 @@ def audit(root: Path) -> dict:
         "integrated_phone_matches": matches,
         "candidates": rows,
         "decision": (
-            "The 128 GB floor is retained. X2 publishes controller capacity for it, "
+            "The 128 GB floor is retained. X2 Elite and Plus publish controller "
+            "capacity for it, "
             "but the reviewed ASUS X2 system has 48 GB on package, with three "
             "16 GB DRAM packages observed in physical analysis. No reviewed public 128 GB "
             "X2 configuration or pocket phone integration is established. "

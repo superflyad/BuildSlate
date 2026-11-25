@@ -16,6 +16,7 @@ ASSEMBLY = Path("engineering/assembly/assembly.yaml")
 STUDY = Path("engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml")
 PUBLIC_PART = "micron_lpddr5x_16gb_public_part"
 OBSOLETE_32GB_PART = "micron_lpddr5x_32gb_obsolete_reference"
+ADATA_PARTS = ("adata_lpddr5x_32gbit", "adata_lpddr5x_64gbit")
 
 
 def _rectangle_gap(a: list[float], b: list[float]) -> float:
@@ -23,6 +24,98 @@ def _rectangle_gap(a: list[float], b: list[float]) -> float:
     dx = max(b[0] - a[0] - a[2], a[0] - b[0] - b[2], 0.0)
     dy = max(b[1] - a[1] - a[3], a[1] - b[1] - b[3], 0.0)
     return math.hypot(dx, dy)
+
+
+def _adata_unit_screen(
+    context: dict, target: int, sites: dict, controller_widths: dict
+) -> dict:
+    """Reconcile conflicting ADATA page units with the published organization."""
+    rows = []
+    errors = []
+    for identifier in ADATA_PARTS:
+        part = context[identifier]
+        words = part["organization_megawords"]
+        width = part["organization_width_bits"]
+        uk_gbit = part["uk_labeled_density_gbit"]
+        us_gb = part["us_labeled_capacity_gb"]
+        outline = part["package_outline_mm"]
+        if any(
+            not isinstance(value, int) or isinstance(value, bool) or value <= 0
+            for value in (words, width, uk_gbit, us_gb)
+        ):
+            errors.append(f"{identifier}: invalid organization or source capacity")
+            continue
+        if (
+            not isinstance(outline, list)
+            or len(outline) != 2
+            or any(
+                not isinstance(value, (int, float))
+                or isinstance(value, bool)
+                or not math.isfinite(value)
+                or value <= 0
+                for value in outline
+            )
+        ):
+            errors.append(f"{identifier}: invalid package outline")
+            continue
+        if any(
+            not isinstance(part.get(key), str)
+            or not part[key].startswith("https://www.adata.com/")
+            for key in ("source_us", "source_uk")
+        ):
+            errors.append(f"{identifier}: manufacturer source missing")
+            continue
+        organization_gbit = words * width // 1024
+        if words * width % 1024 or organization_gbit != uk_gbit:
+            errors.append(f"{identifier}: organization disagrees with UK density")
+        if uk_gbit % 8:
+            errors.append(f"{identifier}: density is not whole gigabytes")
+            continue
+        actual_gb = uk_gbit // 8
+        if us_gb != uk_gbit or us_gb == actual_gb:
+            errors.append(f"{identifier}: expected US Gb/GB label conflict changed")
+        required = math.ceil(target / actual_gb)
+        fits_sites = all(
+            (
+                outline[0] <= float(site["rectangle_mm"]["length"])
+                and outline[1] <= float(site["rectangle_mm"]["width"])
+            )
+            or (
+                outline[1] <= float(site["rectangle_mm"]["length"])
+                and outline[0] <= float(site["rectangle_mm"]["width"])
+            )
+            for site in sites.values()
+        )
+        independent_width = required * width
+        rows.append(
+            {
+                "id": identifier,
+                "part_number": part["part_number"],
+                "us_labeled_capacity_gb": us_gb,
+                "uk_labeled_density_gbit": uk_gbit,
+                "organization": f"{words}M x{width}",
+                "capacity_from_organization_gb": organization_gbit // 8,
+                "reconciled_package_capacity_gb": actual_gb,
+                "four_package_capacity_gb": 4 * actual_gb,
+                "packages_for_target": required,
+                "package_outline_mm": outline,
+                "planning_sites_fit": fits_sites,
+                "independent_data_width_bits": independent_width,
+                "independent_width_fits_controllers": {
+                    name: independent_width <= bus_width
+                    for name, bus_width in controller_widths.items()
+                },
+                "source_us": part["source_us"],
+                "source_uk": part["source_uk"],
+                "status": "source_unit_conflict_not_x2_qualified",
+            }
+        )
+    return {
+        "status": "source_unit_conflict" if not errors else "source_data_invalid",
+        "parts": rows,
+        "source_errors": errors,
+        "caveat": "Organization arithmetic resolves the displayed unit mismatch; it does not establish availability, X2 qualification, channel/rank support, or a routed board.",
+    }
 
 
 def _placement_study(
@@ -211,6 +304,18 @@ def audit_data(
         errors.append("Manufacturer gigabit density was confused with gigabytes")
     if obsolete["density_gbit"] != obsolete["capacity_gb"] * 8:
         errors.append("Obsolete 32 GB package density was confused with gigabytes")
+    adata = _adata_unit_screen(
+        candidates["memory_supplier_context"],
+        target,
+        sites,
+        {
+            "x2_elite_extreme": controller_width,
+            "x2_plus": candidates["candidates"]["qualcomm_snapdragon_x2_plus_10_core"][
+                "memory_bus_width_bits"
+            ],
+        },
+    )
+    errors.extend(adata["source_errors"])
     if not widths_valid:
         errors.append("Controller or memory package bus width is invalid")
     else:
@@ -276,6 +381,7 @@ def audit_data(
             "source": obsolete["source"]["url"],
             "caveat": "This exact 32 GB part is obsolete; package capacity does not establish X2 channel/rank support or procurement.",
         },
+        "adata_unit_reconciliation": adata,
         "bus_topology_screen": {
             "controller_bus_width_bits": controller_width,
             "public_reference_package_bus_width_bits": package_width,

@@ -4,6 +4,8 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Bind the 128 GB board-memory channel map to each controller and DRAM data pin in the approved KiCad netlist; reject missing or miswired lanes even when the netlist hash is updated.
+
 - Screen all approved PDF, STEP, and ZIP release evidence for valid file format after hash matching, including generic design and physical-test records.
 
 - Reject mislabeled mechanical supplier drawings and zero clearance or uncertainty claims before a released STEP assembly can pass the physical design gate.

@@ -6,6 +6,7 @@ import copy
 import hashlib
 import json
 import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -15,6 +16,7 @@ sys.path.insert(0, str(ROOT))
 from buildslate.hardware_readiness import _evidence_result  # noqa: E402
 from buildslate.platform_reference_proof import (  # noqa: E402
     ELECTRICAL_BOM,
+    ELECTRICAL_NETLIST,
     PMIC_DOCUMENTS,
     PMIC_ROOT,
     RELEASE,
@@ -36,6 +38,28 @@ def _source(root: Path, path: Path, content: bytes) -> dict[str, str]:
     absolute.parent.mkdir(parents=True, exist_ok=True)
     absolute.write_bytes(content)
     return {"path": path.as_posix(), "sha256": hashlib.sha256(content).hexdigest()}
+
+
+def _netlist_fixture(root: Path, *, on_package: bool = False) -> str:
+    export = ET.Element("export")
+    components = ET.SubElement(export, "components")
+    refs = ["U10", "U20", "U30"] + ([] if on_package else [f"U{i}" for i in range(4)])
+    for ref in refs:
+        ET.SubElement(components, "comp", ref=ref)
+    nets = ET.SubElement(export, "nets")
+    if on_package:
+        net = ET.SubElement(nets, "net", code="1", name="PWR")
+        ET.SubElement(net, "node", ref="U10", pin="P0")
+        ET.SubElement(net, "node", ref="U20", pin="P0")
+    else:
+        for bit in range(128):
+            net = ET.SubElement(nets, "net", code=str(bit + 1), name=f"DQ{bit}")
+            ET.SubElement(net, "node", ref="U10", pin=f"H{bit}")
+            ET.SubElement(net, "node", ref=f"U{bit // 32}", pin=f"D{bit % 32}")
+    path = root / ELECTRICAL_NETLIST
+    path.parent.mkdir(parents=True, exist_ok=True)
+    ET.ElementTree(export).write(path, encoding="utf-8", xml_declaration=True)
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _fixture(root: Path) -> tuple[dict, dict, str]:
@@ -85,6 +109,7 @@ def _fixture(root: Path) -> tuple[dict, dict, str]:
         newline="\n",
     )
     electrical_digest = hashlib.sha256(electrical_path.read_bytes()).hexdigest()
+    netlist_digest = _netlist_fixture(root)
     pmic_evidence = {}
     for kind in PMIC_DOCUMENTS:
         pmic_evidence[kind] = _source(
@@ -97,6 +122,7 @@ def _fixture(root: Path) -> tuple[dict, dict, str]:
         "reviewed_by": "validation fixture",
         "selected_bom_sha256": selected_digest,
         "electrical_bom_sha256": electrical_digest,
+        "electrical_netlist_sha256": netlist_digest,
         "board_refs": {"compute_platform": "U10", "storage": "U30"},
         "selected_mpns": {
             "compute_platform": "FIXTURE-HOST",
@@ -124,6 +150,17 @@ def _fixture(root: Path) -> tuple[dict, dict, str]:
             {"ref": f"U{index}", "channel": f"CH{index}", "rank": 0, "bit_start": 0}
             for index in range(4)
         ],
+        "memory_data_lanes": [
+            {
+                "ref": f"U{bit // 32}",
+                "channel": f"CH{bit // 32}",
+                "rank": 0,
+                "bit": bit % 32,
+                "controller_pin": f"H{bit}",
+                "package_pin": f"D{bit % 32}",
+            }
+            for bit in range(128)
+        ],
     }
     return selected, release, selected_digest
 
@@ -137,7 +174,11 @@ def main() -> int:
         release_path = root / RELEASE
         digest = _write(release_path, release)
         proof = audit(root)
-        if proof["status"] != "pass" or proof["memory_channel_width_bits"] != 128:
+        if (
+            proof["status"] != "pass"
+            or proof["memory_channel_width_bits"] != 128
+            or proof["memory_data_lane_count"] != 128
+        ):
             raise ValueError(f"Complete synthetic platform reference failed: {proof}")
         on_package_selected = copy.deepcopy(_fixture(root)[0])
         on_package_release = copy.deepcopy(release)
@@ -151,6 +192,7 @@ def main() -> int:
             "placement"
         ] = "on_package"
         on_package_release["memory_placement"] = "on_package"
+        on_package_release["memory_data_lanes"] = []
         for item in on_package_release["memory_packages"]:
             item["package_id"] = item.pop("ref")
         on_package_release["selected_bom_sha256"] = _write(
@@ -168,6 +210,9 @@ def main() -> int:
         on_package_release["electrical_bom_sha256"] = hashlib.sha256(
             electrical_path.read_bytes()
         ).hexdigest()
+        on_package_release["electrical_netlist_sha256"] = _netlist_fixture(
+            root, on_package=True
+        )
         _write(release_path, on_package_release)
         on_package_proof = audit(root)
         if (
@@ -220,6 +265,7 @@ def main() -> int:
         }
         electrical_record = {
             "disposition": "approved",
+            "sha256": release["electrical_netlist_sha256"],
             "bom_sha256": release["electrical_bom_sha256"],
         }
         record = {
@@ -263,12 +309,27 @@ def main() -> int:
             != "rejected"
         ):
             raise ValueError("Platform release accepted an unapproved electrical BOM")
+        if (
+            _evidence_result(
+                root,
+                {"id": "platform_reference", "stage": "design_release"},
+                record,
+                {"status": "pass", "sha256": selected_digest},
+                {
+                    "selected_bom": selected_record,
+                    "schematic_netlist": {**electrical_record, "sha256": "stale"},
+                },
+            )["status"]
+            != "rejected"
+        ):
+            raise ValueError("Platform release accepted an unapproved netlist")
         for mutation, expected in (
             ({"topology_id": "OTHER"}, "topology ID"),
             ({"memory_package_count": 8}, "package count"),
             ({"total_memory_bytes": 64_000_000_000}, "128 GB"),
             ({"selected_bom_sha256": "stale"}, "BOM bytes"),
             ({"electrical_bom_sha256": "stale"}, "electrical BOM bytes"),
+            ({"electrical_netlist_sha256": "stale"}, "electrical netlist bytes"),
             ({"memory_channels": None}, "channel map"),
         ):
             invalid = copy.deepcopy(release)
@@ -289,6 +350,35 @@ def main() -> int:
             _write(release_path, invalid)
             if audit(root)["status"] != "blocked":
                 raise ValueError(f"Invalid lane or rank map was accepted: {mutation}")
+        for index, mutation in (
+            (0, {"package_pin": "NOT_CONNECTED"}),
+            (1, {"controller_pin": "H0"}),
+            (1, {"ref": "U1"}),
+        ):
+            invalid = copy.deepcopy(release)
+            invalid["memory_data_lanes"][index].update(mutation)
+            _write(release_path, invalid)
+            if audit(root)["status"] != "blocked":
+                raise ValueError(f"Invalid data wiring was accepted: {mutation}")
+        invalid = copy.deepcopy(release)
+        invalid["memory_data_lanes"].pop()
+        _write(release_path, invalid)
+        if audit(root)["status"] != "blocked":
+            raise ValueError("Incomplete board DRAM data wiring was accepted")
+        netlist_path = root / ELECTRICAL_NETLIST
+        valid_netlist = netlist_path.read_bytes()
+        netlist_path.write_bytes(valid_netlist.replace(b'pin="D0"', b'pin="BROKEN"', 1))
+        invalid = copy.deepcopy(release)
+        invalid["electrical_netlist_sha256"] = hashlib.sha256(
+            netlist_path.read_bytes()
+        ).hexdigest()
+        _write(release_path, invalid)
+        result = audit(root)
+        if result["status"] != "blocked" or not any(
+            "host/DRAM netlist pins differ" in error for error in result["errors"]
+        ):
+            raise ValueError("Hash-matched miswired netlist passed platform proof")
+        netlist_path.write_bytes(valid_netlist)
         invalid = copy.deepcopy(release)
         invalid["source_bindings"]["memory_controller_support"] = "stale"
         _write(release_path, invalid)

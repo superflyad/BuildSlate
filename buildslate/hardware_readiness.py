@@ -191,9 +191,10 @@ def _evidence_result(
                     not isinstance(electrical, dict)
                     or electrical.get("disposition") != "approved"
                     or electrical.get("bom_sha256") != proof["electrical_bom_sha256"]
+                    or electrical.get("sha256") != proof["electrical_netlist_sha256"]
                 ):
                     reasons.append(
-                        "Platform reference is not bound to approved electrical BOM"
+                        "Platform reference is not bound to approved electrical bundle"
                     )
         if not reasons and requirement.get("id") == "schematic_netlist":
             if target.suffix.lower() != ".xml":

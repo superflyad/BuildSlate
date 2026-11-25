@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from buildslate.netlist_proof import _netlist
 from buildslate.part_selection import MEMORY_PLACEMENTS
 from buildslate.part_selection import RELEASE as SELECTED_BOM
 from buildslate.supplier_source import controlled_source_error
@@ -20,6 +21,7 @@ from buildslate.supplier_source import controlled_source_error
 RELEASE = Path("engineering/hardware/released/platform/platform-reference.json")
 PMIC_ROOT = Path("engineering/hardware/released/platform/pmic")
 ELECTRICAL_BOM = Path("engineering/hardware/released/board.bom.csv")
+ELECTRICAL_NETLIST = Path("engineering/hardware/released/board.xml")
 MEMORY_FLOOR_BYTES = 128_000_000_000
 SOURCE_BINDINGS = {
     "compute_package_drawing": ("compute_platform", "package_drawing"),
@@ -154,6 +156,89 @@ def _channel_errors(
     return errors
 
 
+def _memory_wiring_errors(
+    release: dict[str, Any], memory: dict[str, Any], pins: dict[tuple[str, str], str]
+) -> list[str]:
+    """Match every board DRAM data bit to a host pin in the released netlist."""
+    lanes = release.get("memory_data_lanes")
+    if release.get("memory_placement") != "board":
+        return [] if lanes in (None, []) else ["On-package DRAM has board data lanes"]
+    packages = release.get("memory_packages")
+    width = memory.get("bus_width_bits")
+    board_refs = release.get("board_refs")
+    if (
+        not isinstance(packages, list)
+        or not _integer(width)
+        or not isinstance(board_refs, dict)
+        or not _text(board_refs.get("compute_platform"))
+    ):
+        return ["Memory wiring cannot be checked without a package map and host"]
+    if not isinstance(lanes, list) or not lanes:
+        return ["Board memory data lane wiring is missing"]
+    expected: dict[tuple[str, int], tuple[str, int]] = {}
+    for package in packages:
+        if (
+            not isinstance(package, dict)
+            or not _text(package.get("ref"))
+            or not _text(package.get("channel"))
+            or not _integer(package.get("rank"), 0)
+            or not _integer(package.get("bit_start"), 0)
+        ):
+            return ["Memory wiring cannot use an invalid package map"]
+        for bit in range(package["bit_start"], package["bit_start"] + width):
+            key = (package["ref"], bit)
+            if key in expected:
+                return ["Memory package lane map has duplicate bit identity"]
+            expected[key] = (package["channel"], package["rank"])
+    errors: list[str] = []
+    seen: set[tuple[str, int]] = set()
+    package_pins: set[tuple[str, str]] = set()
+    host_pins: dict[tuple[str, int], str] = {}
+    host_pin_owners: dict[str, tuple[str, int]] = {}
+    host_ref = board_refs["compute_platform"]
+    for lane in lanes:
+        if not isinstance(lane, dict):
+            errors.append("Memory data lane record is invalid")
+            continue
+        ref, bit = lane.get("ref"), lane.get("bit")
+        channel, rank = lane.get("channel"), lane.get("rank")
+        controller_pin, package_pin = (
+            lane.get("controller_pin"),
+            lane.get("package_pin"),
+        )
+        if (
+            not _text(ref)
+            or not _integer(bit, 0)
+            or (ref, bit) not in expected
+            or (ref, bit) in seen
+            or expected.get((ref, bit)) != (channel, rank)
+            or not _text(controller_pin)
+            or not _text(package_pin)
+        ):
+            errors.append("Memory data lane identity or package map is invalid")
+            continue
+        seen.add((ref, bit))
+        if (ref, package_pin) in package_pins:
+            errors.append(f"{ref}.{package_pin}: DRAM pin maps to multiple data bits")
+        package_pins.add((ref, package_pin))
+        signal = (channel, bit)
+        prior = host_pins.setdefault(signal, controller_pin)
+        if prior != controller_pin:
+            errors.append(f"{channel} bit {bit}: ranks use different host pins")
+        owner = host_pin_owners.setdefault(controller_pin, signal)
+        if owner != signal:
+            errors.append(
+                f"{host_ref}.{controller_pin}: host pin maps to multiple bits"
+            )
+        host_net = pins.get((host_ref, controller_pin))
+        dram_net = pins.get((ref, package_pin))
+        if not host_net or host_net != dram_net:
+            errors.append(f"{ref} {channel} bit {bit}: host/DRAM netlist pins differ")
+    if seen != set(expected):
+        errors.append("Memory data lane wiring does not cover every package bit")
+    return errors
+
+
 def audit(root: Path) -> dict[str, Any]:
     """Require exact selected parts, source bindings, and complete lane maps."""
     root = root.resolve()
@@ -166,10 +251,17 @@ def audit(root: Path) -> dict[str, Any]:
     electrical_path = root / ELECTRICAL_BOM
     if not electrical_path.is_file():
         return {"status": "blocked", "errors": ["Released electrical BOM is missing"]}
+    netlist_path = root / ELECTRICAL_NETLIST
+    if not netlist_path.is_file():
+        return {
+            "status": "blocked",
+            "errors": ["Released electrical netlist is missing"],
+        }
     try:
         release = json.loads(path.read_text(encoding="utf-8"))
         selected = json.loads(selected_path.read_text(encoding="utf-8"))
         electrical = _electrical_parts(electrical_path)
+        _, pins = _netlist(netlist_path)
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as error:
         return {"status": "blocked", "errors": [f"Platform input unreadable: {error}"]}
     if not isinstance(release, dict) or not isinstance(selected, dict):
@@ -188,6 +280,8 @@ def audit(root: Path) -> dict[str, Any]:
     electrical_digest = _sha(electrical_path)
     if release.get("electrical_bom_sha256") != electrical_digest:
         errors.append("Platform reference is not bound to electrical BOM bytes")
+    if release.get("electrical_netlist_sha256") != _sha(netlist_path):
+        errors.append("Platform reference is not bound to electrical netlist bytes")
     parts = selected.get("parts")
     if not isinstance(parts, dict) or any(
         not isinstance(parts.get(role), dict)
@@ -289,6 +383,7 @@ def audit(root: Path) -> dict[str, Any]:
             if problem:
                 errors.append(problem)
     errors.extend(_channel_errors(release, memory, compute))
+    errors.extend(_memory_wiring_errors(release, memory, pins))
     board_refs = release.get("board_refs")
     memory_packages = release.get("memory_packages")
     if not isinstance(board_refs, dict) or set(board_refs) != {
@@ -326,6 +421,7 @@ def audit(root: Path) -> dict[str, Any]:
         "reviewed_by": release.get("reviewed_by"),
         "selected_bom_sha256": release.get("selected_bom_sha256"),
         "electrical_bom_sha256": release.get("electrical_bom_sha256"),
+        "electrical_netlist_sha256": release.get("electrical_netlist_sha256"),
         "topology_id": release.get("topology_id"),
         "memory_package_count": release.get("memory_package_count"),
         "memory_placement": placement,
@@ -338,6 +434,9 @@ def audit(root: Path) -> dict[str, Any]:
             )
             if isinstance(item, dict) and _integer(item.get("width_bits"))
         ),
+        "memory_data_lane_count": len(release.get("memory_data_lanes", []))
+        if isinstance(release.get("memory_data_lanes"), list)
+        else 0,
         "pmic_mpn": pmic.get("mpn") if isinstance(pmic, dict) else None,
     }
 

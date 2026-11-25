@@ -17,6 +17,12 @@ STUDY = Path("engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml"
 PUBLIC_PART = "micron_lpddr5x_16gb_public_part"
 OBSOLETE_32GB_PART = "micron_lpddr5x_32gb_obsolete_reference"
 ADATA_PARTS = ("adata_lpddr5x_32gbit", "adata_lpddr5x_64gbit")
+X2_CONTROLLERS = (
+    "qualcomm_snapdragon_x2_elite_extreme",
+    "qualcomm_snapdragon_x2_elite_90",
+    "qualcomm_snapdragon_x2_plus_10_core",
+    "qualcomm_snapdragon_x2_plus_6_core",
+)
 
 
 def _rectangle_gap(a: list[float], b: list[float]) -> float:
@@ -116,6 +122,78 @@ def _adata_unit_screen(
         "source_errors": errors,
         "caveat": "Organization arithmetic resolves the displayed unit mismatch; it does not establish availability, X2 qualification, channel/rank support, or a routed board.",
     }
+
+
+def _x2_controller_screen(
+    candidates: dict, target: int, reference_16gb: dict, reference_32gb: dict
+) -> tuple[list[dict], list[str]]:
+    """Check direct host width for each reviewed X2 controller and package route."""
+    rows = []
+    errors = []
+    for identifier in X2_CONTROLLERS:
+        controller = candidates["candidates"][identifier]
+        width = controller.get("memory_bus_width_bits")
+        rate = controller.get("memory_transfer_rate_mt_s")
+        bandwidth = controller.get("memory_bandwidth_gb_s")
+        if (
+            not isinstance(width, int)
+            or isinstance(width, bool)
+            or width <= 0
+            or any(
+                not isinstance(value, (int, float))
+                or isinstance(value, bool)
+                or not math.isfinite(value)
+                or value <= 0
+                for value in (rate, bandwidth)
+            )
+        ):
+            errors.append(f"{identifier}: published memory bus values are invalid")
+            continue
+        if abs(width * rate / 8 / 1000 - bandwidth) > 1:
+            errors.append(f"{identifier}: width, rate, and bandwidth disagree")
+        plans = []
+        for part in (reference_32gb, reference_16gb):
+            capacity = part["capacity_gb"]
+            package_width = part["bus_width_bits"]
+            if (
+                not isinstance(capacity, int)
+                or isinstance(capacity, bool)
+                or capacity <= 0
+                or not isinstance(package_width, int)
+                or isinstance(package_width, bool)
+                or package_width <= 0
+            ):
+                errors.append(
+                    f"{part['part_number']}: package capacity or bus is invalid"
+                )
+                continue
+            count = math.ceil(target / capacity)
+            direct_width = count * package_width
+            plans.append(
+                {
+                    "part_number": part["part_number"],
+                    "package_status": part["public_part_status"],
+                    "package_capacity_gb": capacity,
+                    "package_count": count,
+                    "package_bus_width_bits": package_width,
+                    "independent_host_width_bits": direct_width,
+                    "excess_over_controller_bits": max(0, direct_width - width),
+                    "independent_host_connections_fit": direct_width <= width,
+                    "supplier_topology_qualified": False,
+                }
+            )
+        rows.append(
+            {
+                "id": identifier,
+                "part": controller["representative_part"],
+                "controller_bus_width_bits": width,
+                "memory_transfer_rate_mt_s": rate,
+                "memory_bandwidth_gb_s": bandwidth,
+                "source": controller["source"]["url"],
+                "plans": plans,
+            }
+        )
+    return rows, errors
 
 
 def _placement_study(
@@ -304,6 +382,10 @@ def audit_data(
         errors.append("Manufacturer gigabit density was confused with gigabytes")
     if obsolete["density_gbit"] != obsolete["capacity_gb"] * 8:
         errors.append("Obsolete 32 GB package density was confused with gigabytes")
+    x2_controllers, x2_errors = _x2_controller_screen(
+        candidates, target, part, obsolete
+    )
+    errors.extend(x2_errors)
     adata = _adata_unit_screen(
         candidates["memory_supplier_context"],
         target,
@@ -395,6 +477,7 @@ def audit_data(
             "caveat": "The width comparison only rules out one independent host connection per reference package. It cannot prove whether shared channels, ranks, timing, routing, or boot are supported.",
             "controller_source": controller["source"]["url"],
         },
+        "x2_controller_comparison": x2_controllers,
         "required_public_reference_packages": required,
         "reserved_memory_area_mm2": reserved_area,
         "public_reference_package_area_mm2": public_part_area,

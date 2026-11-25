@@ -10,6 +10,17 @@ For a concrete comparison, Micron lists [`MT62F2G64D8EK-023 WT:C`](https://www.m
 
 Qualcomm's [X2 Elite brief](https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf) lists a 192-bit memory bus for the X2 Elite Extreme. Eight independent x64 package connections would need 512 data bits, so that direct wiring arrangement is unavailable. This **does not prove** that eight packages are impossible: a supplier-supported shared-channel, rank, or other attachment could use the controller differently. The public brief does not establish such a topology, its timing, or its routing. The package screen publishes the width comparison and checks the quoted 192-bit width against Qualcomm's 9,523 MT/s and 228 GB/s figures. This calculation is an inference from the two manufacturer specifications, not a qualified board design.
 
+The [X2 Elite](https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf) and [X2 Plus](https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Plus-Product-Brief.pdf) briefs give different widths for the reviewed SKUs. The screen now checks each width against its published rate and bandwidth, then compares both exact Micron reference-package routes:
+
+| X2 SKU | Controller bus | Four 32 GB x64 packages, independent host width | Eight 16 GB x64 packages, independent host width |
+| --- | ---: | ---: | ---: |
+| X2E-96-100 | 192 bits | 256 bits, 64 over | 512 bits, 320 over |
+| X2E-90-100 | 128 bits | 256 bits, 128 over | 512 bits, 384 over |
+| X2P-64-100 | 128 bits | 256 bits, 128 over | 512 bits, 384 over |
+| X2P-42-100 | 128 bits | 256 bits, 128 over | 512 bits, 384 over |
+
+These widths reject one independent full-width host connection per package on every reviewed X2 SKU. The 32 GB reference is obsolete; the 16 GB reference is listed as contact sales. Sharing data lanes across ranks, using another package arrangement, or selecting memory on package would need an exact supplier-supported map and an orderable 128 GB configuration. The arithmetic does not establish that any such configuration is available or electrically valid.
+
 ## Eight-package outline study
 
 The separate [placement study](../../engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml) tests four 14 × 14 mm packages on the component side and four at matching locations on the reverse side. Against the current non-memory planning blocks, the component boundary, and an **assumed** 1.0 mm planar gap rule, the closest screened gap is 1.5 mm. The reverse side has no other components in the present floorplan. This establishes only that the eight package *boxes* can be drawn inside the board planform in that arrangement; it is not an X2 memory-on-package layout.

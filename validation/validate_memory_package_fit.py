@@ -26,6 +26,29 @@ def main() -> int:
     report = audit(ROOT)
     obsolete = report["obsolete_32gb_reference"]
     adata = report["adata_unit_reconciliation"]
+    comparison = report["x2_controller_comparison"]
+    expected_controllers = {
+        "X2E-96-100": (192, [64, 320]),
+        "X2E-90-100": (128, [128, 384]),
+        "X2P-64-100": (128, [128, 384]),
+        "X2P-42-100": (128, [128, 384]),
+    }
+    if (
+        len(comparison) != len(expected_controllers)
+        or {item["part"] for item in comparison} != set(expected_controllers)
+        or any(
+            item["controller_bus_width_bits"] != expected_controllers[item["part"]][0]
+            or [plan["package_count"] for plan in item["plans"]] != [4, 8]
+            or [plan["independent_host_width_bits"] for plan in item["plans"]]
+            != [256, 512]
+            or [plan["excess_over_controller_bits"] for plan in item["plans"]]
+            != expected_controllers[item["part"]][1]
+            or any(plan["independent_host_connections_fit"] for plan in item["plans"])
+            or any(plan["supplier_topology_qualified"] for plan in item["plans"])
+            for item in comparison
+        )
+    ):
+        raise ValueError("X2 controller and package route comparison is misstated")
     if (
         report["target_gb"] != 128
         or report["planning_sites"] != 4
@@ -116,6 +139,18 @@ def main() -> int:
     ] = 128
     if audit_data(*altered)["source_consistency"] != "fail":
         raise ValueError("X2 bus width and bandwidth mismatch was accepted")
+    altered = copy.deepcopy(data)
+    altered[1]["candidates"]["qualcomm_snapdragon_x2_elite_90"][
+        "memory_bus_width_bits"
+    ] = 192
+    if audit_data(*altered)["source_consistency"] != "fail":
+        raise ValueError("X2E-90-100 bus width and bandwidth mismatch was accepted")
+    altered = copy.deepcopy(data)
+    altered[1]["candidates"]["qualcomm_snapdragon_x2_plus_6_core"][
+        "memory_bandwidth_gb_s"
+    ] = 228
+    if audit_data(*altered)["source_consistency"] != "fail":
+        raise ValueError("X2 Plus bus width and bandwidth mismatch was accepted")
     altered = copy.deepcopy(data)
     altered[1]["memory_supplier_context"]["micron_lpddr5x_16gb_public_part"][
         "capacity_gb"

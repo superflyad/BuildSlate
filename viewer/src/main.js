@@ -462,6 +462,12 @@ function renderHardware() {
       .join("") +
     `<div class="gate-item"><strong>Exact 32 GB package rejected</strong><span>${esc(obsolete32.part_number)} is a ${esc(obsolete32.package_mm.join(" × "))} mm, ${esc(obsolete32.public_part_status)} Micron part. Four reach 128 GB by capacity, but none fit the current 14 × 10 mm sites. Four independent x64 connections need ${esc(obsolete32.independent_bus_width_bits)} data bits against the X2 Extreme's ${esc(memoryBus.controller_bus_width_bits)}-bit bus. This is not a selected part. <a href="${esc(obsolete32.source)}" target="_blank" rel="noopener noreferrer">Manufacturer status</a></span></div>` +
     `<div class="gate-item"><strong>128 GB bus topology</strong><span>Eight x${esc(memoryBus.public_reference_package_bus_width_bits)} packages would need ${esc(memoryBus.independent_connection_width_bits)} data bits if each had an independent host connection; the X2 Extreme lists ${esc(memoryBus.controller_bus_width_bits)} bits. A supplier-qualified shared-channel or other topology is required. <a href="${esc(memoryBus.controller_source)}" target="_blank" rel="noopener noreferrer">Controller brief</a></span></div>` +
+    report.memory_package_fit.x2_controller_comparison
+      .map(
+        (item) =>
+          `<div class="gate-item"><strong>${esc(item.part)} direct memory bus screen</strong><span>${esc(item.controller_bus_width_bits)}-bit controller · ${item.plans.map((plan) => `${esc(plan.package_count)} × ${esc(plan.package_capacity_gb)} GB x${esc(plan.package_bus_width_bits)} (${esc(plan.package_status)}): ${esc(plan.independent_host_width_bits)} bits, ${esc(plan.excess_over_controller_bits)} beyond the controller`).join("; ")}. These are arithmetic screens of reference packages, not supported X2 topologies. <a href="${esc(item.source)}" target="_blank" rel="noopener noreferrer">Qualcomm brief</a></span></div>`,
+      )
+      .join("") +
     `<div class="gate-item"><strong>Memory integration blockers</strong><span>${esc(report.memory_package_fit.missing_design_evidence.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>Supplier package review</strong><span>${esc(report.part_selection.supplier_packages_unverified.join(", ") || "Verified")}</span></div>` +
     report.selected_roles

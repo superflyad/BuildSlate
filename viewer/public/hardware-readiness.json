@@ -836,6 +836,136 @@
       "caveat": "The width comparison only rules out one independent host connection per reference package. It cannot prove whether shared channels, ranks, timing, routing, or boot are supported.",
       "controller_source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf"
     },
+    "x2_controller_comparison": [
+      {
+        "id": "qualcomm_snapdragon_x2_elite_extreme",
+        "part": "X2E-96-100",
+        "controller_bus_width_bits": 192,
+        "memory_transfer_rate_mt_s": 9523,
+        "memory_bandwidth_gb_s": 228,
+        "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf",
+        "plans": [
+          {
+            "part_number": "MT62F4G64DAFL-023 WT:C",
+            "package_status": "obsolete",
+            "package_capacity_gb": 32,
+            "package_count": 4,
+            "package_bus_width_bits": 64,
+            "independent_host_width_bits": 256,
+            "excess_over_controller_bits": 64,
+            "independent_host_connections_fit": false,
+            "supplier_topology_qualified": false
+          },
+          {
+            "part_number": "MT62F2G64D8EK-023 WT:C",
+            "package_status": "contact_sales",
+            "package_capacity_gb": 16,
+            "package_count": 8,
+            "package_bus_width_bits": 64,
+            "independent_host_width_bits": 512,
+            "excess_over_controller_bits": 320,
+            "independent_host_connections_fit": false,
+            "supplier_topology_qualified": false
+          }
+        ]
+      },
+      {
+        "id": "qualcomm_snapdragon_x2_elite_90",
+        "part": "X2E-90-100",
+        "controller_bus_width_bits": 128,
+        "memory_transfer_rate_mt_s": 9523,
+        "memory_bandwidth_gb_s": 152,
+        "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf",
+        "plans": [
+          {
+            "part_number": "MT62F4G64DAFL-023 WT:C",
+            "package_status": "obsolete",
+            "package_capacity_gb": 32,
+            "package_count": 4,
+            "package_bus_width_bits": 64,
+            "independent_host_width_bits": 256,
+            "excess_over_controller_bits": 128,
+            "independent_host_connections_fit": false,
+            "supplier_topology_qualified": false
+          },
+          {
+            "part_number": "MT62F2G64D8EK-023 WT:C",
+            "package_status": "contact_sales",
+            "package_capacity_gb": 16,
+            "package_count": 8,
+            "package_bus_width_bits": 64,
+            "independent_host_width_bits": 512,
+            "excess_over_controller_bits": 384,
+            "independent_host_connections_fit": false,
+            "supplier_topology_qualified": false
+          }
+        ]
+      },
+      {
+        "id": "qualcomm_snapdragon_x2_plus_10_core",
+        "part": "X2P-64-100",
+        "controller_bus_width_bits": 128,
+        "memory_transfer_rate_mt_s": 9523,
+        "memory_bandwidth_gb_s": 152,
+        "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Plus-Product-Brief.pdf",
+        "plans": [
+          {
+            "part_number": "MT62F4G64DAFL-023 WT:C",
+            "package_status": "obsolete",
+            "package_capacity_gb": 32,
+            "package_count": 4,
+            "package_bus_width_bits": 64,
+            "independent_host_width_bits": 256,
+            "excess_over_controller_bits": 128,
+            "independent_host_connections_fit": false,
+            "supplier_topology_qualified": false
+          },
+          {
+            "part_number": "MT62F2G64D8EK-023 WT:C",
+            "package_status": "contact_sales",
+            "package_capacity_gb": 16,
+            "package_count": 8,
+            "package_bus_width_bits": 64,
+            "independent_host_width_bits": 512,
+            "excess_over_controller_bits": 384,
+            "independent_host_connections_fit": false,
+            "supplier_topology_qualified": false
+          }
+        ]
+      },
+      {
+        "id": "qualcomm_snapdragon_x2_plus_6_core",
+        "part": "X2P-42-100",
+        "controller_bus_width_bits": 128,
+        "memory_transfer_rate_mt_s": 9523,
+        "memory_bandwidth_gb_s": 152,
+        "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Plus-Product-Brief.pdf",
+        "plans": [
+          {
+            "part_number": "MT62F4G64DAFL-023 WT:C",
+            "package_status": "obsolete",
+            "package_capacity_gb": 32,
+            "package_count": 4,
+            "package_bus_width_bits": 64,
+            "independent_host_width_bits": 256,
+            "excess_over_controller_bits": 128,
+            "independent_host_connections_fit": false,
+            "supplier_topology_qualified": false
+          },
+          {
+            "part_number": "MT62F2G64D8EK-023 WT:C",
+            "package_status": "contact_sales",
+            "package_capacity_gb": 16,
+            "package_count": 8,
+            "package_bus_width_bits": 64,
+            "independent_host_width_bits": 512,
+            "excess_over_controller_bits": 384,
+            "independent_host_connections_fit": false,
+            "supplier_topology_qualified": false
+          }
+        ]
+      }
+    ],
     "required_public_reference_packages": 8,
     "reserved_memory_area_mm2": 560.0,
     "public_reference_package_area_mm2": 1568.0,

@@ -1,0 +1,33 @@
+metadata:
+  evidence_type: public_manufacturer_pack_screen
+  reviewed_on: 2026-11-24
+  status: public_reference_not_selected
+  note: The manufacturer publishes a drawing marked proprietary. Record its measurements and URL; do not redistribute the PDF.
+
+candidate:
+  supplier: LiPol Battery Co., Ltd.
+  mpn: LP4473109
+  configuration: 1S1P
+  nominal_capacity_mah: 6000
+  nominal_voltage_v: 3.85
+  nominal_energy_wh: 23.1
+  pack_body_mm: {length: 110.0, width: 73.0, thickness: 4.4}
+  drawing_tolerance_mm:
+    length: {minus: 1.0, plus: 1.0}
+    width: {minus: 0.5, plus: 0.5}
+    thickness: {minus: 0.3, plus: 0.3}
+  lead_length_mm: 50.0
+  lead_tolerance_mm: 3.0
+  connector: JST PHR-2
+  protection_circuit: true
+  thermistor: false
+  maximum_charge_voltage_v: 4.2
+  maximum_charge_current_a: 3.0
+  maximum_continuous_discharge_current_a: 6.0
+  pcm_overcurrent_detection_a: [2.0, 4.5]
+  website_listed_charge_voltage_v: 4.48
+  source:
+    product_page: https://www.lipoly-battery.com/lp4473109-lihv-lipoly-battery-3-85v-high-voltage-6000mah-23-1wh-with-pcm-jst-phr-2/
+    drawing_and_specification: https://www.lipoly-battery.com/wp-content/uploads/2024/10/LP4473109-3.85V-6000mAh-connector.pdf
+    drawing_sha256: 4a02e68f9ada253daca18b02558b51c5c4aacca9ddef79bf2b5f3e049dc84124
+  disposition: rejected_current_envelope_and_electrical_limits

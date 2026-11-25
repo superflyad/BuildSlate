@@ -12,6 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from buildslate.cad import (  # noqa: E402
+    BATTERY_GLTF,
+    BATTERY_MODEL,
+    BATTERY_PROOF,
+    BATTERY_STEP,
     GLTF,
     MEMORY_GLTF,
     MEMORY_MODEL,
@@ -28,12 +32,14 @@ from buildslate.cad import (  # noqa: E402
     USB_MODEL,
     USB_PROOF,
     USB_STEP,
+    build_battery_pack_variant,
     build_concept,
     build_memory_variant,
     build_phone_conflict_variant,
     build_usb_connector_variant,
 )
 from buildslate.cad_proof import PROOF  # noqa: E402
+from buildslate.battery_fit import audit as audit_battery  # noqa: E402
 from buildslate.cellular_fit import audit as audit_cellular  # noqa: E402
 from buildslate.io import load_yaml  # noqa: E402
 from buildslate.memory_package_fit import audit as audit_memory  # noqa: E402
@@ -250,11 +256,36 @@ def main() -> int:
         or usb_rf_conflicts[0]["overlap_area_mm2"] != 54.096
     ):
         raise ValueError("USB candidate envelope CAD proof drifted")
+    battery = build_battery_pack_variant(ROOT)
+    battery_proof = _check_model(
+        battery, BATTERY_MODEL, BATTERY_GLTF, BATTERY_STEP, BATTERY_PROOF
+    )
+    pack = next(part for part in battery["parts"] if part["id"] == "battery_reference")
+    battery_collisions = {
+        item["second"]
+        for item in battery_proof["intersections"]
+        if item["first"] == "battery_reference" and item["kind"] == "interference"
+    }
+    if (
+        len(battery["parts"]) != len(baseline["parts"])
+        or pack["box_mm"] != [9.0, 11.0, 1.2, 110.0, 73.0, 4.4]
+        or battery_proof["battery_pack_candidate"]
+        != audit_battery(ROOT)["lipol_pack_screen"]
+        or battery_proof["summary"]["interferences"] != 10
+        or not {
+            "main_pcb_placeholder",
+            "rear_camera_placeholder",
+            "speaker_b_placeholder",
+            "battery_pack_shell_concept",
+        }.issubset(battery_collisions)
+    ):
+        raise ValueError("6 Ah pack drawing envelope CAD proof drifted")
     print(
         f"PASS: {primary_proof['summary']['parts_checked']} baseline and "
         f"{reference_proof['summary']['parts_checked']} memory and "
         f"{phone_proof['summary']['parts_checked']} phone and "
-        f"{usb_proof['summary']['parts_checked']} USB study CAD solids"
+        f"{usb_proof['summary']['parts_checked']} USB and "
+        f"{battery_proof['summary']['parts_checked']} battery study CAD solids"
     )
     return 0
 

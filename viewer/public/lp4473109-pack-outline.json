@@ -1,0 +1,1688 @@
+{
+  "schema_version": 1,
+  "device": "slate-pocket-v1r",
+  "status": "battery_pack_outline_conflict_study",
+  "coordinate_system": "Origin at the lower-left of the rear view; x follows length, y width, z thickness; units are millimeters.",
+  "extent_mm": {
+    "length": 180.0,
+    "width": 95.0,
+    "thickness": 9.5
+  },
+  "parts": [
+    {
+      "id": "rear_cover",
+      "label": "Rear cover",
+      "group": "exterior",
+      "box_mm": [
+        0.0,
+        0.0,
+        0.0,
+        180.0,
+        95.0,
+        0.55
+      ],
+      "evidence_class": "estimate",
+      "source": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.battery_without_wireless_charging.layers.rear_cover",
+      "active": true,
+      "notes": "",
+      "shape": "rear_panel",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "radius_mm": 3.0,
+      "aperture_center_mm": [
+        111.0,
+        76.5
+      ],
+      "aperture_radius_mm": 5.0,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.rear_cover",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "frame_left",
+      "label": "Left frame",
+      "group": "exterior",
+      "box_mm": [
+        0.0,
+        0.0,
+        0.55,
+        3.0,
+        95.0,
+        8.35
+      ],
+      "evidence_class": "placeholder",
+      "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.perimeter_inset_mm",
+      "active": true,
+      "notes": "",
+      "shape": "box",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "height_mm": 8.35,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.frame_left",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "frame_right",
+      "label": "Right frame",
+      "group": "exterior",
+      "box_mm": [
+        177.0,
+        0.0,
+        0.55,
+        3.0,
+        95.0,
+        8.35
+      ],
+      "evidence_class": "placeholder",
+      "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.perimeter_inset_mm",
+      "active": true,
+      "notes": "",
+      "shape": "box",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "height_mm": 8.35,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.frame_right",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "frame_top",
+      "label": "Top frame",
+      "group": "exterior",
+      "box_mm": [
+        3.0,
+        92.0,
+        0.55,
+        174.0,
+        3.0,
+        8.35
+      ],
+      "evidence_class": "placeholder",
+      "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.perimeter_inset_mm",
+      "active": true,
+      "notes": "",
+      "shape": "box",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "height_mm": 8.35,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.frame_top",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "frame_bottom",
+      "label": "Bottom frame",
+      "group": "exterior",
+      "box_mm": [
+        3.0,
+        0.0,
+        0.55,
+        174.0,
+        3.0,
+        8.35
+      ],
+      "evidence_class": "placeholder",
+      "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#device.perimeter_inset_mm",
+      "active": true,
+      "notes": "",
+      "shape": "ported_frame",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "height_mm": 8.35,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.frame_bottom",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "display_stack",
+      "label": "Display stack",
+      "group": "display",
+      "box_mm": [
+        3.0,
+        3.0,
+        8.1,
+        174.0,
+        89.0,
+        0.7
+      ],
+      "evidence_class": "placeholder",
+      "source": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.battery_without_wireless_charging",
+      "active": true,
+      "notes": "",
+      "shape": "rounded_box",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "radius_mm": 2.0,
+      "height_mm": 0.7,
+      "optical_aperture_center_mm": [
+        88.0,
+        87.0
+      ],
+      "optical_aperture_radius_mm": 3.1,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.display_stack",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "cover_glass",
+      "label": "Cover glass",
+      "group": "exterior",
+      "box_mm": [
+        0.0,
+        0.0,
+        8.95,
+        180.0,
+        95.0,
+        0.55
+      ],
+      "evidence_class": "estimate",
+      "source": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.battery_without_wireless_charging.layers.cover_glass",
+      "active": true,
+      "notes": "",
+      "shape": "rounded_box",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "radius_mm": 3.0,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.cover_glass",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "battery_reference",
+      "label": "LiPol LP4473109 pack body envelope",
+      "group": "power",
+      "box_mm": [
+        9.0,
+        11.0,
+        1.2,
+        110.0,
+        73.0,
+        4.4
+      ],
+      "evidence_class": "public_supplier_reference",
+      "source": "research/evidence/battery/lipol-lp4473109.yaml#candidate",
+      "active": true,
+      "notes": "Drawing-derived pack body at the current tray origin. This is an assumed placement; the 50 mm lead, connector, tolerance, and swelling are not modeled.",
+      "shape": "box",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "radius_mm": 2.0,
+      "geometry_source": "research/evidence/battery/lipol-lp4473109.yaml#candidate.pack_body_mm",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "main_pcb_placeholder",
+      "label": "Main PCB",
+      "group": "pcb",
+      "box_mm": [
+        92.0,
+        12.0,
+        3.2,
+        78.0,
+        55.0,
+        0.8
+      ],
+      "evidence_class": "estimate",
+      "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.main_pcb_placeholder",
+      "active": true,
+      "notes": "replace_with_ecad_floorplan",
+      "shape": "pcb",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "radius_mm": 1.0,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.main_pcb_placeholder",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "rear_camera_placeholder",
+      "label": "Rear camera envelope",
+      "group": "camera",
+      "box_mm": [
+        92.0,
+        70.0,
+        1.2,
+        38.0,
+        13.0,
+        5.0
+      ],
+      "evidence_class": "placeholder",
+      "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.rear_camera_placeholder",
+      "active": true,
+      "notes": "replace_with_module_drawing",
+      "shape": "camera_module",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "lens_face": "rear",
+      "lens_radius_mm": 4.16,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.rear_camera_placeholder",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "speaker_a_placeholder",
+      "label": "Speaker A",
+      "group": "audio",
+      "box_mm": [
+        140.0,
+        72.0,
+        1.2,
+        22.0,
+        10.0,
+        3.0
+      ],
+      "evidence_class": "estimate",
+      "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.speaker_a_placeholder",
+      "active": true,
+      "notes": "acoustic_and_rf_review_required",
+      "shape": "speaker",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.speaker_a_placeholder",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "speaker_b_placeholder",
+      "label": "Speaker B",
+      "group": "audio",
+      "box_mm": [
+        40.0,
+        80.0,
+        1.2,
+        22.0,
+        10.0,
+        3.0
+      ],
+      "evidence_class": "estimate",
+      "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.speaker_b_placeholder",
+      "active": true,
+      "notes": "acoustic_and_rf_review_required",
+      "shape": "speaker",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.speaker_b_placeholder",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "wireless_charging_placeholder",
+      "label": "Wireless charging reserve",
+      "group": "deferred",
+      "box_mm": [
+        16.0,
+        17.0,
+        0.8,
+        58.0,
+        58.0,
+        0.8
+      ],
+      "evidence_class": "estimate",
+      "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.wireless_charging_placeholder",
+      "active": false,
+      "notes": "negotiable_feature_and_z_height_conflict",
+      "shape": "coil",
+      "geometry_use": "reservation",
+      "screen_layer": "rear_overlay",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.wireless_charging_placeholder",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "thermal_spreader_placeholder",
+      "label": "Thermal spreader",
+      "group": "thermal",
+      "box_mm": [
+        92.0,
+        12.0,
+        5.2,
+        70.0,
+        48.0,
+        0.4
+      ],
+      "evidence_class": "estimate",
+      "source": "cad/slate-pocket-v1r/envelope-model/envelope.yaml#placements.thermal_spreader_placeholder",
+      "active": true,
+      "notes": "geometry_and_performance_unverified",
+      "shape": "rounded_box",
+      "geometry_use": "solid",
+      "screen_layer": "thermal_overlay",
+      "radius_mm": 2.0,
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.thermal_spreader_placeholder",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "compute_soc",
+      "label": "Compute package",
+      "group": "compute",
+      "box_mm": [
+        120.0,
+        30.0,
+        4.0,
+        20.0,
+        20.0,
+        1.2
+      ],
+      "evidence_class": "placeholder",
+      "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.compute_soc",
+      "active": true,
+      "notes": "compute_platform",
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.compute_soc",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "memory_a_32gb",
+      "label": "Memory A",
+      "group": "memory",
+      "box_mm": [
+        102.0,
+        31.0,
+        4.0,
+        14.0,
+        10.0,
+        1.0
+      ],
+      "evidence_class": "placeholder",
+      "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.memory_a_32gb",
+      "active": true,
+      "notes": "lpddr5x_32gb_planning_site",
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.memory_a_32gb",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "memory_b_32gb",
+      "label": "Memory B",
+      "group": "memory",
+      "box_mm": [
+        102.0,
+        43.0,
+        4.0,
+        14.0,
+        10.0,
+        1.0
+      ],
+      "evidence_class": "placeholder",
+      "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.memory_b_32gb",
+      "active": true,
+      "notes": "lpddr5x_32gb_planning_site",
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.memory_b_32gb",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "memory_c_32gb",
+      "label": "Memory C",
+      "group": "memory",
+      "box_mm": [
+        144.0,
+        31.0,
+        4.0,
+        14.0,
+        10.0,
+        1.0
+      ],
+      "evidence_class": "placeholder",
+      "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.memory_c_32gb",
+      "active": true,
+      "notes": "lpddr5x_32gb_planning_site",
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.memory_c_32gb",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "memory_d_32gb",
+      "label": "Memory D",
+      "group": "memory",
+      "box_mm": [
+        144.0,
+        43.0,
+        4.0,
+        14.0,
+        10.0,
+        1.0
+      ],
+      "evidence_class": "placeholder",
+      "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.memory_d_32gb",
+      "active": true,
+      "notes": "lpddr5x_32gb_planning_site",
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.memory_d_32gb",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "storage_ufs_1tb_reference",
+      "label": "KIOXIA UFS package reference",
+      "group": "storage",
+      "box_mm": [
+        158.5,
+        30.0,
+        4.0,
+        9.0,
+        13.0,
+        0.85
+      ],
+      "evidence_class": "public_supplier_reference",
+      "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.storage_ufs_1tb_reference",
+      "active": true,
+      "notes": "embedded_storage",
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.storage_ufs_1tb_reference",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "platform_pmic",
+      "label": "Platform PMIC",
+      "group": "power",
+      "box_mm": [
+        122.0,
+        53.0,
+        4.0,
+        16.0,
+        10.0,
+        1.0
+      ],
+      "evidence_class": "placeholder",
+      "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.platform_pmic",
+      "active": true,
+      "notes": "platform_power",
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.platform_pmic",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "battery_charger",
+      "label": "Battery charger",
+      "group": "power",
+      "box_mm": [
+        94.0,
+        14.0,
+        4.0,
+        18.0,
+        12.0,
+        1.0
+      ],
+      "evidence_class": "placeholder",
+      "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.battery_charger",
+      "active": true,
+      "notes": "wired_charge_and_system_path",
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.battery_charger",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "usb_pd_controller",
+      "label": "USB PD controller",
+      "group": "power",
+      "box_mm": [
+        114.0,
+        14.0,
+        4.0,
+        10.0,
+        8.0,
+        1.0
+      ],
+      "evidence_class": "placeholder",
+      "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.usb_pd_controller",
+      "active": true,
+      "notes": "usb_power_delivery_policy",
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.usb_pd_controller",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "wireless_charge_controller",
+      "label": "Wireless charge controller reserve",
+      "group": "deferred",
+      "box_mm": [
+        126.0,
+        14.0,
+        4.0,
+        10.0,
+        8.0,
+        1.0
+      ],
+      "evidence_class": "placeholder",
+      "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.wireless_charge_controller",
+      "active": false,
+      "notes": "wireless_power_receiver",
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.wireless_charge_controller",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "wifi_bluetooth",
+      "label": "Wi-Fi and Bluetooth",
+      "group": "radio",
+      "box_mm": [
+        140.0,
+        14.0,
+        4.0,
+        14.0,
+        10.0,
+        1.0
+      ],
+      "evidence_class": "placeholder",
+      "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.wifi_bluetooth",
+      "active": true,
+      "notes": "connectivity",
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.wifi_bluetooth",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "security_controller",
+      "label": "Security controller",
+      "group": "compute",
+      "box_mm": [
+        156.0,
+        14.0,
+        4.0,
+        8.0,
+        8.0,
+        1.0
+      ],
+      "evidence_class": "placeholder",
+      "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.security_controller",
+      "active": true,
+      "notes": "hardware_root_of_trust",
+      "shape": "chip",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "geometry_source": "engineering/assembly/concept-cad.yaml#source_overrides.security_controller",
+      "geometry_evidence_class": "design_assumption"
+    },
+    {
+      "id": "touch_digitizer_concept",
+      "label": "Touch digitizer concept",
+      "group": "display",
+      "box_mm": [
+        3.0,
+        3.0,
+        8.8,
+        174.0,
+        89.0,
+        0.15
+      ],
+      "evidence_class": "design_assumption",
+      "source": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml#zones.battery_without_wireless_charging.layers.touch_layer",
+      "notes": "Separate touch film shares the source display-stack envelope and an assumed front camera opening.",
+      "active": true,
+      "shape": "rounded_box",
+      "roles": [
+        "touch_digitizer"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.touch_digitizer_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "allowed_keepouts": [],
+      "radius_mm": 2.0,
+      "optical_aperture_radius_mm": 3.1,
+      "optical_aperture_center_mm": [
+        88.0,
+        87.0
+      ]
+    },
+    {
+      "id": "battery_pack_shell_concept",
+      "label": "Battery pack envelope concept",
+      "group": "power",
+      "box_mm": [
+        9.0,
+        11.0,
+        1.2,
+        82.0,
+        68.5,
+        6.2
+      ],
+      "evidence_class": "design_assumption",
+      "source": "research/evidence/battery/pack-envelope.yaml#required_pack_cad_inputs",
+      "notes": "Outer pack allowance around the raw-cell reference; protection and swelling remain unresolved.",
+      "active": true,
+      "shape": "battery_tray",
+      "roles": [
+        "battery_pack"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.battery_pack_shell_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": [],
+      "wall_mm": 0.5
+    },
+    {
+      "id": "graphite_spreader_concept",
+      "label": "Graphite spreader concept",
+      "group": "thermal",
+      "box_mm": [
+        92.0,
+        12.0,
+        5.6,
+        70.0,
+        48.0,
+        0.12
+      ],
+      "evidence_class": "design_assumption",
+      "source": "engineering/components/component_library.yaml#components.graphite_spreader",
+      "notes": "Sheet follows the thermal-overlay planform; electrical isolation and RF cutouts are unresolved.",
+      "active": true,
+      "shape": "rounded_box",
+      "roles": [
+        "graphite_spreader"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.graphite_spreader_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "thermal_overlay",
+      "allowed_keepouts": [],
+      "radius_mm": 2.0
+    },
+    {
+      "id": "phase_change_material_concept",
+      "label": "Phase-change interface concept",
+      "group": "thermal",
+      "box_mm": [
+        120.0,
+        30.0,
+        5.72,
+        20.0,
+        20.0,
+        0.2
+      ],
+      "evidence_class": "design_assumption",
+      "source": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml#placements.compute_soc",
+      "notes": "Optional local patch above the compute site; material and containment are unselected.",
+      "active": true,
+      "shape": "rounded_box",
+      "roles": [
+        "phase_change_material"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.phase_change_material_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "thermal_overlay",
+      "allowed_keepouts": [],
+      "radius_mm": 1.0
+    },
+    {
+      "id": "front_camera_concept",
+      "label": "Front camera concept",
+      "group": "camera",
+      "box_mm": [
+        84.0,
+        83.0,
+        5.5,
+        8.0,
+        8.0,
+        2.4
+      ],
+      "evidence_class": "design_assumption",
+      "source": "engineering/components/component_library.yaml#components.front_camera_module",
+      "notes": "Punch-hole optical path; panel cutout, black mask, cover glass, and seal remain unqualified.",
+      "active": true,
+      "shape": "camera_module",
+      "roles": [
+        "front_camera_module"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.front_camera_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": [],
+      "lens_radius_mm": 2.56,
+      "lens_face": "front"
+    },
+    {
+      "id": "antenna_top_left_concept",
+      "label": "Top-left antenna reservation",
+      "group": "radio",
+      "box_mm": [
+        3.0,
+        86.0,
+        0.8,
+        35.0,
+        6.0,
+        0.4
+      ],
+      "evidence_class": "design_assumption",
+      "source": "engineering/rf/keepout-map/map.yaml#antenna_reservations.top_left",
+      "notes": "Reserved volume only; no radiating element or feed is designed.",
+      "active": true,
+      "shape": "rounded_box",
+      "roles": [
+        "antenna_modules"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.antenna_top_left_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "reservation",
+      "screen_layer": null,
+      "allowed_keepouts": [],
+      "radius_mm": 1.0
+    },
+    {
+      "id": "antenna_top_right_concept",
+      "label": "Top-right antenna reservation",
+      "group": "radio",
+      "box_mm": [
+        142.0,
+        86.0,
+        0.8,
+        35.0,
+        6.0,
+        0.4
+      ],
+      "evidence_class": "design_assumption",
+      "source": "engineering/rf/keepout-map/map.yaml#antenna_reservations.top_right",
+      "notes": "Reserved volume only; no radiating element or feed is designed.",
+      "active": true,
+      "shape": "rounded_box",
+      "roles": [
+        "antenna_modules"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.antenna_top_right_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "reservation",
+      "screen_layer": null,
+      "allowed_keepouts": [],
+      "radius_mm": 1.0
+    },
+    {
+      "id": "antenna_bottom_left_concept",
+      "label": "Bottom-left antenna reservation",
+      "group": "radio",
+      "box_mm": [
+        3.0,
+        3.0,
+        0.8,
+        35.0,
+        6.0,
+        0.4
+      ],
+      "evidence_class": "design_assumption",
+      "source": "engineering/rf/keepout-map/map.yaml#antenna_reservations.bottom_left",
+      "notes": "Reserved volume only; no radiating element or feed is designed.",
+      "active": true,
+      "shape": "rounded_box",
+      "roles": [
+        "antenna_modules"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.antenna_bottom_left_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "reservation",
+      "screen_layer": null,
+      "allowed_keepouts": [],
+      "radius_mm": 1.0
+    },
+    {
+      "id": "antenna_bottom_right_concept",
+      "label": "Bottom-right antenna reservation",
+      "group": "radio",
+      "box_mm": [
+        142.0,
+        3.0,
+        0.8,
+        35.0,
+        6.0,
+        0.4
+      ],
+      "evidence_class": "design_assumption",
+      "source": "engineering/rf/keepout-map/map.yaml#antenna_reservations.bottom_right",
+      "notes": "Reserved volume only; no radiating element or feed is designed.",
+      "active": true,
+      "shape": "rounded_box",
+      "roles": [
+        "antenna_modules"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.antenna_bottom_right_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "reservation",
+      "screen_layer": null,
+      "allowed_keepouts": [],
+      "radius_mm": 1.0
+    },
+    {
+      "id": "microphone_bottom_concept",
+      "label": "Bottom microphone concept",
+      "group": "audio",
+      "box_mm": [
+        80.0,
+        4.0,
+        1.2,
+        3.0,
+        3.0,
+        1.2
+      ],
+      "evidence_class": "design_assumption",
+      "source": "engineering/components/component_library.yaml#components.microphones",
+      "notes": "Port position and acoustic seal require a released enclosure design.",
+      "active": true,
+      "shape": "cylinder",
+      "roles": [
+        "microphones"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.microphone_bottom_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": []
+    },
+    {
+      "id": "microphone_top_concept",
+      "label": "Top microphone concept",
+      "group": "audio",
+      "box_mm": [
+        98.0,
+        88.0,
+        1.2,
+        3.0,
+        3.0,
+        1.2
+      ],
+      "evidence_class": "design_assumption",
+      "source": "engineering/components/component_library.yaml#components.microphones",
+      "notes": "Port intersects the top RF reserve and requires joint acoustic/RF review.",
+      "active": true,
+      "shape": "cylinder",
+      "roles": [
+        "microphones"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.microphone_top_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": []
+    },
+    {
+      "id": "haptics_concept",
+      "label": "Haptic actuator concept",
+      "group": "audio",
+      "box_mm": [
+        150.0,
+        68.0,
+        1.2,
+        10.0,
+        4.0,
+        2.5
+      ],
+      "evidence_class": "design_assumption",
+      "source": "engineering/components/component_library.yaml#components.haptics",
+      "notes": "Chassis coupling and clearance beside the speaker are unverified.",
+      "active": true,
+      "shape": "rounded_box",
+      "roles": [
+        "haptics"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.haptics_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": [],
+      "radius_mm": 1.0
+    },
+    {
+      "id": "usb_c_port_concept",
+      "label": "USB-C receptacle concept",
+      "group": "power",
+      "box_mm": [
+        84.0,
+        0.0,
+        2.8,
+        12.0,
+        6.0,
+        3.0
+      ],
+      "evidence_class": "design_assumption",
+      "source": "cad/slate-pocket-v1r/envelope-model/keepouts.yaml#keepouts.bottom_connector_zone",
+      "notes": "Central edge opening with an assumed 12 by 3 mm receptacle envelope.",
+      "active": true,
+      "shape": "port",
+      "roles": [
+        "usb_c_port"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.usb_c_port_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": [
+        "bottom_connector_zone"
+      ]
+    },
+    {
+      "id": "sensors_concept",
+      "label": "Sensor cluster concept",
+      "group": "compute",
+      "box_mm": [
+        100.0,
+        84.0,
+        5.5,
+        8.0,
+        4.0,
+        1.0
+      ],
+      "evidence_class": "design_assumption",
+      "source": "engineering/components/component_library.yaml#components.sensors",
+      "notes": "Clustered package allowance; sensor suite and optical paths are unresolved.",
+      "active": true,
+      "shape": "rounded_box",
+      "roles": [
+        "sensors"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.sensors_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": "component_planform",
+      "allowed_keepouts": [],
+      "radius_mm": 0.5
+    },
+    {
+      "id": "perimeter_gasket_concept",
+      "label": "Perimeter gasket concept",
+      "group": "exterior",
+      "box_mm": [
+        0.0,
+        0.0,
+        8.9,
+        180.0,
+        95.0,
+        0.05
+      ],
+      "evidence_class": "design_assumption",
+      "source": "engineering/components/component_library.yaml#components.fasteners_adhesives_gaskets",
+      "notes": "Seal path only; fastener and adhesive pattern await enclosure release.",
+      "active": true,
+      "shape": "gasket",
+      "roles": [
+        "fasteners_adhesives_gaskets"
+      ],
+      "geometry_source": "engineering/assembly/concept-cad.yaml#additional_parts.perimeter_gasket_concept",
+      "geometry_evidence_class": "design_assumption",
+      "geometry_use": "solid",
+      "screen_layer": null,
+      "allowed_keepouts": [],
+      "band_mm": 2.0
+    }
+  ],
+  "keepouts": [
+    {
+      "id": "top_rf_edge",
+      "category": "rf",
+      "rectangle_mm": {
+        "x": 3.0,
+        "y": 86.0,
+        "length": 174.0,
+        "width": 6.0
+      },
+      "evidence_class": "placeholder",
+      "source": "cad/slate-pocket-v1r/envelope-model/keepouts.yaml#keepouts.top_rf_edge"
+    },
+    {
+      "id": "bottom_rf_edge",
+      "category": "rf",
+      "rectangle_mm": {
+        "x": 3.0,
+        "y": 3.0,
+        "length": 174.0,
+        "width": 6.0
+      },
+      "evidence_class": "placeholder",
+      "source": "cad/slate-pocket-v1r/envelope-model/keepouts.yaml#keepouts.bottom_rf_edge"
+    },
+    {
+      "id": "left_rf_edge",
+      "category": "rf",
+      "rectangle_mm": {
+        "x": 3.0,
+        "y": 3.0,
+        "length": 6.0,
+        "width": 89.0
+      },
+      "evidence_class": "placeholder",
+      "source": "cad/slate-pocket-v1r/envelope-model/keepouts.yaml#keepouts.left_rf_edge"
+    },
+    {
+      "id": "right_rf_edge",
+      "category": "rf",
+      "rectangle_mm": {
+        "x": 171.0,
+        "y": 3.0,
+        "length": 6.0,
+        "width": 89.0
+      },
+      "evidence_class": "placeholder",
+      "source": "cad/slate-pocket-v1r/envelope-model/keepouts.yaml#keepouts.right_rf_edge"
+    },
+    {
+      "id": "camera_service_zone",
+      "category": "service",
+      "rectangle_mm": {
+        "x": 90.0,
+        "y": 68.0,
+        "length": 42.0,
+        "width": 17.0
+      },
+      "evidence_class": "inferred",
+      "source": "cad/slate-pocket-v1r/envelope-model/keepouts.yaml#keepouts.camera_service_zone"
+    },
+    {
+      "id": "bottom_connector_zone",
+      "category": "connector",
+      "rectangle_mm": {
+        "x": 76.0,
+        "y": 3.0,
+        "length": 28.0,
+        "width": 10.0
+      },
+      "evidence_class": "placeholder",
+      "source": "cad/slate-pocket-v1r/envelope-model/keepouts.yaml#keepouts.bottom_connector_zone"
+    }
+  ],
+  "zones": {
+    "battery_without_wireless_charging": {
+      "layers": [
+        {
+          "id": "cover_glass",
+          "thickness_mm": 0.55,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "touch_layer",
+          "thickness_mm": 0.15,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "oled_stack",
+          "thickness_mm": 0.45,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "display_support",
+          "thickness_mm": 0.3,
+          "evidence_class": "placeholder"
+        },
+        {
+          "id": "display_battery_separation",
+          "thickness_mm": 0.25,
+          "evidence_class": "placeholder"
+        },
+        {
+          "id": "battery_cell_reference",
+          "thickness_mm": 5.44,
+          "evidence_class": "public_supplier_reference"
+        },
+        {
+          "id": "pack_noncell_and_swelling",
+          "thickness_mm": 0.6,
+          "evidence_class": "placeholder"
+        },
+        {
+          "id": "local_structure",
+          "thickness_mm": 0.4,
+          "evidence_class": "placeholder"
+        },
+        {
+          "id": "rear_cover",
+          "thickness_mm": 0.55,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "assembly_tolerance",
+          "thickness_mm": 0.35,
+          "evidence_class": "estimate"
+        }
+      ]
+    },
+    "battery_with_wireless_charging": {
+      "inherits": "battery_without_wireless_charging",
+      "additional_layers": [
+        {
+          "id": "wireless_coil_ferrite_insulation",
+          "thickness_mm": 0.8,
+          "evidence_class": "estimate"
+        }
+      ]
+    },
+    "compute_hotspot": {
+      "layers": [
+        {
+          "id": "cover_glass",
+          "thickness_mm": 0.55,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "touch_layer",
+          "thickness_mm": 0.15,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "oled_stack",
+          "thickness_mm": 0.45,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "display_support",
+          "thickness_mm": 0.3,
+          "evidence_class": "placeholder"
+        },
+        {
+          "id": "display_board_separation",
+          "thickness_mm": 0.2,
+          "evidence_class": "placeholder"
+        },
+        {
+          "id": "pcb",
+          "thickness_mm": 0.8,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "soc_package",
+          "thickness_mm": 1.2,
+          "evidence_class": "placeholder"
+        },
+        {
+          "id": "thermal_interface",
+          "thickness_mm": 0.15,
+          "evidence_class": "placeholder"
+        },
+        {
+          "id": "vapor_chamber",
+          "thickness_mm": 0.4,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "local_structure",
+          "thickness_mm": 0.4,
+          "evidence_class": "placeholder"
+        },
+        {
+          "id": "rear_cover",
+          "thickness_mm": 0.55,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "assembly_tolerance",
+          "thickness_mm": 0.35,
+          "evidence_class": "estimate"
+        }
+      ]
+    },
+    "rear_camera": {
+      "layers": [
+        {
+          "id": "cover_glass",
+          "thickness_mm": 0.55,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "touch_layer",
+          "thickness_mm": 0.15,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "oled_stack",
+          "thickness_mm": 0.45,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "display_support",
+          "thickness_mm": 0.3,
+          "evidence_class": "placeholder"
+        },
+        {
+          "id": "camera_module",
+          "thickness_mm": 5.0,
+          "evidence_class": "placeholder"
+        },
+        {
+          "id": "local_structure",
+          "thickness_mm": 0.4,
+          "evidence_class": "placeholder"
+        },
+        {
+          "id": "rear_cover",
+          "thickness_mm": 0.55,
+          "evidence_class": "estimate"
+        },
+        {
+          "id": "assembly_tolerance",
+          "thickness_mm": 0.35,
+          "evidence_class": "estimate"
+        }
+      ]
+    }
+  },
+  "component_coverage": [
+    {
+      "id": "display_module",
+      "function": "OLED display stack including panel, driver flex, and local stiffeners.",
+      "representation": "aggregate",
+      "part_ids": [
+        "display_stack"
+      ],
+      "source": "engineering/components/component_library.yaml#components.display_module",
+      "concept_part_ids": [
+        "display_stack"
+      ]
+    },
+    {
+      "id": "cover_glass",
+      "function": "Front impact, scratch, and optical cover layer.",
+      "representation": "box",
+      "part_ids": [
+        "cover_glass"
+      ],
+      "source": "engineering/components/component_library.yaml#components.cover_glass",
+      "concept_part_ids": [
+        "cover_glass"
+      ]
+    },
+    {
+      "id": "touch_digitizer",
+      "function": "Capacitive touch sensor layer, controller interface, and flex routing.",
+      "representation": "aggregate",
+      "part_ids": [
+        "display_stack"
+      ],
+      "source": "engineering/components/component_library.yaml#components.touch_digitizer",
+      "concept_part_ids": [
+        "display_stack",
+        "touch_digitizer_concept"
+      ]
+    },
+    {
+      "id": "main_pcb",
+      "function": "Primary rigid or rigid-flex board carrying compute, power, storage, radios, connectors, and routing.",
+      "representation": "box",
+      "part_ids": [
+        "main_pcb_placeholder"
+      ],
+      "source": "engineering/components/component_library.yaml#components.main_pcb",
+      "concept_part_ids": [
+        "main_pcb_placeholder"
+      ]
+    },
+    {
+      "id": "soc_package",
+      "function": "Main application processor, accelerator, NPU/GPU blocks, and package substrate.",
+      "representation": "box",
+      "part_ids": [
+        "compute_soc"
+      ],
+      "source": "engineering/components/component_library.yaml#components.soc_package",
+      "concept_part_ids": [
+        "compute_soc"
+      ]
+    },
+    {
+      "id": "memory_packages",
+      "function": "DRAM or stacked memory packages supporting local AI workloads.",
+      "representation": "box",
+      "part_ids": [
+        "memory_a_32gb",
+        "memory_b_32gb",
+        "memory_c_32gb",
+        "memory_d_32gb"
+      ],
+      "source": "engineering/components/component_library.yaml#components.memory_packages",
+      "concept_part_ids": [
+        "memory_a_32gb",
+        "memory_b_32gb",
+        "memory_c_32gb",
+        "memory_d_32gb"
+      ]
+    },
+    {
+      "id": "storage_package",
+      "function": "Nonvolatile storage package and controller interface.",
+      "representation": "box",
+      "part_ids": [
+        "storage_ufs_1tb_reference"
+      ],
+      "source": "engineering/components/component_library.yaml#components.storage_package",
+      "concept_part_ids": [
+        "storage_ufs_1tb_reference"
+      ]
+    },
+    {
+      "id": "battery_pack",
+      "function": "Rechargeable lithium-based cell stack, pouch, protection allowance, and tabs.",
+      "representation": "aggregate",
+      "part_ids": [
+        "battery_reference"
+      ],
+      "source": "engineering/components/component_library.yaml#components.battery_pack",
+      "concept_part_ids": [
+        "battery_reference",
+        "battery_pack_shell_concept"
+      ]
+    },
+    {
+      "id": "vapor_chamber",
+      "function": "Thin two-phase heat transport module from compute hotspots to larger surfaces.",
+      "representation": "aggregate",
+      "part_ids": [
+        "thermal_spreader_placeholder"
+      ],
+      "source": "engineering/components/component_library.yaml#components.vapor_chamber",
+      "concept_part_ids": [
+        "thermal_spreader_placeholder"
+      ]
+    },
+    {
+      "id": "graphite_spreader",
+      "function": "In-plane heat spreading film or sheet to distribute local thermal loads.",
+      "representation": "unplaced",
+      "part_ids": [],
+      "source": "engineering/components/component_library.yaml#components.graphite_spreader",
+      "concept_part_ids": [
+        "graphite_spreader_concept"
+      ]
+    },
+    {
+      "id": "phase_change_material",
+      "function": "Temporary thermal buffering material near transient hotspots.",
+      "representation": "unplaced",
+      "part_ids": [],
+      "source": "engineering/components/component_library.yaml#components.phase_change_material",
+      "concept_part_ids": [
+        "phase_change_material_concept"
+      ]
+    },
+    {
+      "id": "rear_camera_module",
+      "function": "Rear image sensor, lens stack, actuator if used, and local shield or bracket.",
+      "representation": "aggregate",
+      "part_ids": [
+        "rear_camera_placeholder"
+      ],
+      "source": "engineering/components/component_library.yaml#components.rear_camera_module",
+      "concept_part_ids": [
+        "rear_camera_placeholder"
+      ]
+    },
+    {
+      "id": "front_camera_module",
+      "function": "Front image sensor and optics for user-facing capture.",
+      "representation": "unplaced",
+      "part_ids": [],
+      "source": "engineering/components/component_library.yaml#components.front_camera_module",
+      "concept_part_ids": [
+        "front_camera_concept"
+      ]
+    },
+    {
+      "id": "antenna_modules",
+      "function": "Cellular, Wi-Fi, Bluetooth, GNSS, and diversity antenna structures and feeds.",
+      "representation": "unplaced",
+      "part_ids": [],
+      "source": "engineering/components/component_library.yaml#components.antenna_modules",
+      "concept_part_ids": [
+        "antenna_top_left_concept",
+        "antenna_top_right_concept",
+        "antenna_bottom_left_concept",
+        "antenna_bottom_right_concept"
+      ]
+    },
+    {
+      "id": "wireless_charging_coil",
+      "function": "Rear inductive charging coil, ferrite, shield, and receive losses.",
+      "representation": "deferred",
+      "part_ids": [
+        "wireless_charging_placeholder"
+      ],
+      "source": "engineering/components/component_library.yaml#components.wireless_charging_coil",
+      "concept_part_ids": [
+        "wireless_charging_placeholder"
+      ]
+    },
+    {
+      "id": "speakers",
+      "function": "Acoustic transducers, chambers, mesh, and seals.",
+      "representation": "box",
+      "part_ids": [
+        "speaker_a_placeholder",
+        "speaker_b_placeholder"
+      ],
+      "source": "engineering/components/component_library.yaml#components.speakers",
+      "concept_part_ids": [
+        "speaker_a_placeholder",
+        "speaker_b_placeholder"
+      ]
+    },
+    {
+      "id": "microphones",
+      "function": "Microphone capsules, ports, seals, and acoustic routing.",
+      "representation": "unplaced",
+      "part_ids": [],
+      "source": "engineering/components/component_library.yaml#components.microphones",
+      "concept_part_ids": [
+        "microphone_bottom_concept",
+        "microphone_top_concept"
+      ]
+    },
+    {
+      "id": "haptics",
+      "function": "Linear resonant actuator or haptic motor and driver.",
+      "representation": "unplaced",
+      "part_ids": [],
+      "source": "engineering/components/component_library.yaml#components.haptics",
+      "concept_part_ids": [
+        "haptics_concept"
+      ]
+    },
+    {
+      "id": "usb_c_port",
+      "function": "External wired power, data connector, receptacle, shield, and local reinforcement.",
+      "representation": "unplaced",
+      "part_ids": [],
+      "source": "engineering/components/component_library.yaml#components.usb_c_port",
+      "concept_part_ids": [
+        "usb_c_port_concept"
+      ]
+    },
+    {
+      "id": "sensors",
+      "function": "IMU, proximity, ambient light, magnetometer, barometer, and related small sensors.",
+      "representation": "unplaced",
+      "part_ids": [],
+      "source": "engineering/components/component_library.yaml#components.sensors",
+      "concept_part_ids": [
+        "sensors_concept"
+      ]
+    },
+    {
+      "id": "tpm_or_security_chip",
+      "function": "Discrete secure element, TPM-like security controller, or hardware root-of-trust package.",
+      "representation": "box",
+      "part_ids": [
+        "security_controller"
+      ],
+      "source": "engineering/components/component_library.yaml#components.tpm_or_security_chip",
+      "concept_part_ids": [
+        "security_controller"
+      ]
+    },
+    {
+      "id": "fasteners_adhesives_gaskets",
+      "function": "Screws, brackets, tapes, adhesives, seals, cushions, and miscellaneous retainers.",
+      "representation": "unplaced",
+      "part_ids": [],
+      "source": "engineering/components/component_library.yaml#components.fasteners_adhesives_gaskets",
+      "concept_part_ids": [
+        "perimeter_gasket_concept"
+      ]
+    }
+  ],
+  "program_summary": {
+    "entity_count": 268,
+    "relation_count": 311,
+    "entity_kind_counts": {
+      "artifact": 35,
+      "assumption": 12,
+      "blocker": 8,
+      "component_role": 12,
+      "configuration": 1,
+      "decision": 14,
+      "defect_code": 14,
+      "evidence_package": 10,
+      "gate": 9,
+      "generated_output": 20,
+      "provenance": 57,
+      "requirement": 14,
+      "risk": 13,
+      "supplier": 12,
+      "test": 19,
+      "workflow": 18
+    },
+    "evidence_status_counts": {
+      "available": 3,
+      "planned": 6,
+      "verified": 1
+    }
+  },
+  "gates": [
+    {
+      "id": "configuration_gate",
+      "status": "CONTROLLED_WITH_UNRESOLVED_EXTERNAL_DECISIONS",
+      "source": "reports/program/configuration-resolution.yaml"
+    },
+    {
+      "id": "evidence_gate",
+      "status": "BLOCKED_ON_FOUNDATIONAL_EVIDENCE",
+      "source": "reports/slate-pocket-evidence-readiness.txt"
+    },
+    {
+      "id": "evt0_campaign_gate",
+      "status": "EMPTY_CAMPAIGN",
+      "source": "reports/program/evt0-campaign.yaml"
+    },
+    {
+      "id": "evt0_gate",
+      "status": "BLOCKED_ON_SUPPLIER_PHASE2_VERIFICATION_BUILD_AUTHORIZATION_AND_RESULTS",
+      "source": "reports/slate-pocket-v1r-evt0-gate.txt"
+    },
+    {
+      "id": "integration_contract_gate",
+      "status": "CONTRACTS_CONSISTENT_NOT_RELEASED",
+      "source": "reports/program/integration-contracts.yaml"
+    },
+    {
+      "id": "local_program_gate",
+      "status": "SUPPLIER_READY_AND_PROTOTYPE_PLAN_READY_EXTERNALLY_BLOCKED",
+      "source": "reports/slate-pocket-v1r-program-readiness.txt"
+    },
+    {
+      "id": "manufacturing_analytics_gate",
+      "status": "EMPTY_PILOT_EVIDENCE",
+      "source": "reports/program/manufacturing-pilot-analytics.yaml"
+    },
+    {
+      "id": "manufacturing_gate",
+      "status": "BLOCKED_ON_VERIFIED_EVT0_SUPPLIER_DFM_RELEASED_PROCESS_AND_PILOT_EVIDENCE",
+      "source": "reports/slate-pocket-v1r-manufacturing-readiness.txt"
+    },
+    {
+      "id": "supplier_response_gate",
+      "status": "EMPTY_INBOX",
+      "source": "reports/program/supplier-response-review.yaml"
+    }
+  ],
+  "summary": {
+    "verified": 1,
+    "available_not_verified": 3,
+    "modeled_not_verified": 4,
+    "rejected_options": 3,
+    "stale_nodes": 0,
+    "contradictions": 0,
+    "external_blockers": 8
+  },
+  "blockers": [
+    {
+      "id": "supplier_responses",
+      "category": "supplier_and_nda",
+      "missing_evidence": "Completed supplier response templates, controlled drawings, limits, lifecycle/availability, sample terms, and attestations.",
+      "exact_next_action": "Authorize supplier outreach using research/rfqs after contact and NDA review; request completed response schemas and source documents.",
+      "authorization_required": "supplier_contact_and_any_NDA_acceptance",
+      "fallback": "Retain public candidates only as references; do not select components or release CAD."
+    },
+    {
+      "id": "battery_pack_and_charge_limits",
+      "category": "supplier_safety",
+      "missing_evidence": "Complete-pack CAD, swelling/tolerances, protection, charge/discharge curves, temperature/cycle limits, safety and shipping documentation.",
+      "exact_next_action": "Request a supplier-proposed pack fitting the RFQ envelope and validated charger/system limits; do not prescribe unsupported capacity or charge rate.",
+      "authorization_required": "supplier_contact_samples_and_purchases",
+      "fallback": "Use the best supplier-validated capacity fitting the envelope; cap wired charge below 30 W if required; wireless remains removed."
+    },
+    {
+      "id": "platform_reference_design",
+      "category": "supplier_confidential_engineering",
+      "missing_evidence": "Package/ball maps, qualified 128 GB topology, PMIC/rails, reference schematic, power/load steps, software access, and sustained workload telemetry.",
+      "exact_next_action": "Obtain the selected platform's NDA-controlled design package and evaluation access for the 128 GB fallback.",
+      "authorization_required": "supplier_contact_NDA_eval_hardware_and_licenses",
+      "fallback": "Use external 128 GB developer systems for workload characterization only; do not claim pocket integration."
+    },
+    {
+      "id": "display_storage_drawings",
+      "category": "supplier_engineering",
+      "missing_evidence": "Approved resolution of the 7.5-inch 16:10 versus 95 mm body conflict; selected display module drawing/flex/power and selected storage package/host/power/thermal/lifecycle evidence.",
+      "exact_next_action": "Resolve display body width, diagonal, aspect, and resolution under product-owner change control; then run prepared display and storage RFIs for modules fitting that revision.",
+      "authorization_required": "product_owner_geometry_decision_supplier_contact_samples_and_purchases",
+      "fallback": "A 7\u20138.4 inch panel alone cannot fit the present 89 mm reserve at 16:10; widen or revise the approved display architecture, and use modular/external storage if needed."
+    },
+    {
+      "id": "released_integration_design",
+      "category": "engineering_and_paid_tools",
+      "missing_evidence": "Released 3D CAD, tolerance/mass/interference review, schematic/netlist/routed ECAD, solver model, EM model, and peer signoff.",
+      "exact_next_action": "After supplier packages are verified, authorize detailed CAD/ECAD/solver work and any required paid tools or contractors.",
+      "authorization_required": "design_release_paid_tools_and_external_engineering_if_needed",
+      "fallback": "Preserve provisional blocking models and 10.2 mm first thickness fallback; do not release hardware."
+    },
+    {
+      "id": "accredited_labs_and_compliance_scope",
+      "category": "laboratory_and_regulatory",
+      "missing_evidence": "Market/SKU matrix, current lab scope, calibrated tests, accredited reports, certifications/declarations/filings.",
+      "exact_next_action": "Select target markets/configurations and engage qualified labs/regulatory counsel after production-intent hardware exists.",
+      "authorization_required": "market_decisions_lab_contracts_and_test_samples",
+      "fallback": "Defer cellular, remove wireless charging, limit claims/markets, and retain modular development radios."
+    },
+    {
+      "id": "evt0_build_and_measurement",
+      "category": "physical_work",
+      "missing_evidence": "Selected BOM, released designs, authorized build, calibrated setup, raw results, deviations, and correlated models.",
+      "exact_next_action": "Authorize procurement/build/energized testing only after the EVT0 prerequisite and safety gates pass.",
+      "authorization_required": "purchases_physical_build_and_energized_testing",
+      "fallback": "Continue workload characterization on external developer hardware without claiming integrated prototype performance."
+    },
+    {
+      "id": "supplier_dfm_and_pilot",
+      "category": "manufacturing_physical_work",
+      "missing_evidence": "Completed supplier DFM responses, released process/tooling, pilot authorization, 100-unit records, yield/capability, reliability, compliance, and service results.",
+      "exact_next_action": "After verified EVT0, authorize supplier DFM and then the controlled pilot only when G0/G1 pass.",
+      "authorization_required": "supplier_engagement_tooling_materials_pilot_and_labs",
+      "fallback": "Hold production claims and iterate EVT/design/process; do not shrink denominators or hide rework/failures."
+    }
+  ],
+  "sources": {
+    "envelope": "cad/slate-pocket-v1r/envelope-model/envelope.yaml",
+    "keepouts": "cad/slate-pocket-v1r/envelope-model/keepouts.yaml",
+    "stackups": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml",
+    "pcb": "engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml",
+    "dashboard": "reports/program/dashboard.yaml",
+    "program": "reports/program/buildslate-program-snapshot.yaml",
+    "component_library": "engineering/components/component_library.yaml"
+  },
+  "caveat": "Editable body envelope only, not detailed supplier CAD or a released pack. The drawing's 50 mm lead and connector are not routed; physical, electrical, and thermal integration remain blocked.",
+  "description": "Public LP4473109 6 Ah pack body against the current board, tray, camera, and audio geometry. The pack is not selected."
+}

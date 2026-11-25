@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 
 from buildslate.io import load_yaml
@@ -14,6 +15,146 @@ ENVELOPE = Path("cad/slate-pocket-v1r/envelope-model/envelope.yaml")
 CONCEPT = Path("engineering/assembly/concept-cad.yaml")
 PACK_ENVELOPE = Path("research/evidence/battery/pack-envelope.yaml")
 CANDIDATE_ID = "enovix_ai1_m01"
+LIPOL = Path("research/evidence/battery/lipol-lp4473109.yaml")
+LIPOL_PRODUCT_URL = "https://www.lipoly-battery.com/lp4473109-lihv-lipoly-battery-3-85v-high-voltage-6000mah-23-1wh-with-pcm-jst-phr-2/"
+LIPOL_DRAWING_URL = "https://www.lipoly-battery.com/wp-content/uploads/2024/10/LP4473109-3.85V-6000mAh-connector.pdf"
+LIPOL_DRAWING_SHA256 = (
+    "4a02e68f9ada253daca18b02558b51c5c4aacca9ddef79bf2b5f3e049dc84124"
+)
+
+
+def audit_lipol_data(
+    evidence: dict, profile: dict, envelope: dict, concept: dict
+) -> dict:
+    """Screen the drawing-derived LP4473109 pack against Slate's current layout."""
+    candidate = evidence["candidate"]
+    dimensions = candidate["pack_body_mm"]
+    tolerance = candidate["drawing_tolerance_mm"]
+    nominal = [float(dimensions[key]) for key in ("length", "width", "thickness")]
+    maximum = [
+        nominal[index] + float(tolerance[key]["plus"])
+        for index, key in enumerate(("length", "width", "thickness"))
+    ]
+    shell = concept["additional_parts"]["battery_pack_shell_concept"]["box_mm"]
+    board = envelope["placements"]["main_pcb_placeholder"]["rectangle_mm"]
+    internal = envelope["device"]["internal_boundary_mm"]
+    allocation = float(profile["battery"]["physical_volume_mm3"])
+    sustained = float(profile["compute"]["sustained_power_w"])
+    charge_target = float(profile["battery"]["charging_wired_target_w"])
+    voltage = float(candidate["nominal_voltage_v"])
+    charge_current = float(candidate["maximum_charge_current_a"])
+    discharge_current = float(candidate["maximum_continuous_discharge_current_a"])
+    pcm_trip = [float(value) for value in candidate["pcm_overcurrent_detection_a"]]
+    max_charge_voltage = float(candidate["maximum_charge_voltage_v"])
+    nominal_volume = math.prod(nominal)
+    maximum_volume = math.prod(maximum)
+    left_of_board = float(board["x"]) - float(internal["x"])
+    box = [float(shell[0]), float(shell[1]), float(shell[2]), *nominal]
+    errors = []
+    if (
+        evidence["metadata"]["status"] != "public_reference_not_selected"
+        or candidate["mpn"] != "LP4473109"
+        or candidate["configuration"] != "1S1P"
+        or candidate["nominal_capacity_mah"] != 6000
+        or not math.isclose(
+            float(candidate["nominal_energy_wh"]),
+            candidate["nominal_capacity_mah"] * voltage / 1000,
+            abs_tol=0.01,
+        )
+    ):
+        errors.append("Pack identity or energy conflicts with the drawing")
+    if any(value <= 0 or not math.isfinite(value) for value in nominal + maximum):
+        errors.append("Pack dimensions are invalid")
+    if any(
+        float(tolerance[key][side]) < 0
+        for key in ("length", "width", "thickness")
+        for side in ("minus", "plus")
+    ):
+        errors.append("Pack drawing tolerances are invalid")
+    if (
+        nominal != [110.0, 73.0, 4.4]
+        or maximum != [111.0, 73.5, 4.7]
+        or [float(tolerance[key]["minus"]) for key in ("length", "width", "thickness")]
+        != [1.0, 0.5, 0.3]
+        or not math.isclose(float(candidate["lead_tolerance_mm"]), 3.0)
+    ):
+        errors.append("Pack body or lead tolerance differs from the drawing")
+    if (
+        not candidate["protection_circuit"]
+        or candidate["thermistor"]
+        or candidate["connector"] != "JST PHR-2"
+        or len(pcm_trip) != 2
+        or pcm_trip[0] <= 0
+        or pcm_trip[1] < pcm_trip[0]
+        or candidate["lead_length_mm"] <= 0
+        or not math.isclose(float(candidate["lead_length_mm"]), 50.0)
+        or pcm_trip != [2.0, 4.5]
+    ):
+        errors.append("Pack protection or lead record differs from the drawing")
+    if (
+        charge_current <= 0
+        or discharge_current <= 0
+        or max_charge_voltage <= 0
+        or not all(
+            math.isfinite(value)
+            for value in (charge_current, discharge_current, max_charge_voltage)
+        )
+        or not math.isclose(charge_current, 3.0)
+        or not math.isclose(discharge_current, 6.0)
+        or not math.isclose(float(candidate["website_listed_charge_voltage_v"]), 4.48)
+        or not math.isclose(max_charge_voltage, 4.2)
+        or float(candidate["website_listed_charge_voltage_v"]) <= max_charge_voltage
+    ):
+        errors.append("Charge-voltage source conflict or current limits changed")
+    sources = candidate["source"]
+    if (
+        sources["product_page"] != LIPOL_PRODUCT_URL
+        or sources["drawing_and_specification"] != LIPOL_DRAWING_URL
+        or sources["drawing_sha256"] != LIPOL_DRAWING_SHA256
+    ):
+        errors.append("Public manufacturer drawing source is missing")
+    if candidate["disposition"] != "rejected_current_envelope_and_electrical_limits":
+        errors.append("Unqualified pack was promoted")
+    return {
+        "mpn": candidate["mpn"],
+        "capacity_mah": candidate["nominal_capacity_mah"],
+        "nominal_energy_wh": candidate["nominal_energy_wh"],
+        "pack_body_mm": nominal,
+        "maximum_drawing_body_mm": maximum,
+        "body_box_mm": box,
+        "lead_length_mm": candidate["lead_length_mm"],
+        "lead_modeled_in_cad": False,
+        "nominal_body_volume_mm3": round(nominal_volume, 3),
+        "maximum_drawing_body_volume_mm3": round(maximum_volume, 3),
+        "complete_pack_allocation_mm3": allocation,
+        "nominal_body_over_allocation_mm3": round(nominal_volume - allocation, 3),
+        "body_over_concept_tray_mm": [
+            round(nominal[index] - float(shell[index + 3]), 3) for index in range(3)
+        ],
+        "left_of_board_span_mm": round(left_of_board, 3),
+        "body_over_left_of_board_span_mm": round(nominal[0] - left_of_board, 3),
+        "maximum_charge_voltage_v": max_charge_voltage,
+        "website_listed_charge_voltage_v": candidate["website_listed_charge_voltage_v"],
+        "voltage_source_conflict": True,
+        "maximum_charge_current_a": charge_current,
+        "maximum_charge_power_at_specified_voltage_w": round(
+            charge_current * max_charge_voltage, 3
+        ),
+        "wired_charge_target_w": charge_target,
+        "maximum_continuous_discharge_current_a": discharge_current,
+        "nominal_discharge_power_w": round(discharge_current * voltage, 3),
+        "pcm_overcurrent_detection_a": pcm_trip,
+        "pcm_detection_below_cell_discharge_limit": pcm_trip[1] < discharge_current,
+        "slate_sustained_compute_screen_w": sustained,
+        "thermistor_present": candidate["thermistor"],
+        "source_consistency": "pass" if not errors else "fail",
+        "source_errors": errors,
+        "status": "rejected_current_layout_and_power",
+        "product_page": sources["product_page"],
+        "drawing_source": sources["drawing_and_specification"],
+        "drawing_sha256": sources["drawing_sha256"],
+        "caveat": "The body envelope is drawing-derived, but its placement is assumed. Leads, connector, swelling, tolerances, and thermal protection need a released pack design. The PDF's 4.2 V charge limit is used over the product page's conflicting 4.48 V listing.",
+    }
 
 
 def audit_data(
@@ -117,12 +258,19 @@ def audit_data(
 
 
 def audit(root: Path) -> dict:
-    return audit_data(
+    report = audit_data(
         *(
             load_yaml(root / path)
             for path in (PROFILE, EVIDENCE, ENVELOPE, CONCEPT, PACK_ENVELOPE)
         )
     )
+    report["lipol_pack_screen"] = audit_lipol_data(
+        load_yaml(root / LIPOL),
+        load_yaml(root / PROFILE),
+        load_yaml(root / ENVELOPE),
+        load_yaml(root / CONCEPT),
+    )
+    return report
 
 
 def main() -> int:

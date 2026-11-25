@@ -376,7 +376,65 @@
       "Battery protection design, safety review, and measured charge validation"
     ],
     "source": "https://www.enovix.com/product-category/ai-platform",
-    "caveat": "The published cell box and concept pack envelope both exceed the current complete-pack allocation. A custom design or approved allocation change is required; no cell or charge rate is selected."
+    "caveat": "The published cell box and concept pack envelope both exceed the current complete-pack allocation. A custom design or approved allocation change is required; no cell or charge rate is selected.",
+    "lipol_pack_screen": {
+      "mpn": "LP4473109",
+      "capacity_mah": 6000,
+      "nominal_energy_wh": 23.1,
+      "pack_body_mm": [
+        110.0,
+        73.0,
+        4.4
+      ],
+      "maximum_drawing_body_mm": [
+        111.0,
+        73.5,
+        4.7
+      ],
+      "body_box_mm": [
+        9.0,
+        11.0,
+        1.2,
+        110.0,
+        73.0,
+        4.4
+      ],
+      "lead_length_mm": 50.0,
+      "lead_modeled_in_cad": false,
+      "nominal_body_volume_mm3": 35332.0,
+      "maximum_drawing_body_volume_mm3": 38344.95,
+      "complete_pack_allocation_mm3": 28824.0,
+      "nominal_body_over_allocation_mm3": 6508.0,
+      "body_over_concept_tray_mm": [
+        28.0,
+        4.5,
+        -1.8
+      ],
+      "left_of_board_span_mm": 89.0,
+      "body_over_left_of_board_span_mm": 21.0,
+      "maximum_charge_voltage_v": 4.2,
+      "website_listed_charge_voltage_v": 4.48,
+      "voltage_source_conflict": true,
+      "maximum_charge_current_a": 3.0,
+      "maximum_charge_power_at_specified_voltage_w": 12.6,
+      "wired_charge_target_w": 100.0,
+      "maximum_continuous_discharge_current_a": 6.0,
+      "nominal_discharge_power_w": 23.1,
+      "pcm_overcurrent_detection_a": [
+        2.0,
+        4.5
+      ],
+      "pcm_detection_below_cell_discharge_limit": true,
+      "slate_sustained_compute_screen_w": 28.0,
+      "thermistor_present": false,
+      "source_consistency": "pass",
+      "source_errors": [],
+      "status": "rejected_current_layout_and_power",
+      "product_page": "https://www.lipoly-battery.com/lp4473109-lihv-lipoly-battery-3-85v-high-voltage-6000mah-23-1wh-with-pcm-jst-phr-2/",
+      "drawing_source": "https://www.lipoly-battery.com/wp-content/uploads/2024/10/LP4473109-3.85V-6000mAh-connector.pdf",
+      "drawing_sha256": "4a02e68f9ada253daca18b02558b51c5c4aacca9ddef79bf2b5f3e049dc84124",
+      "caveat": "The body envelope is drawing-derived, but its placement is assumed. Leads, connector, swelling, tolerances, and thermal protection need a released pack design. The PDF's 4.2 V charge limit is used over the product page's conflicting 4.48 V listing."
+    }
   },
   "usb_fit": {
     "status": "blocked",

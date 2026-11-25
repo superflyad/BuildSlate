@@ -11,6 +11,8 @@ import struct
 from pathlib import Path
 
 from .assembly import build_assembly
+from .battery_fit import LIPOL
+from .battery_fit import audit as audit_battery
 from .cad_proof import PROOF, build_proof
 from .cellular_fit import CANDIDATE as CELLULAR_CANDIDATE
 from .cellular_fit import audit as audit_cellular
@@ -36,6 +38,10 @@ USB_MODEL = Path("viewer/public/usb4525-outline.json")
 USB_GLTF = Path("viewer/public/usb4525-outline.gltf")
 USB_PROOF = Path("viewer/public/usb4525-outline-proof.json")
 USB_CANDIDATE = Path("research/evidence/usb/gct-usb4525-outline.yaml")
+BATTERY_STEP = Path("cad/slate-pocket-v1r/concept-cad/lp4473109-pack-outline.step")
+BATTERY_MODEL = Path("viewer/public/lp4473109-pack-outline.json")
+BATTERY_GLTF = Path("viewer/public/lp4473109-pack-outline.gltf")
+BATTERY_PROOF = Path("viewer/public/lp4473109-pack-outline-proof.json")
 FRAME_PORT_APERTURE_WIDTH_MM = 12.0
 FRAME_PORT_APERTURE_HEIGHT_MM = 3.0
 FRAME_PORT_APERTURE_Z_OFFSET_MM = 2.25
@@ -224,6 +230,40 @@ def build_usb_connector_variant(repo_root: Path) -> dict:
         "Editable envelope study only. The mounting span includes shell stakes, so "
         "the box can overstate actual material overlap. Supplier STEP, full footprint, "
         "board attachment, enclosure seal, and physical clearance remain unverified."
+    )
+    return model
+
+
+def build_battery_pack_variant(repo_root: Path) -> dict:
+    """Place a drawing-derived 6 Ah pack body against the present assembly."""
+    model = build_concept(repo_root)
+    screen = audit_battery(repo_root)["lipol_pack_screen"]
+    if (
+        screen["source_consistency"] != "pass"
+        or screen["status"] != "rejected_current_layout_and_power"
+        or screen["mpn"] != "LP4473109"
+    ):
+        raise ValueError("battery pack study no longer matches the public drawing")
+    pack = next(part for part in model["parts"] if part["id"] == "battery_reference")
+    pack["box_mm"] = screen["body_box_mm"]
+    pack["label"] = "LiPol LP4473109 pack body envelope"
+    pack["source"] = f"{LIPOL.as_posix()}#candidate"
+    pack["geometry_source"] = f"{LIPOL.as_posix()}#candidate.pack_body_mm"
+    pack["geometry_evidence_class"] = "design_assumption"
+    pack["shape"] = "box"
+    pack["notes"] = (
+        "Drawing-derived pack body at the current tray origin. This is an assumed "
+        "placement; the 50 mm lead, connector, tolerance, and swelling are not modeled."
+    )
+    model["status"] = "battery_pack_outline_conflict_study"
+    model["description"] = (
+        "Public LP4473109 6 Ah pack body against the current board, tray, camera, "
+        "and audio geometry. The pack is not selected."
+    )
+    model["caveat"] = (
+        "Editable body envelope only, not detailed supplier CAD or a released pack. "
+        "The drawing's 50 mm lead and connector are not routed; physical, electrical, "
+        "and thermal integration remain blocked."
     )
     return model
 
@@ -668,6 +708,8 @@ def _export(
             "drawing_sha256": candidate["sources"]["distributor_drawing_sha256"],
             "caveat": "Bounding envelope, not supplier STEP or released footprint.",
         }
+    if model["status"] == "battery_pack_outline_conflict_study":
+        proof["battery_pack_candidate"] = audit_battery(root)["lipol_pack_screen"]
     (root / output).write_text(
         json.dumps(model, indent=2) + "\n", encoding="utf-8", newline="\n"
     )
@@ -695,6 +737,8 @@ def generate(repo_root: Path = DEFAULT_REPO_ROOT) -> tuple[int, Path]:
     _export(cq, root, phone, PHONE_STEP, PHONE_MODEL, PHONE_GLTF, PHONE_PROOF)
     usb = build_usb_connector_variant(root)
     _export(cq, root, usb, USB_STEP, USB_MODEL, USB_GLTF, USB_PROOF)
+    battery = build_battery_pack_variant(root)
+    _export(cq, root, battery, BATTERY_STEP, BATTERY_MODEL, BATTERY_GLTF, BATTERY_PROOF)
     return len(model["parts"]), root / STEP
 
 
@@ -707,6 +751,7 @@ def main() -> int:
     print(f"Exported eight-package reference STEP to {args.repo_root / MEMORY_STEP}")
     print(f"Exported phone collision study STEP to {args.repo_root / PHONE_STEP}")
     print(f"Exported USB connector outline STEP to {args.repo_root / USB_STEP}")
+    print(f"Exported battery pack outline STEP to {args.repo_root / BATTERY_STEP}")
     return 0
 
 

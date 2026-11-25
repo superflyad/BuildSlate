@@ -18,6 +18,7 @@ for (const model of [
   "memory-8x16",
   "phone-fit-conflict",
   "usb4525-outline",
+  "lp4473109-pack-outline",
 ]) {
   const assembly = JSON.parse(
     readFileSync(resolve(root, `public/${model}.json`), "utf8"),
@@ -70,6 +71,7 @@ for (const [modelName, proofName] of [
   ["memory-8x16", "memory-8x16-proof"],
   ["phone-fit-conflict", "phone-fit-conflict-proof"],
   ["usb4525-outline", "usb4525-outline-proof"],
+  ["lp4473109-pack-outline", "lp4473109-pack-outline-proof"],
 ]) {
   const proof = JSON.parse(
     readFileSync(resolve(root, `public/${proofName}.json`), "utf8"),
@@ -103,6 +105,21 @@ for (const [modelName, proofName] of [
           item.kind === "interference" &&
           item.first === "frame_bottom" &&
           item.second === "usb_c_port_concept",
+      ),
+    );
+  }
+  if (modelName === "lp4473109-pack-outline") {
+    assert.equal(proof.battery_pack_candidate.mpn, "LP4473109");
+    assert.equal(
+      proof.battery_pack_candidate.status,
+      "rejected_current_layout_and_power",
+    );
+    assert.ok(
+      proof.intersections.some(
+        (item) =>
+          item.kind === "interference" &&
+          item.first === "battery_reference" &&
+          item.second === "main_pcb_placeholder",
       ),
     );
   }

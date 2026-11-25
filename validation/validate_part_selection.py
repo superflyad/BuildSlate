@@ -47,12 +47,14 @@ def main() -> int:
             "compute_platform": {
                 "memory_interface": "LPDDR5X",
                 "max_memory_bytes": 128_000_000_000,
+                "supported_memory_placements": ["board", "on_package"],
                 "storage_interfaces": ["UFS4.1"],
                 "display_interfaces": ["eDP1.5"],
             },
             "memory": {
                 "interface": "LPDDR5X",
                 "capacity_bytes_per_package": 32_000_000_000,
+                "placement": "board",
             },
             "storage": {"interface": "UFS4.1", "capacity_bytes": 1_000_000_000_000},
             "battery_pack": {"energy_wh": 20, "maximum_validated_charge_w": 25},
@@ -96,6 +98,7 @@ def main() -> int:
             "package_count": 4,
             "capacity_bytes_per_package": 32_000_000_000,
             "total_capacity_bytes": 128_000_000_000,
+            "placement": "board",
             "controller_support_sha256": release["parts"]["memory"]["evidence"][
                 "controller_support"
             ]["sha256"],
@@ -125,6 +128,47 @@ def main() -> int:
                 ),
                 f"{role} selection requires lifecycle source evidence",
             )
+        write_release(release_path, release)
+        on_package = copy.deepcopy(release)
+        on_package["parts"]["compute_platform"]["capabilities"][
+            "configured_memory_bytes"
+        ] = 128_000_000_000
+        on_package["parts"]["memory"]["availability"] = "included_in_compute_sku"
+        on_package["parts"]["memory"]["capabilities"]["placement"] = "on_package"
+        on_package["parts"]["memory"]["capabilities"]["included_in_compute_sku"] = True
+        on_package["parts"]["memory"]["capabilities"]["qualified_topology"][
+            "placement"
+        ] = "on_package"
+        write_release(release_path, on_package)
+        require(
+            audit(root, strategy)["status"] == "pass",
+            "supplier-backed on-package topology can be represented",
+        )
+        invalid = copy.deepcopy(on_package)
+        invalid["parts"]["compute_platform"]["capabilities"][
+            "configured_memory_bytes"
+        ] = 48_000_000_000
+        write_release(release_path, invalid)
+        require(
+            audit(root, strategy)["status"] == "blocked",
+            "48 GB compute SKU cannot claim 128 GB on-package memory",
+        )
+        invalid = copy.deepcopy(on_package)
+        invalid["parts"]["memory"]["availability"] = "purchasable"
+        write_release(release_path, invalid)
+        require(
+            audit(root, strategy)["status"] == "blocked",
+            "on-package DRAM cannot masquerade as separate purchased packages",
+        )
+        invalid = copy.deepcopy(release)
+        invalid["parts"]["compute_platform"]["capabilities"][
+            "configured_memory_bytes"
+        ] = 48_000_000_000
+        write_release(release_path, invalid)
+        require(
+            audit(root, strategy)["status"] == "blocked",
+            "board-only map cannot inherit a 48 GB on-package compute SKU",
+        )
         write_release(release_path, release)
         record = {
             "path": RELEASE.as_posix(),

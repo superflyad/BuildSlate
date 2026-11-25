@@ -31,6 +31,8 @@ The [schematic ERC proof](docs/engineering/schematic_erc_proof.md) reruns KiCad 
 
 The [platform reference proof](docs/engineering/platform_reference_proof.md) requires selected compute, memory, storage, and PMIC identities, supplier source bindings, an electrical BOM match, and a complete 128 GB channel, rank, and lane map before a reference package can count toward design release. No such supplier package is released.
 
+The selected BOM and platform gates now accept a supplier-qualified 128 GB memory-on-package SKU as well as board-mounted DRAM. On-package capacity must match the orderable compute SKU and its internal memory map; the 48 GB ASUS X2 package cannot pass as 128 GB. The [release contract](docs/engineering/selected_bom_proof.md) keeps both routes tied to exact part identities and supplier files.
+
 The [routed PCB proof](docs/engineering/routed_pcb_proof.md) now binds those same KiCad settings to DRC, schematic parity, and complete copper-layer exports. There is still no released board to fabricate.
 
 The [interconnect proof](docs/engineering/interconnect_release_proof.md) checks display, touch, camera, USB, battery, antenna, audio, haptic, button, and service paths against the released netlist and hashes cable drawings. No connector map or flex drawing has been released; the public Hardware view keeps this gate blocked.

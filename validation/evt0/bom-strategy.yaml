@@ -18,7 +18,7 @@ roles:
   memory:
     quantity_per_unit: topology_dependent
     status: selection_required
-    planning_topology: four_32gb_sites_for_128gb
+    planning_topology: unresolved_board_or_on_package_128gb
     required_evidence: [qualified_part_numbers, package_drawings, controller_support, routing_rules, power, thermal_limits, lifecycle]
   storage:
     quantity_per_unit: 1

@@ -20,6 +20,7 @@ CORE_ROLES = (
     "display_module",
 )
 MEMORY_FLOOR_BYTES = 128_000_000_000
+MEMORY_PLACEMENTS = frozenset({"board", "on_package"})
 STORAGE_FLOOR_BYTES = 1_000_000_000_000
 
 
@@ -64,6 +65,17 @@ def _memory_topology_errors(parts: dict[str, Any]) -> list[str]:
     if not isinstance(topology, dict):
         return ["Missing supplier-qualified memory topology record"]
     errors: list[str] = []
+    placement = memory.get("placement")
+    if not isinstance(placement, str) or placement not in MEMORY_PLACEMENTS:
+        errors.append("Memory placement must be board or on_package")
+    if topology.get("placement") != placement:
+        errors.append("Memory topology placement differs from selected memory")
+    supported_placements = compute.get("supported_memory_placements")
+    if (
+        not isinstance(supported_placements, list)
+        or placement not in supported_placements
+    ):
+        errors.append("Memory placement is not supported by selected compute SKU")
     for field in ("id", "controller_mpn", "memory_mpn"):
         if not _text(topology.get(field)):
             errors.append(f"Memory topology is missing {field}")
@@ -94,6 +106,19 @@ def _memory_topology_errors(parts: dict[str, Any]) -> list[str]:
         "max_memory_bytes", 0
     ):
         errors.append("Memory topology exceeds the selected controller limit")
+    if placement == "on_package":
+        if (
+            compute.get("configured_memory_bytes") != total
+            or memory.get("included_in_compute_sku") is not True
+        ):
+            errors.append(
+                "On-package memory does not match the orderable compute SKU configuration"
+            )
+    elif placement == "board":
+        if memory.get("included_in_compute_sku") is True:
+            errors.append("Board memory cannot be declared included in compute SKU")
+        if compute.get("configured_memory_bytes") not in (None, 0):
+            errors.append("Board-only map cannot use a memory-on-package compute SKU")
     for field, role, kind in (
         ("controller_support_sha256", "memory", "controller_support"),
         ("reference_design_sha256", "compute_platform", "reference_design"),
@@ -176,11 +201,23 @@ def audit(root: Path, strategy: dict[str, Any] | None = None) -> dict[str, Any]:
             role_errors.append(
                 "Strategy selection does not match the exact released MPN"
             )
+        on_package_memory = (
+            role == "memory"
+            and isinstance(part.get("capabilities"), dict)
+            and part["capabilities"].get("placement") == "on_package"
+        )
+        required_availability = (
+            "included_in_compute_sku" if on_package_memory else "purchasable"
+        )
         if (
-            part.get("availability") != "purchasable"
+            part.get("availability") != required_availability
             or part.get("lifecycle") != "active"
         ):
-            role_errors.append("Part must be purchasable and active")
+            role_errors.append(
+                "On-package DRAM must be included in an orderable compute SKU and active"
+                if on_package_memory
+                else "Part must be purchasable and active"
+            )
         quantity = part.get("quantity")
         if not isinstance(quantity, int) or isinstance(quantity, bool) or quantity <= 0:
             role_errors.append("Quantity must be a positive integer")

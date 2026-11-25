@@ -43,7 +43,7 @@ nodes:
       manufacturing/supplier-dfm-response.yaml: 79eb4c2c77125a88d7b02d90ead69a749bb74b0d301254303e77cb613127cfdf
       simulations/thermal/slate-pocket-v1r/model/model.yaml: 3aebbfd9fb27432ca9b4a7a8c3f877fc34510c13c8cc79c29e0d2f795f9c3035
       simulations/thermal/slate-pocket-v1r/test-matrix.yaml: 989da9fb89fbc1e72e2a43ad317e10f11a50294346bf305183574234657f2cf4
-      validation/evt0/bom-strategy.yaml: b256b391646e379548214fb54867ca094cf834aca48ef235879e2e89e492f89c
+      validation/evt0/bom-strategy.yaml: c90ebbdf14424534a61a1765ec65d374b5b8d1cd46505ac330f1c1ebec659dfc
       validation/evt0/evt0-spec.yaml: 2c1a0823ef0285d749ece9bc6741cd866f92ebce4ceb24e24b08d3dab6cdbe10
       validation/evt0/instrumentation.yaml: 47c9e8942a533cc94c919e17581315fccd3e41ed668fe7091613460afd6c3004
       validation/evt0/metric-definitions.yaml: b02a8eaa62ddbbc88520545a070a84bd400375b9f4c8c3874009b3eab8d6a22d
@@ -68,7 +68,7 @@ nodes:
     inputs:
       engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
       reports/program/evt0-campaign.yaml: 3b7563a559b00dbc352479c6aa0c00feb66aa268f576fcf45f458db683ba2e0c
-      validation/evt0/bom-strategy.yaml: b256b391646e379548214fb54867ca094cf834aca48ef235879e2e89e492f89c
+      validation/evt0/bom-strategy.yaml: c90ebbdf14424534a61a1765ec65d374b5b8d1cd46505ac330f1c1ebec659dfc
       validation/evt0/evt0-spec.yaml: 2c1a0823ef0285d749ece9bc6741cd866f92ebce4ceb24e24b08d3dab6cdbe10
       validation/evt0/generate_evt0_gate_report.py: 10224a2f90085384e4134e51f4ee4f0f154a22f7e6db5a310d2fd1e0445cdcc6
       validation/evt0/test-matrix.yaml: 56a66fe48e35791916138a0317f5e7deafeaf85b845503949d4b210cead021b1
@@ -199,7 +199,7 @@ nodes:
       reports/slate-pocket-v1r-manufacturing-readiness.txt: c0f01f33e718e4d97f670d613645ad5e24f99902f7a71d43ba2c5cbe7904d172
       reports/slate-pocket-v1r-program-readiness.txt: 5e0f05228acbf2afdfe06dc3817593e6587e7b69967dc2b85cde6e10ada84de4
       research/rfqs/rfq_registry.yaml: 4178a8634868b1865ee844f78fc51ddd9e8c08074c505d30503c3f8bd72ee91f
-      validation/evt0/bom-strategy.yaml: b256b391646e379548214fb54867ca094cf834aca48ef235879e2e89e492f89c
+      validation/evt0/bom-strategy.yaml: c90ebbdf14424534a61a1765ec65d374b5b8d1cd46505ac330f1c1ebec659dfc
       validation/evt0/test-matrix.yaml: 56a66fe48e35791916138a0317f5e7deafeaf85b845503949d4b210cead021b1
     outputs:
       reports/program/buildslate-program-snapshot.yaml: 6a93bb4b71adb3b2aa9048530daeb1f7c5162bd0b624a28414ea41a68a393ba8

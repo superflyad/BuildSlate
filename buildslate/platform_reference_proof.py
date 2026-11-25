@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from buildslate.part_selection import MEMORY_PLACEMENTS
 from buildslate.part_selection import RELEASE as SELECTED_BOM
 
 RELEASE = Path("engineering/hardware/released/platform/platform-reference.json")
@@ -94,6 +95,9 @@ def _channel_errors(
     packages = release.get("memory_packages")
     controller_width = compute.get("memory_bus_width_bits")
     package_width = memory.get("bus_width_bits")
+    placement = release.get("memory_placement")
+    if not isinstance(placement, str) or placement not in MEMORY_PLACEMENTS:
+        return ["Memory package placement is missing or invalid"]
     if not _integer(controller_width) or not _integer(package_width):
         return ["Selected controller or memory package bus width is missing"]
     if not isinstance(channels, list) or not channels:
@@ -122,12 +126,17 @@ def _channel_errors(
         if not isinstance(item, dict):
             errors.append("Memory package map contains an invalid site")
             continue
-        ref = item.get("ref")
+        ref_key = "ref" if placement == "board" else "package_id"
+        ref = item.get(ref_key)
         channel = item.get("channel")
         rank = item.get("rank")
         start = item.get("bit_start")
-        if not _text(ref) or ref in refs:
-            errors.append("Memory package has blank or duplicate board reference")
+        if (
+            not _text(ref)
+            or ref in refs
+            or ("package_id" in item if placement == "board" else "ref" in item)
+        ):
+            errors.append("Memory package has invalid or duplicate placement identity")
         else:
             refs.add(ref)
         if (
@@ -225,6 +234,14 @@ def audit(root: Path) -> dict[str, Any]:
         }
     if not _text(topology.get("id")) or release.get("topology_id") != topology["id"]:
         errors.append("Platform topology ID differs from selected memory qualification")
+    placement = memory.get("placement")
+    if (
+        not isinstance(placement, str)
+        or placement not in MEMORY_PLACEMENTS
+        or release.get("memory_placement") != placement
+        or topology.get("placement") != placement
+    ):
+        errors.append("Platform memory placement differs from selected qualification")
     count = memory_part.get("quantity")
     capacity = memory.get("capacity_bytes_per_package")
     if (
@@ -235,6 +252,21 @@ def audit(root: Path) -> dict[str, Any]:
         or count * capacity < MEMORY_FLOOR_BYTES
     ):
         errors.append("Platform package count or capacity does not establish 128 GB")
+    if placement == "on_package" and compute.get("configured_memory_bytes") != (
+        count * capacity if _integer(count) and _integer(capacity) else None
+    ):
+        errors.append("On-package capacity differs from orderable compute SKU")
+    if placement == "board" and compute.get("configured_memory_bytes") not in (
+        None,
+        0,
+    ):
+        errors.append("Board-only memory map uses a preconfigured compute package")
+    supported_placements = compute.get("supported_memory_placements")
+    if (
+        not isinstance(supported_placements, list)
+        or placement not in supported_placements
+    ):
+        errors.append("Selected compute SKU does not support memory placement")
     sources = release.get("source_bindings")
     if not isinstance(sources, dict) or set(sources) != set(SOURCE_BINDINGS):
         errors.append("Platform supplier source bindings are incomplete")
@@ -283,7 +315,9 @@ def audit(root: Path) -> dict[str, Any]:
         if pmic["ref"] in mapped:
             errors.append("PMIC board reference duplicates a selected part")
         mapped[pmic["ref"]] = pmic.get("mpn")
-    if isinstance(memory_packages, list):
+    if placement == "on_package" and memory_part.get("mpn") in electrical.values():
+        errors.append("On-package DRAM appears as a separate board BOM component")
+    if placement == "board" and isinstance(memory_packages, list):
         for item in memory_packages:
             if isinstance(item, dict) and _text(item.get("ref")):
                 if item["ref"] in mapped:
@@ -301,6 +335,7 @@ def audit(root: Path) -> dict[str, Any]:
         "electrical_bom_sha256": release.get("electrical_bom_sha256"),
         "topology_id": release.get("topology_id"),
         "memory_package_count": release.get("memory_package_count"),
+        "memory_placement": placement,
         "memory_channel_width_bits": sum(
             item["width_bits"]
             for item in (

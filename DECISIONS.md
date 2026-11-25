@@ -95,3 +95,9 @@ The `thermal_release` record must name a controlled model package and solver res
 **Status:** Accepted
 
 The `rf_release` record must name a controlled part and sweep package bound to the selected compute platform, electrical netlist and BOM, routed board, mechanical proof, and firmware bundle. The auditor checks module target capabilities, host and driver compatibility, feed connectivity through selected matching parts, antenna placement and separation, market-scoped bands, Touchstone and efficiency sweeps, and coexistence margins. Wireless charging, UWB, and cellular remain disabled for EVT0. Physical RF performance and regulatory obligations remain separate gates.
+
+## ADR-017: Represent memory placement in the hardware release
+
+**Status:** Accepted for release contract; no part selected
+
+[ASUS documents a 48 GB X2 Elite Extreme memory-on-package system](https://www.asus.com/laptops/for-home/zenbook/asus-zenbook-a16-ux3607/techspec/), and [physical analysis](https://www.techinsights.com/ja/node/61888) reports three co-packaged 16 GB DRAM packages. The separate four- and eight-package CAD studies therefore cannot be presumed to describe that X2 system. The selected BOM and platform reference now require an explicit `board` or `on_package` placement. For on-package DRAM, the orderable compute SKU must declare the full configured capacity and the electrical BOM must not pretend its internal DRAM is a separate board component. Mixed packaging needs a separate supplier-supported contract. This preserves the approved 128 GB floor without selecting or claiming a 128 GB X2 package.

@@ -42,7 +42,10 @@ def _fixture(root: Path) -> tuple[dict, dict, str]:
         "parts": {
             "compute_platform": {
                 "mpn": "FIXTURE-HOST",
-                "capabilities": {"memory_bus_width_bits": 128},
+                "capabilities": {
+                    "memory_bus_width_bits": 128,
+                    "supported_memory_placements": ["board", "on_package"],
+                },
                 "evidence": {},
             },
             "memory": {
@@ -51,7 +54,8 @@ def _fixture(root: Path) -> tuple[dict, dict, str]:
                 "capabilities": {
                     "capacity_bytes_per_package": 32_000_000_000,
                     "bus_width_bits": 32,
-                    "qualified_topology": {"id": "FIXTURE-4X32"},
+                    "placement": "board",
+                    "qualified_topology": {"id": "FIXTURE-4X32", "placement": "board"},
                 },
                 "evidence": {},
             },
@@ -99,6 +103,7 @@ def _fixture(root: Path) -> tuple[dict, dict, str]:
             "storage": "FIXTURE-UFS",
         },
         "topology_id": "FIXTURE-4X32",
+        "memory_placement": "board",
         "memory_package_count": 4,
         "total_memory_bytes": 128_000_000_000,
         "source_bindings": source_bindings,
@@ -133,6 +138,81 @@ def main() -> int:
         proof = audit(root)
         if proof["status"] != "pass" or proof["memory_channel_width_bits"] != 128:
             raise ValueError(f"Complete synthetic platform reference failed: {proof}")
+        on_package_selected = copy.deepcopy(_fixture(root)[0])
+        on_package_release = copy.deepcopy(release)
+        on_package_selected["parts"]["compute_platform"]["capabilities"][
+            "configured_memory_bytes"
+        ] = 128_000_000_000
+        on_package_selected["parts"]["memory"]["capabilities"]["placement"] = (
+            "on_package"
+        )
+        on_package_selected["parts"]["memory"]["capabilities"]["qualified_topology"][
+            "placement"
+        ] = "on_package"
+        on_package_release["memory_placement"] = "on_package"
+        for item in on_package_release["memory_packages"]:
+            item["package_id"] = item.pop("ref")
+        on_package_release["selected_bom_sha256"] = _write(
+            root / SELECTED_BOM, on_package_selected
+        )
+        electrical_path = root / ELECTRICAL_BOM
+        electrical_path.write_text(
+            "ref,manufacturer,mpn\n"
+            "U10,Fixture,FIXTURE-HOST\n"
+            "U20,Fixture,FIXTURE-PMIC\n"
+            "U30,Fixture,FIXTURE-UFS\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+        on_package_release["electrical_bom_sha256"] = hashlib.sha256(
+            electrical_path.read_bytes()
+        ).hexdigest()
+        _write(release_path, on_package_release)
+        on_package_proof = audit(root)
+        if (
+            on_package_proof["status"] != "pass"
+            or on_package_proof["memory_placement"] != "on_package"
+        ):
+            raise ValueError(f"On-package platform map failed: {on_package_proof}")
+        invalid_on_package = copy.deepcopy(on_package_release)
+        invalid_on_package["memory_packages"][0]["ref"] = "U0"
+        _write(release_path, invalid_on_package)
+        if audit(root)["status"] != "blocked":
+            raise ValueError("On-package DRAM was accepted as a board component")
+        _write(release_path, on_package_release)
+        electrical_path.write_text(
+            electrical_path.read_text(encoding="utf-8") + "U0,Fixture,FIXTURE-DRAM\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+        on_package_release["electrical_bom_sha256"] = hashlib.sha256(
+            electrical_path.read_bytes()
+        ).hexdigest()
+        _write(release_path, on_package_release)
+        if audit(root)["status"] != "blocked":
+            raise ValueError("On-package DRAM appeared as separate electrical part")
+        electrical_path.write_text(
+            "ref,manufacturer,mpn\n"
+            "U10,Fixture,FIXTURE-HOST\n"
+            "U20,Fixture,FIXTURE-PMIC\n"
+            "U30,Fixture,FIXTURE-UFS\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+        on_package_release["electrical_bom_sha256"] = hashlib.sha256(
+            electrical_path.read_bytes()
+        ).hexdigest()
+        on_package_selected["parts"]["compute_platform"]["capabilities"][
+            "configured_memory_bytes"
+        ] = 48_000_000_000
+        on_package_release["selected_bom_sha256"] = _write(
+            root / SELECTED_BOM, on_package_selected
+        )
+        _write(release_path, on_package_release)
+        if audit(root)["status"] != "blocked":
+            raise ValueError("48 GB compute package passed a 128 GB map")
+        _, release, selected_digest = _fixture(root)
+        digest = _write(release_path, release)
         selected_record = {
             "disposition": "approved",
             "sha256": selected_digest,

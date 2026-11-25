@@ -20,6 +20,8 @@ The selected BOM record is bound to the [part selection proof](selected_bom_proo
 
 The [platform reference proof](platform_reference_proof.md) then binds the selected compute, memory, and storage MPNs and supplier files to a PMIC selection and a per-package memory channel, rank, and data-lane map. It reconciles those part references and MPNs with the approved electrical BOM, and rejects missing or overlapping lanes and stale supplier bytes. No v1R supplier reference package or map exists yet.
 
+The selected BOM and platform proof can represent either supplier-qualified board DRAM or memory included in an orderable compute package. An on-package topology must match the compute SKU's configured capacity and internal package map; its DRAM cannot masquerade as separate board BOM parts. Neither mode has a released 128 GB v1R example.
+
 The approved memory floor remains 128 GB. The [compute path screen](compute_platform_decision.md) distinguishes an X2 controller maximum from an actual qualified 128 GB configuration. Current public mobile platforms cannot meet that floor; no reviewed public X2 package proves a pocket phone implementation. The Hardware view publishes this conflict without changing the product decision.
 
 The [display geometry screen](display_geometry_fit.md) blocks design release independently of supplier selection: a 7.5-inch 16:10 active rectangle is wider than both the 95 mm body and the 89 mm CAD display reserve. The source-intent 3200 × 1800 resolution is 16:9, so the panel target also needs a controlled decision before a module can be selected.

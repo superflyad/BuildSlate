@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 from pathlib import Path
 
 from buildslate.io import load_yaml
@@ -102,6 +103,13 @@ def audit(root: Path) -> dict:
     sustained_target = float(profile["compute"]["sustained_power_w"])
     if not math.isfinite(sustained_target) or sustained_target <= 0:
         raise ValueError("Slate sustained power screen is invalid")
+    body_thickness = float(profile["geometry"]["thickness_mm"])
+    device_mass_ceiling = float(profile["mass_targets"]["acceptable_range_g"]["max"])
+    if any(
+        not math.isfinite(value) or value <= 0
+        for value in (body_thickness, device_mass_ceiling)
+    ):
+        raise ValueError("Slate thickness or mass limit is invalid")
     if not isinstance(floor, int) or floor <= 0 or configured != floor:
         raise ValueError("Operational memory differs from the approved fallback floor")
     candidates = source.get("candidates")
@@ -168,8 +176,53 @@ def audit(root: Path) -> dict:
                 for module, available in zip(module_sides, board_face, strict=True)
             ]
             battery_fit = _fits_any_strip(module_sides, strips)
+        height = candidate.get("module_height_mm")
+        mass = candidate.get("module_nominal_mass_g")
+        mass_tolerance = candidate.get("module_mass_tolerance_percent")
+        detailed = candidate.get("detailed_datasheet")
+        if detailed is not None or any(
+            value is not None for value in (height, mass, mass_tolerance)
+        ):
+            if (
+                outline is None
+                or not isinstance(detailed, dict)
+                or not str(detailed.get("url", "")).startswith("https://")
+                or not isinstance(detailed.get("revision"), str)
+                or not detailed["revision"].strip()
+                or not detailed.get("accessed")
+                or not re.fullmatch(r"[0-9a-f]{64}", str(detailed.get("sha256", "")))
+            ):
+                raise ValueError(f"{identifier}: module geometry source is missing")
+        if height is not None and (
+            not isinstance(height, (int, float))
+            or isinstance(height, bool)
+            or not math.isfinite(height)
+            or height <= 0
+        ):
+            raise ValueError(f"{identifier}: invalid module height")
+        if (mass is None) != (mass_tolerance is None):
+            raise ValueError(f"{identifier}: incomplete module mass specification")
+        if mass is not None and (
+            not isinstance(mass, (int, float))
+            or isinstance(mass, bool)
+            or not math.isfinite(mass)
+            or mass <= 0
+            or not isinstance(mass_tolerance, (int, float))
+            or isinstance(mass_tolerance, bool)
+            or not math.isfinite(mass_tolerance)
+            or not 0 <= mass_tolerance < 100
+        ):
+            raise ValueError(f"{identifier}: invalid module mass specification")
+        mass_min = mass * (1 - mass_tolerance / 100) if mass is not None else None
         power_range = candidate.get("power_range_w", candidate.get("tdp_range_w"))
-        minimum_power_mode = None
+        power_basis = (
+            "advertised_power_range"
+            if "power_range_w" in candidate
+            else "tdp_range"
+            if "tdp_range_w" in candidate
+            else None
+        )
+        published_lower_power = None
         if power_range is not None:
             if (
                 not isinstance(power_range, list)
@@ -184,7 +237,29 @@ def audit(root: Path) -> dict:
                 or power_range[0] > power_range[1]
             ):
                 raise ValueError(f"{identifier}: invalid published power range")
-            minimum_power_mode = float(power_range[0])
+            published_lower_power = float(power_range[0])
+        stock_modes = candidate.get("stock_power_modes_w")
+        stock_source = candidate.get("stock_modes_source")
+        if (stock_modes is None) != (stock_source is None):
+            raise ValueError(f"{identifier}: stock power mode source is incomplete")
+        if stock_modes is not None and (
+            not isinstance(stock_modes, list)
+            or not stock_modes
+            or any(
+                not isinstance(value, (int, float))
+                or isinstance(value, bool)
+                or not math.isfinite(value)
+                or value <= 0
+                for value in stock_modes
+            )
+            or stock_modes != sorted(set(stock_modes))
+            or power_range is None
+            or stock_modes[0] < power_range[0]
+            or stock_modes[-1] > power_range[1]
+            or not isinstance(stock_source, str)
+            or not stock_source.startswith("https://")
+        ):
+            raise ValueError(f"{identifier}: invalid stock power modes")
         capacity_permits_floor = maximum >= floor
         phone_integration = mode == "integrated"
         configured = candidate.get(
@@ -198,6 +273,25 @@ def audit(root: Path) -> dict:
             or configured > maximum
         ):
             raise ValueError(f"{identifier}: invalid public configured capacity")
+        arrangement = candidate.get("published_memory_arrangement")
+        if arrangement is not None and (
+            not isinstance(arrangement, dict)
+            or not isinstance(detailed, dict)
+            or configured is None
+            or any(
+                not isinstance(arrangement.get(key), int)
+                or isinstance(arrangement[key], bool)
+                or arrangement[key] <= 0
+                for key in (
+                    "package_count",
+                    "package_capacity_gb",
+                    "module_bus_width_bits",
+                )
+            )
+            or arrangement["package_count"] * arrangement["package_capacity_gb"]
+            != configured
+        ):
+            raise ValueError(f"{identifier}: invalid published memory arrangement")
         observed = candidate.get("observed_oem_configuration")
         physical = candidate.get("physical_package_observation")
         if physical is not None and observed is None:
@@ -286,6 +380,7 @@ def audit(root: Path) -> dict:
                 "public_memory_bus_width_bits": bus_width,
                 "cpu_cores": cpu_cores,
                 "public_configured_memory_gb": configured,
+                "published_memory_arrangement": arrangement,
                 "observed_oem_product": (
                     observed["product"] if observed is not None else None
                 ),
@@ -312,12 +407,46 @@ def audit(root: Path) -> dict:
                 "module_outline_fits_current_board_face": board_fit,
                 "module_over_current_board_mm": board_overrun,
                 "module_outline_fits_with_battery_reference": battery_fit,
-                "minimum_published_power_mode_w": minimum_power_mode,
-                "minimum_published_mode_over_slate_w": (
-                    round(minimum_power_mode - sustained_target, 2)
-                    if minimum_power_mode is not None
+                "module_height_mm": height,
+                "module_height_fits_body": (
+                    height <= body_thickness if height is not None else None
+                ),
+                "module_height_over_body_mm": (
+                    round(max(0, height - body_thickness), 2)
+                    if height is not None
                     else None
                 ),
+                "module_nominal_mass_g": mass,
+                "module_minimum_mass_g": (
+                    round(mass_min, 2) if mass_min is not None else None
+                ),
+                "device_mass_remaining_at_module_min_g": (
+                    round(device_mass_ceiling - mass_min, 2)
+                    if mass_min is not None
+                    else None
+                ),
+                "detailed_datasheet_source": (
+                    detailed["url"] if isinstance(detailed, dict) else None
+                ),
+                "detailed_datasheet_revision": (
+                    detailed["revision"] if isinstance(detailed, dict) else None
+                ),
+                "detailed_datasheet_sha256": (
+                    detailed["sha256"] if isinstance(detailed, dict) else None
+                ),
+                "published_power_lower_bound_w": published_lower_power,
+                "published_power_lower_bound_basis": power_basis,
+                "published_power_lower_bound_over_slate_w": (
+                    round(published_lower_power - sustained_target, 2)
+                    if published_lower_power is not None
+                    else None
+                ),
+                "stock_power_modes_w": stock_modes,
+                "minimum_stock_power_mode_w": stock_modes[0] if stock_modes else None,
+                "minimum_stock_mode_over_slate_w": (
+                    round(stock_modes[0] - sustained_target, 2) if stock_modes else None
+                ),
+                "stock_modes_source": stock_source,
                 "source": reference["url"],
             }
         )
@@ -352,6 +481,8 @@ def audit(root: Path) -> dict:
         "slate_internal_boundary_mm": list(boundary),
         "battery_reference_mm": list(battery),
         "slate_sustained_screen_w": sustained_target,
+        "slate_external_thickness_mm": body_thickness,
+        "slate_device_mass_ceiling_g": device_mass_ceiling,
         "integrated_phone_matches": matches,
         "largest_reviewed_x2_oem_memory_gb": largest_x2_oem["observed_oem_memory_gb"],
         "largest_reviewed_x2_oem_part": largest_x2_oem["part"],

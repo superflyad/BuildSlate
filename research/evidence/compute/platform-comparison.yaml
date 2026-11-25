@@ -292,13 +292,29 @@ candidates:
     memory_gb: 128
     public_configured_memory_gb: 128
     power_range_w: [40, 130]
+    stock_power_modes_w: [70, 90, 120]
     developer_kit_dimensions_mm: [243.19, 112.40, 56.88]
     module_outline_mm: [100, 87]
+    module_height_mm: 15.29
+    module_nominal_mass_g: 350
+    module_mass_tolerance_percent: 4
+    published_memory_arrangement:
+      package_count: 8
+      package_capacity_gb: 16
+      module_bus_width_bits: 256
+    detailed_datasheet:
+      url: https://developer.nvidia.com/downloads/assets/embedded/secure/jetson/thor/docs/jetson-thor-series-modules-datasheet_ds-11945-001.pdf
+      revision: DS-11945-001_v1.5
+      accessed: 2026-11-24
+      sha256: 1ae9fdaecef4165e77975d9806d53b3a0e2015e36579a6e904ed16e0d66180e4
+    stock_modes_source: https://docs.nvidia.com/jetson/archives/r39.2.1/DeveloperGuide/SD/PlatformPowerAndPerformance/JetsonThor.html
     ai_compute_fp4_tflops: 2070
     strengths:
       - Available developer platform and software stack for model/workload characterization at 128 GB.
     blockers:
       - Minimum power and physical dimensions exceed Slate's envelope.
+      - The 15.29 mm bare module is thicker than Slate's entire 9.5 mm external body; the 350 g nominal module mass reaches the upper device mass limit before other parts.
+      - NVIDIA's product page advertises a 40 W lower bound, but the detailed datasheet and software guide list 70 W as the lowest stock T5000 power mode; custom lower-power behavior is unproven for Slate.
       - FP4 TFLOPS cannot be compared directly with Qualcomm INT8 NPU TOPS.
     disposition: bench_workload_reference_only
     source:
@@ -314,7 +330,7 @@ candidates:
     maximum_memory_gb: 64
     public_configured_memory_gb: 64
     module_outline_mm: [95, 70]
-    power_range_w: [28, 45]
+    tdp_range_w: [28, 45]
     public_sustained_power_w: null
     strengths:
       - Exact Qualcomm Dragonwing IQ-X7 COM-HPC Mini module part with 64 GB soldered LPDDR5X, 95 x 70 mm outline, camera and display interfaces, and published OS support.
@@ -339,7 +355,7 @@ candidates:
     maximum_memory_gb: 128
     public_configured_memory_gb: 128
     module_outline_mm: [160, 120]
-    power_range_w: [45, 120]
+    tdp_range_w: [45, 120]
     public_sustained_power_w: null
     strengths:
       - Manufacturer lists an exact 128 GB module part number with onboard LPDDR5X.

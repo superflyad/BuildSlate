@@ -53,6 +53,8 @@ def main() -> int:
         or report["slate_current_board_face_mm"] != [78.0, 55.0]
         or report["slate_internal_boundary_mm"] != [3.0, 3.0, 174.0, 89.0]
         or report["battery_reference_mm"] != [10.0, 12.0, 80.0, 66.74]
+        or report["slate_external_thickness_mm"] != 9.5
+        or report["slate_device_mass_ceiling_g"] != 350
         or report["largest_reviewed_x2_oem_memory_gb"] != 64
         or report["largest_reviewed_x2_oem_part"] != "X2E-90-100"
         or report["remaining_to_memory_floor_gb"] != 64
@@ -128,7 +130,8 @@ def main() -> int:
         or mini["module_outline_fits_current_board_face"]
         or mini["module_over_current_board_mm"] != [17.0, 15.0]
         or mini["module_outline_fits_with_battery_reference"]
-        or mini["minimum_published_power_mode_w"] != 28
+        or mini["published_power_lower_bound_w"] != 28
+        or mini["published_power_lower_bound_basis"] != "tdp_range"
         or mini["published_capacity_permits_floor"]
         or mini["combined_public_fit"]
     ):
@@ -149,7 +152,7 @@ def main() -> int:
         or not item["observed_oem_source"]
         or item["physical_package_source"] is not None
         or item["integrated_phone_path"]
-        or item["minimum_published_power_mode_w"] is not None
+        or item["published_power_lower_bound_w"] is not None
         for item in plus.values()
     ):
         raise ValueError("X2 Plus controller maximum was promoted to a build")
@@ -175,7 +178,8 @@ def main() -> int:
         or congatec["module_outline_fits_current_board_face"] is not False
         or congatec["module_over_current_board_mm"] != [82.0, 65.0]
         or congatec["module_outline_fits_with_battery_reference"]
-        or congatec["minimum_published_mode_over_slate_w"] != 17
+        or congatec["published_power_lower_bound_over_slate_w"] != 17
+        or congatec["published_power_lower_bound_basis"] != "tdp_range"
         or congatec["combined_public_fit"]
     ):
         raise ValueError("Cataloged 128 GB module was credited with Slate fit")
@@ -187,9 +191,30 @@ def main() -> int:
         or thor["module_outline_fits_current_board_face"] is not False
         or thor["module_over_current_board_mm"] != [22.0, 32.0]
         or thor["module_outline_fits_with_battery_reference"]
-        or thor["minimum_published_mode_over_slate_w"] != 12
+        or thor["published_power_lower_bound_over_slate_w"] != 12
+        or thor["published_power_lower_bound_basis"] != "advertised_power_range"
+        or thor["minimum_stock_power_mode_w"] != 70
+        or thor["minimum_stock_mode_over_slate_w"] != 42
+        or thor["stock_power_modes_w"] != [70, 90, 120]
+        or thor["published_memory_arrangement"]
+        != {
+            "package_count": 8,
+            "package_capacity_gb": 16,
+            "module_bus_width_bits": 256,
+        }
+        or thor["module_height_mm"] != 15.29
+        or thor["module_height_fits_body"]
+        or thor["module_height_over_body_mm"] != 5.79
+        or thor["module_nominal_mass_g"] != 350
+        or thor["module_minimum_mass_g"] != 336
+        or thor["device_mass_remaining_at_module_min_g"] != 14
+        or thor["detailed_datasheet_revision"] != "DS-11945-001_v1.5"
+        or not thor["detailed_datasheet_source"]
+        or thor["detailed_datasheet_sha256"]
+        != "1ae9fdaecef4165e77975d9806d53b3a0e2015e36579a6e904ed16e0d66180e4"
+        or not thor["stock_modes_source"]
     ):
-        raise ValueError("Jetson module outline or power screen changed")
+        raise ValueError("Jetson module physical or power screen changed")
     committed = json.loads(
         (ROOT / "viewer/public/hardware-readiness.json").read_text(encoding="utf-8")
     )
@@ -261,6 +286,35 @@ def main() -> int:
         altered["candidates"]["congatec_conga_hpc_crx1_x199_128g"][
             "module_outline_mm"
         ] = [160, float("nan")]
+        _write(root, profile, altered)
+        _must_fail(root)
+        altered = copy.deepcopy(candidates)
+        altered["candidates"]["nvidia_jetson_agx_thor"]["module_height_mm"] = 0
+        _write(root, profile, altered)
+        _must_fail(root)
+        altered = copy.deepcopy(candidates)
+        altered["candidates"]["nvidia_jetson_agx_thor"]["published_memory_arrangement"][
+            "package_count"
+        ] = 7
+        _write(root, profile, altered)
+        _must_fail(root)
+        altered = copy.deepcopy(candidates)
+        altered["candidates"]["nvidia_jetson_agx_thor"]["detailed_datasheet"][
+            "sha256"
+        ] = "0" * 63
+        _write(root, profile, altered)
+        _must_fail(root)
+        altered = copy.deepcopy(candidates)
+        altered["candidates"]["nvidia_jetson_agx_thor"][
+            "module_mass_tolerance_percent"
+        ] = 100
+        _write(root, profile, altered)
+        _must_fail(root)
+        altered = copy.deepcopy(candidates)
+        altered["candidates"]["nvidia_jetson_agx_thor"]["stock_power_modes_w"] = [
+            90,
+            70,
+        ]
         _write(root, profile, altered)
         _must_fail(root)
         widened = copy.deepcopy(profile)

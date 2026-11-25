@@ -435,10 +435,30 @@ function renderHardware() {
       .join("") +
     platform.candidates
       .filter((item) => item.module_outline_mm !== null)
-      .map(
-        (item) =>
-          `<div class="gate-item"><strong>${esc(item.id.replaceAll("_", " "))} physical screen</strong><span>${esc(item.module_outline_mm.join(" × "))} mm bare module face · ${item.module_outline_fits_body_face ? "fits the outer body face" : "exceeds the outer body face"} (${esc(platform.slate_body_face_mm.join(" × "))} mm) · ${item.module_outline_fits_current_board_face ? "fits" : `exceeds by ${esc(item.module_over_current_board_mm.join(" × "))} mm`} the current ${esc(platform.slate_current_board_face_mm.join(" × "))} mm PCB face. ${item.module_outline_fits_with_battery_reference ? "A nonoverlapping position exists" : "No nonoverlapping position exists"} with the current raw-cell battery reference inside the ${esc(platform.slate_internal_boundary_mm.slice(2).join(" × "))} mm internal boundary. These bare-face screens exclude carrier, connector, cooling, and clearance. ${esc(item.minimum_published_power_mode_w)} W minimum published mode, ${esc(item.minimum_published_mode_over_slate_w)} W relative to Slate's ${esc(platform.slate_sustained_screen_w)} W sustained screen. This is a published operating mode, not a measured power draw. <a href="${esc(item.source)}" target="_blank" rel="noopener noreferrer">Manufacturer specification</a></span></div>`,
-      )
+      .map((item) => {
+        const height =
+          item.module_height_mm === null
+            ? ""
+            : `${esc(item.module_height_mm)} mm module height ${item.module_height_fits_body ? "fits within" : `is ${esc(item.module_height_over_body_mm)} mm beyond`} the ${esc(platform.slate_external_thickness_mm)} mm external body before carrier and cooling. `;
+        const mass =
+          item.module_nominal_mass_g === null
+            ? ""
+            : `${esc(item.module_nominal_mass_g)} g nominal module mass; its published lower tolerance bound leaves ${esc(item.device_mass_remaining_at_module_min_g)} g under Slate's ${esc(platform.slate_device_mass_ceiling_g)} g whole-device ceiling. `;
+        const topology =
+          item.published_memory_arrangement === null
+            ? ""
+            : `Manufacturer module memory: ${esc(item.published_memory_arrangement.package_count)} × ${esc(item.published_memory_arrangement.package_capacity_gb)} GB LPDDR5X packages on a ${esc(item.published_memory_arrangement.module_bus_width_bits)}-bit bus. This does not disclose an X2 channel/rank map. `;
+        const power = `${esc(item.published_power_lower_bound_w)} W ${item.published_power_lower_bound_basis === "tdp_range" ? "published TDP" : "advertised power"} lower bound, ${esc(item.published_power_lower_bound_over_slate_w)} W relative to Slate's ${esc(platform.slate_sustained_screen_w)} W sustained screen. `;
+        const stock =
+          item.stock_power_modes_w === null
+            ? ""
+            : `Documented stock modes ${esc(item.stock_power_modes_w.join("/"))} W; the lowest is ${esc(item.minimum_stock_mode_over_slate_w)} W above Slate's screen. <a href="${esc(item.stock_modes_source)}" target="_blank" rel="noopener noreferrer">Mode guide</a>. `;
+        const detailed =
+          item.detailed_datasheet_source === null
+            ? ""
+            : `<a href="${esc(item.detailed_datasheet_source)}" target="_blank" rel="noopener noreferrer">Detailed datasheet ${esc(item.detailed_datasheet_revision)}</a>. `;
+        return `<div class="gate-item"><strong>${esc(item.id.replaceAll("_", " "))} physical screen</strong><span>${esc(item.module_outline_mm.join(" × "))} mm bare module face · ${item.module_outline_fits_body_face ? "fits the outer body face" : "exceeds the outer body face"} (${esc(platform.slate_body_face_mm.join(" × "))} mm) · ${item.module_outline_fits_current_board_face ? "fits" : `exceeds by ${esc(item.module_over_current_board_mm.join(" × "))} mm`} the current ${esc(platform.slate_current_board_face_mm.join(" × "))} mm PCB face. ${item.module_outline_fits_with_battery_reference ? "A nonoverlapping position exists" : "No nonoverlapping position exists"} with the current raw-cell battery reference inside the ${esc(platform.slate_internal_boundary_mm.slice(2).join(" × "))} mm internal boundary. ${height}${mass}${topology}${power}${stock}These screens exclude carrier, connector, cooling, and clearance; power figures are published bounds or modes, not measured draw. ${detailed}<a href="${esc(item.source)}" target="_blank" rel="noopener noreferrer">Manufacturer specification</a></span></div>`;
+      })
       .join("");
   document.querySelector("#hardware-parts").innerHTML =
     `<div class="gate-item"><strong>Released part set</strong><span>${esc(report.part_selection.status)}${report.part_selection.errors.length ? ` · ${esc(report.part_selection.errors.join("; "))}` : ""}</span></div>` +

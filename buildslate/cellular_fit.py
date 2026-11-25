@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 
 from buildslate.io import load_yaml
@@ -12,6 +13,8 @@ CANDIDATE = Path("research/evidence/cellular/candidate-comparison.yaml")
 MEMORY_CANDIDATES = Path("research/evidence/compute/platform-comparison.yaml")
 FLOORPLAN = Path("engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml")
 MEMORY_STUDY = Path("engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml")
+ENVELOPE = Path("cad/slate-pocket-v1r/envelope-model/envelope.yaml")
+ASSEMBLY = Path("engineering/assembly/assembly.yaml")
 MEMORY_ID = "micron_lpddr5x_16gb_public_part"
 
 
@@ -43,8 +46,124 @@ def _valid_origins(boundary: tuple, obstacles: list[tuple], size: tuple, gap: fl
                 yield (x, y)
 
 
+def _overlaps_3d(a: tuple, b: tuple) -> bool:
+    return all(a[i] < b[i] + b[i + 3] and a[i] + a[i + 3] > b[i] for i in range(3))
+
+
+def _reverse_board_extension(
+    floorplan: dict,
+    envelope: dict,
+    assembly: dict,
+    obstacles: list[tuple],
+    package: list[float],
+    gap: float,
+) -> dict:
+    """Find the first whole-mm board-width extension that holds the module outline."""
+    outer = floorplan["board"]["outline_mm"]
+    inner = floorplan["board"]["component_side_boundary_mm"]
+    origin = floorplan["board"]["origin_in_mechanical_model_mm"]
+    outer_length, outer_width, thickness = (
+        float(outer[key]) for key in ("length", "width", "thickness")
+    )
+    inset_top = outer_width - float(inner["y"]) - float(inner["width"])
+    max_obstacle_top = max(y + h for x, y, w, h in obstacles)
+    search_end = math.ceil(max_obstacle_top + gap + max(package[:2]) + inset_top)
+    found = None
+    for candidate_width in range(math.ceil(outer_width), search_end + 1):
+        boundary = (
+            float(inner["x"]),
+            float(inner["y"]),
+            float(inner["length"]),
+            candidate_width - float(inner["y"]) - inset_top,
+        )
+        for orientation, size in (
+            (f"{package[0]:g}x{package[1]:g}", tuple(package[:2])),
+            (f"{package[1]:g}x{package[0]:g}", tuple(reversed(package[:2]))),
+        ):
+            first = next(_valid_origins(boundary, obstacles, size, gap), None)
+            if first is not None:
+                found = (float(candidate_width), orientation, first, size)
+                break
+        if found is not None:
+            break
+    if found is None:
+        return {"status": "outline_blocked", "minimum_whole_mm_board_width": None}
+    board_width, orientation, local_origin, size = found
+    board_bottom = float(
+        assembly["parts"]["mechanical"]["main_pcb_placeholder"]["z_mm"]
+    )
+    board_box = (
+        float(origin["x"]),
+        float(origin["y"]),
+        board_bottom,
+        outer_length,
+        board_width,
+        thickness,
+    )
+    module_box = (
+        board_box[0] + local_origin[0],
+        board_box[1] + local_origin[1],
+        board_bottom - package[2],
+        size[0],
+        size[1],
+        package[2],
+    )
+    mechanical = envelope["placements"]
+    conflicts = {"board": [], "module": []}
+    for name, item in mechanical.items():
+        if name == "main_pcb_placeholder" or item["layer"] != "component_planform":
+            continue
+        rect = item["rectangle_mm"]
+        part_box = (
+            float(rect["x"]),
+            float(rect["y"]),
+            float(assembly["parts"]["mechanical"][name]["z_mm"]),
+            float(rect["length"]),
+            float(rect["width"]),
+            float(item["height_mm"]),
+        )
+        if _overlaps_3d(board_box, part_box):
+            conflicts["board"].append(name)
+        if _overlaps_3d(module_box, part_box):
+            conflicts["module"].append(name)
+    internal = envelope["device"]["internal_boundary_mm"]
+    inside = (
+        board_box[0] >= float(internal["x"])
+        and board_box[1] >= float(internal["y"])
+        and board_box[0] + board_box[3]
+        <= float(internal["x"]) + float(internal["length"])
+        and board_box[1] + board_box[4]
+        <= float(internal["y"]) + float(internal["width"])
+    )
+    rear_cover_top = float(assembly["parts"]["enclosure"]["rear_cover"]["box_mm"][5])
+    above_rear_cover = module_box[2] >= rear_cover_top
+    return {
+        "status": "mechanical_relayout_required"
+        if any(conflicts.values()) or not inside or not above_rear_cover
+        else "outline_possible_unqualified",
+        "search_resolution_mm": 1,
+        "minimum_whole_mm_board_width": board_width,
+        "increase_from_current_board_mm": board_width - outer_width,
+        "module_orientation": orientation,
+        "module_local_origin_mm": list(local_origin),
+        "module_global_box_mm": [round(value, 3) for value in module_box],
+        "board_global_box_mm": list(board_box),
+        "board_inside_current_internal_xy": inside,
+        "board_3d_conflicts": conflicts["board"],
+        "module_3d_conflicts": conflicts["module"],
+        "module_above_rear_cover": above_rear_cover,
+        "module_bottom_to_rear_cover_mm": round(module_box[2] - rear_cover_top, 3),
+        "caveat": "Whole-mm board extension and nominal boxes only; this is not a qualified modem site, board, or phone design.",
+    }
+
+
 def audit_data(
-    candidate: dict, memory_candidates: dict, floorplan: dict, study: dict
+    candidate: dict,
+    memory_candidates: dict,
+    floorplan: dict,
+    study: dict,
+    envelope: dict,
+    assembly: dict,
 ) -> dict:
     """Report whether the module outline fits each side at a nominal 1 mm gap."""
     module = candidate["reference_module"]
@@ -62,6 +181,38 @@ def audit_data(
         errors.append("Memory study does not use the screened public package")
     if floorplan["metadata"]["modeled_memory_tier_gb"] != 128:
         errors.append("Board plan is not the 128 GB study")
+    board = floorplan["board"]
+    mechanical_board = envelope["placements"]["main_pcb_placeholder"]
+    rect = mechanical_board["rectangle_mm"]
+    if (
+        any(
+            not math.isclose(
+                float(board["outline_mm"][key]), float(rect[key]), abs_tol=1e-6
+            )
+            for key in ("length", "width")
+        )
+        or any(
+            not math.isclose(
+                float(board["origin_in_mechanical_model_mm"][key]),
+                float(rect[key]),
+                abs_tol=1e-6,
+            )
+            for key in ("x", "y")
+        )
+        or not math.isclose(
+            float(board["outline_mm"]["thickness"]),
+            float(mechanical_board["height_mm"]),
+            abs_tol=1e-6,
+        )
+    ):
+        errors.append("Board floorplan and mechanical placement disagree")
+    if not math.isclose(
+        float(assembly["parts"]["mechanical"]["main_pcb_placeholder"]["z_mm"])
+        + float(board["outline_mm"]["thickness"]),
+        float(assembly["parts"]["pcb"]["z_mm"]),
+        abs_tol=1e-6,
+    ):
+        errors.append("PCB top and bottom elevations disagree")
     for name, item in study["placements"].items():
         side = item["side"]
         if side not in memory_obstacles:
@@ -94,8 +245,8 @@ def audit_data(
     ):
         orientations = {}
         for name, size in (
-            ("29x32", tuple(package[:2])),
-            ("32x29", tuple(reversed(package[:2]))),
+            (f"{package[0]:g}x{package[1]:g}", tuple(package[:2])),
+            (f"{package[1]:g}x{package[0]:g}", tuple(reversed(package[:2]))),
         ):
             origins = list(_valid_origins(boundary, obstacles, size, gap))
             orientations[name] = {
@@ -109,6 +260,9 @@ def audit_data(
             "outline_fits": any(item["outline_fits"] for item in orientations.values()),
         }
     fits = any(item["outline_fits"] for item in sides.values())
+    extension = _reverse_board_extension(
+        floorplan, envelope, assembly, memory_obstacles["reverse"], package, gap
+    )
     if errors:
         status = "source_conflict"
     else:
@@ -126,6 +280,7 @@ def audit_data(
         "usable_board_boundary_mm": list(boundary),
         "assumed_nominal_package_clearance_mm": gap,
         "sides": sides,
+        "reverse_board_extension": extension,
         "voice": module["voice"],
         "source_errors": errors,
         "required_before_selection": candidate["screen"]["required_before_selection"],
@@ -142,7 +297,14 @@ def audit(root: Path) -> dict:
     return audit_data(
         *(
             load_yaml(root / path)
-            for path in (CANDIDATE, MEMORY_CANDIDATES, FLOORPLAN, MEMORY_STUDY)
+            for path in (
+                CANDIDATE,
+                MEMORY_CANDIDATES,
+                FLOORPLAN,
+                MEMORY_STUDY,
+                ENVELOPE,
+                ASSEMBLY,
+            )
         )
     )
 

@@ -19,6 +19,12 @@ The screen tests boundary coordinates and obstacle edges where an axis-aligned r
 
 The result means this particular 5G reference cannot simply be added to the present 128 GB concept board. The wider-body or display decision may create room for a board redesign, but board area alone does not establish the memory topology, X2 host interface, modem power, RF feeds, SIM/eSIM, audio, antennas, regulatory compliance, or a working phone. A different module could have a different result. The [phone-function gate](build_to_function.md) stays blocked until a selected design and physical results exist.
 
+## Board extension and enclosure conflict
+
+Holding the eight memory package outlines and the current board origin fixed, the first whole-millimeter reverse-side board width that admits the rotated 32 × 29 mm module outline at a 1 mm nominal package gap is **78 mm**, up from 55 mm. The module's local origin is (2, 47) mm; the hypothetical 78 × 78 mm board remains inside the present internal XY boundary. Its reverse-side module bottom is 0.25 mm above the nominal rear-cover top before solder, tolerance, shielding, or protection allowances.
+
+The same 3D box screen finds that the expanded PCB intersects the current rear-camera and speaker-A envelopes. The module itself intersects the rear-camera envelope. This is a collision, not a ready alternative. It also leaves the separate [display active-area conflict](display_geometry_fit.md) unresolved. Moving any of these parts requires a new whole-device layout and review of optical path, acoustics, RF, thermal contact, service access, and stack height. Run `python -m buildslate.cellular_fit` for the machine-readable extension and collision coordinates; the public Hardware view reports the result.
+
 ## Next design evidence
 
 1. Obtain the supported 128 GB compute and memory reference design, then redesign board placement around the selected packages and required escapes.

@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Screen the minimum whole-millimeter board extension for the public 5G reference and identify its camera and speaker collisions in the full enclosure.
 - Require hashed lifecycle source evidence for every selected BOM role and correct the build-to-function memory summary.
 - Record and reject an exact obsolete 32 GB Micron LPDDR5X part; show its four-site and 192-bit bus conflicts in hardware readiness.
 - Screen a public 5G voice-optional module outline against both sides of the 128 GB concept board and publish the unresolved phone package conflict.

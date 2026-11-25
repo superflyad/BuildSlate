@@ -274,6 +274,44 @@
         "outline_fits": false
       }
     },
+    "reverse_board_extension": {
+      "status": "mechanical_relayout_required",
+      "search_resolution_mm": 1,
+      "minimum_whole_mm_board_width": 78.0,
+      "increase_from_current_board_mm": 23.0,
+      "module_orientation": "32x29",
+      "module_local_origin_mm": [
+        2.0,
+        47.0
+      ],
+      "module_global_box_mm": [
+        94.0,
+        59.0,
+        0.8,
+        32.0,
+        29.0,
+        2.4
+      ],
+      "board_global_box_mm": [
+        92.0,
+        12.0,
+        3.2,
+        78.0,
+        78.0,
+        0.8
+      ],
+      "board_inside_current_internal_xy": true,
+      "board_3d_conflicts": [
+        "rear_camera_placeholder",
+        "speaker_a_placeholder"
+      ],
+      "module_3d_conflicts": [
+        "rear_camera_placeholder"
+      ],
+      "module_above_rear_cover": true,
+      "module_bottom_to_rear_cover_mm": 0.25,
+      "caveat": "Whole-mm board extension and nominal boxes only; this is not a qualified modem site, board, or phone design."
+    },
     "voice": "optional_VoNR_and_VoLTE",
     "source_errors": [],
     "required_before_selection": [

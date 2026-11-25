@@ -433,11 +433,13 @@ function renderHardware() {
     ? "has a nominal outline location on the board; integration remains unqualified"
     : "fits neither side of the current board";
   const cellularSummary = `A ${esc(cellularFit.package_mm.join(" × "))} mm ${esc(cellularFit.candidate)} 5G RedCap reference module ${cellularGeometry} with four 16 GB memory outlines per side and an assumed ${esc(cellularFit.assumed_nominal_package_clearance_mm)} mm gap. Voice is optional on this module. It is not selected. <a href="${esc(cellularFit.source)}" target="_blank" rel="noopener noreferrer">Manufacturer specification</a> · <a href="https://github.com/superflyad/BuildSlate/blob/main/docs/engineering/cellular_module_fit.md" target="_blank" rel="noopener noreferrer">Fit method</a>`;
+  const boardExtension = cellularFit.reverse_board_extension;
+  const boardExtensionSummary = `The first whole-millimeter reverse-side outline fit needs a ${esc(cellularFit.board_outline_mm[0])} × ${esc(boardExtension.minimum_whole_mm_board_width)} mm board, ${esc(boardExtension.increase_from_current_board_mm)} mm wider than the current board. The expanded board intersects the ${esc(boardExtension.board_3d_conflicts.join(" and ").replaceAll("_placeholder", "").replaceAll("_", " "))}; the module itself intersects the ${esc(boardExtension.module_3d_conflicts.join(" and ").replaceAll("_placeholder", "").replaceAll("_", " "))}. Camera and speaker placement must be redesigned. This is a nominal box screen, not a released phone layout.`;
   document
     .querySelector("#hardware-parts")
     .insertAdjacentHTML(
       "beforeend",
-      `<div class="gate-item"><strong>5G reference package fit</strong><span>${cellularSummary}</span></div>`,
+      `<div class="gate-item"><strong>5G reference package fit</strong><span>${cellularSummary}</span></div><div class="gate-item"><strong>Board expansion conflict</strong><span>${boardExtensionSummary}</span></div>`,
     );
   const study = report.memory_package_fit.eight_package_study;
   document.querySelector("#hardware-memory-layout").innerHTML =

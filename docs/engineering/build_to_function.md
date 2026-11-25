@@ -26,7 +26,7 @@ The [display geometry screen](display_geometry_fit.md) blocks design release ind
 
 The [cellular module screen](cellular_module_fit.md) tests a public, voice-optional 5G RedCap reference against the present two-sided 128 GB board study. Its 29 × 32 mm outline has no nominal position on either side of the provisional board. It is not a selected part; a phone design needs a board redesign or a different supplier-qualified module, followed by host, RF, audio, carrier, and physical proof.
 
-The [memory package screen](memory_package_fit.md) also shows that a reviewed exact 16 GB LPDDR5X part needs eight packages and cannot fit the current four memory planning rectangles. Public 32 GB capacity claims lack a reviewed exact package and X2 topology. The rectangles remain assumptions, not build coordinates.
+The [memory package screen](memory_package_fit.md) shows that an exact public 32 GB LPDDR5X part is obsolete, exceeds the four planning rectangles, and cannot use four independent x64 host connections on the X2 Extreme's 192-bit bus. An exact public 16 GB part needs eight packages and does not fit the four rectangles either. No current-production 128 GB X2 topology is qualified for Slate. The rectangles remain assumptions, not build coordinates.
 
 The [battery candidate screen](battery_candidate_fit.md) exposes a separate mechanical and safety conflict: the published AI1-M01 bare-cell box is larger than the current complete-pack allocation, and no charge rating is published for that candidate. Its listed 2C band is a discharge category. The 100 W target cannot enter a build design without a supplier charge curve and complete-pack review.
 

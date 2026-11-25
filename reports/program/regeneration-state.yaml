@@ -43,7 +43,7 @@ nodes:
       manufacturing/supplier-dfm-response.yaml: 79eb4c2c77125a88d7b02d90ead69a749bb74b0d301254303e77cb613127cfdf
       simulations/thermal/slate-pocket-v1r/model/model.yaml: 3aebbfd9fb27432ca9b4a7a8c3f877fc34510c13c8cc79c29e0d2f795f9c3035
       simulations/thermal/slate-pocket-v1r/test-matrix.yaml: 989da9fb89fbc1e72e2a43ad317e10f11a50294346bf305183574234657f2cf4
-      validation/evt0/bom-strategy.yaml: 157a15ee5592239a7f91ff048d442998b686b54df9c5933a1469e0f770d8b7d6
+      validation/evt0/bom-strategy.yaml: b256b391646e379548214fb54867ca094cf834aca48ef235879e2e89e492f89c
       validation/evt0/evt0-spec.yaml: 2c1a0823ef0285d749ece9bc6741cd866f92ebce4ceb24e24b08d3dab6cdbe10
       validation/evt0/instrumentation.yaml: 47c9e8942a533cc94c919e17581315fccd3e41ed668fe7091613460afd6c3004
       validation/evt0/metric-definitions.yaml: b02a8eaa62ddbbc88520545a070a84bd400375b9f4c8c3874009b3eab8d6a22d
@@ -68,7 +68,7 @@ nodes:
     inputs:
       engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
       reports/program/evt0-campaign.yaml: 3b7563a559b00dbc352479c6aa0c00feb66aa268f576fcf45f458db683ba2e0c
-      validation/evt0/bom-strategy.yaml: 157a15ee5592239a7f91ff048d442998b686b54df9c5933a1469e0f770d8b7d6
+      validation/evt0/bom-strategy.yaml: b256b391646e379548214fb54867ca094cf834aca48ef235879e2e89e492f89c
       validation/evt0/evt0-spec.yaml: 2c1a0823ef0285d749ece9bc6741cd866f92ebce4ceb24e24b08d3dab6cdbe10
       validation/evt0/generate_evt0_gate_report.py: 10224a2f90085384e4134e51f4ee4f0f154a22f7e6db5a310d2fd1e0445cdcc6
       validation/evt0/test-matrix.yaml: 56a66fe48e35791916138a0317f5e7deafeaf85b845503949d4b210cead021b1
@@ -199,17 +199,17 @@ nodes:
       reports/slate-pocket-v1r-manufacturing-readiness.txt: c0f01f33e718e4d97f670d613645ad5e24f99902f7a71d43ba2c5cbe7904d172
       reports/slate-pocket-v1r-program-readiness.txt: 5e0f05228acbf2afdfe06dc3817593e6587e7b69967dc2b85cde6e10ada84de4
       research/rfqs/rfq_registry.yaml: 4178a8634868b1865ee844f78fc51ddd9e8c08074c505d30503c3f8bd72ee91f
-      validation/evt0/bom-strategy.yaml: 157a15ee5592239a7f91ff048d442998b686b54df9c5933a1469e0f770d8b7d6
+      validation/evt0/bom-strategy.yaml: b256b391646e379548214fb54867ca094cf834aca48ef235879e2e89e492f89c
       validation/evt0/test-matrix.yaml: 56a66fe48e35791916138a0317f5e7deafeaf85b845503949d4b210cead021b1
     outputs:
-      reports/program/buildslate-program-snapshot.yaml: 4ba437d678c7065a1f0067e8e5aec742994bdbfac055a4665b7ed866e8e62de9
+      reports/program/buildslate-program-snapshot.yaml: 6a93bb4b71adb3b2aa9048530daeb1f7c5162bd0b624a28414ea41a68a393ba8
   dashboard:
     inputs:
       buildslate/dashboard.py: 8e29d69f152b5ba09830ce50915b2c69598a67931a775770fc99fd89138bf0b2
       engineering/evidence/evidence_registry.yaml: b4a754fefc08d034966ffd828f3fa790cbdd9316bab2a6a6dbcc0368d6d6afbe
       engineering/evidence/external_blocker_registry.yaml: e16f4b62aa8ab80c0c60a05d7a239a4c7689aaaf2e96edd06c56e7cde369990a
       engineering/program/configuration_registry.yaml: e884eb94098366bc9d4fd52bf8d46195970a8b21c880823223834cb98606fbc2
-      reports/program/buildslate-program-snapshot.yaml: 4ba437d678c7065a1f0067e8e5aec742994bdbfac055a4665b7ed866e8e62de9
+      reports/program/buildslate-program-snapshot.yaml: 6a93bb4b71adb3b2aa9048530daeb1f7c5162bd0b624a28414ea41a68a393ba8
       reports/program/configuration-resolution.yaml: c59e257abba32ad8317027a4d02ca123689ce3e614c2fed3903d2236ed5cf598
       reports/program/evt0-campaign.yaml: 3b7563a559b00dbc352479c6aa0c00feb66aa268f576fcf45f458db683ba2e0c
       reports/program/integration-contracts.yaml: 930c6504018801891c0a76f7a569d8ad0ab4ab37b669d6e82f1910fe1cfd9b63
@@ -228,7 +228,7 @@ nodes:
       engineering/assembly/assembly.yaml: 84329111144d3604dde1400bb4b76815474c57d09d34fd5f562f7395c055d1c2
       engineering/components/component_library.yaml: f5e18ac5d498f5f3f303080452a6340d9930ed830dbf87031fca780b221f8672
       engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml: adbef5a8a3fa4af6693d6e5134b16612c15dfaed5475809922cfbe54234188e9
-      reports/program/buildslate-program-snapshot.yaml: 4ba437d678c7065a1f0067e8e5aec742994bdbfac055a4665b7ed866e8e62de9
+      reports/program/buildslate-program-snapshot.yaml: 6a93bb4b71adb3b2aa9048530daeb1f7c5162bd0b624a28414ea41a68a393ba8
       reports/program/dashboard.yaml: d2d33e134b9a63a9fbc4d91ed120a423cacc57b25a8e152a4fd292e53a1636dc
     outputs:
       viewer/public/assembly.gltf: a18402413672737fc75de69cbd32ac77e616033d8ebc08e466c6bbdfa9c53fe6

@@ -112,6 +112,20 @@ def main() -> int:
             and all(item["selected"] for item in proof["roles"]),
             "complete synthetic part set passes identity, source, and interface checks",
         )
+        for role in CORE_ROLES:
+            invalid = copy.deepcopy(release)
+            del invalid["parts"][role]["evidence"]["lifecycle"]
+            write_release(release_path, invalid)
+            result = audit(root, strategy)
+            require(
+                result["status"] == "blocked"
+                and any(
+                    "lifecycle: missing controlled source path" in reason
+                    for reason in result["errors"]
+                ),
+                f"{role} selection requires lifecycle source evidence",
+            )
+        write_release(release_path, release)
         record = {
             "path": RELEASE.as_posix(),
             "sha256": hashlib.sha256(release_path.read_bytes()).hexdigest(),
@@ -209,6 +223,18 @@ def main() -> int:
         require(
             audit(root, strategy)["status"] == "pass",
             "cellular selection needs its own source files and host interface",
+        )
+        invalid = copy.deepcopy(release)
+        del invalid["parts"]["cellular"]["evidence"]["lifecycle"]
+        write_release(release_path, invalid)
+        result = audit(root, strategy)
+        require(
+            result["status"] == "blocked"
+            and any(
+                "lifecycle: missing controlled source path" in reason
+                for reason in result["errors"]
+            ),
+            "cellular selection requires lifecycle source evidence",
         )
     print("PASS: part selection proof validation")
     return 0

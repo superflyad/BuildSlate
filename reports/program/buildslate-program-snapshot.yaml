@@ -575,6 +575,7 @@ entities:
     - impedance
     - cycle_life
     - safety_and_shipping
+    - lifecycle
 - entity_id: component_role:cellular
   kind: component_role
   title: cellular
@@ -589,6 +590,7 @@ entities:
     - antenna_match
     - firmware_drivers
     - sample_terms
+    - lifecycle
 - entity_id: component_role:compute_platform
   kind: component_role
   title: compute platform
@@ -603,6 +605,7 @@ entities:
     - sustained_workload_telemetry
     - software_support
     - sample_terms
+    - lifecycle
 - entity_id: component_role:display_module
   kind: component_role
   title: display module
@@ -677,6 +680,7 @@ entities:
     - routing_rules
     - power
     - thermal_limits
+    - lifecycle
 - entity_id: component_role:radios_and_antennas
   kind: component_role
   title: radios and antennas

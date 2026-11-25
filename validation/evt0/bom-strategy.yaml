@@ -14,12 +14,12 @@ roles:
     quantity_per_unit: 1
     status: selection_required
     preferred_rfq: Qualcomm Snapdragon X2 Elite Extreme at 128 GB fallback
-    required_evidence: [package_drawing, reference_design, rail_map, sustained_workload_telemetry, software_support, sample_terms]
+    required_evidence: [package_drawing, reference_design, rail_map, sustained_workload_telemetry, software_support, sample_terms, lifecycle]
   memory:
     quantity_per_unit: topology_dependent
     status: selection_required
     planning_topology: four_32gb_sites_for_128gb
-    required_evidence: [qualified_part_numbers, package_drawings, controller_support, routing_rules, power, thermal_limits]
+    required_evidence: [qualified_part_numbers, package_drawings, controller_support, routing_rules, power, thermal_limits, lifecycle]
   storage:
     quantity_per_unit: 1
     status: selection_required
@@ -29,7 +29,7 @@ roles:
     quantity_per_unit: 1
     status: selection_required
     capacity_rule: best_supplier_validated_complete_pack_that_fits
-    required_evidence: [cell_and_pack_drawing, protection, swelling, charge_discharge_limits, impedance, cycle_life, safety_and_shipping]
+    required_evidence: [cell_and_pack_drawing, protection, swelling, charge_discharge_limits, impedance, cycle_life, safety_and_shipping, lifecycle]
   display_module:
     quantity_per_unit: 1
     status: selection_required
@@ -59,7 +59,7 @@ roles:
     quantity_per_unit: 0
     status: deferred_from_EVT0
     reason: target_market_band_operator_and_certification_scope_unset
-    required_evidence: [modem_datasheet, reference_design, rf_grants, antenna_match, firmware_drivers, sample_terms]
+    required_evidence: [modem_datasheet, reference_design, rf_grants, antenna_match, firmware_drivers, sample_terms, lifecycle]
   instrumentation_and_safety:
     quantity_per_unit: lab_shared
     status: selection_and_calibration_required

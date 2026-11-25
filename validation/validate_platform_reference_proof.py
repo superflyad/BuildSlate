@@ -56,6 +56,12 @@ def _netlist_fixture(root: Path, *, on_package: bool = False) -> str:
             net = ET.SubElement(nets, "net", code=str(bit + 1), name=f"DQ{bit}")
             ET.SubElement(net, "node", ref="U10", pin=f"H{bit}")
             ET.SubElement(net, "node", ref=f"U{bit // 32}", pin=f"D{bit % 32}")
+        for channel in range(4):
+            net = ET.SubElement(
+                nets, "net", code=str(129 + channel), name=f"CS{channel}"
+            )
+            ET.SubElement(net, "node", ref="U10", pin=f"CS{channel}")
+            ET.SubElement(net, "node", ref=f"U{channel}", pin="CS")
     path = root / ELECTRICAL_NETLIST
     path.parent.mkdir(parents=True, exist_ok=True)
     ET.ElementTree(export).write(path, encoding="utf-8", xml_declaration=True)
@@ -161,6 +167,16 @@ def _fixture(root: Path) -> tuple[dict, dict, str]:
             }
             for bit in range(128)
         ],
+        "memory_rank_selects": [
+            {
+                "ref": f"U{channel}",
+                "channel": f"CH{channel}",
+                "rank": 0,
+                "controller_pin": f"CS{channel}",
+                "package_pin": "CS",
+            }
+            for channel in range(4)
+        ],
     }
     return selected, release, selected_digest
 
@@ -178,6 +194,7 @@ def main() -> int:
             proof["status"] != "pass"
             or proof["memory_channel_width_bits"] != 128
             or proof["memory_data_lane_count"] != 128
+            or proof["memory_rank_select_count"] != 4
         ):
             raise ValueError(f"Complete synthetic platform reference failed: {proof}")
         on_package_selected = copy.deepcopy(_fixture(root)[0])
@@ -193,6 +210,7 @@ def main() -> int:
         ] = "on_package"
         on_package_release["memory_placement"] = "on_package"
         on_package_release["memory_data_lanes"] = []
+        on_package_release["memory_rank_selects"] = []
         for item in on_package_release["memory_packages"]:
             item["package_id"] = item.pop("ref")
         on_package_release["selected_bom_sha256"] = _write(
@@ -365,6 +383,21 @@ def main() -> int:
         _write(release_path, invalid)
         if audit(root)["status"] != "blocked":
             raise ValueError("Incomplete board DRAM data wiring was accepted")
+        for mutation in (
+            {"package_pin": "NOT_CONNECTED"},
+            {"controller_pin": "CS0"},
+            {"controller_pin": "H0"},
+        ):
+            invalid = copy.deepcopy(release)
+            invalid["memory_rank_selects"][1].update(mutation)
+            _write(release_path, invalid)
+            if audit(root)["status"] != "blocked":
+                raise ValueError(f"Invalid rank-select wiring was accepted: {mutation}")
+        invalid = copy.deepcopy(release)
+        invalid["memory_rank_selects"].pop()
+        _write(release_path, invalid)
+        if audit(root)["status"] != "blocked":
+            raise ValueError("Missing DRAM rank-select wiring was accepted")
         netlist_path = root / ELECTRICAL_NETLIST
         valid_netlist = netlist_path.read_bytes()
         netlist_path.write_bytes(valid_netlist.replace(b'pin="D0"', b'pin="BROKEN"', 1))
@@ -378,6 +411,16 @@ def main() -> int:
             "host/DRAM netlist pins differ" in error for error in result["errors"]
         ):
             raise ValueError("Hash-matched miswired netlist passed platform proof")
+        netlist_path.write_bytes(valid_netlist.replace(b'pin="CS"', b'pin="BROKEN"', 1))
+        invalid["electrical_netlist_sha256"] = hashlib.sha256(
+            netlist_path.read_bytes()
+        ).hexdigest()
+        _write(release_path, invalid)
+        result = audit(root)
+        if result["status"] != "blocked" or not any(
+            "select netlist pins differ" in error for error in result["errors"]
+        ):
+            raise ValueError("Hash-matched missing rank select passed platform proof")
         netlist_path.write_bytes(valid_netlist)
         invalid = copy.deepcopy(release)
         invalid["source_bindings"]["memory_controller_support"] = "stale"

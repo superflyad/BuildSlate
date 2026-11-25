@@ -161,8 +161,14 @@ def _memory_wiring_errors(
 ) -> list[str]:
     """Match every board DRAM data bit to a host pin in the released netlist."""
     lanes = release.get("memory_data_lanes")
+    selects = release.get("memory_rank_selects")
     if release.get("memory_placement") != "board":
-        return [] if lanes in (None, []) else ["On-package DRAM has board data lanes"]
+        errors = []
+        if lanes not in (None, []):
+            errors.append("On-package DRAM has board data lanes")
+        if selects not in (None, []):
+            errors.append("On-package DRAM has board rank selects")
+        return errors
     packages = release.get("memory_packages")
     width = memory.get("bus_width_bits")
     board_refs = release.get("board_refs")
@@ -176,6 +182,7 @@ def _memory_wiring_errors(
     if not isinstance(lanes, list) or not lanes:
         return ["Board memory data lane wiring is missing"]
     expected: dict[tuple[str, int], tuple[str, int]] = {}
+    expected_selects: set[tuple[str, str, int]] = set()
     for package in packages:
         if (
             not isinstance(package, dict)
@@ -190,6 +197,7 @@ def _memory_wiring_errors(
             if key in expected:
                 return ["Memory package lane map has duplicate bit identity"]
             expected[key] = (package["channel"], package["rank"])
+        expected_selects.add((package["ref"], package["channel"], package["rank"]))
     errors: list[str] = []
     seen: set[tuple[str, int]] = set()
     package_pins: set[tuple[str, str]] = set()
@@ -236,6 +244,55 @@ def _memory_wiring_errors(
             errors.append(f"{ref} {channel} bit {bit}: host/DRAM netlist pins differ")
     if seen != set(expected):
         errors.append("Memory data lane wiring does not cover every package bit")
+    if not isinstance(selects, list) or not selects:
+        errors.append("Board memory rank-select wiring is missing")
+        return errors
+    seen_selects: set[tuple[str, str, int]] = set()
+    select_pins: set[tuple[str, str]] = set()
+    rank_host_pins: dict[tuple[str, int], str] = {}
+    host_select_owners: dict[str, tuple[str, int]] = {}
+    for select in selects:
+        if not isinstance(select, dict):
+            errors.append("Memory rank-select record is invalid")
+            continue
+        ref, channel, rank = (
+            select.get("ref"),
+            select.get("channel"),
+            select.get("rank"),
+        )
+        controller_pin, package_pin = (
+            select.get("controller_pin"),
+            select.get("package_pin"),
+        )
+        identity = (ref, channel, rank)
+        if (
+            not _text(ref)
+            or not _text(channel)
+            or not _integer(rank, 0)
+            or identity not in expected_selects
+            or identity in seen_selects
+            or not _text(controller_pin)
+            or not _text(package_pin)
+        ):
+            errors.append("Memory rank-select identity or package map is invalid")
+            continue
+        seen_selects.add(identity)
+        if (ref, package_pin) in select_pins or (ref, package_pin) in package_pins:
+            errors.append(f"{ref}.{package_pin}: rank-select pin is reused")
+        select_pins.add((ref, package_pin))
+        rank_key = (channel, rank)
+        prior = rank_host_pins.setdefault(rank_key, controller_pin)
+        if prior != controller_pin:
+            errors.append(f"{channel} rank {rank}: selects use different host pins")
+        owner = host_select_owners.setdefault(controller_pin, rank_key)
+        if owner != rank_key or controller_pin in host_pin_owners:
+            errors.append(f"{host_ref}.{controller_pin}: rank-select pin is reused")
+        host_net = pins.get((host_ref, controller_pin))
+        dram_net = pins.get((ref, package_pin))
+        if not host_net or host_net != dram_net:
+            errors.append(f"{ref} {channel} rank {rank}: select netlist pins differ")
+    if seen_selects != expected_selects:
+        errors.append("Memory rank selects do not cover every package")
     return errors
 
 
@@ -436,6 +493,9 @@ def audit(root: Path) -> dict[str, Any]:
         ),
         "memory_data_lane_count": len(release.get("memory_data_lanes", []))
         if isinstance(release.get("memory_data_lanes"), list)
+        else 0,
+        "memory_rank_select_count": len(release.get("memory_rank_selects", []))
+        if isinstance(release.get("memory_rank_selects"), list)
         else 0,
         "pmic_mpn": pmic.get("mpn") if isinstance(pmic, dict) else None,
     }

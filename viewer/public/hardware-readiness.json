@@ -1057,8 +1057,45 @@
     "sources": [
       "configs/devices/slate-pocket-v1r.yaml",
       "cad/slate-pocket-v1r/envelope-model/envelope.yaml",
-      "engineering/assembly/assembly.yaml"
-    ]
+      "engineering/assembly/assembly.yaml",
+      "research/evidence/display-storage/candidate-comparison.yaml"
+    ],
+    "drawing_candidate": {
+      "part_number": "HG070FH002",
+      "supplier": "Shenzhen Hongguang Display",
+      "status": "rejected",
+      "errors": [
+        "Published diagonal and pixel ratio differ from the approved target",
+        "Published panel outline exceeds the CAD display reserve"
+      ],
+      "diagonal_in": 7.0,
+      "resolution_px": [
+        1080,
+        1920
+      ],
+      "pixel_aspect_ratio": "16:9",
+      "active_area_mm": [
+        154.9056,
+        87.1344
+      ],
+      "panel_outline_mm": [
+        160.9056,
+        89.1344,
+        1.028
+      ],
+      "outline_includes": "polarizer_and_foam",
+      "target_format_match": false,
+      "nominal_panel_face_fit": true,
+      "nominal_panel_reserve_fit": false,
+      "nominal_short_side_reserve_overrun_mm": 0.1344,
+      "minimum_device_width_mm_with_current_side_inset": 95.1344,
+      "document_status": "preliminary_A0_draft",
+      "drawing_status": "preliminary_nominal_dimensions",
+      "source": "https://www.hongguangdisplay.com/wp-content/uploads/2025/02/7.0-inch-AMOLED-Display-1080x1920-ResolutionMIPI-HG070FH002-.pdf",
+      "source_revision": "A0",
+      "source_sha256": "a60b9b3d9caf2e8d0f2a5841c267911095f850a2af80c728fab11d576b7c7b83",
+      "caveat": "The published panel outline excludes unverified flex routing, integration allowances, and tolerance stack; the A0 document is preliminary."
+    }
   },
   "memory_package_fit": {
     "target_gb": 128,

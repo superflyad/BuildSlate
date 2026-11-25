@@ -52,6 +52,7 @@ Compute and memory screen:
     - 28 W sustained workload with the X2 Elite platform
 
 Display screen:
+  - hongguang_hg070fh002: drawing_based_geometry_reference_not_selected
   - samsung_foldable_oled_7_6: size_reference_not_flat_16_10_candidate
   - tianma_foldable_ltpo_7_92: supplier_rfq_reference
   - boe_tablet_portfolio: flat_panel_rfq_and_evt_reference

@@ -11,6 +11,28 @@ display_target:
   refresh_hz: 120
 
 display_candidates:
+  hongguang_hg070fh002:
+    supplier: Shenzhen Hongguang Display
+    part_number: HG070FH002
+    diagonal_in: 7.0
+    resolution: 1080x1920
+    technology: AMOLED_LTPS
+    touch_controller: FT3519
+    active_area_mm: [154.9056, 87.1344]
+    panel_outline_mm: [160.9056, 89.1344, 1.028]
+    outline_includes: polarizer_and_foam
+    document_status: preliminary_A0_draft
+    drawing_status: preliminary_nominal_dimensions
+    disposition: drawing_based_geometry_reference_not_selected
+    gaps: [approved_format_match, reserve_fit, full_flex_envelope, tolerances, host_integration, procurement]
+    source:
+      url: https://www.hongguangdisplay.com/wp-content/uploads/2025/02/7.0-inch-AMOLED-Display-1080x1920-ResolutionMIPI-HG070FH002-.pdf
+      source_type: manufacturer_preliminary_specification
+      revision: A0
+      issued: 2024-07-29
+      accessed: 2026-11-24
+      sha256: a60b9b3d9caf2e8d0f2a5841c267911095f850a2af80c728fab11d576b7c7b83
+
   samsung_foldable_oled_7_6:
     supplier: Samsung Display
     diagonal_in: 7.6

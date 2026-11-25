@@ -13,7 +13,9 @@ from buildslate.io import load_yaml
 PROFILE = Path("configs/devices/slate-pocket-v1r.yaml")
 ENVELOPE = Path("cad/slate-pocket-v1r/envelope-model/envelope.yaml")
 ASSEMBLY = Path("engineering/assembly/assembly.yaml")
+CANDIDATES = Path("research/evidence/display-storage/candidate-comparison.yaml")
 RESOLUTION = re.compile(r"^([1-9][0-9]*)x([1-9][0-9]*)$")
+DRAWING_CANDIDATE = "hongguang_hg070fh002"
 
 
 def _rectangle(
@@ -40,8 +42,78 @@ def _maximum_diagonal(
     )
 
 
+def _screen_drawing_candidate(
+    candidate: dict, display: dict, external: dict, reserve: list, internal: dict
+) -> dict:
+    """Compare a published panel outline, without assuming the flex envelope fits."""
+    active = [float(value) for value in candidate["active_area_mm"]]
+    outline = [float(value) for value in candidate["panel_outline_mm"]]
+    if (
+        len(active) != 2
+        or len(outline) != 3
+        or min(active + outline) <= 0
+        or active[0] > outline[0]
+        or active[1] > outline[1]
+    ):
+        raise ValueError("Display candidate has an invalid panel outline")
+    match = RESOLUTION.fullmatch(str(candidate["resolution"]))
+    if not match:
+        raise ValueError("Display candidate resolution must be WIDTHxHEIGHT")
+    pixels = sorted((int(match[1]), int(match[2])), reverse=True)
+    divisor = math.gcd(*pixels)
+    aspect = (pixels[0] // divisor, pixels[1] // divisor)
+    target_aspect = float(display["aspect_width"]) / float(display["aspect_height"])
+    format_match = math.isclose(
+        float(candidate["diagonal_in"]), float(display["diagonal_in"]), abs_tol=1e-6
+    ) and math.isclose(pixels[0] / pixels[1], target_aspect, rel_tol=1e-6)
+    face_fit = outline[0] <= float(external["length"]) and outline[1] <= float(
+        external["width"]
+    )
+    reserve_fit = outline[0] <= float(reserve[3]) and outline[1] <= float(reserve[4])
+    errors = []
+    if not format_match:
+        errors.append(
+            "Published diagonal and pixel ratio differ from the approved target"
+        )
+    if not face_fit:
+        errors.append("Published panel outline exceeds the device face")
+    if not reserve_fit:
+        errors.append("Published panel outline exceeds the CAD display reserve")
+    return {
+        "part_number": candidate["part_number"],
+        "supplier": candidate["supplier"],
+        "status": "rejected" if errors else "unqualified",
+        "errors": errors,
+        "diagonal_in": float(candidate["diagonal_in"]),
+        "resolution_px": [int(match[1]), int(match[2])],
+        "pixel_aspect_ratio": f"{aspect[0]}:{aspect[1]}",
+        "active_area_mm": active,
+        "panel_outline_mm": outline,
+        "outline_includes": candidate["outline_includes"],
+        "target_format_match": format_match,
+        "nominal_panel_face_fit": face_fit,
+        "nominal_panel_reserve_fit": reserve_fit,
+        "nominal_short_side_reserve_overrun_mm": round(
+            max(0.0, outline[1] - float(reserve[4])), 4
+        ),
+        "minimum_device_width_mm_with_current_side_inset": round(
+            outline[1] + float(external["width"]) - float(internal["width"]), 4
+        ),
+        "document_status": candidate["document_status"],
+        "drawing_status": candidate["drawing_status"],
+        "source": candidate["source"]["url"],
+        "source_revision": candidate["source"]["revision"],
+        "source_sha256": candidate["source"]["sha256"],
+        "caveat": "The published panel outline excludes unverified flex routing, integration allowances, and tolerance stack; the A0 document is preliminary.",
+    }
+
+
 def audit_data(
-    profile: dict, source_spec: dict, envelope: dict, assembly: dict
+    profile: dict,
+    source_spec: dict,
+    envelope: dict,
+    assembly: dict,
+    candidates: dict | None = None,
 ) -> dict:
     """Return exact active-area limits without assuming a supplier module border."""
     display = profile["display"]
@@ -99,7 +171,7 @@ def audit_data(
     external_maximum = _maximum_diagonal(
         external_length, external_width, aspect_width, aspect_height
     )
-    return {
+    report = {
         "status": "pass" if not errors else "blocked",
         "errors": errors,
         "target_diagonal_in": diagonal,
@@ -129,6 +201,16 @@ def audit_data(
         "caveat": "Active pixels are a lower bound on module size. Bezel, driver, flex, bonding, corner, and tolerance allowances would need additional space.",
         "sources": [PROFILE.as_posix(), ENVELOPE.as_posix(), ASSEMBLY.as_posix()],
     }
+    if candidates is not None:
+        report["drawing_candidate"] = _screen_drawing_candidate(
+            candidates["display_candidates"][DRAWING_CANDIDATE],
+            display,
+            external,
+            reserve,
+            internal,
+        )
+        report["sources"].append(CANDIDATES.as_posix())
+    return report
 
 
 def audit(root: Path) -> dict:
@@ -136,7 +218,8 @@ def audit(root: Path) -> dict:
     source_spec = load_yaml(root / profile["identity"]["source_spec"])
     envelope = load_yaml(root / ENVELOPE)
     assembly = load_yaml(root / ASSEMBLY)
-    return audit_data(profile, source_spec, envelope, assembly)
+    candidates = load_yaml(root / CANDIDATES)
+    return audit_data(profile, source_spec, envelope, assembly, candidates)
 
 
 def main() -> int:

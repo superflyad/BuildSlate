@@ -17,6 +17,7 @@ buildslate = "buildslate.cli:main"
 
 [project.urls]
 Repository = "https://github.com/superflyad/BuildSlate"
+Viewer = "https://superflyad.github.io/BuildSlate/"
 Issues = "https://github.com/superflyad/BuildSlate/issues"
 
 [tool.setuptools.packages.find]

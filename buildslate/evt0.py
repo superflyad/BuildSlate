@@ -16,6 +16,7 @@ from referencing import Registry, Resource
 
 from .io import dump_yaml, load_yaml
 from .memory_probe import (
+    COPY_ALGORITHM,
     DEFAULT_ALLOCATION,
     DEFAULT_MIN_TOTAL,
     PAGE,
@@ -598,12 +599,15 @@ class EVT0CampaignRepository:
             or probe.get("pattern_region_bytes") != PATTERN_REGION
         ):
             errors.append("M20 memory probe lacks full-allocation pattern proof")
+        if probe.get("stream_copy_algorithm") != COPY_ALGORITHM:
+            errors.append("M20 memory probe lacks full-allocation stream-copy proof")
         for field, floor in (
             ("os_total_physical_bytes", DEFAULT_MIN_TOTAL),
             ("allocated_bytes", DEFAULT_ALLOCATION),
             ("resident_delta_bytes", DEFAULT_ALLOCATION * 99 // 100),
             ("verified_pages", DEFAULT_ALLOCATION // PAGE),
             ("verified_bytes", DEFAULT_ALLOCATION),
+            ("stream_copy_bytes", DEFAULT_ALLOCATION),
         ):
             value = probe.get(field)
             if not isinstance(value, int) or isinstance(value, bool) or value < floor:
@@ -628,6 +632,22 @@ class EVT0CampaignRepository:
                 errors.append("M20 page verification does not cover allocation")
             if not isinstance(verified, int) or verified != allocation:
                 errors.append("M20 byte verification does not cover allocation")
+            copied = probe.get("stream_copy_bytes")
+            duration = probe.get("stream_copy_duration_ns")
+            rate = probe.get("stream_copy_bytes_per_s")
+            if not isinstance(copied, int) or copied != allocation:
+                errors.append("M20 stream copy does not cover allocation")
+            if (
+                not isinstance(duration, int)
+                or isinstance(duration, bool)
+                or duration <= 0
+                or not isinstance(rate, int)
+                or isinstance(rate, bool)
+                or rate <= 0
+                or not isinstance(copied, int)
+                or rate != copied * 1_000_000_000 // duration
+            ):
+                errors.append("M20 stream-copy rate is invalid")
         if rows and len(errors) == 0:
             final = rows[-1]
             total = probe["os_total_physical_bytes"]
@@ -639,6 +659,8 @@ class EVT0CampaignRepository:
                 errors.append("M20 allocated memory differs from the resident probe")
             if final["work_units_completed"] < probe["verified_pages"]:
                 errors.append("M20 workload counter omits verified pages")
+            if final["stream_copy_bytes_per_s"] != probe["stream_copy_bytes_per_s"]:
+                errors.append("M20 stream-copy rate differs from the probe")
         return errors
 
     def calculate_metrics(

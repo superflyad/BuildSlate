@@ -31,7 +31,7 @@ workloads:
     purpose: Validate usable capacity, allocation stability, error behavior, and bandwidth pressure at the 128 GB tier.
     tool_artifact: null
     allocation_rule: Increase in controlled steps without invoking unsafe or unsupported overcommit.
-    output_metrics: [installed_bytes, usable_bytes, allocated_bytes, bandwidth, errors, corrections_if_exposed, power, temperatures]
+    output_metrics: [installed_bytes, usable_bytes, allocated_bytes, stream_copy_bytes_per_s, errors, corrections_if_exposed, power, temperatures]
   W30_storage_sustained_io:
     purpose: Characterize selected storage under traceable read/write patterns without assuming headline performance.
     tool_artifact: null

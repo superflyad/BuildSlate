@@ -18,7 +18,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from buildslate.evt0 import EVT0CampaignRepository, _coherent_coverage
 from buildslate.io import dump_yaml, load_yaml
-from buildslate.memory_probe import PATTERN_ALGORITHM, PATTERN_REGION
+from buildslate.memory_probe import COPY_ALGORITHM, PATTERN_ALGORITHM, PATTERN_REGION
 
 
 def passed(message: str) -> None:
@@ -499,9 +499,9 @@ def main() -> int:
         manifest_path.write_text(dump_yaml(manifest), encoding="utf-8", newline="\n")
         raw_path = memory_bundle / "raw/telemetry.csv"
         raw_path.write_text(
-            "elapsed_s,installed_bytes,usable_bytes,allocated_bytes,memory_errors,work_units_completed\n"
-            "0,128000000000,120000000000,1000000000,0,0\n"
-            "10,128000000000,120000000000,103079215104,0,25165824\n",
+            "elapsed_s,installed_bytes,usable_bytes,allocated_bytes,stream_copy_bytes_per_s,memory_errors,work_units_completed\n"
+            "0,128000000000,120000000000,1000000000,0,0,0\n"
+            "10,128000000000,120000000000,103079215104,10307921510,0,25165824\n",
             encoding="utf-8",
             newline="\n",
         )
@@ -519,6 +519,10 @@ def main() -> int:
             "verified_bytes": 103079215104,
             "pattern_algorithm": PATTERN_ALGORITHM,
             "pattern_region_bytes": PATTERN_REGION,
+            "stream_copy_algorithm": COPY_ALGORITHM,
+            "stream_copy_bytes": 103079215104,
+            "stream_copy_duration_ns": 10000000000,
+            "stream_copy_bytes_per_s": 10307921510,
             "memory_errors": 0,
             "swap_used_delta_bytes": 0,
         }
@@ -534,8 +538,72 @@ def main() -> int:
         require(
             repository.review_bundle(memory_bundle)["objective_disposition"]
             == "VALID_PASS",
-            "128 GB memory fixture binds full-byte exercise to M20 telemetry",
+            "128 GB memory fixture binds full-byte and copy-rate exercise to M20 telemetry",
         )
+        probe["stream_copy_bytes"] = 1024
+        probe_path.write_text(json.dumps(probe), encoding="utf-8")
+        result["analysis_artifacts"][0]["sha256"] = sha256(probe_path)
+        result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
+        require(
+            any(
+                "stream copy does not cover allocation" in error
+                for error in repository.review_bundle(memory_bundle)["integrity_errors"]
+            ),
+            "partial copy cannot pass M20 bandwidth evidence",
+        )
+        probe["stream_copy_bytes"] = 103079215104
+        probe["stream_copy_algorithm"] = "unverified-copy"
+        probe_path.write_text(json.dumps(probe), encoding="utf-8")
+        result["analysis_artifacts"][0]["sha256"] = sha256(probe_path)
+        result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
+        require(
+            any(
+                "lacks full-allocation stream-copy proof" in error
+                for error in repository.review_bundle(memory_bundle)["integrity_errors"]
+            ),
+            "unverified copy method cannot pass M20",
+        )
+        probe["stream_copy_algorithm"] = COPY_ALGORITHM
+        probe["stream_copy_bytes_per_s"] = 1
+        probe_path.write_text(json.dumps(probe), encoding="utf-8")
+        result["analysis_artifacts"][0]["sha256"] = sha256(probe_path)
+        result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
+        require(
+            any(
+                "stream-copy rate is invalid" in error
+                for error in repository.review_bundle(memory_bundle)["integrity_errors"]
+            ),
+            "invented copy rate cannot pass M20",
+        )
+        probe["stream_copy_bytes_per_s"] = 10307921510
+        probe_path.write_text(json.dumps(probe), encoding="utf-8")
+        result["analysis_artifacts"][0]["sha256"] = sha256(probe_path)
+        result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
+        raw_path.write_text(
+            "elapsed_s,installed_bytes,usable_bytes,allocated_bytes,stream_copy_bytes_per_s,memory_errors,work_units_completed\n"
+            "0,128000000000,120000000000,1000000000,0,0,0\n"
+            "10,128000000000,120000000000,103079215104,1,0,25165824\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+        result["raw_data"][0]["sha256"] = sha256(raw_path)
+        result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
+        require(
+            any(
+                "stream-copy rate differs from the probe" in error
+                for error in repository.review_bundle(memory_bundle)["integrity_errors"]
+            ),
+            "M20 telemetry cannot report a different stream-copy rate",
+        )
+        raw_path.write_text(
+            "elapsed_s,installed_bytes,usable_bytes,allocated_bytes,stream_copy_bytes_per_s,memory_errors,work_units_completed\n"
+            "0,128000000000,120000000000,1000000000,0,0,0\n"
+            "10,128000000000,120000000000,103079215104,10307921510,0,25165824\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+        result["raw_data"][0]["sha256"] = sha256(raw_path)
+        result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
         probe["verified_bytes"] = 8 * probe["verified_pages"]
         probe_path.write_text(json.dumps(probe), encoding="utf-8")
         result["analysis_artifacts"][0]["sha256"] = sha256(probe_path)
@@ -576,9 +644,9 @@ def main() -> int:
         result["analysis_artifacts"][0]["sha256"] = sha256(probe_path)
         result_path.write_text(dump_yaml(result), encoding="utf-8", newline="\n")
         raw_path.write_text(
-            "elapsed_s,installed_bytes,usable_bytes,allocated_bytes,memory_errors,work_units_completed\n"
-            "0,128000000000,120000000000,1000000000,0,0\n"
-            "10,128000000000,120000000000,1000000000,0,25165824\n",
+            "elapsed_s,installed_bytes,usable_bytes,allocated_bytes,stream_copy_bytes_per_s,memory_errors,work_units_completed\n"
+            "0,128000000000,120000000000,1000000000,0,0,0\n"
+            "10,128000000000,120000000000,1000000000,10307921510,0,25165824\n",
             encoding="utf-8",
             newline="\n",
         )

@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT))
 
 from buildslate.memory_probe import (  # noqa: E402
     PAGE,
+    COPY_ALGORITHM,
     PATTERN_ALGORITHM,
     PATTERN_REGION,
     _fill_block,
@@ -56,6 +57,13 @@ def main() -> int:
         or result["verified_pages"] != 32 * 1024**2 // PAGE
         or result["verified_bytes"] != 32 * 1024**2
         or result["pattern_algorithm"] != PATTERN_ALGORITHM
+        or result["stream_copy_algorithm"] != COPY_ALGORITHM
+        or result["stream_copy_bytes"] != result["allocated_bytes"]
+        or result["stream_copy_duration_ns"] <= 0
+        or result["stream_copy_bytes_per_s"]
+        != result["stream_copy_bytes"]
+        * 1_000_000_000
+        // result["stream_copy_duration_ns"]
         or result["memory_errors"] != 0
     ):
         raise ValueError(f"Small resident memory smoke failed: {result}")

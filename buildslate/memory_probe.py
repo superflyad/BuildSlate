@@ -20,6 +20,7 @@ DEFAULT_RESERVE = 8 * 1024**3
 DEFAULT_CHUNK = 256 * 1024**2
 PATTERN_REGION = 1024**2
 PATTERN_ALGORITHM = "shake256-addressed-full-allocation-v1"
+COPY_ALGORITHM = "ctypes-memmove-full-allocation-v1"
 PAGE = mmap.PAGESIZE
 
 
@@ -130,6 +131,27 @@ def _verify_block(block: mmap.mmap, block_index: int, size: int) -> tuple[int, i
     return verified_bytes, mismatched_regions
 
 
+def _stream_copy(
+    blocks: list[mmap.mmap], lengths: list[int], chunk_bytes: int
+) -> tuple[int, int]:
+    """Time one sequential copy of every resident block into a reusable buffer."""
+    with mmap.mmap(-1, chunk_bytes) as scratch:
+        destination = ctypes.addressof(ctypes.c_char.from_buffer(scratch))
+        started = time.perf_counter_ns()
+        copied = 0
+        for block, size in zip(blocks, lengths, strict=True):
+            source = ctypes.addressof(ctypes.c_char.from_buffer(block))
+            ctypes.memmove(destination, source, size)
+            if (
+                scratch[:64] != block[:64]
+                or scratch[size - 64 : size] != block[size - 64 : size]
+            ):
+                raise ValueError("Memory stream copy sample did not match its source")
+            copied += size
+        elapsed_ns = max(1, time.perf_counter_ns() - started)
+    return copied, elapsed_ns
+
+
 def run_probe(
     *,
     unit_id: str,
@@ -154,8 +176,10 @@ def run_probe(
     before = read_memory()
     if before["total_bytes"] < minimum_total_bytes:
         raise ValueError("OS physical memory is below the required capacity")
-    if before["available_bytes"] < allocation_bytes + reserve_bytes:
-        raise ValueError("Insufficient available physical memory plus reserve")
+    if before["available_bytes"] < allocation_bytes + reserve_bytes + chunk_bytes:
+        raise ValueError(
+            "Insufficient available physical memory plus copy buffer and reserve"
+        )
     resident_before = read_resident()
     swap_before = before["swap_used_bytes"]
     blocks: list[mmap.mmap] = []
@@ -179,6 +203,11 @@ def run_probe(
             remaining -= size
         during = read_memory()
         resident_during = max(0, read_resident() - resident_before)
+        if during["available_bytes"] < reserve_bytes + chunk_bytes:
+            raise MemoryError("Physical reserve cannot support the copy buffer")
+        copied_bytes, copy_duration_ns = _stream_copy(blocks, lengths, chunk_bytes)
+        if read_memory()["available_bytes"] < reserve_bytes:
+            raise MemoryError("Physical reserve fell below the requested minimum")
         for index, (block, size) in enumerate(zip(blocks, lengths, strict=True)):
             checked, mismatches = _verify_block(block, index, size)
             verified_bytes += checked
@@ -202,6 +231,7 @@ def run_probe(
                 "pass"
                 if errors == 0
                 and verified_bytes == allocation_bytes
+                and copied_bytes == allocation_bytes
                 and resident_delta >= resident_floor
                 and (
                     swap_delta == 0 or (sys.platform == "win32" and swap_delta is None)
@@ -222,12 +252,16 @@ def run_probe(
             "resident_floor_bytes": resident_floor,
             "verified_pages": verified_bytes // PAGE,
             "verified_bytes": verified_bytes,
+            "stream_copy_algorithm": COPY_ALGORITHM,
+            "stream_copy_bytes": copied_bytes,
+            "stream_copy_duration_ns": copy_duration_ns,
+            "stream_copy_bytes_per_s": copied_bytes * 1_000_000_000 // copy_duration_ns,
             "pattern_algorithm": PATTERN_ALGORITHM,
             "pattern_region_bytes": PATTERN_REGION,
             "memory_errors": errors,
             "swap_used_delta_bytes": swap_delta,
             "duration_s": round(time.monotonic() - started, 3),
-            "caveat": "The full allocated-byte exercise does not identify DRAM MPNs, cover unallocated physical memory, validate routing, or establish a Slate phone build. Windows swap use is not independently measured; the working-set threshold is enforced.",
+            "caveat": "The full allocated-byte exercise and one-pass stream-copy rate do not identify DRAM MPNs, cover unallocated physical memory, isolate DRAM bandwidth from software and cache effects, validate routing, or establish a Slate phone build. Windows swap use is not independently measured; the working-set threshold is enforced.",
         }
     finally:
         for block in blocks:

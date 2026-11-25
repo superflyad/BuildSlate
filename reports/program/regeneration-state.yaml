@@ -47,13 +47,13 @@ nodes:
       validation/evt0/evt0-spec.yaml: 2c1a0823ef0285d749ece9bc6741cd866f92ebce4ceb24e24b08d3dab6cdbe10
       validation/evt0/instrumentation.yaml: 47c9e8942a533cc94c919e17581315fccd3e41ed668fe7091613460afd6c3004
       validation/evt0/metric-definitions.yaml: b02a8eaa62ddbbc88520545a070a84bd400375b9f4c8c3874009b3eab8d6a22d
-      validation/evt0/test-matrix.yaml: 56a66fe48e35791916138a0317f5e7deafeaf85b845503949d4b210cead021b1
-      validation/evt0/workloads.yaml: 15ee8713856cd4191b2cd27eec23545b53cdda0b6c6f6528ce2268a8d78f1d35
+      validation/evt0/test-matrix.yaml: caba6ecd1b2adc205814049dc4a93ec6b06b1713b40cb148db0b53cb08284bf6
+      validation/evt0/workloads.yaml: 24efa04b280d77868b712eb57aeaf14e0573309075de03e2d6034aef25ce48e2
     outputs:
       reports/program/integration-contracts.yaml: 930c6504018801891c0a76f7a569d8ad0ab4ab37b669d6e82f1910fe1cfd9b63
   evt0_campaign:
     inputs:
-      buildslate/evt0.py: 8b894cadacfacf8676119c0f121c6663c6fcd611f3cbc3a3dfc3ffbf4fad2d5a
+      buildslate/evt0.py: 21fe735ae78eb5b162a913412992d4deb5f9c39e7cb117441d3057d0f417b1d1
       validation/evt0/campaigns/README.md: 4dbc4d419c59fe854090afcd52aab82b88f43293880bcefd69122cac0740e42d
       validation/evt0/instrumentation.yaml: 47c9e8942a533cc94c919e17581315fccd3e41ed668fe7091613460afd6c3004
       validation/evt0/metric-definitions.yaml: b02a8eaa62ddbbc88520545a070a84bd400375b9f4c8c3874009b3eab8d6a22d
@@ -61,7 +61,7 @@ nodes:
       validation/evt0/schemas/deviation.schema.yaml: 176cf86d86e96e62bbac6cec98220544181eac7236f9ec379231d0ffcd28f379
       validation/evt0/schemas/run-manifest.schema.yaml: 931d13494beba81a35eecfa646f0ebd809b46a97de273f9c328091b15101dfc5
       validation/evt0/schemas/test-result.schema.yaml: b47bf36e5d4bef51025d080207b43f8f0b60665ceaf31fa00e570daca09a6bec
-      validation/evt0/test-matrix.yaml: 56a66fe48e35791916138a0317f5e7deafeaf85b845503949d4b210cead021b1
+      validation/evt0/test-matrix.yaml: caba6ecd1b2adc205814049dc4a93ec6b06b1713b40cb148db0b53cb08284bf6
     outputs:
       reports/program/evt0-campaign.yaml: 3b7563a559b00dbc352479c6aa0c00feb66aa268f576fcf45f458db683ba2e0c
   evt0_readiness:
@@ -71,8 +71,8 @@ nodes:
       validation/evt0/bom-strategy.yaml: c90ebbdf14424534a61a1765ec65d374b5b8d1cd46505ac330f1c1ebec659dfc
       validation/evt0/evt0-spec.yaml: 2c1a0823ef0285d749ece9bc6741cd866f92ebce4ceb24e24b08d3dab6cdbe10
       validation/evt0/generate_evt0_gate_report.py: 10224a2f90085384e4134e51f4ee4f0f154a22f7e6db5a310d2fd1e0445cdcc6
-      validation/evt0/test-matrix.yaml: 56a66fe48e35791916138a0317f5e7deafeaf85b845503949d4b210cead021b1
-      validation/evt0/workloads.yaml: 15ee8713856cd4191b2cd27eec23545b53cdda0b6c6f6528ce2268a8d78f1d35
+      validation/evt0/test-matrix.yaml: caba6ecd1b2adc205814049dc4a93ec6b06b1713b40cb148db0b53cb08284bf6
+      validation/evt0/workloads.yaml: 24efa04b280d77868b712eb57aeaf14e0573309075de03e2d6034aef25ce48e2
     outputs:
       reports/slate-pocket-v1r-evt0-gate.txt: 798a4f6870ec0902b379bde07e0fc68067e4644abe513af2e9c1679994af030a
   manufacturing_analytics:
@@ -200,7 +200,7 @@ nodes:
       reports/slate-pocket-v1r-program-readiness.txt: 5e0f05228acbf2afdfe06dc3817593e6587e7b69967dc2b85cde6e10ada84de4
       research/rfqs/rfq_registry.yaml: 4178a8634868b1865ee844f78fc51ddd9e8c08074c505d30503c3f8bd72ee91f
       validation/evt0/bom-strategy.yaml: c90ebbdf14424534a61a1765ec65d374b5b8d1cd46505ac330f1c1ebec659dfc
-      validation/evt0/test-matrix.yaml: 56a66fe48e35791916138a0317f5e7deafeaf85b845503949d4b210cead021b1
+      validation/evt0/test-matrix.yaml: caba6ecd1b2adc205814049dc4a93ec6b06b1713b40cb148db0b53cb08284bf6
     outputs:
       reports/program/buildslate-program-snapshot.yaml: 6a93bb4b71adb3b2aa9048530daeb1f7c5162bd0b624a28414ea41a68a393ba8
   dashboard:

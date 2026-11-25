@@ -99,11 +99,11 @@ objective_measurements:
     zero_columns: [protection_faults]
     one_columns: [rail_recovered, peak_mode_active]
   M20:
-    required_columns: [elapsed_s, installed_bytes, usable_bytes, allocated_bytes, memory_errors, work_units_completed]
+    required_columns: [elapsed_s, installed_bytes, usable_bytes, allocated_bytes, stream_copy_bytes_per_s, memory_errors, work_units_completed]
     positive_columns: [installed_bytes, usable_bytes, allocated_bytes]
     positive_deltas: [work_units_completed]
     zero_columns: [memory_errors]
-    minimum_final: {installed_bytes: 128000000000, usable_bytes: 120000000000, allocated_bytes: 103079215104}
+    minimum_final: {installed_bytes: 128000000000, usable_bytes: 120000000000, allocated_bytes: 103079215104, stream_copy_bytes_per_s: 1}
     final_order: [[allocated_bytes, usable_bytes], [usable_bytes, installed_bytes]]
     analysis_artifacts_min: 1
   S30:

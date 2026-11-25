@@ -508,6 +508,7 @@ function renderHardware() {
   const group = campaign.coherent_evidence_group;
   document.querySelector("#hardware-campaign").innerHTML = `
     <div class="gate-item"><strong>Campaign gate</strong><span>${esc(campaign.gate.replaceAll("_", " "))}</span></div>
+    <div class="gate-item"><strong>128 GB physical memory proof</strong><span>M20 requires a booted, serialized Slate unit: at least 96 GiB resident, full-byte verification, and a timed copy of that allocation. The raw copy rate must match the probe artifact. A one-pass copy rate does not certify DRAM bandwidth or long-term stability. <a href="https://github.com/superflyad/BuildSlate/blob/main/docs/engineering/compute_platform_decision.md#resident-memory-exercise" target="_blank" rel="noopener noreferrer">Test method</a></span></div>
     <div class="gate-item"><strong>Required tests on one unit</strong><span>${campaign.passing_required_tests}/${campaign.required_tests} passed${group ? ` · ${esc(group.unit_id)} / ${esc(group.build_id)}` : " · no unit evidence"}</span></div>
     <div class="gate-item"><strong>Missing or nonpassing tests</strong><span>${esc(campaign.missing_tests.join(", ") || "None")}</span></div>
     <div class="gate-item"><strong>Prerequisite gaps</strong><span>${esc(campaign.prerequisite_gaps.join(", ") || "None")}</span></div>`;

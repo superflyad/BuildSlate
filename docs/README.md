@@ -79,6 +79,7 @@ Use this index to move from a question to the authoritative source. The root [RE
 | [Phone-function proof](engineering/phone_function_proof.md) | Raw calling, data, radio-kill, emergency-lab, and build-identity evidence contract |
 | [1 TB UFS candidate screen](engineering/storage_candidate_fit.md) | Exact public package outline, rail requirements, and unresolved integration work |
 | [Battery candidate fit](engineering/battery_candidate_fit.md) | Published cell and concept pack volumes versus the complete-pack allocation; charge evidence limit |
+| [USB interconnect fit](engineering/usb_interconnect_fit.md) | Concept port-to-board separation and manufacturer connector rating screen |
 | [Selected BOM proof](engineering/selected_bom_proof.md) | Exact part identity, supplier source binding, and interface checks |
 | [Display active-area fit](engineering/display_geometry_fit.md) | Target diagonal and aspect against the body, CAD reserve, and source resolution |
 | [Platform reference proof](engineering/platform_reference_proof.md) | Selected compute, memory, storage, PMIC, and 128 GB channel-map binding |

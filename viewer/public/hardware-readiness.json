@@ -302,6 +302,49 @@
     "source": "https://www.enovix.com/product-category/ai-platform",
     "caveat": "The published cell box and concept pack envelope both exceed the current complete-pack allocation. A custom design or approved allocation change is required; no cell or charge rate is selected."
   },
+  "usb_fit": {
+    "status": "blocked",
+    "port_part": "usb_c_port_concept",
+    "board_part": "main_pcb_placeholder",
+    "port_box_mm": [
+      84.0,
+      0.0,
+      2.8,
+      12.0,
+      6.0,
+      3.0
+    ],
+    "board_box_mm": [
+      92.0,
+      12.0,
+      3.2,
+      78.0,
+      55.0,
+      0.8
+    ],
+    "axis_separation_mm": [
+      0.0,
+      6.0,
+      0.0
+    ],
+    "minimum_box_separation_mm": 6.0,
+    "direct_board_mount_possible_from_current_boxes": false,
+    "candidate_mpn": "12402075E512A",
+    "candidate_status": "public_candidate_not_selected",
+    "candidate_pcb_thickness_mm": 0.8,
+    "board_thickness_mm": 0.8,
+    "maximum_operating_voltage_v": 20,
+    "maximum_connector_current_a": 5,
+    "connector_voltage_current_ceiling_w": 100.0,
+    "wired_charge_target_w": 100.0,
+    "target_at_connector_rating_ceiling": true,
+    "source_consistency": "pass",
+    "source_errors": [],
+    "source": "https://www.amphenol-cs.com/product/12402075e512a.html",
+    "rating_source": "https://cdn.amphenol-cs.com/media/wysiwyg/files/documentation/ps-susb013.pdf",
+    "drawing_source": "https://cdn.amphenol-cs.com/media/wysiwyg/files/drawing/c12402075.pdf",
+    "caveat": "Current concept boxes do not touch, so this USB port cannot mount directly to the main board as modeled. The connector is a public candidate, not a selected part; a flex, daughterboard, or changed board plus released geometry, pinout, PD design, and physical testing is required. Published ratings do not authorize charging."
+  },
   "cellular_reference_fit": {
     "status": "outline_blocked",
     "candidate": "RG255C-GL",

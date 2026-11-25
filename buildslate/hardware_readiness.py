@@ -40,6 +40,7 @@ from buildslate.rf_proof import audit as audit_rf
 from buildslate.storage_fit import audit as audit_storage_fit
 from buildslate.thermal_proof import RELEASE as THERMAL_RELEASE
 from buildslate.thermal_proof import audit as audit_thermal
+from buildslate.usb_fit import audit as audit_usb_fit
 
 MANIFEST = Path("engineering/hardware/readiness.yaml")
 STRATEGY = Path("validation/evt0/bom-strategy.yaml")
@@ -571,6 +572,7 @@ def build_report(root: Path) -> dict:
     platform_fit = audit_platform_fit(root)
     storage_fit = audit_storage_fit(root)
     battery_fit = audit_battery_fit(root)
+    usb_fit = audit_usb_fit(root)
     display_fit = audit_display_fit(root)
     memory_package_fit = audit_memory_package_fit(root)
     firmware_bundle = audit_firmware(root / FIRMWARE_RELEASE)
@@ -683,6 +685,7 @@ def build_report(root: Path) -> dict:
         "platform_fit": platform_fit,
         "storage_fit": storage_fit,
         "battery_fit": battery_fit,
+        "usb_fit": usb_fit,
         "cellular_reference_fit": audit_cellular_fit(root),
         "display_fit": display_fit,
         "memory_package_fit": memory_package_fit,

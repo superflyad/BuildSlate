@@ -32,6 +32,8 @@ The [memory package screen](memory_package_fit.md) shows that an exact public 32
 
 The [battery candidate screen](battery_candidate_fit.md) exposes a separate mechanical and safety conflict: the published AI1-M01 bare-cell box is larger than the current complete-pack allocation, and no charge rating is published for that candidate. Its listed 2C band is a discharge category. The 100 W target cannot enter a build design without a supplier charge curve and complete-pack review.
 
+The [USB interconnect screen](usb_interconnect_fit.md) finds a 6 mm gap between the assumed port and main PCB, with no released bridge. A public 0.8 mm-board connector candidate is electrically screened, but it has no selected footprint, cable, PD design, or physical validation.
+
 The schematic netlist record has an additional [electrical proof](electrical_netlist_proof.md): its selected electrical BOM, critical endpoint contract, and exported XML netlist are checked together before that record can be accepted.
 
 The ERC record has a separate [schematic rule proof](schematic_erc_proof.md). It reruns KiCad against the approved schematic and hashed project settings, rejects exclusions or disabled critical rules, and compares the clean result with the reviewed report. No released v1R schematic exists yet.

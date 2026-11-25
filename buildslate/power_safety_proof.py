@@ -29,7 +29,16 @@ LOADS = (
     "cameras",
     "system_io_and_controls",
 )
-POWER_COMPONENTS = ("charger", "pmic", "protection", "usb_pd")
+POWER_COMPONENTS = ("charger", "pmic", "protection", "usb_pd", "usb_receptacle")
+USB_SOURCE_ROOT = Path("engineering/hardware/released/power/sources")
+USB_RATINGS = (
+    "receptacle_max_voltage_v",
+    "receptacle_max_current_a",
+    "cable_max_voltage_v",
+    "cable_max_current_a",
+    "pd_voltage_v",
+    "pd_current_a",
+)
 FAULTS = (
     "battery_overvoltage",
     "battery_undervoltage",
@@ -114,6 +123,24 @@ def _electrical_parts(path: Path) -> dict[str, str]:
         return parts
 
 
+def _rating_source(root: Path, record: object) -> bool:
+    if not isinstance(record, dict):
+        return False
+    relative = record.get("path")
+    digest = record.get("sha256")
+    if not _text(relative) or not _text(digest):
+        return False
+    target = (root / relative).resolve()
+    allowed = (root / USB_SOURCE_ROOT).resolve()
+    return (
+        target.is_relative_to(allowed)
+        and target != allowed
+        and target.suffix.lower() == ".pdf"
+        and target.is_file()
+        and _sha(target) == digest
+    )
+
+
 def audit(root: Path) -> dict:
     """Require internally consistent limits, rail capacity, and source identity."""
     path = root / RELEASE
@@ -190,6 +217,26 @@ def audit(root: Path) -> dict:
         if item["ref"] in refs or electrical.get(item["ref"]) != item["mpn"]:
             errors.append(f"Power component {role} differs from electrical BOM")
         refs.add(item["ref"])
+    usb = release.get("usb_input")
+    receptacle = components.get("usb_receptacle")
+    if (
+        not isinstance(usb, dict)
+        or any(not _number(usb.get(field)) for field in USB_RATINGS)
+        or not _text(usb.get("cable_mpn"))
+        or not isinstance(receptacle, dict)
+        or usb.get("receptacle_mpn") != receptacle.get("mpn")
+    ):
+        return _fail(errors + ["USB receptacle, cable, or PD contract is incomplete"])
+    for role in ("receptacle", "cable"):
+        if not _rating_source(root, usb.get(f"{role}_rating_source")):
+            errors.append(f"USB {role} rating source is missing or stale")
+    if any(usb[field] <= 0 for field in USB_RATINGS) or not (
+        usb["pd_voltage_v"]
+        <= min(usb["receptacle_max_voltage_v"], usb["cable_max_voltage_v"])
+        and usb["pd_current_a"]
+        <= min(usb["receptacle_max_current_a"], usb["cable_max_current_a"])
+    ):
+        errors.append("USB PD contract exceeds receptacle or cable ratings")
     limits = release.get("limits")
     if not isinstance(limits, dict) or any(
         not _number(limits.get(field)) for field in LIMIT_FIELDS
@@ -244,6 +291,8 @@ def audit(root: Path) -> dict:
     ):
         errors.append("Charge path limits or efficiency are invalid")
     else:
+        if usb["pd_voltage_v"] * usb["pd_current_a"] < limits["wired_input_cap_w"]:
+            errors.append("USB PD contract cannot supply the wired-input cap")
         required_input_w = (
             limits["charge_current_limit_a"]
             * limits["normal_charge_termination_v"]
@@ -397,6 +446,7 @@ def audit(root: Path) -> dict:
         "rails_checked": len(rail_by_id),
         "continuous_battery_current_a": round(continuous_battery_a, 3),
         "peak_battery_current_a": round(peak_battery_a, 3),
+        "usb_pd_contract_power_w": round(usb["pd_voltage_v"] * usb["pd_current_a"], 3),
         "errors": errors,
         "caveat": "Internal consistency does not verify supplier ratings, safe protection thresholds, circuit implementation, or physical behavior.",
     }

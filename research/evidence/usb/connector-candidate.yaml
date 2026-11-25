@@ -1,0 +1,23 @@
+metadata:
+  status: public_candidate_not_selected
+  reviewed_on: 2026-11-24
+  scope: Source screen only; no supplier CAD, released PCB footprint, interconnect, or physical test.
+
+candidate:
+  manufacturer: Amphenol Communications Solutions
+  mpn: 12402075E512A
+  status: active
+  interface: USB4_Gen3_Type_C
+  mount: right_angle_mid_mount
+  contacts: 24
+  recommended_pcb_thickness_mm: 0.8
+  maximum_connector_current_a: 5
+  maximum_operating_voltage_v: 20
+  product_page_voltage_v: 100
+  voltage_disposition: use_lower_detailed_specification_until_supplier_reconciles
+  ingress_rating: none_published
+  sources:
+    product_page: https://www.amphenol-cs.com/product/12402075e512a.html
+    detailed_specification: https://cdn.amphenol-cs.com/media/wysiwyg/files/documentation/ps-susb013.pdf
+    mechanical_drawing: https://cdn.amphenol-cs.com/media/wysiwyg/files/drawing/c12402075.pdf
+  caveat: The 100 V product-page field conflicts with the 20 V operating maximum in product specification SUSB013 Rev C. The drawing has not been dimensionally incorporated into Slate CAD. Current and voltage ratings alone do not approve a PD contract, cable, seal, PCB, charger, or 100 W operation.

@@ -62,7 +62,7 @@ def _fixture(root: Path) -> dict:
     electrical.parent.mkdir(parents=True, exist_ok=True)
     electrical.write_text(
         "ref,manufacturer,mpn\nU1,Fixture,CHARGER\nU2,Fixture,PMIC\n"
-        "U3,Fixture,PROTECTOR\nU4,Fixture,USB-PD\n",
+        "U3,Fixture,PROTECTOR\nU4,Fixture,USB-PD\nJ1,Fixture,USB-RECEPTACLE\n",
         encoding="utf-8",
     )
     board = root / BOARD
@@ -72,7 +72,14 @@ def _fixture(root: Path) -> dict:
         "pmic": ("U2", "PMIC"),
         "protection": ("U3", "PROTECTOR"),
         "usb_pd": ("U4", "USB-PD"),
+        "usb_receptacle": ("J1", "USB-RECEPTACLE"),
     }
+    sources = root / "engineering/hardware/released/power/sources"
+    sources.mkdir(parents=True, exist_ok=True)
+    receptacle_source = sources / "receptacle.pdf"
+    cable_source = sources / "cable.pdf"
+    receptacle_source.write_bytes(b"fixture receptacle rating source")
+    cable_source.write_bytes(b"fixture cable rating source")
     return {
         "schema_version": 1,
         "device": "slate-pocket-v1r",
@@ -84,6 +91,24 @@ def _fixture(root: Path) -> dict:
         "battery_mpn": "FIXTURE-PACK",
         "power_components": {
             role: {"ref": ref, "mpn": mpn} for role, (ref, mpn) in roles.items()
+        },
+        "usb_input": {
+            "receptacle_mpn": "USB-RECEPTACLE",
+            "receptacle_max_voltage_v": 20.0,
+            "receptacle_max_current_a": 5.0,
+            "receptacle_rating_source": {
+                "path": receptacle_source.relative_to(root).as_posix(),
+                "sha256": _sha(receptacle_source),
+            },
+            "cable_mpn": "FIXTURE-CABLE",
+            "cable_max_voltage_v": 20.0,
+            "cable_max_current_a": 3.0,
+            "cable_rating_source": {
+                "path": cable_source.relative_to(root).as_posix(),
+                "sha256": _sha(cable_source),
+            },
+            "pd_voltage_v": 15.0,
+            "pd_current_a": 2.0,
         },
         "limits": {
             "operating_min_v": 3.2,
@@ -180,6 +205,26 @@ def main() -> int:
             (
                 "charge overlap",
                 lambda x: x["limits"].update(full_power_charge_ai_overlap=True),
+            ),
+            (
+                "missing receptacle",
+                lambda x: x["power_components"].pop("usb_receptacle"),
+            ),
+            (
+                "receptacle overvoltage",
+                lambda x: x["usb_input"].update(receptacle_max_voltage_v=9),
+            ),
+            (
+                "cable overcurrent",
+                lambda x: x["usb_input"].update(cable_max_current_a=1),
+            ),
+            (
+                "stale cable rating",
+                lambda x: x["usb_input"]["cable_rating_source"].update(sha256="0" * 64),
+            ),
+            (
+                "undersized PD contract",
+                lambda x: x["usb_input"].update(pd_current_a=1),
             ),
         ):
             changed = copy.deepcopy(baseline)

@@ -55,6 +55,7 @@ VALIDATION_CHECKS = (
     "validation/validate_platform_fit.py",
     "validation/validate_storage_fit.py",
     "validation/validate_battery_fit.py",
+    "validation/validate_usb_fit.py",
     "validation/validate_display_fit.py",
     "validation/validate_cellular_fit.py",
     "validation/validate_phone_proof.py",

@@ -120,6 +120,48 @@ candidates:
       source_type: manufacturer_product_brief
       accessed: 2026-11-24
 
+  qualcomm_snapdragon_x2_elite_90:
+    platform_class: client_pc
+    representative_part: X2E-90-100
+    modem_integration: external_supported_not_designed
+    process_nm: 3
+    npu_tops_int8: 85
+    memory_type: LPDDR5X
+    maximum_memory_gb: 128
+    memory_bus_width_bits: 128
+    memory_transfer_rate_mt_s: 9523
+    memory_bandwidth_gb_s: 152
+    storage_interfaces: [dual_pcie_5_0, UFS_4_0]
+    on_device_display: eDP_1_5
+    public_sustained_power_w: null
+    observed_oem_configuration:
+      product: HP OmniBook Ultra 14-kg000
+      product_sku: C92SVAV_261379
+      platform_part: X2E-90-100
+      memory_gb: 64
+      placement: unspecified
+      board_spare_part: P84650-601
+      service_source:
+        url: https://kaas.hpcloud.hp.com/pdf-public/pdf_13769716_en-US-1.pdf
+        source_type: oem_maintenance_and_service_guide
+        accessed: 2026-11-24
+      source:
+        url: https://www.hp.com/us-en/shop/custom/hp-omnibook-ultra-laptop-next-gen-ai-14-kg000-14-inch-snapdragon-x2-elite-64gb-ram-512gb-ssd-C92SVAV_261379?catEntryId=3074457345622327818
+        source_type: oem_store_configuration
+        accessed: 2026-11-24
+    strengths:
+      - HP lists an exact 64 GB X2E-90-100 configuration and a matching system-board spare part.
+      - The OEM evidence closes half the 128 GB gap relative to a 32 GB reference system.
+    blockers:
+      - No reviewed 128 GB orderable X2E-90-100 configuration or qualified memory topology.
+      - The service guide does not establish whether DRAM is on package or on the board, nor does it release package dimensions or a Slate reference design.
+      - HP's laptop board, cooling, power, firmware, and external modem path are not Slate Pocket integration evidence.
+    disposition: observed_64gb_oem_board_supplier_rfi_not_selected
+    source:
+      url: https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf
+      source_type: manufacturer_product_brief
+      accessed: 2026-11-24
+
   qualcomm_snapdragon_x2_plus_10_core:
     platform_class: client_pc
     representative_part: X2P-64-100

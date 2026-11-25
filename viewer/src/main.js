@@ -417,9 +417,10 @@ function renderHardware() {
   const oemEvidence = (item) =>
     item.observed_oem_memory_gb === null
       ? "no reviewed OEM configuration"
-      : `<a href="${esc(item.observed_oem_source)}" target="_blank" rel="noopener noreferrer">${esc(item.observed_oem_product)}${item.observed_oem_product_sku ? ` ${esc(item.observed_oem_product_sku)}` : ""}: ${esc(item.observed_oem_memory_gb)} GB</a> (${esc(item.observed_oem_memory_placement.replaceAll("_", " "))})${item.physical_package_source ? ` · <a href="${esc(item.physical_package_source)}" target="_blank" rel="noopener noreferrer">physical package analysis</a>` : ""}`;
+      : `<a href="${esc(item.observed_oem_source)}" target="_blank" rel="noopener noreferrer">${esc(item.observed_oem_product)}${item.observed_oem_product_sku ? ` ${esc(item.observed_oem_product_sku)}` : ""}: ${esc(item.observed_oem_memory_gb)} GB</a> (${item.observed_oem_memory_placement === "unspecified" ? "package placement unpublished" : esc(item.observed_oem_memory_placement.replaceAll("_", " "))})${item.observed_oem_service_source ? ` · <a href="${esc(item.observed_oem_service_source)}" target="_blank" rel="noopener noreferrer">HP board ${esc(item.observed_oem_board_spare_part)}</a>` : ""}${item.physical_package_source ? ` · <a href="${esc(item.physical_package_source)}" target="_blank" rel="noopener noreferrer">physical package analysis</a>` : ""}`;
   document.querySelector("#hardware-platforms").innerHTML =
     `<div class="gate-item"><strong>Decision</strong><span>${esc(platform.decision)}</span></div>` +
+    `<div class="gate-item"><strong>Closest reviewed X2 OEM configuration</strong><span>${esc(platform.largest_reviewed_x2_oem_part)} with ${esc(platform.largest_reviewed_x2_oem_memory_gb)} GB system memory; ${esc(platform.remaining_to_memory_floor_gb)} GB short of Slate's 128 GB floor. This is a laptop board, not a Slate phone design.</span></div>` +
     platform.candidates
       .map(
         (item) =>

@@ -37,7 +37,10 @@ def main() -> int:
         report["status"] != "supplier_proof_required"
         or report["memory_floor_gb"] != 128
         or report["integrated_phone_matches"]
-        or len(report["candidates"]) != 9
+        or len(report["candidates"]) != 10
+        or report["largest_reviewed_x2_oem_memory_gb"] != 64
+        or report["largest_reviewed_x2_oem_part"] != "X2E-90-100"
+        or report["remaining_to_memory_floor_gb"] != 64
     ):
         raise ValueError("Current 128 GB phone platform gap is misstated")
     mobile = [item for item in report["candidates"] if item["integrated_phone_path"]]
@@ -61,6 +64,22 @@ def main() -> int:
         or not x2["physical_package_source"]
     ):
         raise ValueError("Observed ASUS X2 package evidence is absent")
+    elite90 = next(
+        item
+        for item in report["candidates"]
+        if item["id"] == "qualcomm_snapdragon_x2_elite_90"
+    )
+    if (
+        elite90["public_maximum_memory_gb"] != 128
+        or elite90["public_memory_bus_width_bits"] != 128
+        or elite90["observed_oem_memory_gb"] != 64
+        or elite90["observed_oem_memory_placement"] != "unspecified"
+        or elite90["observed_oem_board_spare_part"] != "P84650-601"
+        or not elite90["observed_oem_service_source"]
+        or elite90["public_128gb_configuration"]
+        or elite90["combined_public_fit"]
+    ):
+        raise ValueError("HP 64 GB system board was promoted to a 128 GB platform")
     plus = {
         item["id"]: item
         for item in report["candidates"]
@@ -121,6 +140,12 @@ def main() -> int:
     candidates = yaml.safe_load((ROOT / CANDIDATES).read_text(encoding="utf-8"))
     with TemporaryDirectory() as temporary:
         root = Path(temporary)
+        altered = copy.deepcopy(candidates)
+        altered["candidates"]["qualcomm_snapdragon_x2_elite_90"][
+            "observed_oem_configuration"
+        ]["service_source"] = None
+        _write(root, profile, altered)
+        _must_fail(root)
         altered = copy.deepcopy(candidates)
         altered["candidates"]["qualcomm_snapdragon_x2_plus_6_core"][
             "observed_oem_configuration"

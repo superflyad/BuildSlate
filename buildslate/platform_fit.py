@@ -128,6 +128,8 @@ def audit(root: Path) -> dict:
             raise ValueError(f"{identifier}: physical observation has no OEM system")
         observed_memory = None
         observed_source = None
+        service_source = None
+        board_spare_part = None
         physical_source = None
         if observed is not None:
             if not isinstance(observed, dict):
@@ -138,6 +140,11 @@ def audit(root: Path) -> dict:
                 observed_record.get("url")
                 if isinstance(observed_record, dict)
                 else None
+            )
+            board_spare_part = observed.get("board_spare_part")
+            service_record = observed.get("service_source")
+            service_source = (
+                service_record.get("url") if isinstance(service_record, dict) else None
             )
             if (
                 not isinstance(observed_memory, int)
@@ -151,6 +158,16 @@ def audit(root: Path) -> dict:
                 not in {"memory_on_package", "board_soldered", "unspecified"}
                 or not isinstance(observed_source, str)
                 or not observed_source.startswith("https://")
+                or ((board_spare_part is None) != (service_record is None))
+                or (
+                    board_spare_part is not None
+                    and (
+                        not isinstance(board_spare_part, str)
+                        or not board_spare_part.strip()
+                        or not isinstance(service_source, str)
+                        or not service_source.startswith("https://")
+                    )
+                )
             ):
                 raise ValueError(f"{identifier}: OEM configuration is inconsistent")
         if physical is not None:
@@ -204,6 +221,8 @@ def audit(root: Path) -> dict:
                     observed["placement"] if observed is not None else None
                 ),
                 "observed_oem_source": observed_source,
+                "observed_oem_board_spare_part": board_spare_part,
+                "observed_oem_service_source": service_source,
                 "physical_package_source": physical_source,
                 "published_capacity_permits_floor": capacity_permits_floor,
                 "integrated_phone_path": phone_integration,
@@ -224,19 +243,37 @@ def audit(root: Path) -> dict:
             }
         )
     matches = [item["id"] for item in rows if item["combined_public_fit"]]
+    reviewed_x2 = [
+        item
+        for item in rows
+        if item["id"].startswith("qualcomm_snapdragon_x2_")
+        and item["observed_oem_memory_gb"] is not None
+    ]
+    if not reviewed_x2:
+        raise ValueError("No reviewed X2 OEM memory configuration")
+    largest_x2_oem = max(reviewed_x2, key=lambda item: item["observed_oem_memory_gb"])
     return {
         "status": "public_candidate_found" if matches else "supplier_proof_required",
         "memory_floor_gb": floor,
         "slate_body_face_mm": face,
         "slate_sustained_screen_w": sustained_target,
         "integrated_phone_matches": matches,
+        "largest_reviewed_x2_oem_memory_gb": largest_x2_oem["observed_oem_memory_gb"],
+        "largest_reviewed_x2_oem_part": largest_x2_oem["part"],
+        "remaining_to_memory_floor_gb": max(
+            0, floor - largest_x2_oem["observed_oem_memory_gb"]
+        ),
         "candidates": rows,
         "decision": (
             "The 128 GB floor is retained. X2 Elite and Plus publish controller "
-            "capacity for it, "
-            "but the reviewed ASUS X2 system has 48 GB on package, with three "
-            "16 GB DRAM packages observed in physical analysis; HP and Lenovo list "
-            "32 GB X2 Plus systems. No reviewed public 128 GB "
+            "capacity for it, but "
+            f"{largest_x2_oem['observed_oem_product']} with "
+            f"{largest_x2_oem['part']} has documented "
+            f"{largest_x2_oem['observed_oem_memory_gb']} GB system memory, "
+            f"{max(0, floor - largest_x2_oem['observed_oem_memory_gb'])} GB below "
+            "Slate's floor. The reviewed ASUS X2 Extreme has "
+            "48 GB on package; reviewed X2 Plus systems have 32 GB. "
+            "No reviewed public 128 GB "
             "X2 configuration or pocket phone integration is established. "
             "Obtain an orderable 128 GB package and supplier topology, "
             "power, software, and modem evidence before selection."

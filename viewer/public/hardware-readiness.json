@@ -76,6 +76,15 @@
     "largest_reviewed_x2_oem_memory_gb": 64,
     "largest_reviewed_x2_oem_part": "X2E-90-100",
     "remaining_to_memory_floor_gb": 64,
+    "reviewed_external_128gb_oem_configurations": [
+      {
+        "part": "NVIDIA RTX Spark N1X 6144-core GPU / 20-core CPU",
+        "product": "ASUS ProArt P14 H7407BA",
+        "product_sku": "H7407BA-XB99T",
+        "memory_gb": 128,
+        "source": "https://www.asus.com/us/news/proart-rtxspark-buynow/"
+      }
+    ],
     "candidates": [
       {
         "id": "qualcomm_snapdragon_8_elite_gen_5",
@@ -260,6 +269,32 @@
         "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Plus-Product-Brief.pdf"
       },
       {
+        "id": "nvidia_rtx_spark_n1x_128gb_reference",
+        "part": "NVIDIA RTX Spark N1X 6144-core GPU / 20-core CPU",
+        "platform_class": "client_pc",
+        "public_maximum_memory_gb": 128,
+        "public_memory_bus_width_bits": null,
+        "cpu_cores": null,
+        "public_configured_memory_gb": null,
+        "observed_oem_product": "ASUS ProArt P14 H7407BA",
+        "observed_oem_product_sku": "H7407BA-XB99T",
+        "observed_oem_memory_gb": 128,
+        "observed_oem_memory_placement": "board_soldered",
+        "observed_oem_source": "https://www.asus.com/us/news/proart-rtxspark-buynow/",
+        "observed_oem_board_spare_part": null,
+        "observed_oem_service_source": null,
+        "physical_package_source": null,
+        "published_capacity_permits_floor": true,
+        "integrated_phone_path": false,
+        "combined_public_fit": false,
+        "public_128gb_configuration": true,
+        "module_outline_mm": null,
+        "module_outline_fits_body_face": null,
+        "minimum_published_power_mode_w": null,
+        "minimum_published_mode_over_slate_w": null,
+        "source": "https://www.asus.com/us/laptops/for-creators/proart/proart-p14-h7407/techspec/"
+      },
+      {
         "id": "amd_ryzen_ai_max_plus_395",
         "part": null,
         "platform_class": "high_power_client_pc",
@@ -344,7 +379,7 @@
         "source": "https://www.congatec.com/en/products/com-hpc/conga-hpccrx1/"
       }
     ],
-    "decision": "The 128 GB floor is retained. X2 Elite and Plus publish controller capacity for it, but HP OmniBook Ultra 14-kg000 with X2E-90-100 has documented 64 GB system memory, 64 GB below Slate's floor. The reviewed ASUS X2 Extreme has 48 GB on package; reviewed X2 Plus systems have 32 GB. No reviewed public 128 GB X2 configuration or pocket phone integration is established. Obtain an orderable 128 GB package and supplier topology, power, software, and modem evidence before selection.",
+    "decision": "The 128 GB floor is retained. X2 Elite and Plus publish controller capacity for it, but HP OmniBook Ultra 14-kg000 with X2E-90-100 has documented 64 GB system memory, 64 GB below Slate's floor. The reviewed ASUS X2 Extreme has 48 GB on package; reviewed X2 Plus systems have 32 GB. A reviewed N1X laptop SKU is configured with 128 GB, but it does not establish a Slate compute package or phone integration. No reviewed public 128 GB X2 configuration or pocket phone integration is established. Obtain an orderable 128 GB package and supplier topology, power, software, and modem evidence before selection.",
     "caveat": "Published maximum memory and modem features do not prove a supported memory topology, purchasability, thermal fit, or a working phone."
   },
   "storage_fit": {

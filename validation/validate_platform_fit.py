@@ -37,7 +37,7 @@ def main() -> int:
         report["status"] != "supplier_proof_required"
         or report["memory_floor_gb"] != 128
         or report["integrated_phone_matches"]
-        or len(report["candidates"]) != 10
+        or len(report["candidates"]) != 11
         or report["largest_reviewed_x2_oem_memory_gb"] != 64
         or report["largest_reviewed_x2_oem_part"] != "X2E-90-100"
         or report["remaining_to_memory_floor_gb"] != 64
@@ -80,6 +80,26 @@ def main() -> int:
         or elite90["combined_public_fit"]
     ):
         raise ValueError("HP 64 GB system board was promoted to a 128 GB platform")
+    n1x = next(
+        item
+        for item in report["candidates"]
+        if item["id"] == "nvidia_rtx_spark_n1x_128gb_reference"
+    )
+    references = report["reviewed_external_128gb_oem_configurations"]
+    if (
+        n1x["observed_oem_product_sku"] != "H7407BA-XB99T"
+        or n1x["observed_oem_memory_gb"] != 128
+        or n1x["observed_oem_memory_placement"] != "board_soldered"
+        or not n1x["public_128gb_configuration"]
+        or n1x["integrated_phone_path"]
+        or n1x["combined_public_fit"]
+        or len(references) != 1
+        or references[0]["product_sku"] != "H7407BA-XB99T"
+        or references[0]["memory_gb"] != 128
+    ):
+        raise ValueError(
+            "128 GB N1X laptop reference was mistaken for Slate phone proof"
+        )
     plus = {
         item["id"]: item
         for item in report["candidates"]
@@ -140,6 +160,13 @@ def main() -> int:
     candidates = yaml.safe_load((ROOT / CANDIDATES).read_text(encoding="utf-8"))
     with TemporaryDirectory() as temporary:
         root = Path(temporary)
+        altered = copy.deepcopy(candidates)
+        altered["candidates"]["nvidia_rtx_spark_n1x_128gb_reference"][
+            "observed_oem_configuration"
+        ]["memory_gb"] = 64
+        _write(root, profile, altered)
+        if audit(root)["reviewed_external_128gb_oem_configurations"]:
+            raise ValueError("Reduced N1X laptop memory still counts as 128 GB")
         altered = copy.deepcopy(candidates)
         altered["candidates"]["qualcomm_snapdragon_x2_elite_90"][
             "observed_oem_configuration"

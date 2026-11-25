@@ -421,6 +421,12 @@ function renderHardware() {
   document.querySelector("#hardware-platforms").innerHTML =
     `<div class="gate-item"><strong>Decision</strong><span>${esc(platform.decision)}</span></div>` +
     `<div class="gate-item"><strong>Closest reviewed X2 OEM configuration</strong><span>${esc(platform.largest_reviewed_x2_oem_part)} with ${esc(platform.largest_reviewed_x2_oem_memory_gb)} GB system memory; ${esc(platform.remaining_to_memory_floor_gb)} GB short of Slate's 128 GB floor. This is a laptop board, not a Slate phone design.</span></div>` +
+    platform.reviewed_external_128gb_oem_configurations
+      .map(
+        (item) =>
+          `<div class="gate-item"><strong>Configured 128 GB laptop reference</strong><span><a href="${esc(item.source)}" target="_blank" rel="noopener noreferrer">${esc(item.product)} ${esc(item.product_sku)}</a> lists ${esc(item.memory_gb)} GB with ${esc(item.part)}. This establishes a retail laptop configuration, not a selected Slate compute package, memory topology, or phone integration.</span></div>`,
+      )
+      .join("") +
     platform.candidates
       .map(
         (item) =>

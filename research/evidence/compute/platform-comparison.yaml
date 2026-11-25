@@ -237,6 +237,36 @@ candidates:
       source_type: manufacturer_product_brief
       accessed: 2026-11-24
 
+  nvidia_rtx_spark_n1x_128gb_reference:
+    platform_class: client_pc
+    representative_part: NVIDIA RTX Spark N1X 6144-core GPU / 20-core CPU
+    modem_integration: none
+    memory_type: LPDDR5X
+    maximum_unified_memory_gb: 128
+    public_sustained_power_w: null
+    observed_oem_configuration:
+      product: ASUS ProArt P14 H7407BA
+      product_sku: H7407BA-XB99T
+      platform_part: NVIDIA RTX Spark N1X 6144-core GPU / 20-core CPU
+      memory_gb: 128
+      placement: board_soldered
+      source:
+        url: https://www.asus.com/us/news/proart-rtxspark-buynow/
+        source_type: oem_exact_sku_purchase_listing
+        accessed: 2026-11-24
+    strengths:
+      - ASUS lists an exact retail SKU with 128 GB LPDDR5X and 1 TB storage and links purchase channels.
+      - Provides a configured ARM laptop reference for 128 GB software and memory-workload development.
+    blockers:
+      - No public N1X package drawing, memory pinout, 128 GB topology, or supplier board files for a Slate design.
+      - No published pocket-sized power, thermal, cellular, firmware, or enclosure integration path.
+      - A laptop SKU is not a purchasable bare compute-and-memory package for Slate.
+    disposition: configured_128gb_laptop_reference_not_selected_phone_platform
+    source:
+      url: https://www.asus.com/us/laptops/for-creators/proart/proart-p14-h7407/techspec/
+      source_type: oem_product_specification
+      accessed: 2026-11-24
+
   amd_ryzen_ai_max_plus_395:
     platform_class: high_power_client_pc
     modem_integration: none
@@ -374,7 +404,7 @@ screening_conclusion:
   decision: Retain the 128 GB floor. Obtain a qualified 128 GB X2 memory configuration and pocket integration package, or identify a different platform with equivalent evidence.
   preferred_product_rfq: qualcomm_snapdragon_x2_elite_extreme
   preferred_memory_tier_for_rfq_gb: 128
-  external_bench_options: [amd_ryzen_ai_max_plus_395, nvidia_jetson_agx_thor, congatec_conga_hpc_crx1_x199_128g]
+  external_bench_options: [nvidia_rtx_spark_n1x_128gb_reference, amd_ryzen_ai_max_plus_395, nvidia_jetson_agx_thor, congatec_conga_hpc_crx1_x199_128g]
   unsupported_by_reviewed_candidates:
     - 512 GB pocket memory topology
     - 100 TOPS sustained NPU claim

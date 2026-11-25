@@ -252,6 +252,19 @@ def audit(root: Path) -> dict:
     if not reviewed_x2:
         raise ValueError("No reviewed X2 OEM memory configuration")
     largest_x2_oem = max(reviewed_x2, key=lambda item: item["observed_oem_memory_gb"])
+    external_128gb_oem = [
+        {
+            "part": item["part"],
+            "product": item["observed_oem_product"],
+            "product_sku": item["observed_oem_product_sku"],
+            "memory_gb": item["observed_oem_memory_gb"],
+            "source": item["observed_oem_source"],
+        }
+        for item in rows
+        if not item["integrated_phone_path"]
+        and item["observed_oem_memory_gb"] is not None
+        and item["observed_oem_memory_gb"] >= floor
+    ]
     return {
         "status": "public_candidate_found" if matches else "supplier_proof_required",
         "memory_floor_gb": floor,
@@ -263,6 +276,7 @@ def audit(root: Path) -> dict:
         "remaining_to_memory_floor_gb": max(
             0, floor - largest_x2_oem["observed_oem_memory_gb"]
         ),
+        "reviewed_external_128gb_oem_configurations": external_128gb_oem,
         "candidates": rows,
         "decision": (
             "The 128 GB floor is retained. X2 Elite and Plus publish controller "
@@ -273,8 +287,9 @@ def audit(root: Path) -> dict:
             f"{max(0, floor - largest_x2_oem['observed_oem_memory_gb'])} GB below "
             "Slate's floor. The reviewed ASUS X2 Extreme has "
             "48 GB on package; reviewed X2 Plus systems have 32 GB. "
-            "No reviewed public 128 GB "
-            "X2 configuration or pocket phone integration is established. "
+            "A reviewed N1X laptop SKU is configured with 128 GB, but it does not "
+            "establish a Slate compute package or phone integration. No reviewed "
+            "public 128 GB X2 configuration or pocket phone integration is established. "
             "Obtain an orderable 128 GB package and supplier topology, "
             "power, software, and modem evidence before selection."
             if not matches

@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from buildslate.hardware_readiness import _evidence_result  # noqa: E402
-from buildslate.phone_proof import TESTS, audit  # noqa: E402
+from buildslate.phone_proof import CALL_SETUP_FIELDS, TESTS, audit  # noqa: E402
 
 HASH = "a" * 64
 
@@ -22,40 +22,12 @@ HASH = "a" * 64
 def _rows(test_id: str) -> list[dict]:
     first = {
         "network_registration": {"elapsed_s": 0, "registered": 0, "sim_ready": 0},
-        "outgoing_call": {
-            "elapsed_s": 0,
-            "connected": 1,
-            "uplink_audio_samples": 0,
-            "downlink_audio_samples": 0,
-            "dropped": 0,
-        },
-        "incoming_call": {
-            "elapsed_s": 0,
-            "connected": 1,
-            "uplink_audio_samples": 0,
-            "downlink_audio_samples": 0,
-            "dropped": 0,
-        },
         "packet_data": {"elapsed_s": 0, "bytes_tx": 0, "bytes_rx": 0},
         "radio_kill": {"elapsed_s": 0, "radio_disabled": 0, "registered": 1},
         "emergency_lab_simulator": {"elapsed_s": 0, "emergency_route_pass": 0},
     }
     second = {
         "network_registration": {"elapsed_s": 30, "registered": 1, "sim_ready": 1},
-        "outgoing_call": {
-            "elapsed_s": 30,
-            "connected": 1,
-            "uplink_audio_samples": 240000,
-            "downlink_audio_samples": 240000,
-            "dropped": 0,
-        },
-        "incoming_call": {
-            "elapsed_s": 30,
-            "connected": 1,
-            "uplink_audio_samples": 240000,
-            "downlink_audio_samples": 240000,
-            "dropped": 0,
-        },
         "packet_data": {"elapsed_s": 30, "bytes_tx": 1024, "bytes_rx": 2048},
         "radio_kill": {"elapsed_s": 30, "radio_disabled": 1, "registered": 0},
         "emergency_lab_simulator": {"elapsed_s": 30, "emergency_route_pass": 1},
@@ -66,6 +38,21 @@ def _rows(test_id: str) -> list[dict]:
         "build_id": "fixture-build",
         "configuration_sha256": HASH,
     }
+    if test_id in CALL_SETUP_FIELDS:
+        first_event, second_event = CALL_SETUP_FIELDS[test_id]
+        return [
+            {
+                **identity,
+                "elapsed_s": second,
+                first_event: int(second >= 1),
+                second_event: int(second >= 2),
+                "connected": int(second >= 3),
+                "uplink_audio_samples": max(0, second - 2) * 8000,
+                "downlink_audio_samples": max(0, second - 2) * 8000,
+                "dropped": 0,
+            }
+            for second in range(34)
+        ]
     return [{**identity, **first[test_id]}, {**identity, **second[test_id]}]
 
 
@@ -161,16 +148,103 @@ def main() -> int:
             == "accepted"
         ):
             raise ValueError("Tampered call CSV was accepted")
-        cases[1]["raw_sha256"] = _write_case(
-            call,
-            [
-                _rows("outgoing_call")[0],
-                {**_rows("outgoing_call")[1], "downlink_audio_samples": 0},
-            ],
+
+        def reject_call(
+            test_id: str, rows: list[dict], expected_error: str, reason: str
+        ) -> None:
+            index = TESTS.index(test_id)
+            raw = controlled / f"{test_id}.csv"
+            cases[index]["raw_sha256"] = _write_case(raw, rows)
+            _write_bundle(path, bundle)
+            review = audit(path, root)
+            if review["status"] != "fail" or not any(
+                expected_error in error for error in review["errors"]
+            ):
+                raise ValueError(reason)
+
+        no_downlink = _rows("outgoing_call")
+        for row in no_downlink:
+            row["downlink_audio_samples"] = 0
+        reject_call(
+            "outgoing_call",
+            no_downlink,
+            "advancing downlink_audio_samples",
+            "Call without downlink audio passed",
         )
-        record["sha256"] = _write_bundle(path, bundle)
-        if audit(path, root)["status"] != "fail":
-            raise ValueError("Call with no received audio was accepted")
+        interrupted = _rows("outgoing_call")
+        interrupted[18]["connected"] = 0
+        reject_call(
+            "outgoing_call",
+            interrupted,
+            "continuous 30 s connected telemetry",
+            "Disconnected call interval passed",
+        )
+        sparse = [
+            row
+            for index, row in enumerate(_rows("outgoing_call"))
+            if not 15 <= index < 24
+        ]
+        reject_call(
+            "outgoing_call",
+            sparse,
+            "continuous 30 s connected telemetry",
+            "Sparse connected call log passed",
+        )
+        stalled_audio = _rows("outgoing_call")
+        stalled_audio[18]["uplink_audio_samples"] = stalled_audio[17][
+            "uplink_audio_samples"
+        ]
+        reject_call(
+            "outgoing_call",
+            stalled_audio,
+            "advancing uplink_audio_samples",
+            "Stalled uplink audio passed",
+        )
+        no_dial = _rows("outgoing_call")
+        for row in no_dial:
+            row["dial_request_seen"] = 0
+        reject_call(
+            "outgoing_call",
+            no_dial,
+            "latched dial_request_seen",
+            "Call without dial event passed",
+        )
+        reversed_setup = _rows("outgoing_call")
+        for row in reversed_setup:
+            row["dial_request_seen"] = int(row["elapsed_s"] >= 2)
+            row["peer_answer_seen"] = int(row["elapsed_s"] >= 1)
+        reject_call(
+            "outgoing_call",
+            reversed_setup,
+            "setup events do not precede connection",
+            "Out-of-order call setup passed",
+        )
+        no_answer = _rows("incoming_call")
+        for row in no_answer:
+            row["local_answer_seen"] = 0
+        reject_call(
+            "incoming_call",
+            no_answer,
+            "latched local_answer_seen",
+            "Call without answer event passed",
+        )
+        cases[1]["raw_sha256"] = _write_case(call, _rows("outgoing_call"))
+        cases[2]["raw_sha256"] = _write_case(
+            controlled / "incoming_call.csv", _rows("incoming_call")
+        )
+        lines = call.read_text(encoding="utf-8").splitlines()
+        call.write_text(
+            "\n".join([lines[0] + ",connected", *(line + ",1" for line in lines[1:])])
+            + "\n",
+            encoding="utf-8",
+        )
+        cases[1]["raw_sha256"] = hashlib.sha256(call.read_bytes()).hexdigest()
+        _write_bundle(path, bundle)
+        if not any(
+            "duplicate or missing CSV header" in error
+            for error in audit(path, root)["errors"]
+        ):
+            raise ValueError("Duplicate call-state column was accepted")
         cases[1]["raw_sha256"] = _write_case(call, _rows("outgoing_call"))
         registration = controlled / "network_registration.csv"
         other_unit = [

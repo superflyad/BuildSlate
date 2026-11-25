@@ -545,6 +545,12 @@ function renderHardware() {
       )
       .join("");
   }
+  document
+    .querySelector("#hardware-phone")
+    .insertAdjacentHTML(
+      "beforeend",
+      `<div class="gate-item"><strong>Measured call sequence</strong><span>No Slate call log exists. A reviewed phone bundle must show ordered dial or ring and answer events before 30 seconds of uninterrupted connected samples no more than two seconds apart, with uplink and downlink audio counters advancing in every interval. Calling, data, radio-disable, and authorized emergency-lab results must bind to the same serialized EVT0 unit and released design. <a href="https://github.com/superflyad/BuildSlate/blob/main/docs/engineering/phone_function_proof.md" target="_blank" rel="noopener noreferrer">Phone proof contract</a></span></div>`,
+    );
   document.querySelector("#hardware-caveat").textContent = report.caveat;
 }
 function renderCoverageItem(component) {

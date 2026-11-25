@@ -15,10 +15,17 @@ TESTS = (
     "radio_kill",
     "emergency_lab_simulator",
 )
+CALL_MIN_CONNECTED_S = 30
+CALL_MAX_SAMPLE_GAP_S = 2
+CALL_SETUP_FIELDS = {
+    "outgoing_call": ("dial_request_seen", "peer_answer_seen"),
+    "incoming_call": ("ring_seen", "local_answer_seen"),
+}
 MEASURED_FIELDS = {
     "network_registration": ("elapsed_s", "registered", "sim_ready"),
     "outgoing_call": (
         "elapsed_s",
+        *CALL_SETUP_FIELDS["outgoing_call"],
         "connected",
         "uplink_audio_samples",
         "downlink_audio_samples",
@@ -26,6 +33,7 @@ MEASURED_FIELDS = {
     ),
     "incoming_call": (
         "elapsed_s",
+        *CALL_SETUP_FIELDS["incoming_call"],
         "connected",
         "uplink_audio_samples",
         "downlink_audio_samples",
@@ -77,23 +85,65 @@ def _measure(test_id: str, rows: list[dict]) -> list[str]:
             ):
                 errors.append("Network registration and SIM-ready transition missing")
         elif test_id in {"outgoing_call", "incoming_call"}:
-            connected = [
-                index
-                for index, row in enumerate(rows)
-                if _number(row, "connected") == 1
-            ]
-            if (
-                len(connected) < 2
-                or elapsed[connected[-1]] - elapsed[connected[0]] < 30
-                or _number(rows[-1], "uplink_audio_samples")
-                <= _number(rows[0], "uplink_audio_samples")
-                or _number(rows[-1], "downlink_audio_samples")
-                <= _number(rows[0], "downlink_audio_samples")
-                or any(_number(row, "dropped") != 0 for row in rows)
+            first_event, second_event = CALL_SETUP_FIELDS[test_id]
+            flags = {
+                key: [_number(row, key) for row in rows]
+                for key in (first_event, second_event, "connected")
+            }
+            if any(
+                value not in {0, 1} for values in flags.values() for value in values
             ):
-                errors.append(
-                    "Call lacks 30 s connected, advancing audio, or drop-free log"
-                )
+                errors.append("Call setup and connected flags must be binary")
+            else:
+                setup_indices = []
+                for key in (first_event, second_event):
+                    values = flags[key]
+                    first_seen = next(
+                        (index for index, value in enumerate(values) if value == 1),
+                        None,
+                    )
+                    if (
+                        values[0] != 0
+                        or first_seen is None
+                        or any(value != 1 for value in values[first_seen:])
+                    ):
+                        errors.append(f"Call lacks latched {key} transition")
+                    setup_indices.append(first_seen)
+                connected = [
+                    index
+                    for index, value in enumerate(flags["connected"])
+                    if value == 1
+                ]
+                if flags["connected"][0] != 0 or len(connected) < 2:
+                    errors.append("Call lacks a measured connection transition")
+                else:
+                    start, end = connected[0], connected[-1]
+                    if (
+                        None not in setup_indices
+                        and not setup_indices[0] < setup_indices[1] < start
+                    ):
+                        errors.append("Call setup events do not precede connection")
+                    if (
+                        any(
+                            flags["connected"][index] != 1
+                            for index in range(start, end + 1)
+                        )
+                        or elapsed[end] - elapsed[start] < CALL_MIN_CONNECTED_S
+                        or any(
+                            elapsed[index + 1] - elapsed[index] > CALL_MAX_SAMPLE_GAP_S
+                            for index in range(start, end)
+                        )
+                    ):
+                        errors.append("Call lacks continuous 30 s connected telemetry")
+                    for key in ("uplink_audio_samples", "downlink_audio_samples"):
+                        values = [_number(row, key) for row in rows]
+                        if any(
+                            values[index + 1] <= values[index]
+                            for index in range(start, end)
+                        ):
+                            errors.append(f"Call lacks advancing {key} while connected")
+            if any(_number(row, "dropped") != 0 for row in rows):
+                errors.append("Call log contains a drop")
         elif test_id == "packet_data":
             if _number(rows[-1], "bytes_tx") <= _number(rows[0], "bytes_tx") or _number(
                 rows[-1], "bytes_rx"
@@ -174,10 +224,17 @@ def audit(path: Path, root: Path) -> dict:
         try:
             with raw.open(encoding="utf-8-sig", newline="") as stream:
                 reader = csv.DictReader(stream)
-                if not set(FIELDS[test_id]).issubset(reader.fieldnames or []):
+                headers = reader.fieldnames or []
+                if not headers or len(headers) != len(set(headers)) or None in headers:
+                    errors.append(f"{test_id}: duplicate or missing CSV header")
+                    continue
+                if not set(FIELDS[test_id]).issubset(headers):
                     errors.append(f"{test_id}: required measurement columns missing")
                     continue
                 rows = list(reader)
+                if any(None in row for row in rows):
+                    errors.append(f"{test_id}: CSV row exceeds its header")
+                    continue
         except (OSError, UnicodeError, csv.Error) as error:
             errors.append(f"{test_id}: CSV unreadable: {error}")
             continue

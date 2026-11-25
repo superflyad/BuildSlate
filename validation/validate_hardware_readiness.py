@@ -36,6 +36,8 @@ def main() -> int:
         )
     if expected["rf_release"]["status"] != "missing":
         raise ValueError("Public hardware report must not imply a released RF design")
+    if expected["interconnect_release"]["status"] != "missing":
+        raise ValueError("Public hardware report must not imply released interconnects")
     if (
         expected["display_fit"]["status"] != "blocked"
         or expected["design_release"] != "blocked"

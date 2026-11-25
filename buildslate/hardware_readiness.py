@@ -17,6 +17,8 @@ from buildslate.erc_proof import audit as audit_erc
 from buildslate.evt0 import EVT0CampaignRepository
 from buildslate.firmware_proof import RELEASE as FIRMWARE_RELEASE
 from buildslate.firmware_proof import audit as audit_firmware
+from buildslate.interconnect_proof import RELEASE as INTERCONNECT_RELEASE
+from buildslate.interconnect_proof import audit as audit_interconnect
 from buildslate.io import load_yaml
 from buildslate.mechanical_proof import ASSEMBLY as MECHANICAL_ASSEMBLY
 from buildslate.mechanical_proof import MANIFEST as MECHANICAL_MANIFEST
@@ -414,6 +416,43 @@ def _evidence_result(
                         )
                     ):
                         reasons.append("Released mechanical proof is missing or stale")
+        if not reasons and requirement.get("id") == "interconnect":
+            if target != (root / INTERCONNECT_RELEASE).resolve():
+                reasons.append("Interconnect must name the controlled release JSON")
+            else:
+                proof = audit_interconnect(root)
+                if proof["status"] != "pass":
+                    reasons.extend(proof["errors"])
+                elif (
+                    proof["revision"] != record["revision"]
+                    or proof["reviewed_by"] != record["reviewed_by"]
+                ):
+                    reasons.append("Interconnect review identity or revision differs")
+                related = related_records or {}
+                for identifier, hash_field, proof_field in (
+                    ("selected_bom", "sha256", "selected_bom_sha256"),
+                    ("schematic_netlist", "sha256", "netlist_sha256"),
+                    ("schematic_netlist", "bom_sha256", "electrical_bom_sha256"),
+                    ("routed_pcb", "sha256", "routed_pcb_sha256"),
+                    ("mechanical_release", "sha256", "mechanical_assembly_sha256"),
+                ):
+                    upstream = related.get(identifier)
+                    if (
+                        not isinstance(upstream, dict)
+                        or upstream.get("disposition") != "approved"
+                        or upstream.get(hash_field) != proof[proof_field]
+                    ):
+                        reasons.append(
+                            f"Interconnect is not bound to approved {identifier}"
+                        )
+                if (
+                    selection_proof is None
+                    or selection_proof.get("status") != "pass"
+                    or selection_proof.get("sha256") != proof["selected_bom_sha256"]
+                ):
+                    reasons.append(
+                        "Interconnect selected BOM has no passing part proof"
+                    )
         if not reasons and requirement.get("id") == "firmware_boot":
             if target != (root / FIRMWARE_RELEASE).resolve():
                 reasons.append("Firmware release must name the controlled bundle JSON")
@@ -538,6 +577,7 @@ def build_report(root: Path) -> dict:
     power_safety = audit_power_safety(root)
     thermal_release = audit_thermal(root)
     rf_release = audit_rf(root)
+    interconnect_release = audit_interconnect(root)
     selected_roles = []
     for role in manifest["selected_roles"]:
         item = strategy["roles"].get(role)
@@ -650,6 +690,7 @@ def build_report(root: Path) -> dict:
         "power_safety": power_safety,
         "thermal_release": thermal_release,
         "rf_release": rf_release,
+        "interconnect_release": interconnect_release,
         "selected_roles": selected_roles,
         "cellular": {"status": cellular["status"], "selected": cellular_selected},
         "requirements": entries,

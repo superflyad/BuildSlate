@@ -743,6 +743,12 @@
       "No released RF design"
     ]
   },
+  "interconnect_release": {
+    "status": "missing",
+    "errors": [
+      "No released interconnect map"
+    ]
+  },
   "selected_roles": [
     {
       "id": "compute_platform",

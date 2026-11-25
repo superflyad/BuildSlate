@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Audit released interconnect pin maps against the KiCad netlist, controlled cable drawings, selected BOM, routed board, and mechanical assembly; expose missing status in the public viewer.
 - Add an editable 46-solid phone integration collision study and exact CAD proof of board, camera, speaker, haptic, and modem overlaps in the public viewer.
 - Screen the minimum whole-millimeter board extension for the public 5G reference and identify its camera and speaker collisions in the full enclosure.
 - Require hashed lifecycle source evidence for every selected BOM role and correct the build-to-function memory summary.

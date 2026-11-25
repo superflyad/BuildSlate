@@ -36,6 +36,8 @@ The ERC record has a separate [schematic rule proof](schematic_erc_proof.md). It
 
 The [routed PCB proof](routed_pcb_proof.md) requires that same approved KiCad project settings hash, enabled critical DRC rules, positive fabrication design minima, zero DRC and parity findings, netlist parity, and complete copper-layer exports. No released v1R board exists yet.
 
+The [interconnect release proof](interconnect_release_proof.md) checks complete declared connector contact maps for the display, touch, cameras, USB, battery, and antennas against the exported netlist, with controlled cable drawing hashes and bindings to the approved board and mechanical assembly. It does not establish cable signal integrity or physical fit. No released v1R interconnect package exists.
+
 The [power safety proof](power_safety_proof.md) requires selected battery ratings, a charge and discharge limit table, complete subsystem load coverage, rail capacity and sequence, fault response declarations, and exact bindings to the approved part set, electrical BOM, and routed board. No released v1R power design exists yet. The arithmetic is a consistency screen; supplier limits and protection behavior still need review and physical verification.
 
 The [thermal release proof](thermal_release_proof.md) requires released mechanical and power identities, sourced material and boundary properties, case-specific heat maps, reviewed solver tables, and temperature-limit screens. It checks mesh refinement and energy balance, while the separate EVT0 gate requires calibrated physical temperature measurements and model correlation. No released v1R thermal model exists yet.

@@ -33,6 +33,8 @@ The [platform reference proof](docs/engineering/platform_reference_proof.md) req
 
 The [routed PCB proof](docs/engineering/routed_pcb_proof.md) now binds those same KiCad settings to DRC, schematic parity, and complete copper-layer exports. There is still no released board to fabricate.
 
+The [interconnect proof](docs/engineering/interconnect_release_proof.md) checks display, touch, camera, USB, battery, antenna, audio, haptic, button, and service paths against the released netlist and hashes cable drawings. No connector map or flex drawing has been released; the public Hardware view keeps this gate blocked.
+
 The [power safety proof](docs/engineering/power_safety_proof.md) checks a released pack's recorded limits against charge settings, complete subsystem loads, rail capacity, battery current, and fault-control declarations. It binds the analysis to the selected BOM, electrical BOM, and routed board. The [public Hardware view](https://superflyad.github.io/BuildSlate/?tab=hardware) reports this release as missing; no battery or power circuit is selected or physically verified.
 
 The [thermal release proof](docs/engineering/thermal_release_proof.md) checks a geometry-bound model and raw solver results for material and boundary source coverage, all required operating cases, heat balance, mesh convergence, and supplier temperature limits. The public Hardware view reports this release as missing. The model is not built, and no Slate Pocket thermal behavior has been measured.

@@ -14,7 +14,13 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from buildslate.io import load_yaml  # noqa: E402
-from buildslate.platform_fit import CANDIDATES, FLOORPLAN, PROFILE, audit  # noqa: E402
+from buildslate.platform_fit import (  # noqa: E402
+    CANDIDATES,
+    ENVELOPE,
+    FLOORPLAN,
+    PROFILE,
+    audit,
+)
 
 
 def _write(root: Path, profile: dict, candidates: dict) -> None:
@@ -22,6 +28,7 @@ def _write(root: Path, profile: dict, candidates: dict) -> None:
         (PROFILE, profile),
         (CANDIDATES, candidates),
         (FLOORPLAN, load_yaml(ROOT / FLOORPLAN)),
+        (ENVELOPE, load_yaml(ROOT / ENVELOPE)),
     ):
         path = root / name
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -44,6 +51,8 @@ def main() -> int:
         or report["integrated_phone_matches"]
         or len(report["candidates"]) != 12
         or report["slate_current_board_face_mm"] != [78.0, 55.0]
+        or report["slate_internal_boundary_mm"] != [3.0, 3.0, 174.0, 89.0]
+        or report["battery_reference_mm"] != [10.0, 12.0, 80.0, 66.74]
         or report["largest_reviewed_x2_oem_memory_gb"] != 64
         or report["largest_reviewed_x2_oem_part"] != "X2E-90-100"
         or report["remaining_to_memory_floor_gb"] != 64
@@ -118,6 +127,7 @@ def main() -> int:
         or not mini["module_outline_fits_body_face"]
         or mini["module_outline_fits_current_board_face"]
         or mini["module_over_current_board_mm"] != [17.0, 15.0]
+        or mini["module_outline_fits_with_battery_reference"]
         or mini["minimum_published_power_mode_w"] != 28
         or mini["published_capacity_permits_floor"]
         or mini["combined_public_fit"]
@@ -164,6 +174,7 @@ def main() -> int:
         or congatec["module_outline_fits_body_face"] is not False
         or congatec["module_outline_fits_current_board_face"] is not False
         or congatec["module_over_current_board_mm"] != [82.0, 65.0]
+        or congatec["module_outline_fits_with_battery_reference"]
         or congatec["minimum_published_mode_over_slate_w"] != 17
         or congatec["combined_public_fit"]
     ):
@@ -175,6 +186,7 @@ def main() -> int:
         thor["module_outline_fits_body_face"] is not True
         or thor["module_outline_fits_current_board_face"] is not False
         or thor["module_over_current_board_mm"] != [22.0, 32.0]
+        or thor["module_outline_fits_with_battery_reference"]
         or thor["minimum_published_mode_over_slate_w"] != 12
     ):
         raise ValueError("Jetson module outline or power screen changed")
@@ -193,6 +205,26 @@ def main() -> int:
         board["board"]["outline_mm"]["width"] = 0
         (root / FLOORPLAN).write_text(
             yaml.safe_dump(board, sort_keys=False), encoding="utf-8"
+        )
+        _must_fail(root)
+        altered = copy.deepcopy(candidates)
+        _write(root, profile, altered)
+        envelope = load_yaml(root / ENVELOPE)
+        envelope["placements"]["battery_reference"]["rectangle_mm"]["length"] = 50
+        (root / ENVELOPE).write_text(
+            yaml.safe_dump(envelope, sort_keys=False), encoding="utf-8"
+        )
+        changed = audit(root)
+        smaller_battery_mini = next(
+            item
+            for item in changed["candidates"]
+            if item["id"] == "congatec_conga_hpc_miq_x7_64g"
+        )
+        if not smaller_battery_mini["module_outline_fits_with_battery_reference"]:
+            raise ValueError("Module coexistence did not respond to battery geometry")
+        envelope["placements"]["battery_reference"]["rectangle_mm"]["length"] = 200
+        (root / ENVELOPE).write_text(
+            yaml.safe_dump(envelope, sort_keys=False), encoding="utf-8"
         )
         _must_fail(root)
         altered = copy.deepcopy(candidates)
@@ -224,6 +256,11 @@ def main() -> int:
         altered["candidates"]["congatec_conga_hpc_crx1_x199_128g"][
             "module_outline_mm"
         ] = [160, 0]
+        _write(root, profile, altered)
+        _must_fail(root)
+        altered["candidates"]["congatec_conga_hpc_crx1_x199_128g"][
+            "module_outline_mm"
+        ] = [160, float("nan")]
         _write(root, profile, altered)
         _must_fail(root)
         widened = copy.deepcopy(profile)

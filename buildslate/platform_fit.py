@@ -12,6 +12,7 @@ from buildslate.io import load_yaml
 PROFILE = Path("configs/devices/slate-pocket-v1r.yaml")
 CANDIDATES = Path("research/evidence/compute/platform-comparison.yaml")
 FLOORPLAN = Path("engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml")
+ENVELOPE = Path("cad/slate-pocket-v1r/envelope-model/envelope.yaml")
 MODES = {"integrated", "external_supported_not_designed", "none"}
 
 
@@ -27,10 +28,49 @@ def _capacity(candidate: dict) -> int:
     raise ValueError("Candidate has no public memory capacity bound")
 
 
+def _rectangle(data: dict, label: str) -> tuple[float, float, float, float]:
+    if not isinstance(data, dict):
+        raise ValueError(f"{label}: invalid rectangle")
+    try:
+        values = tuple(float(data[key]) for key in ("x", "y", "length", "width"))
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError(f"{label}: invalid rectangle") from exc
+    if any(not math.isfinite(value) for value in values) or any(
+        value <= 0 for value in values[2:]
+    ):
+        raise ValueError(f"{label}: invalid rectangle")
+    return values
+
+
+def _free_strips(
+    boundary: tuple[float, float, float, float],
+    occupied: tuple[float, float, float, float],
+) -> list[tuple[float, float]]:
+    bx, by, bl, bw = boundary
+    ox, oy, ol, ow = occupied
+    if ox < bx or oy < by or ox + ol > bx + bl or oy + ow > by + bw:
+        raise ValueError("Battery reference exceeds the internal boundary")
+    return [
+        (ox - bx, bw),
+        (bx + bl - ox - ol, bw),
+        (bl, oy - by),
+        (bl, by + bw - oy - ow),
+    ]
+
+
+def _fits_any_strip(sides: list[float], strips: list[tuple[float, float]]) -> bool:
+    return any(
+        length <= free_length and width <= free_width
+        for length, width in (sides, sides[::-1])
+        for free_length, free_width in strips
+    )
+
+
 def audit(root: Path) -> dict:
     profile = load_yaml(root / PROFILE)
     source = load_yaml(root / CANDIDATES)
     floorplan = load_yaml(root / FLOORPLAN)
+    envelope = load_yaml(root / ENVELOPE)
     floor = profile["decision_baseline"]["locked_trade_rules"]["memory"][
         "fallback_tiers_gb"
     ][-1]
@@ -42,6 +82,8 @@ def audit(root: Path) -> dict:
         ),
         reverse=True,
     )
+    if any(not math.isfinite(side) or side <= 0 for side in face):
+        raise ValueError("Slate body face is invalid")
     board_outline = floorplan["board"]["outline_mm"]
     board_face = sorted(
         (float(board_outline["length"]), float(board_outline["width"])),
@@ -49,7 +91,17 @@ def audit(root: Path) -> dict:
     )
     if any(not math.isfinite(side) or side <= 0 for side in board_face):
         raise ValueError("Current PCB face is invalid")
+    boundary = _rectangle(
+        envelope["device"]["internal_boundary_mm"], "Internal boundary"
+    )
+    battery = _rectangle(
+        envelope["placements"]["battery_reference"]["rectangle_mm"],
+        "Battery reference",
+    )
+    strips = _free_strips(boundary, battery)
     sustained_target = float(profile["compute"]["sustained_power_w"])
+    if not math.isfinite(sustained_target) or sustained_target <= 0:
+        raise ValueError("Slate sustained power screen is invalid")
     if not isinstance(floor, int) or floor <= 0 or configured != floor:
         raise ValueError("Operational memory differs from the approved fallback floor")
     candidates = source.get("candidates")
@@ -88,6 +140,7 @@ def audit(root: Path) -> dict:
         outline_fit = None
         board_fit = None
         board_overrun = None
+        battery_fit = None
         if outline is not None:
             if (
                 not isinstance(outline, list)
@@ -95,6 +148,7 @@ def audit(root: Path) -> dict:
                 or any(
                     not isinstance(value, (int, float))
                     or isinstance(value, bool)
+                    or not math.isfinite(value)
                     or value <= 0
                     for value in outline
                 )
@@ -113,6 +167,7 @@ def audit(root: Path) -> dict:
                 round(max(0, module - available), 2)
                 for module, available in zip(module_sides, board_face, strict=True)
             ]
+            battery_fit = _fits_any_strip(module_sides, strips)
         power_range = candidate.get("power_range_w", candidate.get("tdp_range_w"))
         minimum_power_mode = None
         if power_range is not None:
@@ -122,6 +177,7 @@ def audit(root: Path) -> dict:
                 or any(
                     not isinstance(value, (int, float))
                     or isinstance(value, bool)
+                    or not math.isfinite(value)
                     or value <= 0
                     for value in power_range
                 )
@@ -255,6 +311,7 @@ def audit(root: Path) -> dict:
                 "module_outline_fits_body_face": outline_fit,
                 "module_outline_fits_current_board_face": board_fit,
                 "module_over_current_board_mm": board_overrun,
+                "module_outline_fits_with_battery_reference": battery_fit,
                 "minimum_published_power_mode_w": minimum_power_mode,
                 "minimum_published_mode_over_slate_w": (
                     round(minimum_power_mode - sustained_target, 2)
@@ -292,6 +349,8 @@ def audit(root: Path) -> dict:
         "memory_floor_gb": floor,
         "slate_body_face_mm": face,
         "slate_current_board_face_mm": board_face,
+        "slate_internal_boundary_mm": list(boundary),
+        "battery_reference_mm": list(battery),
         "slate_sustained_screen_w": sustained_target,
         "integrated_phone_matches": matches,
         "largest_reviewed_x2_oem_memory_gb": largest_x2_oem["observed_oem_memory_gb"],

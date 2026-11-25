@@ -6,7 +6,7 @@ Target: congatec conga-HPC/mIQ-X product team
 
 The public [conga-HPC/mIQ-X datasheet](https://www.congatec.com/fileadmin/user_upload/Documents/Datasheets/conga-HPC-mIQ-X.pdf) lists part `053100` at 95 × 70 mm with 64 GB soldered LPDDR5X and a 28–45 W TDP. The reviewed revision says the product was not yet released for mass production. This is a physical reference for the inquiry, not a Slate part selection.
 
-Slate Pocket v1R retains a 128 GB minimum, a 180 × 95 × 9.5 mm body, and a provisional 78 × 55 mm main PCB. The cataloged module exceeds that PCB by 17 × 15 mm in its best planar orientation. A module also needs a connector, carrier, cooling, power, and all phone subsystems. The 28 W sustained compute screen is an unverified target.
+Slate Pocket v1R retains a 128 GB minimum, a 180 × 95 × 9.5 mm body, and a provisional 78 × 55 mm main PCB. The cataloged module exceeds that PCB by 17 × 15 mm in its best planar orientation. The current raw-cell battery reference also leaves no nonoverlapping position for the bare module inside the internal boundary. A module needs a connector, carrier, cooling, power, and all phone subsystems. The 28 W sustained compute screen is an unverified target.
 
 Please provide a written response to these decision questions:
 

@@ -75,6 +75,18 @@
       78.0,
       55.0
     ],
+    "slate_internal_boundary_mm": [
+      3.0,
+      3.0,
+      174.0,
+      89.0
+    ],
+    "battery_reference_mm": [
+      10.0,
+      12.0,
+      80.0,
+      66.74
+    ],
     "slate_sustained_screen_w": 28.0,
     "integrated_phone_matches": [],
     "largest_reviewed_x2_oem_memory_gb": 64,
@@ -114,6 +126,7 @@
         "module_outline_fits_body_face": null,
         "module_outline_fits_current_board_face": null,
         "module_over_current_board_mm": null,
+        "module_outline_fits_with_battery_reference": null,
         "minimum_published_power_mode_w": null,
         "minimum_published_mode_over_slate_w": null,
         "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Gen-5-SM8850-5-AC-Product-Brief.pdf"
@@ -142,6 +155,7 @@
         "module_outline_fits_body_face": null,
         "module_outline_fits_current_board_face": null,
         "module_over_current_board_mm": null,
+        "module_outline_fits_with_battery_reference": null,
         "minimum_published_power_mode_w": null,
         "minimum_published_mode_over_slate_w": null,
         "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Gen-6-Product-Brief.pdf"
@@ -170,6 +184,7 @@
         "module_outline_fits_body_face": null,
         "module_outline_fits_current_board_face": null,
         "module_over_current_board_mm": null,
+        "module_outline_fits_with_battery_reference": null,
         "minimum_published_power_mode_w": null,
         "minimum_published_mode_over_slate_w": null,
         "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Extreme-Gen-6-Product-Brief.pdf"
@@ -198,6 +213,7 @@
         "module_outline_fits_body_face": null,
         "module_outline_fits_current_board_face": null,
         "module_over_current_board_mm": null,
+        "module_outline_fits_with_battery_reference": null,
         "minimum_published_power_mode_w": null,
         "minimum_published_mode_over_slate_w": null,
         "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf"
@@ -226,6 +242,7 @@
         "module_outline_fits_body_face": null,
         "module_outline_fits_current_board_face": null,
         "module_over_current_board_mm": null,
+        "module_outline_fits_with_battery_reference": null,
         "minimum_published_power_mode_w": null,
         "minimum_published_mode_over_slate_w": null,
         "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf"
@@ -254,6 +271,7 @@
         "module_outline_fits_body_face": null,
         "module_outline_fits_current_board_face": null,
         "module_over_current_board_mm": null,
+        "module_outline_fits_with_battery_reference": null,
         "minimum_published_power_mode_w": null,
         "minimum_published_mode_over_slate_w": null,
         "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Plus-Product-Brief.pdf"
@@ -282,6 +300,7 @@
         "module_outline_fits_body_face": null,
         "module_outline_fits_current_board_face": null,
         "module_over_current_board_mm": null,
+        "module_outline_fits_with_battery_reference": null,
         "minimum_published_power_mode_w": null,
         "minimum_published_mode_over_slate_w": null,
         "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Plus-Product-Brief.pdf"
@@ -310,6 +329,7 @@
         "module_outline_fits_body_face": null,
         "module_outline_fits_current_board_face": null,
         "module_over_current_board_mm": null,
+        "module_outline_fits_with_battery_reference": null,
         "minimum_published_power_mode_w": null,
         "minimum_published_mode_over_slate_w": null,
         "source": "https://www.asus.com/us/laptops/for-creators/proart/proart-p14-h7407/techspec/"
@@ -338,6 +358,7 @@
         "module_outline_fits_body_face": null,
         "module_outline_fits_current_board_face": null,
         "module_over_current_board_mm": null,
+        "module_outline_fits_with_battery_reference": null,
         "minimum_published_power_mode_w": 45.0,
         "minimum_published_mode_over_slate_w": 17.0,
         "source": "https://www.amd.com/en/products/processors/desktops/ryzen/ryzen-ai-halo/ryzen-ai-max-plus-395.html"
@@ -372,6 +393,7 @@
           22.0,
           32.0
         ],
+        "module_outline_fits_with_battery_reference": false,
         "minimum_published_power_mode_w": 40.0,
         "minimum_published_mode_over_slate_w": 12.0,
         "source": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/"
@@ -406,6 +428,7 @@
           17.0,
           15.0
         ],
+        "module_outline_fits_with_battery_reference": false,
         "minimum_published_power_mode_w": 28.0,
         "minimum_published_mode_over_slate_w": 0.0,
         "source": "https://www.congatec.com/fileadmin/user_upload/Documents/Datasheets/conga-HPC-mIQ-X.pdf"
@@ -440,6 +463,7 @@
           82.0,
           65.0
         ],
+        "module_outline_fits_with_battery_reference": false,
         "minimum_published_power_mode_w": 45.0,
         "minimum_published_mode_over_slate_w": 17.0,
         "source": "https://www.congatec.com/en/products/com-hpc/conga-hpccrx1/"

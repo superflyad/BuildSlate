@@ -31,6 +31,7 @@ PHONE_STEP = Path("cad/slate-pocket-v1r/concept-cad/phone-fit-conflict.step")
 PHONE_MODEL = Path("viewer/public/phone-fit-conflict.json")
 PHONE_GLTF = Path("viewer/public/phone-fit-conflict.gltf")
 PHONE_PROOF = Path("viewer/public/phone-fit-conflict-proof.json")
+FRAME_PORT_APERTURE_WIDTH_MM = 12.0
 
 
 def build_concept(repo_root: Path) -> dict:
@@ -405,8 +406,8 @@ def _shape(cq, part: dict):
     elif kind == "ported_frame":
         void = (
             cq.Workplane("XY")
-            .box(12, width + 2, 3, centered=False)
-            .translate((length / 2 - 6, -1, 2.25))
+            .box(FRAME_PORT_APERTURE_WIDTH_MM, width + 2, 3, centered=False)
+            .translate((length / 2 - FRAME_PORT_APERTURE_WIDTH_MM / 2, -1, 2.25))
         )
         body = body.cut(void)
     elif kind not in {"box", "rounded_box"}:

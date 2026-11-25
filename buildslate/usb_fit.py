@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from buildslate.cad import build_concept
+from buildslate.cad import FRAME_PORT_APERTURE_WIDTH_MM, build_concept
 from buildslate.io import load_yaml
 
 CANDIDATE = Path("research/evidence/usb/connector-candidate.yaml")
@@ -18,13 +18,50 @@ def _axis_gap(a: list[float], b: list[float], axis: int) -> float:
     return max(0.0, a[axis] - b[axis] - b[axis + 3], b[axis] - a[axis] - a[axis + 3])
 
 
+def _box_overlap(a: list[float], b: list[float]) -> list[float]:
+    lower = [max(a[axis], b[axis]) for axis in range(3)]
+    upper = [min(a[axis] + a[axis + 3], b[axis] + b[axis + 3]) for axis in range(3)]
+    return [round(max(0.0, upper[axis] - lower[axis]), 3) for axis in range(3)]
+
+
 def audit_data(model: dict, floorplan: dict, profile: dict, evidence: dict) -> dict:
     parts = {part["id"]: part for part in model["parts"]}
     port = parts["usb_c_port_concept"]
     board = parts["main_pcb_placeholder"]
+    pack = parts["battery_pack_shell_concept"]
+    frame = parts["frame_bottom"]
     a = [float(value) for value in port["box_mm"]]
     b = [float(value) for value in board["box_mm"]]
+    battery_box = [float(value) for value in pack["box_mm"]]
+    frame_box = [float(value) for value in frame["box_mm"]]
     gaps = [_axis_gap(a, b, axis) for axis in range(3)]
+    # The only nominal port-to-board path at the PCB height is their x overlap.
+    overlap_x = max(0.0, min(a[0] + a[3], b[0] + b[3]) - max(a[0], b[0]))
+    corridor = [
+        max(a[0], b[0]),
+        a[1] + a[4],
+        b[2],
+        overlap_x,
+        gaps[1],
+        b[5],
+    ]
+    full_width_carrier = [a[0], a[1] + a[4], b[2], a[3], gaps[1], b[5]]
+    pack_overlap = _box_overlap(full_width_carrier, battery_box)
+    corridor_blockers = [
+        part["id"]
+        for part in model["parts"]
+        if part["id"] not in {port["id"], board["id"]}
+        and part["active"]
+        and part["geometry_use"] == "solid"
+        and all(_box_overlap(corridor, part["box_mm"]))
+    ]
+    # The ported-frame primitive cuts a central aperture through the rail.
+    aperture_x = frame_box[0] + (frame_box[3] - FRAME_PORT_APERTURE_WIDTH_MM) / 2.0
+    shifted_port_x = b[0]
+    shifted_outside_aperture = max(
+        0.0,
+        shifted_port_x + a[3] - (aperture_x + FRAME_PORT_APERTURE_WIDTH_MM),
+    )
     candidate = evidence["candidate"]
     errors = []
     if (
@@ -59,6 +96,10 @@ def audit_data(model: dict, floorplan: dict, profile: dict, evidence: dict) -> d
         errors.append(
             "Connector current or contact count differs from the public listing"
         )
+    if frame.get("shape") != "ported_frame" or aperture_x != a[0]:
+        errors.append("Assumed port and the modeled chassis aperture diverged")
+    if not corridor[3] or corridor[4] < 0 or corridor[5] <= 0:
+        errors.append("Port-to-board corridor is degenerate")
     target_w = float(profile["battery"]["charging_wired_target_w"])
     ceiling_w = float(candidate["maximum_operating_voltage_v"]) * float(
         candidate["maximum_connector_current_a"]
@@ -74,6 +115,13 @@ def audit_data(model: dict, floorplan: dict, profile: dict, evidence: dict) -> d
         "direct_board_mount_possible_from_current_boxes": not any(
             gap > 0 for gap in gaps
         ),
+        "current_clear_corridor_box_mm": corridor,
+        "current_clear_corridor_width_mm": round(overlap_x, 3),
+        "current_corridor_envelope_blockers": corridor_blockers,
+        "full_port_width_carrier_box_mm": full_width_carrier,
+        "full_width_carrier_battery_envelope_overlap_mm": pack_overlap,
+        "shifted_port_x_mm_for_full_width_corridor": shifted_port_x,
+        "shifted_port_frame_aperture_overrun_mm": round(shifted_outside_aperture, 3),
         "candidate_mpn": candidate["mpn"],
         "candidate_status": evidence["metadata"]["status"],
         "candidate_pcb_thickness_mm": candidate["recommended_pcb_thickness_mm"],
@@ -88,7 +136,7 @@ def audit_data(model: dict, floorplan: dict, profile: dict, evidence: dict) -> d
         "source": candidate["sources"]["product_page"],
         "rating_source": candidate["sources"]["detailed_specification"],
         "drawing_source": candidate["sources"]["mechanical_drawing"],
-        "caveat": "Current concept boxes do not touch, so this USB port cannot mount directly to the main board as modeled. The connector is a public candidate, not a selected part; a flex, daughterboard, or changed board plus released geometry, pinout, PD design, and physical testing is required. Published ratings do not authorize charging.",
+        "caveat": "The 4 mm clear corridor is only an AABB routing screen, not a connector footprint or manufacturable flex. A full-width carrier crosses the assumed battery pack envelope. Moving the port to the PCB edge misses the modeled frame aperture. Connector mounting, flex bend and traces, pack clearance, retention, enclosure seal, PD design, and physical testing remain unresolved. Published ratings do not authorize charging.",
     }
 
 

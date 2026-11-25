@@ -329,6 +329,31 @@
     ],
     "minimum_box_separation_mm": 6.0,
     "direct_board_mount_possible_from_current_boxes": false,
+    "current_clear_corridor_box_mm": [
+      92.0,
+      6.0,
+      3.2,
+      4.0,
+      6.0,
+      0.8
+    ],
+    "current_clear_corridor_width_mm": 4.0,
+    "current_corridor_envelope_blockers": [],
+    "full_port_width_carrier_box_mm": [
+      84.0,
+      6.0,
+      3.2,
+      12.0,
+      6.0,
+      0.8
+    ],
+    "full_width_carrier_battery_envelope_overlap_mm": [
+      7.0,
+      1.0,
+      0.8
+    ],
+    "shifted_port_x_mm_for_full_width_corridor": 92.0,
+    "shifted_port_frame_aperture_overrun_mm": 8.0,
     "candidate_mpn": "12402075E512A",
     "candidate_status": "public_candidate_not_selected",
     "candidate_pcb_thickness_mm": 0.8,
@@ -343,7 +368,7 @@
     "source": "https://www.amphenol-cs.com/product/12402075e512a.html",
     "rating_source": "https://cdn.amphenol-cs.com/media/wysiwyg/files/documentation/ps-susb013.pdf",
     "drawing_source": "https://cdn.amphenol-cs.com/media/wysiwyg/files/drawing/c12402075.pdf",
-    "caveat": "Current concept boxes do not touch, so this USB port cannot mount directly to the main board as modeled. The connector is a public candidate, not a selected part; a flex, daughterboard, or changed board plus released geometry, pinout, PD design, and physical testing is required. Published ratings do not authorize charging."
+    "caveat": "The 4 mm clear corridor is only an AABB routing screen, not a connector footprint or manufacturable flex. A full-width carrier crosses the assumed battery pack envelope. Moving the port to the PCB edge misses the modeled frame aperture. Connector mounting, flex bend and traces, pack clearance, retention, enclosure seal, PD design, and physical testing remain unresolved. Published ratings do not authorize charging."
   },
   "cellular_reference_fit": {
     "status": "outline_blocked",

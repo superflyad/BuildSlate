@@ -73,6 +73,9 @@ def main() -> int:
         item["public_maximum_memory_gb"] != 128
         or item["public_memory_bus_width_bits"] != 128
         or item["public_128gb_configuration"]
+        or item["observed_oem_memory_gb"] != 32
+        or not item["observed_oem_source"]
+        or item["physical_package_source"] is not None
         or item["integrated_phone_path"]
         or item["minimum_published_power_mode_w"] is not None
         for item in plus.values()
@@ -81,6 +84,12 @@ def main() -> int:
     if (
         plus["qualcomm_snapdragon_x2_plus_10_core"]["cpu_cores"] != 10
         or plus["qualcomm_snapdragon_x2_plus_6_core"]["cpu_cores"] != 6
+        or plus["qualcomm_snapdragon_x2_plus_10_core"]["observed_oem_product_sku"]
+        != "DZ1U2UA#ABA"
+        or plus["qualcomm_snapdragon_x2_plus_10_core"]["observed_oem_memory_placement"]
+        != "unspecified"
+        or plus["qualcomm_snapdragon_x2_plus_6_core"]["observed_oem_memory_placement"]
+        != "board_soldered"
     ):
         raise ValueError("X2 Plus platform identities changed")
     congatec = next(
@@ -112,6 +121,18 @@ def main() -> int:
     candidates = yaml.safe_load((ROOT / CANDIDATES).read_text(encoding="utf-8"))
     with TemporaryDirectory() as temporary:
         root = Path(temporary)
+        altered = copy.deepcopy(candidates)
+        altered["candidates"]["qualcomm_snapdragon_x2_plus_6_core"][
+            "observed_oem_configuration"
+        ]["platform_part"] = "X2P-64-100"
+        _write(root, profile, altered)
+        _must_fail(root)
+        altered = copy.deepcopy(candidates)
+        altered["candidates"]["qualcomm_snapdragon_x2_plus_10_core"][
+            "physical_package_observation"
+        ] = {"dram_package_count": 4}
+        _write(root, profile, altered)
+        _must_fail(root)
         altered = copy.deepcopy(candidates)
         altered["candidates"]["congatec_conga_hpc_crx1_x199_128g"][
             "module_outline_mm"

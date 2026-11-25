@@ -129,6 +129,16 @@ candidates:
     npu_tops_int8: 80
     memory_type: LPDDR5X
     maximum_memory_gb: 128
+    observed_oem_configuration:
+      product: HP EliteBook 6 G2q 14
+      product_sku: 'DZ1U2UA#ABA'
+      platform_part: X2P-64-100
+      memory_gb: 32
+      placement: unspecified
+      source:
+        url: https://www.hp.com/us-en/shop/mdp/elitebook-6-series-14-inch-%28qualcomm%29-laptops-tab4-module4-elitebook6-14qualcomm
+        source_type: oem_store_listing
+        accessed: 2026-11-24
     memory_bus_width_bits: 128
     memory_transfer_rate_mt_s: 9523
     memory_bandwidth_gb_s: 152
@@ -157,6 +167,15 @@ candidates:
     npu_tops_int8: 80
     memory_type: LPDDR5X
     maximum_memory_gb: 128
+    observed_oem_configuration:
+      product: Lenovo IdeaPad Slim 5 13Q8Y11
+      platform_part: X2P-42-100
+      memory_gb: 32
+      placement: board_soldered
+      source:
+        url: https://psref.lenovo.com/syspool/Sys/PDF/IdeaPad/IdeaPad_Slim_5_13Q8Y11/IdeaPad_Slim_5_13Q8Y11_Spec.PDF
+        source_type: oem_product_specification
+        accessed: 2026-11-24
     memory_bus_width_bits: 128
     memory_transfer_rate_mt_s: 9523
     memory_bandwidth_gb_s: 152

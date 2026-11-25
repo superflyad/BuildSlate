@@ -412,12 +412,16 @@ function renderHardware() {
   const memoryBus = report.memory_package_fit.bus_topology_screen;
   const obsolete32 = report.memory_package_fit.obsolete_32gb_reference;
   const adataUnits = report.memory_package_fit.adata_unit_reconciliation;
+  const oemEvidence = (item) =>
+    item.observed_oem_memory_gb === null
+      ? "no reviewed OEM configuration"
+      : `<a href="${esc(item.observed_oem_source)}" target="_blank" rel="noopener noreferrer">${esc(item.observed_oem_product)}${item.observed_oem_product_sku ? ` ${esc(item.observed_oem_product_sku)}` : ""}: ${esc(item.observed_oem_memory_gb)} GB</a> (${esc(item.observed_oem_memory_placement.replaceAll("_", " "))})${item.physical_package_source ? ` · <a href="${esc(item.physical_package_source)}" target="_blank" rel="noopener noreferrer">physical package analysis</a>` : ""}`;
   document.querySelector("#hardware-platforms").innerHTML =
     `<div class="gate-item"><strong>Decision</strong><span>${esc(platform.decision)}</span></div>` +
     platform.candidates
       .map(
         (item) =>
-          `<div class="gate-item"><strong>${esc(item.id.replaceAll("_", " "))}</strong><span>${item.public_maximum_memory_gb} GB public maximum · ${item.public_configured_memory_gb === null ? "no public configuration listed" : `${item.public_configured_memory_gb} GB public configuration`} · ${item.observed_oem_memory_gb === null ? "no reviewed OEM package" : `<a href="${esc(item.observed_oem_source)}" target="_blank" rel="noopener noreferrer">${esc(item.observed_oem_memory_gb)} GB OEM memory on package</a> · <a href="${esc(item.physical_package_source)}" target="_blank" rel="noopener noreferrer">physical package analysis</a>`} · ${item.integrated_phone_path ? "integrated phone path" : "no integrated phone path"} · <a href="${esc(item.source)}" target="_blank" rel="noopener noreferrer">source</a></span></div>`,
+          `<div class="gate-item"><strong>${esc(item.id.replaceAll("_", " "))}</strong><span>${item.public_maximum_memory_gb} GB public maximum · ${item.public_configured_memory_gb === null ? "no configured capacity in platform brief" : `${item.public_configured_memory_gb} GB brief configuration`} · ${oemEvidence(item)} · ${item.integrated_phone_path ? "integrated phone path" : "no integrated phone path"} · <a href="${esc(item.source)}" target="_blank" rel="noopener noreferrer">source</a></span></div>`,
       )
       .join("") +
     platform.candidates

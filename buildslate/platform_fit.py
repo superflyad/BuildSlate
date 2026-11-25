@@ -124,24 +124,41 @@ def audit(root: Path) -> dict:
             raise ValueError(f"{identifier}: invalid public configured capacity")
         observed = candidate.get("observed_oem_configuration")
         physical = candidate.get("physical_package_observation")
-        if (observed is None) != (physical is None):
-            raise ValueError(
-                f"{identifier}: OEM and package observations must be paired"
-            )
+        if physical is not None and observed is None:
+            raise ValueError(f"{identifier}: physical observation has no OEM system")
         observed_memory = None
         observed_source = None
         physical_source = None
         if observed is not None:
-            if not isinstance(observed, dict) or not isinstance(physical, dict):
-                raise ValueError(f"{identifier}: malformed OEM package observation")
+            if not isinstance(observed, dict):
+                raise ValueError(f"{identifier}: malformed OEM configuration")
             observed_memory = observed.get("memory_gb")
             observed_record = observed.get("source")
-            physical_record = physical.get("source")
             observed_source = (
                 observed_record.get("url")
                 if isinstance(observed_record, dict)
                 else None
             )
+            if (
+                not isinstance(observed_memory, int)
+                or isinstance(observed_memory, bool)
+                or observed_memory <= 0
+                or observed_memory > maximum
+                or not isinstance(observed.get("product"), str)
+                or not observed["product"].strip()
+                or observed.get("platform_part") != candidate.get("representative_part")
+                or observed.get("placement")
+                not in {"memory_on_package", "board_soldered", "unspecified"}
+                or not isinstance(observed_source, str)
+                or not observed_source.startswith("https://")
+            ):
+                raise ValueError(f"{identifier}: OEM configuration is inconsistent")
+        if physical is not None:
+            if not isinstance(physical, dict):
+                raise ValueError(
+                    f"{identifier}: malformed physical package observation"
+                )
+            physical_record = physical.get("source")
             physical_source = (
                 physical_record.get("url")
                 if isinstance(physical_record, dict)
@@ -150,12 +167,7 @@ def audit(root: Path) -> dict:
             package_count = physical.get("dram_package_count")
             package_capacity = physical.get("capacity_gb_per_package")
             if (
-                not isinstance(observed_memory, int)
-                or isinstance(observed_memory, bool)
-                or observed_memory <= 0
-                or observed_memory > maximum
-                or observed.get("platform_part") != candidate.get("representative_part")
-                or observed.get("placement") != "memory_on_package"
+                observed.get("placement") != "memory_on_package"
                 or physical.get("placement") != "co_packaged_with_soc"
                 or not isinstance(package_count, int)
                 or isinstance(package_count, bool)
@@ -164,12 +176,12 @@ def audit(root: Path) -> dict:
                 or isinstance(package_capacity, bool)
                 or package_capacity <= 0
                 or package_count * package_capacity != observed_memory
-                or not isinstance(observed_source, str)
-                or not observed_source.startswith("https://")
                 or not isinstance(physical_source, str)
                 or not physical_source.startswith("https://")
             ):
-                raise ValueError(f"{identifier}: OEM package evidence is inconsistent")
+                raise ValueError(
+                    f"{identifier}: physical package evidence is inconsistent"
+                )
         rows.append(
             {
                 "id": identifier,
@@ -181,6 +193,12 @@ def audit(root: Path) -> dict:
                 "public_memory_bus_width_bits": bus_width,
                 "cpu_cores": cpu_cores,
                 "public_configured_memory_gb": configured,
+                "observed_oem_product": (
+                    observed["product"] if observed is not None else None
+                ),
+                "observed_oem_product_sku": (
+                    observed.get("product_sku") if observed is not None else None
+                ),
                 "observed_oem_memory_gb": observed_memory,
                 "observed_oem_memory_placement": (
                     observed["placement"] if observed is not None else None
@@ -217,7 +235,8 @@ def audit(root: Path) -> dict:
             "The 128 GB floor is retained. X2 Elite and Plus publish controller "
             "capacity for it, "
             "but the reviewed ASUS X2 system has 48 GB on package, with three "
-            "16 GB DRAM packages observed in physical analysis. No reviewed public 128 GB "
+            "16 GB DRAM packages observed in physical analysis; HP and Lenovo list "
+            "32 GB X2 Plus systems. No reviewed public 128 GB "
             "X2 configuration or pocket phone integration is established. "
             "Obtain an orderable 128 GB package and supplier topology, "
             "power, software, and modem evidence before selection."

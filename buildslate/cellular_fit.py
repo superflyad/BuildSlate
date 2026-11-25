@@ -15,6 +15,7 @@ FLOORPLAN = Path("engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml")
 MEMORY_STUDY = Path("engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml")
 ENVELOPE = Path("cad/slate-pocket-v1r/envelope-model/envelope.yaml")
 ASSEMBLY = Path("engineering/assembly/assembly.yaml")
+CONCEPT = Path("engineering/assembly/concept-cad.yaml")
 MEMORY_ID = "micron_lpddr5x_16gb_public_part"
 
 
@@ -54,6 +55,7 @@ def _reverse_board_extension(
     floorplan: dict,
     envelope: dict,
     assembly: dict,
+    concept: dict,
     obstacles: list[tuple],
     package: list[float],
     gap: float,
@@ -126,6 +128,14 @@ def _reverse_board_extension(
             conflicts["board"].append(name)
         if _overlaps_3d(module_box, part_box):
             conflicts["module"].append(name)
+    for name, item in concept["additional_parts"].items():
+        if item.get("geometry_use", "solid") != "solid":
+            continue
+        part_box = tuple(float(value) for value in item["box_mm"])
+        if _overlaps_3d(board_box, part_box):
+            conflicts["board"].append(name)
+        if _overlaps_3d(module_box, part_box):
+            conflicts["module"].append(name)
     internal = envelope["device"]["internal_boundary_mm"]
     inside = (
         board_box[0] >= float(internal["x"])
@@ -164,6 +174,7 @@ def audit_data(
     study: dict,
     envelope: dict,
     assembly: dict,
+    concept: dict,
 ) -> dict:
     """Report whether the module outline fits each side at a nominal 1 mm gap."""
     module = candidate["reference_module"]
@@ -181,6 +192,8 @@ def audit_data(
         errors.append("Memory study does not use the screened public package")
     if floorplan["metadata"]["modeled_memory_tier_gb"] != 128:
         errors.append("Board plan is not the 128 GB study")
+    if concept.get("schema_version") != 1:
+        errors.append("Concept CAD manifest schema is unsupported")
     board = floorplan["board"]
     mechanical_board = envelope["placements"]["main_pcb_placeholder"]
     rect = mechanical_board["rectangle_mm"]
@@ -261,7 +274,13 @@ def audit_data(
         }
     fits = any(item["outline_fits"] for item in sides.values())
     extension = _reverse_board_extension(
-        floorplan, envelope, assembly, memory_obstacles["reverse"], package, gap
+        floorplan,
+        envelope,
+        assembly,
+        concept,
+        memory_obstacles["reverse"],
+        package,
+        gap,
     )
     if errors:
         status = "source_conflict"
@@ -304,6 +323,7 @@ def audit(root: Path) -> dict:
                 MEMORY_STUDY,
                 ENVELOPE,
                 ASSEMBLY,
+                CONCEPT,
             )
         )
     )

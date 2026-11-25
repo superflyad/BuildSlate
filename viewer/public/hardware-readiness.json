@@ -303,7 +303,8 @@
       "board_inside_current_internal_xy": true,
       "board_3d_conflicts": [
         "rear_camera_placeholder",
-        "speaker_a_placeholder"
+        "speaker_a_placeholder",
+        "haptics_concept"
       ],
       "module_3d_conflicts": [
         "rear_camera_placeholder"

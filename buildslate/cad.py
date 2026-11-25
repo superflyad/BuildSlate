@@ -12,6 +12,8 @@ from pathlib import Path
 
 from .assembly import build_assembly
 from .cad_proof import PROOF, build_proof
+from .cellular_fit import CANDIDATE as CELLULAR_CANDIDATE
+from .cellular_fit import audit as audit_cellular
 from .io import load_yaml
 from .memory_package_fit import CANDIDATES, PUBLIC_PART, STUDY
 from .memory_package_fit import audit as audit_memory
@@ -25,6 +27,10 @@ MEMORY_STEP = Path("cad/slate-pocket-v1r/concept-cad/memory-8x16.step")
 MEMORY_MODEL = Path("viewer/public/memory-8x16.json")
 MEMORY_GLTF = Path("viewer/public/memory-8x16.gltf")
 MEMORY_PROOF = Path("viewer/public/memory-8x16-proof.json")
+PHONE_STEP = Path("cad/slate-pocket-v1r/concept-cad/phone-fit-conflict.step")
+PHONE_MODEL = Path("viewer/public/phone-fit-conflict.json")
+PHONE_GLTF = Path("viewer/public/phone-fit-conflict.gltf")
+PHONE_PROOF = Path("viewer/public/phone-fit-conflict-proof.json")
 
 
 def build_concept(repo_root: Path) -> dict:
@@ -230,6 +236,59 @@ def build_memory_variant(repo_root: Path) -> dict:
         "Editable outline study only. The 0.8 mm PCB stack remains an unreviewed "
         "fabrication assumption; memory topology, routing, thermal path, and "
         "physical function are unproven."
+    )
+    return model
+
+
+def build_phone_conflict_variant(repo_root: Path) -> dict:
+    """Show the rejected board extension, modem, and existing mechanical parts."""
+    model = build_memory_variant(repo_root)
+    screen = audit_cellular(repo_root)
+    extension = screen["reverse_board_extension"]
+    if (
+        screen["status"] != "outline_blocked"
+        or extension["status"] != "mechanical_relayout_required"
+        or not extension["board_inside_current_internal_xy"]
+        or not extension["board_3d_conflicts"]
+        or not extension["module_3d_conflicts"]
+    ):
+        raise ValueError("phone collision study no longer matches the screened layout")
+    board = next(
+        part for part in model["parts"] if part["id"] == "main_pcb_placeholder"
+    )
+    board["box_mm"] = extension["board_global_box_mm"]
+    board["geometry_source"] = "docs/engineering/cellular_module_fit.md"
+    board["geometry_evidence_class"] = "design_assumption"
+    board["notes"] = (
+        "Hypothetical board extension; intersects the current camera and speaker envelopes."
+    )
+    model["parts"].append(
+        {
+            "id": "cellular_reference_module",
+            "label": "Quectel RG255C-GL reference outline",
+            "group": "radio",
+            "box_mm": extension["module_global_box_mm"],
+            "evidence_class": "design_assumption",
+            "source": f"{CELLULAR_CANDIDATE.as_posix()}#reference_module",
+            "active": True,
+            "notes": "Public package dimensions; this placement intersects the current camera envelope. Voice support, X2 integration, and suitability are unverified.",
+            "shape": "chip",
+            "geometry_use": "solid",
+            "screen_layer": None,
+            "roles": [],
+            "geometry_source": "docs/engineering/cellular_module_fit.md",
+            "geometry_evidence_class": "design_assumption",
+        }
+    )
+    model["status"] = "phone_integration_collision_study"
+    model["description"] = (
+        "Rejected board extension with a public modem outline against the current "
+        "eight-package memory, camera, and speaker geometry."
+    )
+    model["caveat"] = (
+        "Deliberate intersections show why this nominal board extension is not a "
+        "buildable phone layout. The modem is unselected; all electronics, RF, "
+        "mechanical tolerances, and physical function remain unproven."
     )
     return model
 
@@ -521,8 +580,13 @@ def _export(
     imported_solids = cq.importers.importStep(str(step_path)).solids().vals()
     geometry = _gltf(solids)
     proof = build_proof(root, model, solids, geometry, imported_solids, exact_bounds)
-    if model["status"] == "eight_package_reference_unqualified":
+    if model["status"] in {
+        "eight_package_reference_unqualified",
+        "phone_integration_collision_study",
+    }:
         proof["memory_study"] = audit_memory(root)["eight_package_study"]
+    if model["status"] == "phone_integration_collision_study":
+        proof["phone_extension"] = audit_cellular(root)["reverse_board_extension"]
     (root / output).write_text(
         json.dumps(model, indent=2) + "\n", encoding="utf-8", newline="\n"
     )
@@ -546,6 +610,8 @@ def generate(repo_root: Path = DEFAULT_REPO_ROOT) -> tuple[int, Path]:
     _export(cq, root, model, STEP, MODEL, GLTF, PROOF)
     variant = build_memory_variant(root)
     _export(cq, root, variant, MEMORY_STEP, MEMORY_MODEL, MEMORY_GLTF, MEMORY_PROOF)
+    phone = build_phone_conflict_variant(root)
+    _export(cq, root, phone, PHONE_STEP, PHONE_MODEL, PHONE_GLTF, PHONE_PROOF)
     return len(model["parts"]), root / STEP
 
 
@@ -556,6 +622,7 @@ def main() -> int:
     count, path = generate(args.repo_root)
     print(f"Exported {count} baseline solids to {path}")
     print(f"Exported eight-package reference STEP to {args.repo_root / MEMORY_STEP}")
+    print(f"Exported phone collision study STEP to {args.repo_root / PHONE_STEP}")
     return 0
 
 

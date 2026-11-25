@@ -259,12 +259,21 @@ function renderProof() {
   const proof = state.proof;
   const summary = proof.summary;
   const proofModel = state.model === "assembly" ? "concept" : state.model;
+  const proofTitles = {
+    concept: "Baseline concept",
+    memory8: "Eight-package reference",
+    phonefit: "Rejected phone layout",
+  };
+  const proofFiles = {
+    concept: "proof.json",
+    memory8: "memory-8x16-proof.json",
+    phonefit: "phone-fit-conflict-proof.json",
+  };
   document.querySelector("#proof-method").textContent =
-    `${proofModel === "memory8" ? "Eight-package reference · " : "Baseline concept · "}${proof.method}`;
+    `${proofTitles[proofModel]} · ${proof.method}`;
   const rawLink = document.querySelector("#proof-raw-link");
-  rawLink.href = `${import.meta.env.BASE_URL}${proofModel === "memory8" ? "memory-8x16-proof.json" : "proof.json"}`;
-  rawLink.textContent =
-    proofModel === "memory8" ? "Reference proof JSON" : "Baseline proof JSON";
+  rawLink.href = `${import.meta.env.BASE_URL}${proofFiles[proofModel]}`;
+  rawLink.textContent = `${proofTitles[proofModel]} proof JSON`;
   document.querySelector("#proof-summary").innerHTML = [
     [
       "Solids checked",
@@ -287,9 +296,13 @@ function renderProof() {
     )
     .join("");
   const memoryStudy = proof.memory_study;
-  document.querySelector("#proof-memory-study").innerHTML = memoryStudy
-    ? `<div class="gate-item"><strong>Eight-package outline</strong><span>${esc(memoryStudy.status.replaceAll("_", " "))} · ${esc(memoryStudy.minimum_screened_planar_gap_mm)} mm minimum screened planar gap</span></div><div class="gate-item"><strong>PCB stack screen</strong><span>${esc(memoryStudy.floorplan_board_thickness_mm)} mm provisional floorplan and ${esc(memoryStudy.mechanical_board_height_mm)} mm mechanical board · ${esc(memoryStudy.stack_issues.join("; ") || "internal geometry aligned; fabricator review required")}</span></div>`
-    : "";
+  document.querySelector("#proof-memory-study").innerHTML =
+    (memoryStudy
+      ? `<div class="gate-item"><strong>Eight-package outline</strong><span>${esc(memoryStudy.status.replaceAll("_", " "))} · ${esc(memoryStudy.minimum_screened_planar_gap_mm)} mm minimum screened planar gap</span></div><div class="gate-item"><strong>PCB stack screen</strong><span>${esc(memoryStudy.floorplan_board_thickness_mm)} mm provisional floorplan and ${esc(memoryStudy.mechanical_board_height_mm)} mm mechanical board · ${esc(memoryStudy.stack_issues.join("; ") || "internal geometry aligned; fabricator review required")}</span></div>`
+      : "") +
+    (proof.phone_extension
+      ? `<div class="gate-item"><strong>Phone layout rejected</strong><span>Expanded board ${esc(proof.phone_extension.board_global_box_mm[3])} × ${esc(proof.phone_extension.minimum_whole_mm_board_width)} mm; board conflicts: ${esc(proof.phone_extension.board_3d_conflicts.join(", "))}; module conflicts: ${esc(proof.phone_extension.module_3d_conflicts.join(", "))}. Inspect the solid intersections below.</span></div>`
+      : "");
   document.querySelector("#proof-intersections").innerHTML =
     proof.intersections
       .filter((item) => item.kind === "interference")
@@ -434,7 +447,7 @@ function renderHardware() {
     : "fits neither side of the current board";
   const cellularSummary = `A ${esc(cellularFit.package_mm.join(" × "))} mm ${esc(cellularFit.candidate)} 5G RedCap reference module ${cellularGeometry} with four 16 GB memory outlines per side and an assumed ${esc(cellularFit.assumed_nominal_package_clearance_mm)} mm gap. Voice is optional on this module. It is not selected. <a href="${esc(cellularFit.source)}" target="_blank" rel="noopener noreferrer">Manufacturer specification</a> · <a href="https://github.com/superflyad/BuildSlate/blob/main/docs/engineering/cellular_module_fit.md" target="_blank" rel="noopener noreferrer">Fit method</a>`;
   const boardExtension = cellularFit.reverse_board_extension;
-  const boardExtensionSummary = `The first whole-millimeter reverse-side outline fit needs a ${esc(cellularFit.board_outline_mm[0])} × ${esc(boardExtension.minimum_whole_mm_board_width)} mm board, ${esc(boardExtension.increase_from_current_board_mm)} mm wider than the current board. The expanded board intersects the ${esc(boardExtension.board_3d_conflicts.join(" and ").replaceAll("_placeholder", "").replaceAll("_", " "))}; the module itself intersects the ${esc(boardExtension.module_3d_conflicts.join(" and ").replaceAll("_placeholder", "").replaceAll("_", " "))}. Camera and speaker placement must be redesigned. This is a nominal box screen, not a released phone layout.`;
+  const boardExtensionSummary = `The first whole-millimeter reverse-side outline fit needs a ${esc(cellularFit.board_outline_mm[0])} × ${esc(boardExtension.minimum_whole_mm_board_width)} mm board, ${esc(boardExtension.increase_from_current_board_mm)} mm wider than the current board. The expanded board intersects the ${esc(boardExtension.board_3d_conflicts.join(", ").replaceAll("_placeholder", "").replaceAll("_concept", "").replaceAll("_", " "))}; the module itself intersects the ${esc(boardExtension.module_3d_conflicts.join(", ").replaceAll("_placeholder", "").replaceAll("_", " "))}. <a href="?model=phonefit&tab=proof">Inspect the 3D collision study</a>. This is not a released phone layout.`;
   document
     .querySelector("#hardware-parts")
     .insertAdjacentHTML(
@@ -916,6 +929,8 @@ function displayModel(model) {
   meshes.clear();
   baseZ.clear();
   state.model = model;
+  state.proofConflicts = model === "phonefit";
+  document.querySelector("#proof-toggle").checked = state.proofConflicts;
   state.proof = state.proofs[model === "assembly" ? "concept" : model];
   state.assembly = state.assets[model].data;
   state.selected = null;
@@ -970,7 +985,9 @@ function displayModel(model) {
       ? "Editable assumptions and source geometry"
       : model === "memory8"
         ? "Eight reference packages · stack and topology unresolved"
-        : "Traceable source planning envelopes";
+        : model === "phonefit"
+          ? "Rejected modem layout · four measured solid collisions"
+          : "Traceable source planning envelopes";
   document.querySelector("#part-detail").className = "detail-placeholder";
   document.querySelector("#part-detail").innerHTML =
     '<div class="detail-icon">◇</div><h2>Select a component</h2><p>Inspect geometry, evidence, and its source.</p>';
@@ -997,9 +1014,15 @@ try {
   );
   if (!memoryProofResponse.ok)
     throw new Error(`memory CAD proof: HTTP ${memoryProofResponse.status}`);
+  const phoneProofResponse = await fetch(
+    `${import.meta.env.BASE_URL}phone-fit-conflict-proof.json`,
+  );
+  if (!phoneProofResponse.ok)
+    throw new Error(`phone CAD proof: HTTP ${phoneProofResponse.status}`);
   state.proofs = {
     concept: await proofResponse.json(),
     memory8: await memoryProofResponse.json(),
+    phonefit: await phoneProofResponse.json(),
   };
   const hardwareResponse = await fetch(
     `${import.meta.env.BASE_URL}hardware-readiness.json`,
@@ -1012,6 +1035,7 @@ try {
     [
       ["concept", "concept"],
       ["memory8", "memory-8x16"],
+      ["phonefit", "phone-fit-conflict"],
       ["assembly", "assembly"],
     ].map(async ([key, name]) => {
       const response = await fetch(`${import.meta.env.BASE_URL}${name}.json`);
@@ -1032,7 +1056,7 @@ try {
   state.assembly = state.assets.concept.data;
   makeKeepouts();
   displayModel(
-    ["concept", "memory8", "assembly"].includes(requestedModel)
+    ["concept", "memory8", "phonefit", "assembly"].includes(requestedModel)
       ? requestedModel
       : "concept",
   );

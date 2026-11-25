@@ -4,6 +4,7 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Add an editable 46-solid phone integration collision study and exact CAD proof of board, camera, speaker, haptic, and modem overlaps in the public viewer.
 - Screen the minimum whole-millimeter board extension for the public 5G reference and identify its camera and speaker collisions in the full enclosure.
 - Require hashed lifecycle source evidence for every selected BOM role and correct the build-to-function memory summary.
 - Record and reject an exact obsolete 32 GB Micron LPDDR5X part; show its four-site and 192-bit bus conflicts in hardware readiness.

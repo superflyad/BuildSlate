@@ -18,11 +18,17 @@ from buildslate.cad import (  # noqa: E402
     MEMORY_PROOF,
     MEMORY_STEP,
     MODEL,
+    PHONE_GLTF,
+    PHONE_MODEL,
+    PHONE_PROOF,
+    PHONE_STEP,
     STEP,
     build_concept,
     build_memory_variant,
+    build_phone_conflict_variant,
 )
 from buildslate.cad_proof import PROOF  # noqa: E402
+from buildslate.cellular_fit import audit as audit_cellular  # noqa: E402
 from buildslate.io import load_yaml  # noqa: E402
 from buildslate.memory_package_fit import audit as audit_memory  # noqa: E402
 
@@ -183,9 +189,39 @@ def main() -> int:
         raise ValueError(
             "eight-package CAD variant does not replace the planning solids cleanly"
         )
+    phone = build_phone_conflict_variant(ROOT)
+    phone_proof = _check_model(phone, PHONE_MODEL, PHONE_GLTF, PHONE_STEP, PHONE_PROOF)
+    extension = audit_cellular(ROOT)["reverse_board_extension"]
+    phone_by_id = {part["id"]: part for part in phone["parts"]}
+    intersections = {
+        frozenset((item["first"], item["second"]))
+        for item in phone_proof["intersections"]
+        if item["kind"] == "interference"
+    }
+    expected_intersections = {
+        frozenset(pair)
+        for pair in (
+            ("main_pcb_placeholder", "rear_camera_placeholder"),
+            ("main_pcb_placeholder", "speaker_a_placeholder"),
+            ("main_pcb_placeholder", "haptics_concept"),
+            ("cellular_reference_module", "rear_camera_placeholder"),
+        )
+    }
+    if (
+        len(phone["parts"]) != len(variant["parts"]) + 1
+        or phone_by_id["main_pcb_placeholder"]["box_mm"]
+        != extension["board_global_box_mm"]
+        or phone_by_id["cellular_reference_module"]["box_mm"]
+        != extension["module_global_box_mm"]
+        or phone_proof.get("phone_extension") != extension
+        or intersections != expected_intersections
+        or phone_proof["summary"]["interferences"] != 4
+    ):
+        raise ValueError("phone collision CAD does not prove the rejected layout")
     print(
         f"PASS: {primary_proof['summary']['parts_checked']} baseline and "
-        f"{reference_proof['summary']['parts_checked']} reference CAD solids"
+        f"{reference_proof['summary']['parts_checked']} memory and "
+        f"{phone_proof['summary']['parts_checked']} phone study CAD solids"
     )
     return 0
 

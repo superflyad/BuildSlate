@@ -12,7 +12,12 @@ globalThis.ProgressEvent ??= class ProgressEvent {
 };
 
 const root = resolve(import.meta.dirname, "..");
-for (const model of ["assembly", "concept", "memory-8x16"]) {
+for (const model of [
+  "assembly",
+  "concept",
+  "memory-8x16",
+  "phone-fit-conflict",
+]) {
   const assembly = JSON.parse(
     readFileSync(resolve(root, `public/${model}.json`), "utf8"),
   );
@@ -62,6 +67,7 @@ for (const model of ["assembly", "concept", "memory-8x16"]) {
 for (const [modelName, proofName] of [
   ["concept", "proof"],
   ["memory-8x16", "memory-8x16-proof"],
+  ["phone-fit-conflict", "phone-fit-conflict-proof"],
 ]) {
   const proof = JSON.parse(
     readFileSync(resolve(root, `public/${proofName}.json`), "utf8"),
@@ -82,5 +88,9 @@ for (const [modelName, proofName] of [
     new Set(concept.component_coverage.map((role) => role.id)),
   );
   assert.equal(proof.summary.keepout_conflicts, proof.keepout_conflicts.length);
+  if (modelName === "phone-fit-conflict") {
+    assert.equal(proof.summary.interferences, 4);
+    assert.equal(proof.phone_extension.status, "mechanical_relayout_required");
+  }
   console.log(`PASS: ${modelName} has ${proof.parts.length} CAD proof records`);
 }

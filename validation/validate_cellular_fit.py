@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT))
 from buildslate.cellular_fit import (  # noqa: E402
     ASSEMBLY,
     CANDIDATE,
+    CONCEPT,
     ENVELOPE,
     FLOORPLAN,
     MEMORY_CANDIDATES,
@@ -41,7 +42,7 @@ def main() -> int:
         or extension["module_local_origin_mm"] != [2.0, 47.0]
         or not extension["board_inside_current_internal_xy"]
         or extension["board_3d_conflicts"]
-        != ["rear_camera_placeholder", "speaker_a_placeholder"]
+        != ["rear_camera_placeholder", "speaker_a_placeholder", "haptics_concept"]
         or extension["module_3d_conflicts"] != ["rear_camera_placeholder"]
         or not extension["module_above_rear_cover"]
         or extension["module_bottom_to_rear_cover_mm"] != 0.25
@@ -62,6 +63,7 @@ def main() -> int:
             MEMORY_STUDY,
             ENVELOPE,
             ASSEMBLY,
+            CONCEPT,
         )
     ]
     wider = copy.deepcopy(inputs)
@@ -90,6 +92,7 @@ def main() -> int:
     relocated = copy.deepcopy(inputs)
     for name in ("rear_camera_placeholder", "speaker_a_placeholder"):
         relocated[4]["placements"][name]["rectangle_mm"]["x"] = 5.0
+    relocated[6]["additional_parts"]["haptics_concept"]["box_mm"][0] = 5.0
     recovered = audit_data(*relocated)["reverse_board_extension"]
     if (
         recovered["status"] != "outline_possible_unqualified"

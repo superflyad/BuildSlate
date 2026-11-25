@@ -39,6 +39,13 @@ def main() -> int:
     if expected["interconnect_release"]["status"] != "missing":
         raise ValueError("Public hardware report must not imply released interconnects")
     if (
+        expected["assembly_procedure"]["status"] != "missing"
+        or expected["bench_safety"]["status"] != "missing"
+    ):
+        raise ValueError(
+            "Public hardware report must not imply released build procedures"
+        )
+    if (
         expected["display_fit"]["status"] != "blocked"
         or expected["design_release"] != "blocked"
     ):

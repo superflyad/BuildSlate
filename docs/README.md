@@ -92,5 +92,6 @@ Use this index to move from a question to the authoritative source. The root [RE
 | [RF release proof](engineering/rf_release_proof.md) | Selected radio and antenna identities, connected matching feeds, CAD placement, band sweeps, isolation, and coexistence |
 | [Released mechanical CAD proof](engineering/mechanical_release_proof.md) | Supplier STEP identity, assembly placement, intersections, and tolerance clearance |
 | [Firmware release proof](engineering/firmware_release_proof.md) | Image integrity, boot and recovery order, driver coverage, and BOM/board binding |
+| [Build procedure proof](engineering/build_procedure_proof.md) | Ordered assembly inspections, isolated first-power limits, and controlled design bindings |
 
 The previous all-in-one overview is retained as an [archived snapshot](archive/2026-10-repository-overview.md). It is useful for history; the current program dashboard and source registries determine present status. Generated reports are views of the tracked inputs. A current hash or visible 3D solid does not promote a planning value to verified evidence.

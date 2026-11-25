@@ -27,6 +27,8 @@ The [phone-function proof](docs/engineering/phone_function_proof.md) now checks 
 
 The [firmware release proof](docs/engineering/firmware_release_proof.md) now checks image bytes, boot and recovery order, driver coverage, and BOM/board bindings before the hardware gate can accept a firmware record. The public Hardware tab reports the bundle as missing. This is release integrity checking; no Slate Pocket firmware has been booted.
 
+The [build procedure proof](docs/engineering/build_procedure_proof.md) now checks ordered assembly inspections and isolated first-power limits against the selected BOM, board, power design, firmware, and mechanical release. The public Hardware tab shows both releases as missing; the checks do not claim an assembled or energized device.
+
 The [schematic ERC proof](docs/engineering/schematic_erc_proof.md) reruns KiCad electrical rules from an editable source and pinned project settings before an ERC record can count toward design release. The v1R schematic and reviewed ERC report are still missing.
 
 The [platform reference proof](docs/engineering/platform_reference_proof.md) requires selected compute, memory, storage, and PMIC identities, supplier source bindings, an electrical BOM match, and a complete 128 GB channel, rank, and lane map before a reference package can count toward design release. No such supplier package is released.

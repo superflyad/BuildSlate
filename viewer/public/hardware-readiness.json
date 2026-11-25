@@ -1123,6 +1123,18 @@
       "No released interconnect map"
     ]
   },
+  "assembly_procedure": {
+    "status": "missing",
+    "errors": [
+      "No released assembly procedure"
+    ]
+  },
+  "bench_safety": {
+    "status": "missing",
+    "errors": [
+      "No released bench safety procedure"
+    ]
+  },
   "selected_roles": [
     {
       "id": "compute_platform",

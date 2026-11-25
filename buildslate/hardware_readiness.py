@@ -11,6 +11,11 @@ import json
 from pathlib import Path
 
 from buildslate.battery_fit import audit as audit_battery_fit
+from buildslate.build_procedure_proof import (
+    ASSEMBLY_RELEASE as ASSEMBLY_PROCEDURE_RELEASE,
+)
+from buildslate.build_procedure_proof import BENCH_RELEASE as BENCH_SAFETY_RELEASE
+from buildslate.build_procedure_proof import audit_assembly, audit_bench
 from buildslate.cellular_fit import audit as audit_cellular_fit
 from buildslate.display_fit import audit as audit_display_fit
 from buildslate.erc_proof import audit as audit_erc
@@ -491,6 +496,56 @@ def _evidence_result(
                     "revision"
                 ):
                     reasons.append("Firmware board revision differs from routed PCB")
+        if not reasons and requirement.get("id") in {
+            "assembly_release",
+            "bench_safety",
+        }:
+            is_assembly = requirement["id"] == "assembly_release"
+            expected = (
+                ASSEMBLY_PROCEDURE_RELEASE if is_assembly else BENCH_SAFETY_RELEASE
+            )
+            if target != (root / expected).resolve():
+                reasons.append("Procedure must name its controlled release JSON")
+            else:
+                proof = audit_assembly(root) if is_assembly else audit_bench(root)
+                if proof["status"] != "pass":
+                    reasons.extend(proof["errors"])
+                elif (
+                    proof["revision"] != record["revision"]
+                    or proof["reviewed_by"] != record["reviewed_by"]
+                ):
+                    reasons.append("Procedure review identity or revision differs")
+                sources = (
+                    ("selected_bom", "selected_bom_sha256"),
+                    ("routed_pcb", "routed_pcb_sha256"),
+                    ("power_safety", "power_safety_sha256"),
+                    ("firmware_boot", "firmware_bundle_sha256"),
+                ) + (
+                    (
+                        ("mechanical_release", "mechanical_assembly_sha256"),
+                        ("interconnect", "interconnect_sha256"),
+                        ("thermal_release", "thermal_release_sha256"),
+                        ("bench_safety", "bench_safety_sha256"),
+                    )
+                    if is_assembly
+                    else ()
+                )
+                for identifier, field in sources:
+                    upstream = (related_records or {}).get(identifier)
+                    if (
+                        not isinstance(upstream, dict)
+                        or upstream.get("disposition") != "approved"
+                        or upstream.get("sha256") != proof.get(field)
+                    ):
+                        reasons.append(
+                            f"Procedure is not bound to approved {identifier}"
+                        )
+                if (
+                    selection_proof is None
+                    or selection_proof.get("status") != "pass"
+                    or selection_proof.get("sha256") != proof.get("selected_bom_sha256")
+                ):
+                    reasons.append("Procedure selected BOM has no passing part proof")
         if not reasons and requirement.get("id") == "phone_validation":
             if target.suffix.lower() != ".json":
                 reasons.append("Phone validation must be a controlled JSON bundle")
@@ -580,6 +635,8 @@ def build_report(root: Path) -> dict:
     thermal_release = audit_thermal(root)
     rf_release = audit_rf(root)
     interconnect_release = audit_interconnect(root)
+    assembly_procedure = audit_assembly(root)
+    bench_safety = audit_bench(root)
     selected_roles = []
     for role in manifest["selected_roles"]:
         item = strategy["roles"].get(role)
@@ -694,6 +751,8 @@ def build_report(root: Path) -> dict:
         "thermal_release": thermal_release,
         "rf_release": rf_release,
         "interconnect_release": interconnect_release,
+        "assembly_procedure": assembly_procedure,
+        "bench_safety": bench_safety,
         "selected_roles": selected_roles,
         "cellular": {"status": cellular["status"], "selected": cellular_selected},
         "requirements": entries,

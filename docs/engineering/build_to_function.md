@@ -52,6 +52,8 @@ The mechanical release record has a separate [STEP assembly proof](mechanical_re
 
 The firmware boot record has a separate [firmware bundle proof](firmware_release_proof.md). It requires exact image hashes, boot and recovery order, driver coverage, flash readback instructions, and binding to the approved selected BOM and routed board. There is no released firmware bundle; the proof cannot establish boot or recovery on hardware.
 
+The assembly and bench-safety records have an [ordered build procedure proof](build_procedure_proof.md). It binds the first-power limits and inspection steps to the exact selected design and rejects an unstructured document as release evidence. Neither procedure exists yet; no build or energized test is authorized by this check.
+
 The functional gate also reads the [EVT0 campaign](../../reports/program/evt0-campaign.yaml) directly. Passing required tests must belong to one serialized unit, build revision, configuration, and campaign. Each required test has a raw measurement contract, including integrated display, touch, camera, audio playback/capture, and USB activity; charge input power; and separately measured memory capacity and allocation. These checks confirm the presence and internal consistency of recorded evidence; engineering review and physical observation remain necessary.
 
 The [phone-function proof](phone_function_proof.md) requires raw, hash-bound network, two-way call/audio, data, radio-kill, and authorized emergency-lab results. It binds their unit and configuration to the passing EVT0 campaign and the selected cellular, design, and software records. No phone test result exists.

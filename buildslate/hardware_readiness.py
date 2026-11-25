@@ -44,6 +44,7 @@ from buildslate.power_safety_proof import audit as audit_power_safety
 from buildslate.rf_proof import RELEASE as RF_RELEASE
 from buildslate.rf_proof import audit as audit_rf
 from buildslate.storage_fit import audit as audit_storage_fit
+from buildslate.supplier_source import SUPPORTED_SUFFIXES, source_format_error
 from buildslate.thermal_proof import RELEASE as THERMAL_RELEASE
 from buildslate.thermal_proof import audit as audit_thermal
 from buildslate.usb_fit import audit as audit_usb_fit
@@ -141,6 +142,10 @@ def _evidence_result(
             digest = hashlib.sha256(target.read_bytes()).hexdigest()
             if digest != record["sha256"]:
                 reasons.append("Artifact hash does not match")
+        if not reasons and target.suffix.lower() in SUPPORTED_SUFFIXES:
+            format_error = source_format_error(target)
+            if format_error is not None:
+                reasons.append(format_error)
         if not reasons and requirement.get("id") == "selected_bom":
             if target != (root / SELECTED_BOM_RELEASE).resolve():
                 reasons.append("Selected BOM must name the controlled release JSON")

@@ -4,6 +4,8 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Screen all approved PDF, STEP, and ZIP release evidence for valid file format after hash matching, including generic design and physical-test records.
+
 - Reject mislabeled mechanical supplier drawings and zero clearance or uncertainty claims before a released STEP assembly can pass the physical design gate.
 
 - Shift the compact eight-package reverse placement to admit a nominal 5G module outline on the current board; export a separate 46-solid CAD and proof while keeping memory, modem, RF, electrical, and phone-function release blocked.

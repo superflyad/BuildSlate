@@ -17,6 +17,7 @@ from buildslate.hardware_readiness import (  # noqa: E402
     build_report,
 )
 from buildslate.io import dump_yaml  # noqa: E402
+from validation.source_fixtures import pdf_source  # noqa: E402
 
 
 def main() -> int:
@@ -90,7 +91,7 @@ def main() -> int:
         controlled = root / "engineering/hardware/released"
         controlled.mkdir(parents=True)
         artifact = controlled / "reviewed.pdf"
-        artifact.write_bytes(b"fixture artifact")
+        artifact.write_bytes(pdf_source("reviewed release evidence"))
         import hashlib
 
         record = {
@@ -102,6 +103,14 @@ def main() -> int:
         }
         if _evidence_result(root, requirement, record)["status"] != "accepted":
             raise ValueError("Valid controlled fixture was rejected")
+        artifact.write_bytes(b"renamed text with a matching digest")
+        invalid = {
+            **record,
+            "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+        }
+        if _evidence_result(root, requirement, invalid)["status"] != "rejected":
+            raise ValueError("Renamed text passed as approved PDF evidence")
+        artifact.write_bytes(pdf_source("reviewed release evidence"))
         for mutation in (
             {"sha256": "0" * 64},
             {"disposition": "draft"},

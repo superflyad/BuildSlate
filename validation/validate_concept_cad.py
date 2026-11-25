@@ -20,6 +20,10 @@ from buildslate.cad import (  # noqa: E402
     COMPACT_MEMORY_MODEL,
     COMPACT_MEMORY_PROOF,
     COMPACT_MEMORY_STEP,
+    COMPACT_PHONE_GLTF,
+    COMPACT_PHONE_MODEL,
+    COMPACT_PHONE_PROOF,
+    COMPACT_PHONE_STEP,
     GLTF,
     MEMORY_GLTF,
     MEMORY_MODEL,
@@ -39,6 +43,7 @@ from buildslate.cad import (  # noqa: E402
     build_battery_pack_variant,
     build_concept,
     build_compact_memory_variant,
+    build_compact_phone_variant,
     build_memory_variant,
     build_phone_conflict_variant,
     build_usb_connector_variant,
@@ -46,6 +51,7 @@ from buildslate.cad import (  # noqa: E402
 from buildslate.cad_proof import PROOF  # noqa: E402
 from buildslate.battery_fit import audit as audit_battery  # noqa: E402
 from buildslate.cellular_fit import audit as audit_cellular  # noqa: E402
+from buildslate.cellular_fit import audit_compact as audit_compact_cellular  # noqa: E402
 from buildslate.io import load_yaml  # noqa: E402
 from buildslate.memory_package_fit import audit as audit_memory  # noqa: E402
 
@@ -252,6 +258,28 @@ def main() -> int:
         or phone_proof["summary"]["interferences"] != 4
     ):
         raise ValueError("phone collision CAD does not prove the rejected layout")
+    compact_phone = build_compact_phone_variant(ROOT)
+    compact_phone_proof = _check_model(
+        compact_phone,
+        COMPACT_PHONE_MODEL,
+        COMPACT_PHONE_GLTF,
+        COMPACT_PHONE_STEP,
+        COMPACT_PHONE_PROOF,
+    )
+    compact_phone_fit = audit_compact_cellular(ROOT)
+    compact_phone_by_id = {part["id"]: part for part in compact_phone["parts"]}
+    if (
+        len(compact_phone["parts"]) != len(compact["parts"]) + 1
+        or compact_phone_by_id["main_pcb_placeholder"]["box_mm"]
+        != compact_phone_fit["reverse_board_extension"]["board_global_box_mm"]
+        or compact_phone_by_id["cellular_reference_module"]["box_mm"]
+        != compact_phone_fit["reverse_board_extension"]["module_global_box_mm"]
+        or compact_phone_proof["summary"]["interferences"] != 0
+        or compact_phone_proof.get("phone_outline_study") != compact_phone_fit
+        or compact_phone_proof.get("memory_study")
+        != audit_memory(ROOT)["compact_16gb_reference"]["placement_study"]
+    ):
+        raise ValueError("compact phone CAD outline study drifted")
     usb = build_usb_connector_variant(ROOT)
     usb_proof = _check_model(usb, USB_MODEL, USB_GLTF, USB_STEP, USB_PROOF)
     candidate = load_yaml(ROOT / USB_CANDIDATE)["candidate"]
@@ -307,6 +335,7 @@ def main() -> int:
         f"{reference_proof['summary']['parts_checked']} memory and "
         f"{compact_proof['summary']['parts_checked']} compact memory and "
         f"{phone_proof['summary']['parts_checked']} phone and "
+        f"{compact_phone_proof['summary']['parts_checked']} compact phone and "
         f"{usb_proof['summary']['parts_checked']} USB and "
         f"{battery_proof['summary']['parts_checked']} battery study CAD solids"
     )

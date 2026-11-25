@@ -13,10 +13,14 @@ CANDIDATE = Path("research/evidence/cellular/candidate-comparison.yaml")
 MEMORY_CANDIDATES = Path("research/evidence/compute/platform-comparison.yaml")
 FLOORPLAN = Path("engineering/pcb/slate-pocket-v1r-floorplan/floorplan.yaml")
 MEMORY_STUDY = Path("engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml")
+COMPACT_MEMORY_STUDY = Path(
+    "engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-compact-study.yaml"
+)
 ENVELOPE = Path("cad/slate-pocket-v1r/envelope-model/envelope.yaml")
 ASSEMBLY = Path("engineering/assembly/assembly.yaml")
 CONCEPT = Path("engineering/assembly/concept-cad.yaml")
 MEMORY_ID = "micron_lpddr5x_16gb_public_part"
+COMPACT_MEMORY_ID = "micron_lpddr5x_16gb_compact_part"
 
 
 def _intersects_with_clearance(a: tuple, b: tuple, clearance: float) -> bool:
@@ -163,7 +167,7 @@ def _reverse_board_extension(
         "module_3d_conflicts": conflicts["module"],
         "module_above_rear_cover": above_rear_cover,
         "module_bottom_to_rear_cover_mm": round(module_box[2] - rear_cover_top, 3),
-        "caveat": "Whole-mm board extension and nominal boxes only; this is not a qualified modem site, board, or phone design.",
+        "caveat": "Whole-mm board-width search and nominal boxes only; this is not a qualified modem site, board, or phone design.",
     }
 
 
@@ -175,6 +179,8 @@ def audit_data(
     envelope: dict,
     assembly: dict,
     concept: dict,
+    memory_id: str = MEMORY_ID,
+    memory_study_source: Path = MEMORY_STUDY,
 ) -> dict:
     """Report whether the module outline fits each side at a nominal 1 mm gap."""
     module = candidate["reference_module"]
@@ -182,14 +188,24 @@ def audit_data(
     gap = float(candidate["screen"]["assumed_nominal_package_clearance_mm"])
     if min(*package, gap) < 0 or any(value == 0 for value in package):
         raise ValueError("Module dimensions must be positive and clearance nonnegative")
-    memory = memory_candidates["memory_supplier_context"][MEMORY_ID]
+    memory = memory_candidates["memory_supplier_context"][memory_id]
     memory_length, memory_width = (float(value) for value in memory["package_mm"][:2])
+    orientation = study["metadata"].get("package_orientation", "unrotated")
+    if orientation == "rotated_90":
+        memory_length, memory_width = memory_width, memory_length
     boundary_data = floorplan["board"]["component_side_boundary_mm"]
     boundary = tuple(float(boundary_data[key]) for key in ("x", "y", "length", "width"))
     memory_obstacles: dict[str, list[tuple]] = {"component": [], "reverse": []}
     errors = []
-    if study["metadata"]["reference_part"] != MEMORY_ID:
+    if study["metadata"]["reference_part"] != memory_id:
         errors.append("Memory study does not use the screened public package")
+    if orientation not in {"unrotated", "rotated_90"}:
+        errors.append("Memory study has an unsupported package orientation")
+    expected_orientation = (
+        "rotated_90" if memory_id == COMPACT_MEMORY_ID else "unrotated"
+    )
+    if orientation != expected_orientation:
+        errors.append("Memory package orientation differs from its screened study")
     if floorplan["metadata"]["modeled_memory_tier_gb"] != 128:
         errors.append("Board plan is not the 128 GB study")
     if concept.get("schema_version") != 1:
@@ -290,6 +306,9 @@ def audit_data(
         "status": status,
         "candidate": module["variant"],
         "candidate_role": "public_reference_not_selected",
+        "memory_reference_part": memory["part_number"],
+        "memory_study_source": memory_study_source.as_posix(),
+        "memory_package_orientation": orientation,
         "technology": module["technology"],
         "package_mm": package,
         "board_outline_mm": [
@@ -329,13 +348,39 @@ def audit(root: Path) -> dict:
     )
 
 
+def audit_compact(root: Path) -> dict:
+    """Screen the compact 16 GB package arrangement against the same modem."""
+    return audit_data(
+        *(
+            load_yaml(root / path)
+            for path in (
+                CANDIDATE,
+                MEMORY_CANDIDATES,
+                FLOORPLAN,
+                COMPACT_MEMORY_STUDY,
+                ENVELOPE,
+                ASSEMBLY,
+                CONCEPT,
+            )
+        ),
+        memory_id=COMPACT_MEMORY_ID,
+        memory_study_source=COMPACT_MEMORY_STUDY,
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--repo-root", type=Path, default=Path(__file__).resolve().parents[1]
     )
+    parser.add_argument(
+        "--compact",
+        action="store_true",
+        help="Screen the shifted compact 16 GB memory placement",
+    )
     args = parser.parse_args()
-    print(json.dumps(audit(args.repo_root), indent=2))
+    result = audit_compact(args.repo_root) if args.compact else audit(args.repo_root)
+    print(json.dumps(result, indent=2))
     return 0
 
 

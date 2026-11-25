@@ -18,6 +18,7 @@ for (const model of [
   "memory-8x16",
   "memory-8x16-compact",
   "phone-fit-conflict",
+  "phone-fit-compact-outline",
   "usb4525-outline",
   "lp4473109-pack-outline",
 ]) {
@@ -72,6 +73,7 @@ for (const [modelName, proofName] of [
   ["memory-8x16", "memory-8x16-proof"],
   ["memory-8x16-compact", "memory-8x16-compact-proof"],
   ["phone-fit-conflict", "phone-fit-conflict-proof"],
+  ["phone-fit-compact-outline", "phone-fit-compact-outline-proof"],
   ["usb4525-outline", "usb4525-outline-proof"],
   ["lp4473109-pack-outline", "lp4473109-pack-outline-proof"],
 ]) {
@@ -97,6 +99,18 @@ for (const [modelName, proofName] of [
   if (modelName === "phone-fit-conflict") {
     assert.equal(proof.summary.interferences, 4);
     assert.equal(proof.phone_extension.status, "mechanical_relayout_required");
+  }
+  if (modelName === "phone-fit-compact-outline") {
+    assert.equal(proof.summary.interferences, 0);
+    assert.equal(
+      proof.phone_outline_study.status,
+      "outline_possible_unqualified",
+    );
+    assert.equal(
+      proof.phone_outline_study.reverse_board_extension
+        .increase_from_current_board_mm,
+      0,
+    );
   }
   if (modelName === "usb4525-outline") {
     assert.equal(proof.summary.interferences, 1);

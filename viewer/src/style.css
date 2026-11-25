@@ -874,6 +874,11 @@ summary:focus-visible {
   stroke: #d7c7ff;
   stroke-width: 0.5;
 }
+.memory-board .modem-part {
+  fill: #176f75;
+  stroke: #a3f4ef;
+  stroke-width: 0.6;
+}
 .memory-board text {
   fill: #fff;
   font-size: 3.5px;

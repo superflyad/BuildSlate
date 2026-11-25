@@ -226,6 +226,16 @@ def _placement_study(
     conflicts = []
     if study["metadata"]["reference_part"] != reference_part:
         conflicts.append("Study reference part does not match the screened package")
+    expected_orientation = (
+        "rotated_90" if reference_part == COMPACT_PART else "unrotated"
+    )
+    if (
+        study["metadata"].get("package_orientation", "unrotated")
+        != expected_orientation
+    ):
+        conflicts.append(
+            "Study package orientation does not match the screened outline"
+        )
     if len(study["placements"]) != required:
         conflicts.append("Study package count does not cover the memory target")
     for name, item in study["placements"].items():

@@ -1031,7 +1031,7 @@
       "label": "16 GB memory \u00b7 left lower reverse",
       "group": "memory",
       "box_mm": [
-        102.0,
+        100.0,
         28.0,
         2.0,
         12.4,
@@ -1056,7 +1056,7 @@
       "label": "16 GB memory \u00b7 left upper reverse",
       "group": "memory",
       "box_mm": [
-        102.0,
+        100.0,
         44.0,
         2.0,
         12.4,
@@ -1081,7 +1081,7 @@
       "label": "16 GB memory \u00b7 right lower reverse",
       "group": "memory",
       "box_mm": [
-        143.0,
+        144.0,
         28.0,
         2.0,
         12.4,
@@ -1106,7 +1106,7 @@
       "label": "16 GB memory \u00b7 right upper reverse",
       "group": "memory",
       "box_mm": [
-        143.0,
+        144.0,
         44.0,
         2.0,
         12.4,

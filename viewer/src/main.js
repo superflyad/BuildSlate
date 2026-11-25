@@ -141,7 +141,7 @@ function esc(text) {
 function textBox(box) {
   return `${box[3]} × ${box[4]} × ${box[5]} mm`;
 }
-function memoryBoard(study, side) {
+function memoryBoard(study, side, module = null) {
   const [width, height] = study.board_outline_mm;
   const existing = side === "component" ? study.component_side_placements : [];
   const packages = study.placements.filter((item) => item.side === side);
@@ -149,7 +149,10 @@ function memoryBoard(study, side) {
     const [x, y, length, breadth] = item.rect_mm;
     return `<g><title>${esc(item.id.replaceAll("_", " "))}</title><rect class="${className}" x="${esc(x)}" y="${esc(y)}" width="${esc(length)}" height="${esc(breadth)}"/>${label ? `<text x="${esc(x + length / 2)}" y="${esc(y + breadth / 2)}" dominant-baseline="central" text-anchor="middle">${esc(label)}</text>` : ""}</g>`;
   };
-  return `<figure class="memory-board"><figcaption>${side === "component" ? "Component side" : "Reverse side"}</figcaption><svg role="img" aria-label="${side === "component" ? "Four reference memory packages beside existing planning blocks" : "Four reference memory packages on the reverse board side"}" viewBox="0 0 ${esc(width)} ${esc(height)}"><rect class="board-outline" x="0" y="0" width="${esc(width)}" height="${esc(height)}"/>${existing.map((item) => rect(item, "existing-part", item.id === "compute_soc" ? "SoC" : item.id === "storage_ufs_1tb_reference" ? "UFS" : "")).join("")}${packages.map((item) => rect(item, "memory-part", "16")).join("")}</svg></figure>`;
+  const moduleRect = module
+    ? `<g><title>5G reference module outline</title><rect class="modem-part" x="${esc(module[0])}" y="${esc(module[1])}" width="${esc(module[2])}" height="${esc(module[3])}"/><text x="${esc(module[0] + module[2] / 2)}" y="${esc(module[1] + module[3] / 2)}" dominant-baseline="central" text-anchor="middle">5G</text></g>`
+    : "";
+  return `<figure class="memory-board"><figcaption>${side === "component" ? "Component side" : "Reverse side"}</figcaption><svg role="img" aria-label="${side === "component" ? "Four reference memory packages beside existing planning blocks" : module ? "Four reference memory packages and a 5G outline on the reverse board side" : "Four reference memory packages on the reverse board side"}" viewBox="0 0 ${esc(width)} ${esc(height)}"><rect class="board-outline" x="0" y="0" width="${esc(width)}" height="${esc(height)}"/>${existing.map((item) => rect(item, "existing-part", item.id === "compute_soc" ? "SoC" : item.id === "storage_ufs_1tb_reference" ? "UFS" : "")).join("")}${packages.map((item) => rect(item, "memory-part", "16")).join("")}${moduleRect}</svg></figure>`;
 }
 function sourceLink(reference) {
   const path = reference.split("#", 1)[0];
@@ -264,6 +267,7 @@ function renderProof() {
     memory8: "Eight-package reference",
     compact8: "Compact eight-package reference",
     phonefit: "Rejected phone layout",
+    compactphone: "Compact memory and modem outline",
     usbfit: "USB connector outline",
     batteryfit: "Battery pack conflict",
   };
@@ -272,6 +276,7 @@ function renderProof() {
     memory8: "memory-8x16-proof.json",
     compact8: "memory-8x16-compact-proof.json",
     phonefit: "phone-fit-conflict-proof.json",
+    compactphone: "phone-fit-compact-outline-proof.json",
     usbfit: "usb4525-outline-proof.json",
     batteryfit: "lp4473109-pack-outline-proof.json",
   };
@@ -515,21 +520,29 @@ function renderHardware() {
   )
     ? "has a nominal outline location on the board; integration remains unqualified"
     : "fits neither side of the current board";
-  const cellularSummary = `A ${esc(cellularFit.package_mm.join(" × "))} mm ${esc(cellularFit.candidate)} 5G RedCap reference module ${cellularGeometry} with four 16 GB memory outlines per side and an assumed ${esc(cellularFit.assumed_nominal_package_clearance_mm)} mm gap. Voice is optional on this module. It is not selected. <a href="${esc(cellularFit.source)}" target="_blank" rel="noopener noreferrer">Manufacturer specification</a> · <a href="https://github.com/superflyad/BuildSlate/blob/main/docs/engineering/cellular_module_fit.md" target="_blank" rel="noopener noreferrer">Fit method</a>`;
+  const cellularSummary = `A ${esc(cellularFit.package_mm.join(" × "))} mm ${esc(cellularFit.candidate)} 5G RedCap reference module ${cellularGeometry} with four larger 16 GB memory outlines per side and an assumed ${esc(cellularFit.assumed_nominal_package_clearance_mm)} mm gap. Voice is optional on this module. It is not selected. <a href="${esc(cellularFit.source)}" target="_blank" rel="noopener noreferrer">Manufacturer specification</a> · <a href="https://github.com/superflyad/BuildSlate/blob/main/docs/engineering/cellular_module_fit.md" target="_blank" rel="noopener noreferrer">Fit method</a>`;
   const boardExtension = cellularFit.reverse_board_extension;
   const boardExtensionSummary = `The first whole-millimeter reverse-side outline fit needs a ${esc(cellularFit.board_outline_mm[0])} × ${esc(boardExtension.minimum_whole_mm_board_width)} mm board, ${esc(boardExtension.increase_from_current_board_mm)} mm wider than the current board. The expanded board intersects the ${esc(boardExtension.board_3d_conflicts.join(", ").replaceAll("_placeholder", "").replaceAll("_concept", "").replaceAll("_", " "))}; the module itself intersects the ${esc(boardExtension.module_3d_conflicts.join(", ").replaceAll("_placeholder", "").replaceAll("_", " "))}. <a href="?model=phonefit&tab=proof">Inspect the 3D collision study</a>. This is not a released phone layout.`;
+  const compactPhone = report.cellular_compact_memory_fit;
+  const compactPlacement = compactPhone.reverse_board_extension;
+  const compactSummary = `Shifted ${esc(compactPhone.memory_reference_part)} outlines leave a reverse-side location for the same ${esc(compactPhone.candidate)} module on the existing ${esc(compactPhone.board_outline_mm.slice(0, 2).join(" × "))} mm board. Its local origin is ${esc(compactPlacement.module_local_origin_mm.join(", "))} mm, with a ${esc(compactPhone.assumed_nominal_package_clearance_mm)} mm assumed planar rule and ${esc(compactPlacement.module_bottom_to_rear_cover_mm)} mm nominal rear-cover gap. The full CAD reports ${esc(state.proofs.compactphone.summary.interferences)} positive-volume intersections. <a href="?model=compactphone&tab=proof">Inspect the 3D proof</a>. The modem, 128 GB controller map, routing, RF, power, and tolerance fit are unqualified.`;
   document
     .querySelector("#hardware-parts")
     .insertAdjacentHTML(
       "beforeend",
-      `<div class="gate-item"><strong>5G reference package fit</strong><span>${cellularSummary}</span></div><div class="gate-item"><strong>Board expansion conflict</strong><span>${boardExtensionSummary}</span></div>`,
+      `<div class="gate-item"><strong>Larger memory and 5G outline</strong><span>${cellularSummary}</span></div><div class="gate-item"><strong>Larger memory board expansion conflict</strong><span>${boardExtensionSummary}</span></div><div class="gate-item"><strong>Compact memory and 5G outline</strong><span>${compactSummary}</span></div>`,
     );
   const study = report.memory_package_fit.eight_package_study;
+  const compactStudy =
+    report.memory_package_fit.compact_16gb_reference.placement_study;
   document.querySelector("#hardware-memory-layout").innerHTML =
-    `<p class="muted">Eight ${esc(report.memory_package_fit.public_reference_capacity_gb)} GB reference outlines: ${esc(study.packages_per_side.component)} on the component side, ${esc(study.packages_per_side.reverse)} on the reverse. Minimum screened planar gap ${esc(study.minimum_screened_planar_gap_mm)} mm under an assumed ${esc(study.assumed_planar_clearance_mm)} mm rule. Geometry status: ${esc(study.status.replaceAll("_", " "))}.</p>` +
+    `<p class="muted">Larger reference: eight ${esc(report.memory_package_fit.public_reference_capacity_gb)} GB outlines, ${esc(study.packages_per_side.component)} on the component side and ${esc(study.packages_per_side.reverse)} on the reverse. Minimum screened planar gap ${esc(study.minimum_screened_planar_gap_mm)} mm under an assumed ${esc(study.assumed_planar_clearance_mm)} mm rule.</p>` +
     `<p><a href="?model=memory8&tab=hardware">Open the 3D eight-package model</a></p>` +
     `<div class="memory-board-grid">${memoryBoard(study, "component")}${memoryBoard(study, "reverse")}</div>` +
-    `<p class="detail-caveat">The floorplan and mechanical model use the same provisional ${esc(study.floorplan_board_thickness_mm)} mm board thickness. Fabrication and two-sided assembly remain unreviewed. ${esc(memoryBus.caveat)} ${esc(study.caveat)} <a href="https://github.com/superflyad/BuildSlate/blob/main/${esc(study.source)}" target="_blank" rel="noopener noreferrer">Study coordinates</a></p>`;
+    `<p class="muted">Compact reference: ${esc(compactStudy.packages_per_side.component)} packages on the component side and ${esc(compactStudy.packages_per_side.reverse)} shifted packages on the reverse. Minimum screened planar gap ${esc(compactStudy.minimum_screened_planar_gap_mm)} mm under the same assumed rule.</p>` +
+    `<p><a href="?model=compactphone&tab=proof">Open the compact memory and 5G model</a></p>` +
+    `<div class="memory-board-grid">${memoryBoard(compactStudy, "component")}${memoryBoard(compactStudy, "reverse", [...compactPlacement.module_local_origin_mm, ...compactPlacement.module_global_box_mm.slice(3, 5)])}</div>` +
+    `<p class="detail-caveat">The floorplan and mechanical model use the same provisional ${esc(study.floorplan_board_thickness_mm)} mm board thickness. Fabrication and two-sided assembly remain unreviewed. ${esc(memoryBus.caveat)} ${esc(study.caveat)} <a href="https://github.com/superflyad/BuildSlate/blob/main/${esc(study.source)}" target="_blank" rel="noopener noreferrer">Larger study coordinates</a> · <a href="https://github.com/superflyad/BuildSlate/blob/main/${esc(compactStudy.source)}" target="_blank" rel="noopener noreferrer">Compact study coordinates</a></p>`;
   const campaign = report.evt0_campaign;
   const group = campaign.coherent_evidence_group;
   document.querySelector("#hardware-campaign").innerHTML = `
@@ -1067,11 +1080,13 @@ function displayModel(model) {
           ? "Compact Micron outlines · height and topology unresolved"
           : model === "phonefit"
             ? "Rejected modem layout · four measured solid collisions"
-            : model === "usbfit"
-              ? "GCT drawing envelope · port and frame collision screen"
-              : model === "batteryfit"
-                ? "6 Ah pack drawing · body and power conflict screen"
-                : "Traceable source planning envelopes";
+            : model === "compactphone"
+              ? "Compact memory and modem outlines · electronics unqualified"
+              : model === "usbfit"
+                ? "GCT drawing envelope · port and frame collision screen"
+                : model === "batteryfit"
+                  ? "6 Ah pack drawing · body and power conflict screen"
+                  : "Traceable source planning envelopes";
   document.querySelector("#part-detail").className = "detail-placeholder";
   document.querySelector("#part-detail").innerHTML =
     '<div class="detail-icon">◇</div><h2>Select a component</h2><p>Inspect geometry, evidence, and its source.</p>';
@@ -1110,6 +1125,13 @@ try {
   );
   if (!phoneProofResponse.ok)
     throw new Error(`phone CAD proof: HTTP ${phoneProofResponse.status}`);
+  const compactPhoneProofResponse = await fetch(
+    `${import.meta.env.BASE_URL}phone-fit-compact-outline-proof.json`,
+  );
+  if (!compactPhoneProofResponse.ok)
+    throw new Error(
+      `compact phone CAD proof: HTTP ${compactPhoneProofResponse.status}`,
+    );
   const usbProofResponse = await fetch(
     `${import.meta.env.BASE_URL}usb4525-outline-proof.json`,
   );
@@ -1125,6 +1147,7 @@ try {
     memory8: await memoryProofResponse.json(),
     compact8: await compactProofResponse.json(),
     phonefit: await phoneProofResponse.json(),
+    compactphone: await compactPhoneProofResponse.json(),
     usbfit: await usbProofResponse.json(),
     batteryfit: await batteryProofResponse.json(),
   };
@@ -1141,6 +1164,7 @@ try {
       ["memory8", "memory-8x16"],
       ["compact8", "memory-8x16-compact"],
       ["phonefit", "phone-fit-conflict"],
+      ["compactphone", "phone-fit-compact-outline"],
       ["usbfit", "usb4525-outline"],
       ["batteryfit", "lp4473109-pack-outline"],
       ["assembly", "assembly"],
@@ -1168,6 +1192,7 @@ try {
       "memory8",
       "compact8",
       "phonefit",
+      "compactphone",
       "usbfit",
       "batteryfit",
       "assembly",

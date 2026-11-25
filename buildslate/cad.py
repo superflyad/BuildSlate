@@ -16,6 +16,7 @@ from .battery_fit import audit as audit_battery
 from .cad_proof import PROOF, build_proof
 from .cellular_fit import CANDIDATE as CELLULAR_CANDIDATE
 from .cellular_fit import audit as audit_cellular
+from .cellular_fit import audit_compact as audit_compact_cellular
 from .io import load_yaml
 from .memory_package_fit import (
     CANDIDATES,
@@ -43,6 +44,12 @@ PHONE_STEP = Path("cad/slate-pocket-v1r/concept-cad/phone-fit-conflict.step")
 PHONE_MODEL = Path("viewer/public/phone-fit-conflict.json")
 PHONE_GLTF = Path("viewer/public/phone-fit-conflict.gltf")
 PHONE_PROOF = Path("viewer/public/phone-fit-conflict-proof.json")
+COMPACT_PHONE_STEP = Path(
+    "cad/slate-pocket-v1r/concept-cad/phone-fit-compact-outline.step"
+)
+COMPACT_PHONE_MODEL = Path("viewer/public/phone-fit-compact-outline.json")
+COMPACT_PHONE_GLTF = Path("viewer/public/phone-fit-compact-outline.gltf")
+COMPACT_PHONE_PROOF = Path("viewer/public/phone-fit-compact-outline-proof.json")
 USB_STEP = Path("cad/slate-pocket-v1r/concept-cad/usb4525-outline.step")
 USB_MODEL = Path("viewer/public/usb4525-outline.json")
 USB_GLTF = Path("viewer/public/usb4525-outline.gltf")
@@ -444,6 +451,55 @@ def build_phone_conflict_variant(repo_root: Path) -> dict:
     return model
 
 
+def build_compact_phone_variant(repo_root: Path) -> dict:
+    """Place the 5G reference beside shifted compact memory on the existing board."""
+    model = build_compact_memory_variant(repo_root)
+    screen = audit_compact_cellular(repo_root)
+    placement = screen["reverse_board_extension"]
+    if (
+        screen["status"] != "outline_possible_unqualified"
+        or placement["status"] != "outline_possible_unqualified"
+        or placement["increase_from_current_board_mm"] != 0
+        or placement["board_3d_conflicts"]
+        or placement["module_3d_conflicts"]
+        or not placement["module_above_rear_cover"]
+    ):
+        raise ValueError("compact phone outline no longer fits the current board")
+    model["parts"].append(
+        {
+            "id": "cellular_reference_module",
+            "label": "Quectel RG255C-GL reference outline",
+            "group": "radio",
+            "box_mm": placement["module_global_box_mm"],
+            "evidence_class": "design_assumption",
+            "source": f"{CELLULAR_CANDIDATE.as_posix()}#reference_module",
+            "active": True,
+            "notes": (
+                "Public package dimensions at a nominal reverse-side placement. "
+                "Voice support, X2 integration, RF and power design, and handheld "
+                "suitability are unverified."
+            ),
+            "shape": "chip",
+            "geometry_use": "solid",
+            "screen_layer": None,
+            "roles": [],
+            "geometry_source": "docs/engineering/cellular_module_fit.md",
+            "geometry_evidence_class": "design_assumption",
+        }
+    )
+    model["status"] = "compact_phone_outline_unqualified"
+    model["description"] = (
+        "Compact eight-package memory and 5G reference outlines on the current "
+        "board inside the full concept assembly."
+    )
+    model["caveat"] = (
+        "Nominal outline geometry only. The 128 GB memory topology and modem "
+        "attachment are unqualified; land patterns, routing, RF feeds, power, "
+        "tolerance, thermal behavior, and working phone function are unproven."
+    )
+    return model
+
+
 def _shape(cq, part: dict):
     x, y, z, length, width, height = part["box_mm"]
     kind = part["shape"]
@@ -751,6 +807,11 @@ def _export(
         proof["memory_study"] = audit_memory(root)["compact_16gb_reference"][
             "placement_study"
         ]
+    if model["status"] == "compact_phone_outline_unqualified":
+        proof["memory_study"] = audit_memory(root)["compact_16gb_reference"][
+            "placement_study"
+        ]
+        proof["phone_outline_study"] = audit_compact_cellular(root)
     if model["status"] == "phone_integration_collision_study":
         proof["phone_extension"] = audit_cellular(root)["reverse_board_extension"]
     if model["status"] == "usb_connector_outline_conflict_study":
@@ -803,6 +864,16 @@ def generate(repo_root: Path = DEFAULT_REPO_ROOT) -> tuple[int, Path]:
     _export(cq, root, usb, USB_STEP, USB_MODEL, USB_GLTF, USB_PROOF)
     battery = build_battery_pack_variant(root)
     _export(cq, root, battery, BATTERY_STEP, BATTERY_MODEL, BATTERY_GLTF, BATTERY_PROOF)
+    compact_phone = build_compact_phone_variant(root)
+    _export(
+        cq,
+        root,
+        compact_phone,
+        COMPACT_PHONE_STEP,
+        COMPACT_PHONE_MODEL,
+        COMPACT_PHONE_GLTF,
+        COMPACT_PHONE_PROOF,
+    )
     return len(model["parts"]), root / STEP
 
 
@@ -819,6 +890,9 @@ def main() -> int:
     print(f"Exported phone collision study STEP to {args.repo_root / PHONE_STEP}")
     print(f"Exported USB connector outline STEP to {args.repo_root / USB_STEP}")
     print(f"Exported battery pack outline STEP to {args.repo_root / BATTERY_STEP}")
+    print(
+        f"Exported compact phone outline STEP to {args.repo_root / COMPACT_PHONE_STEP}"
+    )
     return 0
 
 

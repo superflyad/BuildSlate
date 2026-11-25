@@ -93,6 +93,7 @@ def main() -> int:
         or compact["placement_study"]["status"] != "outline_clear"
         or compact["placement_study"]["minimum_screened_planar_gap_mm"] != 2.0
         or compact["placement_study"]["placements"][4]["assembly_box_mm"][2] != 2.0
+        or compact["placement_study"]["placements"][4]["assembly_box_mm"][0] != 100.0
         or report["integration_status"] != "blocked"
         or adata["status"] != "source_unit_conflict"
         or [part["part_number"] for part in adata["parts"]]
@@ -206,6 +207,13 @@ def main() -> int:
         != "outline_conflict"
     ):
         raise ValueError("Compact package board-boundary conflict was accepted")
+    altered = copy.deepcopy(data)
+    altered[5]["metadata"]["package_orientation"] = "unrotated"
+    if (
+        audit_data(*altered)["compact_16gb_reference"]["placement_study"]["status"]
+        != "outline_conflict"
+    ):
+        raise ValueError("Incorrect compact package rotation was accepted")
     altered = copy.deepcopy(data)
     altered[6] = 1.2
     if not audit_data(*altered)["eight_package_study"]["stack_issues"]:

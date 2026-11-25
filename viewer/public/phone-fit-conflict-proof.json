@@ -2458,6 +2458,6 @@
     ],
     "module_above_rear_cover": true,
     "module_bottom_to_rear_cover_mm": 0.25,
-    "caveat": "Whole-mm board extension and nominal boxes only; this is not a qualified modem site, board, or phone design."
+    "caveat": "Whole-mm board-width search and nominal boxes only; this is not a qualified modem site, board, or phone design."
   }
 }

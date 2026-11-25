@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "slate-pocket-v1r",
-  "model_sha256": "cc637378fcb7c2a399a262df776e03e2f70876cbda7bf8c4fc2532f236a14909",
+  "model_sha256": "0f54644ba0f26fd69f0c13d9e15778c7f87c6750fb10dd4b1609b0040d23ac0b",
   "status": "review_required",
   "method": "CadQuery BREP validity, exact Boolean intersections, nominal distances and camera pupil prisms, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
   "thresholds": {
@@ -2252,13 +2252,13 @@
         "id": "memory_left_lower_reverse",
         "side": "reverse",
         "rect_mm": [
-          10.0,
+          8.0,
           16.0,
           12.4,
           8.0
         ],
         "assembly_box_mm": [
-          102.0,
+          100.0,
           28.0,
           2.0,
           12.4,
@@ -2270,13 +2270,13 @@
         "id": "memory_left_upper_reverse",
         "side": "reverse",
         "rect_mm": [
-          10.0,
+          8.0,
           32.0,
           12.4,
           8.0
         ],
         "assembly_box_mm": [
-          102.0,
+          100.0,
           44.0,
           2.0,
           12.4,
@@ -2288,13 +2288,13 @@
         "id": "memory_right_lower_reverse",
         "side": "reverse",
         "rect_mm": [
-          51.0,
+          52.0,
           16.0,
           12.4,
           8.0
         ],
         "assembly_box_mm": [
-          143.0,
+          144.0,
           28.0,
           2.0,
           12.4,
@@ -2306,13 +2306,13 @@
         "id": "memory_right_upper_reverse",
         "side": "reverse",
         "rect_mm": [
-          51.0,
+          52.0,
           32.0,
           12.4,
           8.0
         ],
         "assembly_box_mm": [
-          143.0,
+          144.0,
           44.0,
           2.0,
           12.4,

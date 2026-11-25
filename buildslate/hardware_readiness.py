@@ -17,6 +17,7 @@ from buildslate.build_procedure_proof import (
 from buildslate.build_procedure_proof import BENCH_RELEASE as BENCH_SAFETY_RELEASE
 from buildslate.build_procedure_proof import audit_assembly, audit_bench
 from buildslate.cellular_fit import audit as audit_cellular_fit
+from buildslate.cellular_fit import audit_compact as audit_compact_cellular_fit
 from buildslate.display_fit import audit as audit_display_fit
 from buildslate.erc_proof import audit as audit_erc
 from buildslate.evt0 import EVT0CampaignRepository
@@ -748,6 +749,7 @@ def build_report(root: Path) -> dict:
         "battery_fit": battery_fit,
         "usb_fit": usb_fit,
         "cellular_reference_fit": audit_cellular_fit(root),
+        "cellular_compact_memory_fit": audit_compact_cellular_fit(root),
         "display_fit": display_fit,
         "memory_package_fit": memory_package_fit,
         "firmware_bundle": firmware_bundle,

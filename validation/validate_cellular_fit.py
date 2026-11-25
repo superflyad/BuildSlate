@@ -13,12 +13,15 @@ sys.path.insert(0, str(ROOT))
 from buildslate.cellular_fit import (  # noqa: E402
     ASSEMBLY,
     CANDIDATE,
+    COMPACT_MEMORY_ID,
+    COMPACT_MEMORY_STUDY,
     CONCEPT,
     ENVELOPE,
     FLOORPLAN,
     MEMORY_CANDIDATES,
     MEMORY_STUDY,
     audit,
+    audit_compact,
     audit_data,
 )
 from buildslate.io import load_yaml  # noqa: E402
@@ -54,6 +57,63 @@ def main() -> int:
     )
     if published["cellular_reference_fit"] != report:
         raise ValueError("Public 5G reference fit report is stale")
+    compact = audit_compact(ROOT)
+    compact_placement = compact["reverse_board_extension"]
+    if (
+        compact["status"] != "outline_possible_unqualified"
+        or compact["memory_package_orientation"] != "rotated_90"
+        or compact["memory_reference_part"] != "MT62F2G64D8CZ-023 WT:C"
+        or compact["sides"]["component"]["outline_fits"]
+        or not compact["sides"]["reverse"]["outline_fits"]
+        or compact_placement["status"] != "outline_possible_unqualified"
+        or compact_placement["minimum_whole_mm_board_width"] != 55.0
+        or compact_placement["increase_from_current_board_mm"] != 0.0
+        or compact_placement["module_local_origin_mm"] != [21.4, 2.0]
+        or compact_placement["board_3d_conflicts"]
+        or compact_placement["module_3d_conflicts"]
+        or not compact_placement["module_above_rear_cover"]
+        or compact_placement["module_bottom_to_rear_cover_mm"] != 0.25
+        or compact["source_errors"]
+    ):
+        raise ValueError("Compact memory and 5G outline study drifted")
+    if published["cellular_compact_memory_fit"] != compact:
+        raise ValueError("Public compact-memory 5G fit report is stale")
+    compact_inputs = [
+        load_yaml(ROOT / path)
+        for path in (
+            CANDIDATE,
+            MEMORY_CANDIDATES,
+            FLOORPLAN,
+            COMPACT_MEMORY_STUDY,
+            ENVELOPE,
+            ASSEMBLY,
+            CONCEPT,
+        )
+    ]
+    unshifted = copy.deepcopy(compact_inputs)
+    for name, item in unshifted[3]["placements"].items():
+        if item["side"] == "reverse":
+            item["x_mm"] = 10.0 if "left" in name else 51.0
+    if (
+        audit_data(
+            *unshifted,
+            memory_id=COMPACT_MEMORY_ID,
+            memory_study_source=COMPACT_MEMORY_STUDY,
+        )["status"]
+        != "outline_blocked"
+    ):
+        raise ValueError("Unshifted compact layout incorrectly admits the modem")
+    wrong_orientation = copy.deepcopy(compact_inputs)
+    wrong_orientation[3]["metadata"]["package_orientation"] = "unrotated"
+    if (
+        audit_data(
+            *wrong_orientation,
+            memory_id=COMPACT_MEMORY_ID,
+            memory_study_source=COMPACT_MEMORY_STUDY,
+        )["status"]
+        != "source_conflict"
+    ):
+        raise ValueError("Compact package rotation was not source-checked")
     inputs = [
         load_yaml(ROOT / path)
         for path in (

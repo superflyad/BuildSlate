@@ -911,6 +911,9 @@
     "status": "outline_blocked",
     "candidate": "RG255C-GL",
     "candidate_role": "public_reference_not_selected",
+    "memory_reference_part": "MT62F2G64D8EK-023 WT:C",
+    "memory_study_source": "engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-study.yaml",
+    "memory_package_orientation": "unrotated",
     "technology": "5G_RedCap_SA_and_LTE_Cat_4",
     "package_mm": [
       29.0,
@@ -998,7 +1001,112 @@
       ],
       "module_above_rear_cover": true,
       "module_bottom_to_rear_cover_mm": 0.25,
-      "caveat": "Whole-mm board extension and nominal boxes only; this is not a qualified modem site, board, or phone design."
+      "caveat": "Whole-mm board-width search and nominal boxes only; this is not a qualified modem site, board, or phone design."
+    },
+    "voice": "optional_VoNR_and_VoLTE",
+    "source_errors": [],
+    "required_before_selection": [
+      "Orderable voice-enabled hardware and firmware variant with carrier support for approved markets.",
+      "Released land pattern, antenna, power transient, host, audio, and SIM design documents.",
+      "Supplier confirmation that the module is appropriate for the final handheld product and certification route.",
+      "Board placement, two antenna feeds, 3D stack, thermal, SAR, and coexistence review.",
+      "Measured calling, data, emergency behavior, and regulatory results on a serialized Slate unit."
+    ],
+    "source": "https://www.quectel.com/content/uploads/2024/03/Quectel_RG255C_Series_5G_Module_Specification_V1.1.pdf",
+    "caveat": "This only tests axis-aligned module outlines against planning rectangles. It does not check land patterns, routes, power transients, two antenna feeds, SIM, audio, 3D fit, thermal behavior, carrier support, or approval."
+  },
+  "cellular_compact_memory_fit": {
+    "status": "outline_possible_unqualified",
+    "candidate": "RG255C-GL",
+    "candidate_role": "public_reference_not_selected",
+    "memory_reference_part": "MT62F2G64D8CZ-023 WT:C",
+    "memory_study_source": "engineering/pcb/slate-pocket-v1r-floorplan/memory-8x16-compact-study.yaml",
+    "memory_package_orientation": "rotated_90",
+    "technology": "5G_RedCap_SA_and_LTE_Cat_4",
+    "package_mm": [
+      29.0,
+      32.0,
+      2.4
+    ],
+    "board_outline_mm": [
+      78.0,
+      55.0,
+      0.8
+    ],
+    "usable_board_boundary_mm": [
+      2.0,
+      2.0,
+      74.0,
+      51.0
+    ],
+    "assumed_nominal_package_clearance_mm": 1.0,
+    "sides": {
+      "component": {
+        "memory_packages": 4,
+        "other_planning_rectangles": 8,
+        "orientations": {
+          "29x32": {
+            "outline_fits": false,
+            "first_nominal_origin_mm": null
+          },
+          "32x29": {
+            "outline_fits": false,
+            "first_nominal_origin_mm": null
+          }
+        },
+        "outline_fits": false
+      },
+      "reverse": {
+        "memory_packages": 4,
+        "other_planning_rectangles": 0,
+        "orientations": {
+          "29x32": {
+            "outline_fits": true,
+            "first_nominal_origin_mm": [
+              21.4,
+              2.0
+            ]
+          },
+          "32x29": {
+            "outline_fits": false,
+            "first_nominal_origin_mm": null
+          }
+        },
+        "outline_fits": true
+      }
+    },
+    "reverse_board_extension": {
+      "status": "outline_possible_unqualified",
+      "search_resolution_mm": 1,
+      "minimum_whole_mm_board_width": 55.0,
+      "increase_from_current_board_mm": 0.0,
+      "module_orientation": "29x32",
+      "module_local_origin_mm": [
+        21.4,
+        2.0
+      ],
+      "module_global_box_mm": [
+        113.4,
+        14.0,
+        0.8,
+        29.0,
+        32.0,
+        2.4
+      ],
+      "board_global_box_mm": [
+        92.0,
+        12.0,
+        3.2,
+        78.0,
+        55.0,
+        0.8
+      ],
+      "board_inside_current_internal_xy": true,
+      "board_3d_conflicts": [],
+      "module_3d_conflicts": [],
+      "module_above_rear_cover": true,
+      "module_bottom_to_rear_cover_mm": 0.25,
+      "caveat": "Whole-mm board-width search and nominal boxes only; this is not a qualified modem site, board, or phone design."
     },
     "voice": "optional_VoNR_and_VoLTE",
     "source_errors": [],
@@ -1326,13 +1434,13 @@
             "id": "memory_left_lower_reverse",
             "side": "reverse",
             "rect_mm": [
-              10.0,
+              8.0,
               16.0,
               12.4,
               8.0
             ],
             "assembly_box_mm": [
-              102.0,
+              100.0,
               28.0,
               2.0,
               12.4,
@@ -1344,13 +1452,13 @@
             "id": "memory_left_upper_reverse",
             "side": "reverse",
             "rect_mm": [
-              10.0,
+              8.0,
               32.0,
               12.4,
               8.0
             ],
             "assembly_box_mm": [
-              102.0,
+              100.0,
               44.0,
               2.0,
               12.4,
@@ -1362,13 +1470,13 @@
             "id": "memory_right_lower_reverse",
             "side": "reverse",
             "rect_mm": [
-              51.0,
+              52.0,
               16.0,
               12.4,
               8.0
             ],
             "assembly_box_mm": [
-              143.0,
+              144.0,
               28.0,
               2.0,
               12.4,
@@ -1380,13 +1488,13 @@
             "id": "memory_right_upper_reverse",
             "side": "reverse",
             "rect_mm": [
-              51.0,
+              52.0,
               32.0,
               12.4,
               8.0
             ],
             "assembly_box_mm": [
-              143.0,
+              144.0,
               44.0,
               2.0,
               12.4,

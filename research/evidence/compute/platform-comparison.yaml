@@ -80,6 +80,25 @@ candidates:
     memory_type: LPDDR5X
     maximum_memory_gb: 128_plus
     configured_capacity_gb_in_brief: 48
+    observed_oem_configuration:
+      product: ASUS Zenbook A16 UX3607OA
+      platform_part: X2E-96-100
+      memory_gb: 48
+      placement: memory_on_package
+      source:
+        url: https://www.asus.com/laptops/for-home/zenbook/asus-zenbook-a16-ux3607/techspec/
+        source_type: oem_product_specification
+        accessed: 2026-11-24
+    physical_package_observation:
+      system: ASUS Zenbook A16
+      exact_platform_sku_disclosed: false
+      dram_package_count: 3
+      capacity_gb_per_package: 16
+      placement: co_packaged_with_soc
+      source:
+        url: https://www.techinsights.com/ja/node/61888
+        source_type: original_physical_package_analysis
+        accessed: 2026-11-24
     memory_bus_width_bits: 192
     memory_transfer_rate_mt_s: 9523
     memory_bandwidth_gb_s: 228
@@ -92,6 +111,7 @@ candidates:
       - NPU is near, but below, the aspirational 100 TOPS headline.
     blockers:
       - Client-PC platform; public package, PMIC, board-area, and pocket thermal data are absent.
+      - Observed ASUS 48 GB memory-on-package configuration does not establish a 128 GB orderable package; off-package memory attachment is unqualified.
       - Public documentation does not establish a 28 W sustained Slate workload.
       - Detailed resources require verified-company access.
     disposition: preferred_product_rfq_subject_to_package_and_power_evidence

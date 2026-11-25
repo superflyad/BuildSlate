@@ -54,6 +54,13 @@ def main() -> int:
     )
     if not x2["published_capacity_permits_floor"] or x2["public_128gb_configuration"]:
         raise ValueError("X2 public maximum was promoted to a 128 GB build")
+    if (
+        x2["observed_oem_memory_gb"] != 48
+        or x2["observed_oem_memory_placement"] != "memory_on_package"
+        or not x2["observed_oem_source"]
+        or not x2["physical_package_source"]
+    ):
+        raise ValueError("Observed ASUS X2 package evidence is absent")
     committed = json.loads(
         (ROOT / "viewer/public/hardware-readiness.json").read_text(encoding="utf-8")
     )
@@ -63,6 +70,12 @@ def main() -> int:
     candidates = yaml.safe_load((ROOT / CANDIDATES).read_text(encoding="utf-8"))
     with TemporaryDirectory() as temporary:
         root = Path(temporary)
+        altered = copy.deepcopy(candidates)
+        altered["candidates"]["qualcomm_snapdragon_x2_elite_extreme"][
+            "physical_package_observation"
+        ]["dram_package_count"] = 4
+        _write(root, profile, altered)
+        _must_fail(root)
         altered = copy.deepcopy(candidates)
         altered["candidates"]["qualcomm_snapdragon_8_elite_gen_6"][
             "maximum_memory_gb"

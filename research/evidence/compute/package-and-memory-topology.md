@@ -13,6 +13,7 @@ This is not a component selection. Snapdragon X2 is a client-PC platform, and th
 
 - Snapdragon 8 Elite Gen 5 and both Gen 6 mobile SKUs have integrated phone systems, but their public maximum memory is 24 GB. None can satisfy the approved 128 GB floor.
 - Snapdragon X2 Elite documentation lists 128 GB or 128+ GB maximum capacity depending on SKU. This supports research at the locked 128 GB tier; it does not support 256 GB or 512 GB.
+- [ASUS's Zenbook A16 specification](https://www.asus.com/laptops/for-home/zenbook/asus-zenbook-a16-ux3607/techspec/) lists X2 Elite Extreme configurations with 48 GB memory on package. [TechInsights' physical package analysis](https://www.techinsights.com/ja/node/61888) reports three 16 GB LPDDR5X packages co-packaged with the processor in a Zenbook A16. The observed 48 GB package does not establish an orderable 128 GB X2 option or external memory support. The separate memory boxes in the concept CAD are a hypothetical external placement screen, not the observed X2 package.
 - Micron announced an 8–32 GB LPDDR5X range for 2026 flagship smartphones, and Samsung advertises a 32 GB LPDDR5X capacity. Micron's exact [`MT62F4G64DAFL-023 WT:C`](https://www.micron.com/products/obsolete/obsolete-lpddr5x/part-catalog/part-detail/mt62f4g64dafl-023-wt-c) is 32 GB in a 14 × 12.4 × 0.96 mm x64 package, but Micron marks it obsolete. It exceeds the present 14 × 10 mm planning sites, and four independent x64 connections need 256 data bits against the X2 Extreme's 192-bit bus. A current-production, X2-qualified four-package topology remains unavailable in the reviewed public sources.
 - Micron's exact `MT62F2G64D8EK-023 WT:C` public listing is 128 Gb, or 16 GB, in a 14 × 14 × 1.1 mm package. An eight-package 128 GB arithmetic alternative would exceed the four memory planning sites and needs its own qualified channel topology and board design. See the [package fit screen](../../../docs/engineering/memory_package_fit.md).
 - The X2 Elite Extreme brief lists a 192-bit bus. Eight independent x64 connections for the Micron reference part would need 512 data bits. Shared-channel or another attachment may exist, but the reviewed public sources do not qualify one. The eight-package CAD is only an outline study.
@@ -25,7 +26,7 @@ Use an external 128 GB developer platform to characterize target models, runtime
 ## Required Qualcomm RFQ/NDA package
 
 - SoC package drawing, keepouts, mounting and thermal limits.
-- Supported 128 GB memory topology, qualified memory parts, package count, placement, and routing guidance.
+- Orderable 128 GB SKU and whether its memory is on package, off package, or mixed; supported topology, qualified memory parts, package count, placement, and routing guidance.
 - PMIC, rail map, sequencing, transient load, and reference design.
 - Sustained and peak power telemetry for defined NPU/GPU/CPU workloads.
 - Supported precision, runtime/compiler coverage, benchmark disclosure, and long-duration throttle behavior.

@@ -65,6 +65,54 @@ def audit(root: Path) -> dict:
             or configured > maximum
         ):
             raise ValueError(f"{identifier}: invalid public configured capacity")
+        observed = candidate.get("observed_oem_configuration")
+        physical = candidate.get("physical_package_observation")
+        if (observed is None) != (physical is None):
+            raise ValueError(
+                f"{identifier}: OEM and package observations must be paired"
+            )
+        observed_memory = None
+        observed_source = None
+        physical_source = None
+        if observed is not None:
+            if not isinstance(observed, dict) or not isinstance(physical, dict):
+                raise ValueError(f"{identifier}: malformed OEM package observation")
+            observed_memory = observed.get("memory_gb")
+            observed_record = observed.get("source")
+            physical_record = physical.get("source")
+            observed_source = (
+                observed_record.get("url")
+                if isinstance(observed_record, dict)
+                else None
+            )
+            physical_source = (
+                physical_record.get("url")
+                if isinstance(physical_record, dict)
+                else None
+            )
+            package_count = physical.get("dram_package_count")
+            package_capacity = physical.get("capacity_gb_per_package")
+            if (
+                not isinstance(observed_memory, int)
+                or isinstance(observed_memory, bool)
+                or observed_memory <= 0
+                or observed_memory > maximum
+                or observed.get("platform_part") != candidate.get("representative_part")
+                or observed.get("placement") != "memory_on_package"
+                or physical.get("placement") != "co_packaged_with_soc"
+                or not isinstance(package_count, int)
+                or isinstance(package_count, bool)
+                or package_count <= 0
+                or not isinstance(package_capacity, int)
+                or isinstance(package_capacity, bool)
+                or package_capacity <= 0
+                or package_count * package_capacity != observed_memory
+                or not isinstance(observed_source, str)
+                or not observed_source.startswith("https://")
+                or not isinstance(physical_source, str)
+                or not physical_source.startswith("https://")
+            ):
+                raise ValueError(f"{identifier}: OEM package evidence is inconsistent")
         rows.append(
             {
                 "id": identifier,
@@ -74,11 +122,19 @@ def audit(root: Path) -> dict:
                 "platform_class": candidate.get("platform_class"),
                 "public_maximum_memory_gb": maximum,
                 "public_configured_memory_gb": configured,
+                "observed_oem_memory_gb": observed_memory,
+                "observed_oem_memory_placement": (
+                    observed["placement"] if observed is not None else None
+                ),
+                "observed_oem_source": observed_source,
+                "physical_package_source": physical_source,
                 "published_capacity_permits_floor": capacity_permits_floor,
                 "integrated_phone_path": phone_integration,
                 "combined_public_fit": capacity_permits_floor and phone_integration,
-                "public_128gb_configuration": configured is not None
-                and configured >= floor,
+                "public_128gb_configuration": any(
+                    value is not None and value >= floor
+                    for value in (configured, observed_memory)
+                ),
                 "source": reference["url"],
             }
         )
@@ -90,8 +146,10 @@ def audit(root: Path) -> dict:
         "candidates": rows,
         "decision": (
             "The 128 GB floor is retained. X2 publishes controller capacity for it, "
-            "but no reviewed public 128 GB configuration or pocket phone "
-            "integration is established. Obtain supplier topology, package, "
+            "but the reviewed ASUS X2 system has 48 GB on package, with three "
+            "16 GB DRAM packages observed in physical analysis. No reviewed public 128 GB "
+            "X2 configuration or pocket phone integration is established. "
+            "Obtain an orderable 128 GB package and supplier topology, "
             "power, software, and modem evidence before selection."
             if not matches
             else "A public capacity match is not a selected or qualified build platform."

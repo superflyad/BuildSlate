@@ -16,6 +16,7 @@ ASSEMBLY = Path("engineering/assembly/assembly.yaml")
 CANDIDATES = Path("research/evidence/display-storage/candidate-comparison.yaml")
 RESOLUTION = re.compile(r"^([1-9][0-9]*)x([1-9][0-9]*)$")
 DRAWING_CANDIDATE = "hongguang_hg070fh002"
+DRAWING_ALTERNATIVE = "kadi_kd070bwu01hn"
 
 
 def _rectangle(
@@ -56,6 +57,15 @@ def _screen_drawing_candidate(
         or active[1] > outline[1]
     ):
         raise ValueError("Display candidate has an invalid panel outline")
+    tolerance = candidate.get("panel_outline_tolerance_mm")
+    if tolerance is not None and (
+        not isinstance(tolerance, list)
+        or len(tolerance) != 3
+        or any(
+            not math.isfinite(float(value)) or float(value) < 0 for value in tolerance
+        )
+    ):
+        raise ValueError("Display candidate has invalid outline tolerances")
     match = RESOLUTION.fullmatch(str(candidate["resolution"]))
     if not match:
         raise ValueError("Display candidate resolution must be WIDTHxHEIGHT")
@@ -99,12 +109,27 @@ def _screen_drawing_candidate(
         "minimum_device_width_mm_with_current_side_inset": round(
             outline[1] + float(external["width"]) - float(internal["width"]), 4
         ),
+        "panel_outline_tolerance_mm": tolerance,
+        "worst_case_short_side_reserve_overrun_mm": round(
+            max(0.0, outline[1] + float(tolerance[1]) - float(reserve[4])), 4
+        )
+        if tolerance is not None
+        else None,
+        "minimum_device_width_mm_at_panel_maximum_with_current_side_inset": round(
+            outline[1]
+            + float(tolerance[1])
+            + float(external["width"])
+            - float(internal["width"]),
+            4,
+        )
+        if tolerance is not None
+        else None,
         "document_status": candidate["document_status"],
         "drawing_status": candidate["drawing_status"],
         "source": candidate["source"]["url"],
         "source_revision": candidate["source"]["revision"],
         "source_sha256": candidate["source"]["sha256"],
-        "caveat": "The published panel outline excludes unverified flex routing, integration allowances, and tolerance stack; the A0 document is preliminary.",
+        "caveat": "The published panel outline excludes unverified flex routing, mounting, and assembly allowances; source status and tolerances require engineering review.",
     }
 
 
@@ -204,6 +229,13 @@ def audit_data(
     if candidates is not None:
         report["drawing_candidate"] = _screen_drawing_candidate(
             candidates["display_candidates"][DRAWING_CANDIDATE],
+            display,
+            external,
+            reserve,
+            internal,
+        )
+        report["drawing_alternative"] = _screen_drawing_candidate(
+            candidates["display_candidates"][DRAWING_ALTERNATIVE],
             display,
             external,
             reserve,

@@ -1229,12 +1229,58 @@
       "nominal_panel_reserve_fit": false,
       "nominal_short_side_reserve_overrun_mm": 0.1344,
       "minimum_device_width_mm_with_current_side_inset": 95.1344,
+      "panel_outline_tolerance_mm": null,
+      "worst_case_short_side_reserve_overrun_mm": null,
+      "minimum_device_width_mm_at_panel_maximum_with_current_side_inset": null,
       "document_status": "preliminary_A0_draft",
       "drawing_status": "preliminary_nominal_dimensions",
       "source": "https://www.hongguangdisplay.com/wp-content/uploads/2025/02/7.0-inch-AMOLED-Display-1080x1920-ResolutionMIPI-HG070FH002-.pdf",
       "source_revision": "A0",
       "source_sha256": "a60b9b3d9caf2e8d0f2a5841c267911095f850a2af80c728fab11d576b7c7b83",
-      "caveat": "The published panel outline excludes unverified flex routing, integration allowances, and tolerance stack; the A0 document is preliminary."
+      "caveat": "The published panel outline excludes unverified flex routing, mounting, and assembly allowances; source status and tolerances require engineering review."
+    },
+    "drawing_alternative": {
+      "part_number": "KD070BWU01HN",
+      "supplier": "Shenzhen Kadi Display",
+      "status": "rejected",
+      "errors": [
+        "Published diagonal and pixel ratio differ from the approved target",
+        "Published panel outline exceeds the CAD display reserve"
+      ],
+      "diagonal_in": 7.0,
+      "resolution_px": [
+        1080,
+        1920
+      ],
+      "pixel_aspect_ratio": "16:9",
+      "active_area_mm": [
+        154.56,
+        86.94
+      ],
+      "panel_outline_mm": [
+        161.11,
+        89.04,
+        0.822
+      ],
+      "outline_includes": "panel_planform_and_POL_to_PET_profile_not_FPC_or_electronics",
+      "target_format_match": false,
+      "nominal_panel_face_fit": true,
+      "nominal_panel_reserve_fit": false,
+      "nominal_short_side_reserve_overrun_mm": 0.04,
+      "minimum_device_width_mm_with_current_side_inset": 95.04,
+      "panel_outline_tolerance_mm": [
+        0.15,
+        0.15,
+        0.1
+      ],
+      "worst_case_short_side_reserve_overrun_mm": 0.19,
+      "minimum_device_width_mm_at_panel_maximum_with_current_side_inset": 95.19,
+      "document_status": "manufacturer_specification_rev_1_0",
+      "drawing_status": "published_panel_dimensions_with_tolerances",
+      "source": "https://www.kadidisplay.com/wp-content/uploads/2024/08/KD070BWU01HN-V1.0-SPEC.pdf",
+      "source_revision": "1.0",
+      "source_sha256": "d08d37a1ac280d7ca1b6ee0c0624071cd824ae74c764dbb3ac8d99483a31da66",
+      "caveat": "The published panel outline excludes unverified flex routing, mounting, and assembly allowances; source status and tolerances require engineering review."
     }
   },
   "memory_package_fit": {

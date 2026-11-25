@@ -1,6 +1,6 @@
 metadata:
   evidence_type: public_primary_source_screen
-  reviewed_on: 2026-10-31
+  reviewed_on: 2026-11-25
   status: available_not_verified
 
 display_target:
@@ -32,6 +32,29 @@ display_candidates:
       issued: 2024-07-29
       accessed: 2026-11-24
       sha256: a60b9b3d9caf2e8d0f2a5841c267911095f850a2af80c728fab11d576b7c7b83
+
+  kadi_kd070bwu01hn:
+    supplier: Shenzhen Kadi Display
+    part_number: KD070BWU01HN
+    diagonal_in: 7.0
+    resolution: 1080x1920
+    technology: AMOLED_LTPS
+    touch_controller: FT3519
+    active_area_mm: [154.56, 86.94]
+    panel_outline_mm: [161.11, 89.04, 0.822]
+    panel_outline_tolerance_mm: [0.15, 0.15, 0.1]
+    outline_includes: panel_planform_and_POL_to_PET_profile_not_FPC_or_electronics
+    document_status: manufacturer_specification_rev_1_0
+    drawing_status: published_panel_dimensions_with_tolerances
+    disposition: drawing_based_fallback_screen_not_selected
+    gaps: [approved_format_match, reserve_fit, full_flex_envelope, host_integration, procurement]
+    source:
+      url: https://www.kadidisplay.com/wp-content/uploads/2024/08/KD070BWU01HN-V1.0-SPEC.pdf
+      source_type: manufacturer_specification
+      revision: '1.0'
+      issued: 2024-07-23
+      accessed: 2026-11-25
+      sha256: d08d37a1ac280d7ca1b6ee0c0624071cd824ae74c764dbb3ac8d99483a31da66
 
   samsung_foldable_oled_7_6:
     supplier: Samsung Display

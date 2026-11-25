@@ -4,6 +4,8 @@ Changes to the BuildSlate software and repository workflow are recorded here. En
 
 ## Unreleased
 
+- Screen Kadi's published 7-inch AMOLED panel dimensions and tolerances against the current body and display reserve; retain the blocked display gate and show the source in the public viewer.
+
 - Require a netlist-verified rank-select connection for every board DRAM package and reject reused selects or missing packages in the 128 GB platform map.
 
 - Bind the 128 GB board-memory channel map to each controller and DRAM data pin in the approved KiCad netlist; reject missing or miswired lanes even when the netlist hash is updated.

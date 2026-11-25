@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT))
 from buildslate.display_fit import (  # noqa: E402
     ASSEMBLY,
     CANDIDATES,
+    DRAWING_ALTERNATIVE,
     DRAWING_CANDIDATE,
     ENVELOPE,
     PROFILE,
@@ -43,6 +44,15 @@ def main() -> int:
         or not report["drawing_candidate"]["nominal_panel_face_fit"]
         or report["drawing_candidate"]["nominal_short_side_reserve_overrun_mm"]
         != 0.1344
+        or report["drawing_alternative"]["status"] != "rejected"
+        or report["drawing_alternative"]["nominal_short_side_reserve_overrun_mm"]
+        != 0.04
+        or report["drawing_alternative"]["worst_case_short_side_reserve_overrun_mm"]
+        != 0.19
+        or report["drawing_alternative"][
+            "minimum_device_width_mm_at_panel_maximum_with_current_side_inset"
+        ]
+        != 95.19
     ):
         raise ValueError("Current display target conflict was lost")
     published = json.loads(
@@ -62,6 +72,17 @@ def main() -> int:
         "a60b9b3d9caf2e8d0f2a5841c267911095f850a2af80c728fab11d576b7c7b83"
     ):
         raise ValueError("Display drawing provenance changed without review")
+    alternative = candidates["display_candidates"][DRAWING_ALTERNATIVE]
+    if alternative["panel_outline_mm"] != [161.11, 89.04, 0.822] or alternative[
+        "panel_outline_tolerance_mm"
+    ] != [0.15, 0.15, 0.1]:
+        raise ValueError("Alternative panel drawing changed without review")
+    if (
+        alternative["source"]["revision"] != "1.0"
+        or alternative["source"]["sha256"]
+        != "d08d37a1ac280d7ca1b6ee0c0624071cd824ae74c764dbb3ac8d99483a31da66"
+    ):
+        raise ValueError("Alternative panel provenance changed without review")
     fallback = copy.deepcopy(profile)
     fallback["display"]["diagonal_in"] = 7.0
     fallback["display"]["resolution"] = "3200x2000"
@@ -96,6 +117,16 @@ def main() -> int:
         pass
     else:
         raise ValueError("Candidate active area larger than outline was accepted")
+    bad_tolerance = copy.deepcopy(candidates)
+    bad_tolerance["display_candidates"][DRAWING_ALTERNATIVE][
+        "panel_outline_tolerance_mm"
+    ][1] = -0.1
+    try:
+        audit_data(profile, spec, envelope, assembly, bad_tolerance)
+    except ValueError:
+        pass
+    else:
+        raise ValueError("Negative panel outline tolerance was accepted")
     print("PASS: display target conflict, drawing candidate, and recovery screen")
     return 0
 

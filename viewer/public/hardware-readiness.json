@@ -67,6 +67,11 @@
   "platform_fit": {
     "status": "supplier_proof_required",
     "memory_floor_gb": 128,
+    "slate_body_face_mm": [
+      180.0,
+      95.0
+    ],
+    "slate_sustained_screen_w": 28.0,
     "integrated_phone_matches": [],
     "candidates": [
       {
@@ -83,6 +88,10 @@
         "integrated_phone_path": true,
         "combined_public_fit": false,
         "public_128gb_configuration": false,
+        "module_outline_mm": null,
+        "module_outline_fits_body_face": null,
+        "minimum_published_power_mode_w": null,
+        "minimum_published_mode_over_slate_w": null,
         "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Gen-5-SM8850-5-AC-Product-Brief.pdf"
       },
       {
@@ -99,6 +108,10 @@
         "integrated_phone_path": true,
         "combined_public_fit": false,
         "public_128gb_configuration": false,
+        "module_outline_mm": null,
+        "module_outline_fits_body_face": null,
+        "minimum_published_power_mode_w": null,
+        "minimum_published_mode_over_slate_w": null,
         "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Gen-6-Product-Brief.pdf"
       },
       {
@@ -115,6 +128,10 @@
         "integrated_phone_path": true,
         "combined_public_fit": false,
         "public_128gb_configuration": false,
+        "module_outline_mm": null,
+        "module_outline_fits_body_face": null,
+        "minimum_published_power_mode_w": null,
+        "minimum_published_mode_over_slate_w": null,
         "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-8-Elite-Extreme-Gen-6-Product-Brief.pdf"
       },
       {
@@ -131,6 +148,10 @@
         "integrated_phone_path": false,
         "combined_public_fit": false,
         "public_128gb_configuration": false,
+        "module_outline_mm": null,
+        "module_outline_fits_body_face": null,
+        "minimum_published_power_mode_w": null,
+        "minimum_published_mode_over_slate_w": null,
         "source": "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/Snapdragon-X2-Elite-Product-Brief.pdf"
       },
       {
@@ -147,11 +168,15 @@
         "integrated_phone_path": false,
         "combined_public_fit": false,
         "public_128gb_configuration": true,
+        "module_outline_mm": null,
+        "module_outline_fits_body_face": null,
+        "minimum_published_power_mode_w": 45.0,
+        "minimum_published_mode_over_slate_w": 17.0,
         "source": "https://www.amd.com/en/products/processors/desktops/ryzen/ryzen-ai-halo/ryzen-ai-max-plus-395.html"
       },
       {
         "id": "nvidia_jetson_agx_thor",
-        "part": null,
+        "part": "Jetson T5000",
         "platform_class": "robotics_edge_developer_platform",
         "public_maximum_memory_gb": 128,
         "public_configured_memory_gb": 128,
@@ -163,7 +188,37 @@
         "integrated_phone_path": false,
         "combined_public_fit": false,
         "public_128gb_configuration": true,
+        "module_outline_mm": [
+          100,
+          87
+        ],
+        "module_outline_fits_body_face": true,
+        "minimum_published_power_mode_w": 40.0,
+        "minimum_published_mode_over_slate_w": 12.0,
         "source": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/"
+      },
+      {
+        "id": "congatec_conga_hpc_crx1_x199_128g",
+        "part": "053700",
+        "platform_class": "high_power_embedded_module",
+        "public_maximum_memory_gb": 128,
+        "public_configured_memory_gb": 128,
+        "observed_oem_memory_gb": null,
+        "observed_oem_memory_placement": null,
+        "observed_oem_source": null,
+        "physical_package_source": null,
+        "published_capacity_permits_floor": true,
+        "integrated_phone_path": false,
+        "combined_public_fit": false,
+        "public_128gb_configuration": true,
+        "module_outline_mm": [
+          160,
+          120
+        ],
+        "module_outline_fits_body_face": false,
+        "minimum_published_power_mode_w": 45.0,
+        "minimum_published_mode_over_slate_w": 17.0,
+        "source": "https://www.congatec.com/en/products/com-hpc/conga-hpccrx1/"
       }
     ],
     "decision": "The 128 GB floor is retained. X2 publishes controller capacity for it, but the reviewed ASUS X2 system has 48 GB on package, with three 16 GB DRAM packages observed in physical analysis. No reviewed public 128 GB X2 configuration or pocket phone integration is established. Obtain an orderable 128 GB package and supplier topology, power, software, and modem evidence before selection.",

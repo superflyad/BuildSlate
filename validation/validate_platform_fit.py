@@ -37,7 +37,7 @@ def main() -> int:
         report["status"] != "supplier_proof_required"
         or report["memory_floor_gb"] != 128
         or report["integrated_phone_matches"]
-        or len(report["candidates"]) != 6
+        or len(report["candidates"]) != 7
     ):
         raise ValueError("Current 128 GB phone platform gap is misstated")
     mobile = [item for item in report["candidates"] if item["integrated_phone_path"]]
@@ -61,6 +61,26 @@ def main() -> int:
         or not x2["physical_package_source"]
     ):
         raise ValueError("Observed ASUS X2 package evidence is absent")
+    congatec = next(
+        item
+        for item in report["candidates"]
+        if item["id"] == "congatec_conga_hpc_crx1_x199_128g"
+    )
+    if (
+        not congatec["public_128gb_configuration"]
+        or congatec["module_outline_fits_body_face"] is not False
+        or congatec["minimum_published_mode_over_slate_w"] != 17
+        or congatec["combined_public_fit"]
+    ):
+        raise ValueError("Cataloged 128 GB module was credited with Slate fit")
+    thor = next(
+        item for item in report["candidates"] if item["id"] == "nvidia_jetson_agx_thor"
+    )
+    if (
+        thor["module_outline_fits_body_face"] is not True
+        or thor["minimum_published_mode_over_slate_w"] != 12
+    ):
+        raise ValueError("Jetson module outline or power screen changed")
     committed = json.loads(
         (ROOT / "viewer/public/hardware-readiness.json").read_text(encoding="utf-8")
     )
@@ -70,6 +90,23 @@ def main() -> int:
     candidates = yaml.safe_load((ROOT / CANDIDATES).read_text(encoding="utf-8"))
     with TemporaryDirectory() as temporary:
         root = Path(temporary)
+        altered = copy.deepcopy(candidates)
+        altered["candidates"]["congatec_conga_hpc_crx1_x199_128g"][
+            "module_outline_mm"
+        ] = [160, 0]
+        _write(root, profile, altered)
+        _must_fail(root)
+        widened = copy.deepcopy(profile)
+        widened["geometry"]["width_mm"] = 120
+        _write(root, widened, candidates)
+        widened_screen = audit(root)
+        widened_module = next(
+            item
+            for item in widened_screen["candidates"]
+            if item["id"] == "congatec_conga_hpc_crx1_x199_128g"
+        )
+        if widened_module["module_outline_fits_body_face"] is not True:
+            raise ValueError("Module outline did not respond to changed body geometry")
         altered = copy.deepcopy(candidates)
         altered["candidates"]["qualcomm_snapdragon_x2_elite_extreme"][
             "physical_package_observation"

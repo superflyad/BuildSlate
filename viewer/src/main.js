@@ -415,6 +415,13 @@ function renderHardware() {
         (item) =>
           `<div class="gate-item"><strong>${esc(item.id.replaceAll("_", " "))}</strong><span>${item.public_maximum_memory_gb} GB public maximum · ${item.public_configured_memory_gb === null ? "no public configuration listed" : `${item.public_configured_memory_gb} GB public configuration`} · ${item.observed_oem_memory_gb === null ? "no reviewed OEM package" : `<a href="${esc(item.observed_oem_source)}" target="_blank" rel="noopener noreferrer">${esc(item.observed_oem_memory_gb)} GB OEM memory on package</a> · <a href="${esc(item.physical_package_source)}" target="_blank" rel="noopener noreferrer">physical package analysis</a>`} · ${item.integrated_phone_path ? "integrated phone path" : "no integrated phone path"} · <a href="${esc(item.source)}" target="_blank" rel="noopener noreferrer">source</a></span></div>`,
       )
+      .join("") +
+    platform.candidates
+      .filter((item) => item.module_outline_mm !== null)
+      .map(
+        (item) =>
+          `<div class="gate-item"><strong>${esc(item.id.replaceAll("_", " "))} physical screen</strong><span>${esc(item.module_outline_mm.join(" × "))} mm module face · ${item.module_outline_fits_body_face ? "fits the body face alone" : "exceeds the body face"} (${esc(platform.slate_body_face_mm.join(" × "))} mm) · ${esc(item.minimum_published_power_mode_w)} W minimum published mode, ${esc(item.minimum_published_mode_over_slate_w)} W relative to Slate's ${esc(platform.slate_sustained_screen_w)} W sustained screen. This is a published operating mode, not a measured power draw. <a href="${esc(item.source)}" target="_blank" rel="noopener noreferrer">Manufacturer specification</a></span></div>`,
+      )
       .join("");
   document.querySelector("#hardware-parts").innerHTML =
     `<div class="gate-item"><strong>Released part set</strong><span>${esc(report.part_selection.status)}${report.part_selection.errors.length ? ` · ${esc(report.part_selection.errors.join("; "))}` : ""}</span></div>` +

@@ -140,11 +140,13 @@ candidates:
 
   nvidia_jetson_agx_thor:
     platform_class: robotics_edge_developer_platform
+    representative_part: Jetson T5000
     modem_integration: none
     memory_gb: 128
     public_configured_memory_gb: 128
     power_range_w: [40, 130]
     developer_kit_dimensions_mm: [243.19, 112.40, 56.88]
+    module_outline_mm: [100, 87]
     ai_compute_fp4_tflops: 2070
     strengths:
       - Available developer platform and software stack for model/workload characterization at 128 GB.
@@ -155,6 +157,29 @@ candidates:
     source:
       url: https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-thor/
       source_type: manufacturer_module_and_developer_kit_specification
+      accessed: 2026-11-24
+
+  congatec_conga_hpc_crx1_x199_128g:
+    platform_class: high_power_embedded_module
+    part_numbers: ['053700']
+    modem_integration: none
+    memory_type: LPDDR5X
+    maximum_memory_gb: 128
+    public_configured_memory_gb: 128
+    module_outline_mm: [160, 120]
+    power_range_w: [45, 120]
+    public_sustained_power_w: null
+    strengths:
+      - Manufacturer lists an exact 128 GB module part number with onboard LPDDR5X.
+      - Published eDP, USB, and PCIe interfaces support external bench architecture work.
+    blockers:
+      - The 120 mm short side exceeds Slate's 95 mm body width before enclosure clearance.
+      - Minimum published 45 W TDP exceeds Slate's 28 W sustained target before other loads.
+      - No integrated modem or Slate-specific battery, thermal, or software design is established.
+    disposition: external_bench_reference_rejected_for_slate_envelope
+    source:
+      url: https://www.congatec.com/en/products/com-hpc/conga-hpccrx1/
+      source_type: manufacturer_module_catalog
       accessed: 2026-11-24
 
 memory_supplier_context:
@@ -208,7 +233,7 @@ screening_conclusion:
   decision: Retain the 128 GB floor. Obtain a qualified 128 GB X2 memory configuration and pocket integration package, or identify a different platform with equivalent evidence.
   preferred_product_rfq: qualcomm_snapdragon_x2_elite_extreme
   preferred_memory_tier_for_rfq_gb: 128
-  external_bench_options: [amd_ryzen_ai_max_plus_395, nvidia_jetson_agx_thor]
+  external_bench_options: [amd_ryzen_ai_max_plus_395, nvidia_jetson_agx_thor, congatec_conga_hpc_crx1_x199_128g]
   unsupported_by_reviewed_candidates:
     - 512 GB pocket memory topology
     - 100 TOPS sustained NPU claim

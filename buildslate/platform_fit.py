@@ -32,6 +32,14 @@ def audit(root: Path) -> dict:
         "fallback_tiers_gb"
     ][-1]
     configured = profile["integration_configuration"]["memory_gb"]
+    face = sorted(
+        (
+            float(profile["geometry"]["length_mm"]),
+            float(profile["geometry"]["width_mm"]),
+        ),
+        reverse=True,
+    )
+    sustained_target = float(profile["compute"]["sustained_power_w"])
     if not isinstance(floor, int) or floor <= 0 or configured != floor:
         raise ValueError("Operational memory differs from the approved fallback floor")
     candidates = source.get("candidates")
@@ -52,6 +60,41 @@ def audit(root: Path) -> dict:
         ):
             raise ValueError(f"{identifier}: manufacturer source is missing")
         maximum = _capacity(candidate)
+        outline = candidate.get("module_outline_mm")
+        outline_fit = None
+        if outline is not None:
+            if (
+                not isinstance(outline, list)
+                or len(outline) != 2
+                or any(
+                    not isinstance(value, (int, float))
+                    or isinstance(value, bool)
+                    or value <= 0
+                    for value in outline
+                )
+            ):
+                raise ValueError(f"{identifier}: invalid module outline")
+            module_sides = sorted((float(value) for value in outline), reverse=True)
+            outline_fit = all(
+                module <= available
+                for module, available in zip(module_sides, face, strict=True)
+            )
+        power_range = candidate.get("power_range_w", candidate.get("tdp_range_w"))
+        minimum_power_mode = None
+        if power_range is not None:
+            if (
+                not isinstance(power_range, list)
+                or len(power_range) != 2
+                or any(
+                    not isinstance(value, (int, float))
+                    or isinstance(value, bool)
+                    or value <= 0
+                    for value in power_range
+                )
+                or power_range[0] > power_range[1]
+            ):
+                raise ValueError(f"{identifier}: invalid published power range")
+            minimum_power_mode = float(power_range[0])
         capacity_permits_floor = maximum >= floor
         phone_integration = mode == "integrated"
         configured = candidate.get(
@@ -135,6 +178,14 @@ def audit(root: Path) -> dict:
                     value is not None and value >= floor
                     for value in (configured, observed_memory)
                 ),
+                "module_outline_mm": outline,
+                "module_outline_fits_body_face": outline_fit,
+                "minimum_published_power_mode_w": minimum_power_mode,
+                "minimum_published_mode_over_slate_w": (
+                    round(minimum_power_mode - sustained_target, 2)
+                    if minimum_power_mode is not None
+                    else None
+                ),
                 "source": reference["url"],
             }
         )
@@ -142,6 +193,8 @@ def audit(root: Path) -> dict:
     return {
         "status": "public_candidate_found" if matches else "supplier_proof_required",
         "memory_floor_gb": floor,
+        "slate_body_face_mm": face,
+        "slate_sustained_screen_w": sustained_target,
         "integrated_phone_matches": matches,
         "candidates": rows,
         "decision": (

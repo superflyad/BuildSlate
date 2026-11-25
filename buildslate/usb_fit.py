@@ -6,7 +6,14 @@ import argparse
 import json
 from pathlib import Path
 
-from buildslate.cad import FRAME_PORT_APERTURE_WIDTH_MM, build_concept
+from buildslate.cad import (
+    FRAME_PORT_APERTURE_HEIGHT_MM,
+    FRAME_PORT_APERTURE_WIDTH_MM,
+    FRAME_PORT_APERTURE_Z_OFFSET_MM,
+    USB_CANDIDATE,
+    build_concept,
+    build_usb_connector_variant,
+)
 from buildslate.io import load_yaml
 
 CANDIDATE = Path("research/evidence/usb/connector-candidate.yaml")
@@ -141,12 +148,56 @@ def audit_data(model: dict, floorplan: dict, profile: dict, evidence: dict) -> d
 
 
 def audit(root: Path) -> dict:
-    return audit_data(
+    report = audit_data(
         build_concept(root),
         load_yaml(root / FLOORPLAN),
         load_yaml(root / PROFILE),
         load_yaml(root / CANDIDATE),
     )
+    variant = build_usb_connector_variant(root)
+    parts = {part["id"]: part for part in variant["parts"]}
+    port = parts["usb_c_port_concept"]["box_mm"]
+    board = parts["main_pcb_placeholder"]["box_mm"]
+    frame = parts["frame_bottom"]["box_mm"]
+    battery = parts["battery_pack_shell_concept"]["box_mm"]
+    candidate = load_yaml(root / USB_CANDIDATE)["candidate"]
+    aperture_bottom = frame[2] + FRAME_PORT_APERTURE_Z_OFFSET_MM
+    aperture_top = aperture_bottom + FRAME_PORT_APERTURE_HEIGHT_MM
+    candidate_carrier = [
+        port[0],
+        port[1] + port[4],
+        board[2],
+        port[3],
+        _axis_gap(port, board, 1),
+        board[5],
+    ]
+    report["gct_candidate_outline"] = {
+        "status": "envelope_conflict_unqualified",
+        "mpn": candidate["mpn"],
+        "interface": candidate["interface"],
+        "drawing_revision": candidate["drawing_revision"],
+        "drawing_sha256": candidate["sources"]["distributor_drawing_sha256"],
+        "box_mm": port,
+        "frame_aperture_width_mm": FRAME_PORT_APERTURE_WIDTH_MM,
+        "frame_aperture_height_mm": FRAME_PORT_APERTURE_HEIGHT_MM,
+        "frame_aperture_vertical_overrun_mm": [
+            round(max(0.0, aperture_bottom - port[2]), 3),
+            round(max(0.0, port[2] + port[5] - aperture_top), 3),
+        ],
+        "board_gap_y_mm": round(_axis_gap(port, board, 1), 3),
+        "board_overlap_x_mm": round(_box_overlap(port, board)[0], 3),
+        "full_width_carrier_battery_envelope_overlap_mm": _box_overlap(
+            candidate_carrier, battery
+        ),
+        "drawing_mating_cycles_used": candidate["conservative_mating_cycles"],
+        "product_page_mating_cycles": candidate["current_page_mating_cycles"],
+        "rated_voltage_v": candidate["voltage_rating_v"],
+        "rated_current_a": candidate["current_rating_a"],
+        "source": candidate["sources"]["product_page"],
+        "drawing_source": candidate["sources"]["manufacturer_drawing"],
+        "caveat": "Centered rectangular drawing envelope only. The mounting span includes stakes and can overstate frame interference. The 0.8 mm connector offset does not qualify the 0.8 mm board. USB 3.2 Gen 2 is not USB4. No footprint, supplier STEP, PD design, or physical fit is released.",
+    }
+    return report
 
 
 def main() -> int:

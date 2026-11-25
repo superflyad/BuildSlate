@@ -31,7 +31,14 @@ PHONE_STEP = Path("cad/slate-pocket-v1r/concept-cad/phone-fit-conflict.step")
 PHONE_MODEL = Path("viewer/public/phone-fit-conflict.json")
 PHONE_GLTF = Path("viewer/public/phone-fit-conflict.gltf")
 PHONE_PROOF = Path("viewer/public/phone-fit-conflict-proof.json")
+USB_STEP = Path("cad/slate-pocket-v1r/concept-cad/usb4525-outline.step")
+USB_MODEL = Path("viewer/public/usb4525-outline.json")
+USB_GLTF = Path("viewer/public/usb4525-outline.gltf")
+USB_PROOF = Path("viewer/public/usb4525-outline-proof.json")
+USB_CANDIDATE = Path("research/evidence/usb/gct-usb4525-outline.yaml")
 FRAME_PORT_APERTURE_WIDTH_MM = 12.0
+FRAME_PORT_APERTURE_HEIGHT_MM = 3.0
+FRAME_PORT_APERTURE_Z_OFFSET_MM = 2.25
 
 
 def build_concept(repo_root: Path) -> dict:
@@ -166,6 +173,59 @@ def build_concept(repo_root: Path) -> dict:
         "component_coverage": coverage,
         "caveat": "Editable concept CAD. Assumed placements and packages are not supplier CAD or verified fit.",
     }
+
+
+def build_usb_connector_variant(repo_root: Path) -> dict:
+    """Place a drawing-derived connector envelope in the existing frame opening."""
+    model = build_concept(repo_root)
+    evidence = load_yaml(repo_root / USB_CANDIDATE)
+    candidate = evidence["candidate"]
+    if (
+        evidence["metadata"]["status"] != "public_candidate_not_selected"
+        or candidate["mpn"] != "USB4525-03-A"
+    ):
+        raise ValueError("USB connector study no longer matches the public candidate")
+    frame = next(part for part in model["parts"] if part["id"] == "frame_bottom")
+    port = next(part for part in model["parts"] if part["id"] == "usb_c_port_concept")
+    frame_box = frame["box_mm"]
+    old_port_box = port["box_mm"]
+    center_x = frame_box[0] + frame_box[3] / 2
+    center_z = (
+        frame_box[2]
+        + FRAME_PORT_APERTURE_Z_OFFSET_MM
+        + FRAME_PORT_APERTURE_HEIGHT_MM / 2
+    )
+    span = float(candidate["overall_mounting_span_mm"])
+    depth = float(candidate["body_depth_mm"])
+    profile = float(candidate["maximum_profile_mm"])
+    port["box_mm"] = [
+        round(center_x - span / 2, 3),
+        old_port_box[1],
+        round(center_z - profile / 2, 3),
+        span,
+        depth,
+        profile,
+    ]
+    port["label"] = f"GCT {candidate['mpn']} mounting envelope"
+    port["source"] = f"{USB_CANDIDATE.as_posix()}#candidate"
+    port["geometry_source"] = f"{USB_CANDIDATE.as_posix()}#candidate"
+    port["geometry_evidence_class"] = "design_assumption"
+    port["notes"] = (
+        "Drawing-derived overall mounting span, body depth and maximum profile "
+        "centered in the assumed frame aperture. Rectangular volume is a "
+        "conservative envelope, not the supplier STEP, footprint, or released placement."
+    )
+    model["status"] = "usb_connector_outline_conflict_study"
+    model["description"] = (
+        "GCT USB4525-03-A public drawing envelope centered in the current chassis "
+        "opening, with all other baseline concept parts unchanged."
+    )
+    model["caveat"] = (
+        "Editable envelope study only. The mounting span includes shell stakes, so "
+        "the box can overstate actual material overlap. Supplier STEP, full footprint, "
+        "board attachment, enclosure seal, and physical clearance remain unverified."
+    )
+    return model
 
 
 def build_memory_variant(repo_root: Path) -> dict:
@@ -406,8 +466,19 @@ def _shape(cq, part: dict):
     elif kind == "ported_frame":
         void = (
             cq.Workplane("XY")
-            .box(FRAME_PORT_APERTURE_WIDTH_MM, width + 2, 3, centered=False)
-            .translate((length / 2 - FRAME_PORT_APERTURE_WIDTH_MM / 2, -1, 2.25))
+            .box(
+                FRAME_PORT_APERTURE_WIDTH_MM,
+                width + 2,
+                FRAME_PORT_APERTURE_HEIGHT_MM,
+                centered=False,
+            )
+            .translate(
+                (
+                    length / 2 - FRAME_PORT_APERTURE_WIDTH_MM / 2,
+                    -1,
+                    FRAME_PORT_APERTURE_Z_OFFSET_MM,
+                )
+            )
         )
         body = body.cut(void)
     elif kind not in {"box", "rounded_box"}:
@@ -588,6 +659,15 @@ def _export(
         proof["memory_study"] = audit_memory(root)["eight_package_study"]
     if model["status"] == "phone_integration_collision_study":
         proof["phone_extension"] = audit_cellular(root)["reverse_board_extension"]
+    if model["status"] == "usb_connector_outline_conflict_study":
+        candidate = load_yaml(root / USB_CANDIDATE)["candidate"]
+        proof["usb_candidate"] = {
+            "mpn": candidate["mpn"],
+            "drawing_revision": candidate["drawing_revision"],
+            "source": candidate["sources"]["manufacturer_drawing"],
+            "drawing_sha256": candidate["sources"]["distributor_drawing_sha256"],
+            "caveat": "Bounding envelope, not supplier STEP or released footprint.",
+        }
     (root / output).write_text(
         json.dumps(model, indent=2) + "\n", encoding="utf-8", newline="\n"
     )
@@ -613,6 +693,8 @@ def generate(repo_root: Path = DEFAULT_REPO_ROOT) -> tuple[int, Path]:
     _export(cq, root, variant, MEMORY_STEP, MEMORY_MODEL, MEMORY_GLTF, MEMORY_PROOF)
     phone = build_phone_conflict_variant(root)
     _export(cq, root, phone, PHONE_STEP, PHONE_MODEL, PHONE_GLTF, PHONE_PROOF)
+    usb = build_usb_connector_variant(root)
+    _export(cq, root, usb, USB_STEP, USB_MODEL, USB_GLTF, USB_PROOF)
     return len(model["parts"]), root / STEP
 
 
@@ -624,6 +706,7 @@ def main() -> int:
     print(f"Exported {count} baseline solids to {path}")
     print(f"Exported eight-package reference STEP to {args.repo_root / MEMORY_STEP}")
     print(f"Exported phone collision study STEP to {args.repo_root / PHONE_STEP}")
+    print(f"Exported USB connector outline STEP to {args.repo_root / USB_STEP}")
     return 0
 
 

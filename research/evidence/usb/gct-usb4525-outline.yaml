@@ -1,0 +1,29 @@
+metadata:
+  status: public_candidate_not_selected
+  reviewed_on: 2026-11-24
+  scope: Manufacturer drawing outline and catalog screen; no supplier STEP or released footprint.
+
+candidate:
+  manufacturer: GCT
+  mpn: USB4525-03-A
+  interface: USB_3_2_Gen_2_Type_C
+  mount: horizontal_mid_mount
+  contacts: 24
+  drawing_revision: A1
+  drawing_date: "2023-05-30"
+  overall_mounting_span_mm: 11.04
+  housing_span_mm: 8.94
+  body_depth_mm: 7.90
+  maximum_profile_mm: 3.16
+  connector_offset_mm: 0.80
+  voltage_rating_v: 48
+  current_rating_a: 5
+  drawing_mating_cycles: 10000
+  current_page_mating_cycles: 20000
+  conservative_mating_cycles: 10000
+  sources:
+    product_page: https://gct.co/connector/usb4525
+    manufacturer_drawing: https://gct.co/download?name=USB4525.pdf&type=PDFDrawing
+    distributor_hosted_manufacturer_drawing: https://atta.szlcsc.com/upload/public/pdf/source/231023/usb4525-a53d0297a38ec5921d723376f6356512.pdf
+    distributor_drawing_sha256: 9a474964ef895dba1d1a1850c23e65ca8074687bad685475e1dc8873bb1867e9
+  caveat: The manufacturer drawing is referenced, not redistributed. Its 11.04 mm overall mounting span includes shell stakes; a rectangular CAD envelope overstates occupied volume. The public page and drawing disagree on mating cycles, so the lower drawing value is used pending reconciliation. The 0.80 mm offset is not evidence that a 0.8 mm Slate PCB footprint is qualified. USB 3.2 Gen 2 is not USB4.

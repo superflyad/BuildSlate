@@ -23,9 +23,15 @@ from buildslate.cad import (  # noqa: E402
     PHONE_PROOF,
     PHONE_STEP,
     STEP,
+    USB_CANDIDATE,
+    USB_GLTF,
+    USB_MODEL,
+    USB_PROOF,
+    USB_STEP,
     build_concept,
     build_memory_variant,
     build_phone_conflict_variant,
+    build_usb_connector_variant,
 )
 from buildslate.cad_proof import PROOF  # noqa: E402
 from buildslate.cellular_fit import audit as audit_cellular  # noqa: E402
@@ -218,10 +224,37 @@ def main() -> int:
         or phone_proof["summary"]["interferences"] != 4
     ):
         raise ValueError("phone collision CAD does not prove the rejected layout")
+    usb = build_usb_connector_variant(ROOT)
+    usb_proof = _check_model(usb, USB_MODEL, USB_GLTF, USB_STEP, USB_PROOF)
+    candidate = load_yaml(ROOT / USB_CANDIDATE)["candidate"]
+    usb_port = next(part for part in usb["parts"] if part["id"] == "usb_c_port_concept")
+    usb_interferences = [
+        item for item in usb_proof["intersections"] if item["kind"] == "interference"
+    ]
+    usb_rf_conflicts = [
+        item
+        for item in usb_proof["keepout_conflicts"]
+        if item["part_id"] == "usb_c_port_concept"
+        and item["keepout_id"] == "bottom_rf_edge"
+    ]
+    if (
+        len(usb["parts"]) != len(baseline["parts"])
+        or usb_port["box_mm"] != [84.48, 0.0, 2.72, 11.04, 7.9, 3.16]
+        or usb_proof["usb_candidate"]["mpn"] != candidate["mpn"]
+        or usb_proof["usb_candidate"]["drawing_sha256"]
+        != candidate["sources"]["distributor_drawing_sha256"]
+        or len(usb_interferences) != 1
+        or frozenset((usb_interferences[0]["first"], usb_interferences[0]["second"]))
+        != frozenset(("frame_bottom", "usb_c_port_concept"))
+        or len(usb_rf_conflicts) != 1
+        or usb_rf_conflicts[0]["overlap_area_mm2"] != 54.096
+    ):
+        raise ValueError("USB candidate envelope CAD proof drifted")
     print(
         f"PASS: {primary_proof['summary']['parts_checked']} baseline and "
         f"{reference_proof['summary']['parts_checked']} memory and "
-        f"{phone_proof['summary']['parts_checked']} phone study CAD solids"
+        f"{phone_proof['summary']['parts_checked']} phone and "
+        f"{usb_proof['summary']['parts_checked']} USB study CAD solids"
     )
     return 0
 

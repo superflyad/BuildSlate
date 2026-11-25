@@ -17,6 +17,7 @@ for (const model of [
   "concept",
   "memory-8x16",
   "phone-fit-conflict",
+  "usb4525-outline",
 ]) {
   const assembly = JSON.parse(
     readFileSync(resolve(root, `public/${model}.json`), "utf8"),
@@ -68,6 +69,7 @@ for (const [modelName, proofName] of [
   ["concept", "proof"],
   ["memory-8x16", "memory-8x16-proof"],
   ["phone-fit-conflict", "phone-fit-conflict-proof"],
+  ["usb4525-outline", "usb4525-outline-proof"],
 ]) {
   const proof = JSON.parse(
     readFileSync(resolve(root, `public/${proofName}.json`), "utf8"),
@@ -91,6 +93,18 @@ for (const [modelName, proofName] of [
   if (modelName === "phone-fit-conflict") {
     assert.equal(proof.summary.interferences, 4);
     assert.equal(proof.phone_extension.status, "mechanical_relayout_required");
+  }
+  if (modelName === "usb4525-outline") {
+    assert.equal(proof.summary.interferences, 1);
+    assert.equal(proof.usb_candidate.mpn, "USB4525-03-A");
+    assert.ok(
+      proof.intersections.some(
+        (item) =>
+          item.kind === "interference" &&
+          item.first === "frame_bottom" &&
+          item.second === "usb_c_port_concept",
+      ),
+    );
   }
   console.log(`PASS: ${modelName} has ${proof.parts.length} CAD proof records`);
 }

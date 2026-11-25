@@ -1,0 +1,1955 @@
+{
+  "schema_version": 1,
+  "device": "slate-pocket-v1r",
+  "model_sha256": "26bd6e0a5b304670773f7d89c4828756e3645bd391513b6106022281badad07f",
+  "status": "review_required",
+  "method": "CadQuery BREP validity, exact Boolean intersections, nominal distances and camera pupil prisms, STEP round-trip, glTF bounds, anchored sources, planform keepouts, and local stack sums.",
+  "thresholds": {
+    "declared_bounds_tolerance_mm": 0.01,
+    "mesh_bounds_max_tolerance_mm": 0.25,
+    "interference_volume_mm3": 0.01,
+    "nominal_gap_screen_mm": 0.5,
+    "contact_tolerance_mm": 0.005,
+    "optical_prism_overlap_mm3": 0.01
+  },
+  "summary": {
+    "parts_checked": 41,
+    "roles_covered": 22,
+    "roles_checked": 22,
+    "integrity_passed": true,
+    "step_roundtrip_passed": true,
+    "interferences": 1,
+    "nominal_contacts": 40,
+    "small_nominal_gaps": 20,
+    "optical_model_conflicts": 0,
+    "reservation_conflicts": 2,
+    "keepout_conflicts": 13,
+    "stack_failures": 1,
+    "unverified_parts": 41
+  },
+  "parts": [
+    {
+      "id": "rear_cover",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 9357.554,
+      "surface_area_mm2": 34344.415,
+      "faces": 11,
+      "edges": 27,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "frame_left",
+        "frame_right",
+        "frame_top",
+        "frame_bottom"
+      ],
+      "optical_path_ids": [
+        "rear_camera_placeholder"
+      ],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "frame_left",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 2379.75,
+      "surface_area_mm2": 2206.6,
+      "faces": 6,
+      "edges": 12,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "rear_cover",
+        "frame_top",
+        "frame_bottom",
+        "display_stack",
+        "cover_glass",
+        "touch_digitizer_concept",
+        "perimeter_gasket_concept"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "frame_right",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 2379.75,
+      "surface_area_mm2": 2206.6,
+      "faces": 6,
+      "edges": 12,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "rear_cover",
+        "frame_top",
+        "frame_bottom",
+        "display_stack",
+        "cover_glass",
+        "touch_digitizer_concept",
+        "perimeter_gasket_concept"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "frame_top",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 4358.7,
+      "surface_area_mm2": 3999.9,
+      "faces": 6,
+      "edges": 12,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "rear_cover",
+        "frame_left",
+        "frame_right",
+        "display_stack",
+        "cover_glass",
+        "touch_digitizer_concept",
+        "perimeter_gasket_concept"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "frame_bottom",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 4250.7,
+      "surface_area_mm2": 4017.9,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [
+        "usb_c_port_concept"
+      ],
+      "nominal_gap_ids": [
+        "rear_cover",
+        "frame_left",
+        "frame_right",
+        "display_stack",
+        "cover_glass",
+        "touch_digitizer_concept",
+        "perimeter_gasket_concept"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "display_stack",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 10816.663,
+      "surface_area_mm2": 31284.182,
+      "faces": 11,
+      "edges": 27,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "frame_left",
+        "frame_right",
+        "frame_top",
+        "frame_bottom",
+        "cover_glass",
+        "touch_digitizer_concept"
+      ],
+      "optical_path_ids": [
+        "front_camera_concept"
+      ],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "cover_glass",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 9400.751,
+      "surface_area_mm2": 34484.216,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "frame_left",
+        "frame_right",
+        "frame_top",
+        "frame_bottom",
+        "display_stack",
+        "touch_digitizer_concept",
+        "perimeter_gasket_concept"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "battery_reference",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 29026.569,
+      "surface_area_mm2": 12249.385,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "battery_pack_shell_concept"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [
+        "wireless_charging_placeholder"
+      ],
+      "keepout_ids": [
+        "bottom_connector_zone"
+      ]
+    },
+    {
+      "id": "main_pcb_placeholder",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 3423.17,
+      "surface_area_mm2": 8787.448,
+      "faces": 14,
+      "edges": 36,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "compute_soc",
+        "memory_a_32gb",
+        "memory_b_32gb",
+        "memory_c_32gb",
+        "memory_d_32gb",
+        "storage_ufs_1tb_reference",
+        "platform_pmic",
+        "battery_charger",
+        "usb_pd_controller",
+        "wifi_bluetooth",
+        "security_controller"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "bottom_connector_zone"
+      ]
+    },
+    {
+      "id": "rear_camera_placeholder",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 1695.847,
+      "surface_area_mm2": 1370.731,
+      "faces": 10,
+      "edges": 18,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "front_camera_concept"
+      ],
+      "optical_path_ids": [
+        "rear_cover"
+      ],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "speaker_a_placeholder",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 641.585,
+      "surface_area_mm2": 670.493,
+      "faces": 25,
+      "edges": 60,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "haptics_concept"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "speaker_b_placeholder",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 641.585,
+      "surface_area_mm2": 670.493,
+      "faces": 25,
+      "edges": 60,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "battery_pack_shell_concept"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "top_rf_edge"
+      ]
+    },
+    {
+      "id": "wireless_charging_placeholder",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 1588.884,
+      "surface_area_mm2": 4276.595,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [
+        "battery_reference",
+        "battery_pack_shell_concept"
+      ],
+      "keepout_ids": []
+    },
+    {
+      "id": "thermal_spreader_placeholder",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 1342.627,
+      "surface_area_mm2": 6806.159,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "compute_soc",
+        "memory_a_32gb",
+        "memory_b_32gb",
+        "memory_c_32gb",
+        "memory_d_32gb",
+        "storage_ufs_1tb_reference",
+        "platform_pmic",
+        "battery_charger",
+        "usb_pd_controller",
+        "wifi_bluetooth",
+        "security_controller",
+        "graphite_spreader_concept",
+        "phase_change_material_concept"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "compute_soc",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 451.725,
+      "surface_area_mm2": 902.016,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder",
+        "graphite_spreader_concept"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "memory_a_32gb",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 130.989,
+      "surface_area_mm2": 331.456,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "memory_b_32gb",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 130.989,
+      "surface_area_mm2": 331.456,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "memory_c_32gb",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 130.989,
+      "surface_area_mm2": 331.456,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder",
+        "storage_ufs_1tb_reference"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "memory_d_32gb",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 130.989,
+      "surface_area_mm2": 331.456,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder",
+        "storage_ufs_1tb_reference"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "storage_ufs_1tb_reference",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 92.087,
+      "surface_area_mm2": 274.536,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder",
+        "memory_c_32gb",
+        "memory_d_32gb"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "platform_pmic",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 149.581,
+      "surface_area_mm2": 375.776,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "battery_charger",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 201.485,
+      "surface_area_mm2": 496.416,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "usb_pd_controller",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 75.213,
+      "surface_area_mm2": 198.496,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "wireless_charge_controller",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 75.213,
+      "surface_area_mm2": 198.496,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "wifi_bluetooth",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 130.989,
+      "surface_area_mm2": 331.456,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "security_controller",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 60.301,
+      "surface_area_mm2": 162.176,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "main_pcb_placeholder",
+        "thermal_spreader_placeholder"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "touch_digitizer_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 2317.856,
+      "surface_area_mm2": 30986.058,
+      "faces": 11,
+      "edges": 27,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "frame_left",
+        "frame_right",
+        "frame_top",
+        "frame_bottom",
+        "display_stack",
+        "cover_glass"
+      ],
+      "optical_path_ids": [
+        "front_camera_concept"
+      ],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "battery_pack_shell_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 2567.15,
+      "surface_area_mm2": 14852.5,
+      "faces": 11,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "battery_reference",
+        "speaker_b_placeholder"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [
+        "wireless_charging_placeholder"
+      ],
+      "keepout_ids": [
+        "camera_service_zone",
+        "bottom_connector_zone"
+      ]
+    },
+    {
+      "id": "graphite_spreader_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 402.788,
+      "surface_area_mm2": 6741.041,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "thermal_spreader_placeholder",
+        "compute_soc",
+        "phase_change_material_concept"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "phase_change_material_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 79.828,
+      "surface_area_mm2": 813.94,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "thermal_spreader_placeholder",
+        "graphite_spreader_concept"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "front_camera_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 116.263,
+      "surface_area_mm2": 193.053,
+      "faces": 10,
+      "edges": 18,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "rear_camera_placeholder"
+      ],
+      "optical_path_ids": [
+        "display_stack",
+        "touch_digitizer_concept"
+      ],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "top_rf_edge",
+        "camera_service_zone"
+      ]
+    },
+    {
+      "id": "antenna_top_left_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 83.657,
+      "surface_area_mm2": 450.396,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "antenna_top_right_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 83.657,
+      "surface_area_mm2": 450.396,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "antenna_bottom_left_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 83.657,
+      "surface_area_mm2": 450.396,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "antenna_bottom_right_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 83.657,
+      "surface_area_mm2": 450.396,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "microphone_bottom_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 8.482,
+      "surface_area_mm2": 25.447,
+      "faces": 3,
+      "edges": 3,
+      "interference_ids": [],
+      "nominal_gap_ids": [],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "bottom_rf_edge",
+        "bottom_connector_zone"
+      ]
+    },
+    {
+      "id": "microphone_top_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 8.482,
+      "surface_area_mm2": 25.447,
+      "faces": 3,
+      "edges": 3,
+      "interference_ids": [],
+      "nominal_gap_ids": [],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "top_rf_edge"
+      ]
+    },
+    {
+      "id": "haptics_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 97.854,
+      "surface_area_mm2": 143.991,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "speaker_a_placeholder"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    },
+    {
+      "id": "usb_c_port_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 161.917,
+      "surface_area_mm2": 423.636,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [
+        "frame_bottom"
+      ],
+      "nominal_gap_ids": [],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "bottom_rf_edge"
+      ]
+    },
+    {
+      "id": "sensors_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 31.785,
+      "surface_area_mm2": 86.712,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": [
+        "top_rf_edge",
+        "camera_service_zone"
+      ]
+    },
+    {
+      "id": "perimeter_gasket_concept",
+      "checks": {
+        "valid_solid": true,
+        "positive_volume": true,
+        "declared_bounds": true,
+        "mesh_matches_brep": true,
+        "source_anchor": true,
+        "geometry_anchor": true
+      },
+      "volume_mm3": 54.2,
+      "surface_area_mm2": 2222.2,
+      "faces": 10,
+      "edges": 24,
+      "interference_ids": [],
+      "nominal_gap_ids": [
+        "frame_left",
+        "frame_right",
+        "frame_top",
+        "frame_bottom",
+        "cover_glass"
+      ],
+      "optical_path_ids": [],
+      "reservation_conflict_ids": [],
+      "keepout_ids": []
+    }
+  ],
+  "roles": [
+    {
+      "id": "display_module",
+      "part_ids": [
+        "display_stack"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "aggregate",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "exact panel supplier stackup",
+        "display driver location and flex geometry",
+        "luminance-dependent power curve"
+      ]
+    },
+    {
+      "id": "cover_glass",
+      "part_ids": [
+        "cover_glass"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "glass chemistry and strengthening process",
+        "edge radius and exposed-area geometry",
+        "optical coating stack"
+      ]
+    },
+    {
+      "id": "touch_digitizer",
+      "part_ids": [
+        "display_stack",
+        "touch_digitizer_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "aggregate",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "in-cell versus separate digitizer approach",
+        "touch controller package location",
+        "ESD structure area"
+      ]
+    },
+    {
+      "id": "main_pcb",
+      "part_ids": [
+        "main_pcb_placeholder"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 1,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "board layer count and rigid-flex split",
+        "final component placement density",
+        "shielding can sizes and keep-outs"
+      ]
+    },
+    {
+      "id": "soc_package",
+      "part_ids": [
+        "compute_soc"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "actual SoC or NPU package dimensions",
+        "sustained power at target workloads",
+        "memory interface width and routing topology"
+      ]
+    },
+    {
+      "id": "memory_packages",
+      "part_ids": [
+        "memory_a_32gb",
+        "memory_b_32gb",
+        "memory_c_32gb",
+        "memory_d_32gb"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "memory technology and package count",
+        "achievable capacity in phone-class footprint",
+        "workload-dependent bandwidth power"
+      ]
+    },
+    {
+      "id": "storage_package",
+      "part_ids": [
+        "storage_ufs_1tb_reference"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "storage capacity and package size",
+        "sustained write workload",
+        "controller integration level"
+      ]
+    },
+    {
+      "id": "battery_pack",
+      "part_ids": [
+        "battery_reference",
+        "battery_pack_shell_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 3,
+      "source_representation": "aggregate",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "final cell chemistry and safety stack",
+        "pouch versus prismatic packaging",
+        "usable energy after protection and cycle-life limits"
+      ]
+    },
+    {
+      "id": "vapor_chamber",
+      "part_ids": [
+        "thermal_spreader_placeholder"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "aggregate",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "vapor chamber supplier limits at target thickness",
+        "wick structure and allowable bending",
+        "interface material thickness and compression"
+      ]
+    },
+    {
+      "id": "graphite_spreader",
+      "part_ids": [
+        "graphite_spreader_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "actual graphite grade and anisotropic conductivity",
+        "adhesive thickness",
+        "allowed cutouts near antennas"
+      ]
+    },
+    {
+      "id": "phase_change_material",
+      "part_ids": [
+        "phase_change_material_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "phase-change temperature",
+        "latent heat capacity in thin form",
+        "long-term reliability under cycling"
+      ]
+    },
+    {
+      "id": "rear_camera_module",
+      "part_ids": [
+        "rear_camera_placeholder"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "aggregate",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "sensor size and optics target",
+        "autofocus or stabilization choice",
+        "camera bump allowance"
+      ]
+    },
+    {
+      "id": "front_camera_module",
+      "part_ids": [
+        "front_camera_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 2,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "aperture strategy",
+        "image quality target",
+        "under-display feasibility"
+      ]
+    },
+    {
+      "id": "antenna_modules",
+      "part_ids": [
+        "antenna_top_left_concept",
+        "antenna_top_right_concept",
+        "antenna_bottom_left_concept",
+        "antenna_bottom_right_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "radio bands and MIMO count",
+        "chassis material and window strategy",
+        "certified RF performance after integration"
+      ]
+    },
+    {
+      "id": "wireless_charging_coil",
+      "part_ids": [
+        "wireless_charging_placeholder"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "deferred",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "charging standard and power target",
+        "coil diameter and ferrite thickness",
+        "rear-cover material and thermal coupling"
+      ]
+    },
+    {
+      "id": "speakers",
+      "part_ids": [
+        "speaker_a_placeholder",
+        "speaker_b_placeholder"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 1,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "acoustic loudness target",
+        "number of drivers",
+        "waterproofing target"
+      ]
+    },
+    {
+      "id": "microphones",
+      "part_ids": [
+        "microphone_bottom_concept",
+        "microphone_top_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 3,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "microphone count and array geometry",
+        "always-on wake-word power target",
+        "ingress protection design"
+      ]
+    },
+    {
+      "id": "haptics",
+      "part_ids": [
+        "haptics_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "actuator type and size",
+        "desired haptic strength",
+        "chassis coupling design"
+      ]
+    },
+    {
+      "id": "usb_c_port",
+      "part_ids": [
+        "usb_c_port_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 1,
+      "keepout_count": 1,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "USB speed and charging power target",
+        "waterproofing and port reinforcement strategy",
+        "connector supplier geometry"
+      ]
+    },
+    {
+      "id": "sensors",
+      "part_ids": [
+        "sensors_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 2,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "final sensor suite",
+        "always-on duty cycle",
+        "calibration and placement limits"
+      ]
+    },
+    {
+      "id": "tpm_or_security_chip",
+      "part_ids": [
+        "security_controller"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "box",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "discrete chip versus SoC-integrated root of trust",
+        "certification requirements",
+        "secure manufacturing flow"
+      ]
+    },
+    {
+      "id": "fasteners_adhesives_gaskets",
+      "part_ids": [
+        "perimeter_gasket_concept"
+      ],
+      "geometry_integrity_passed": true,
+      "interference_count": 0,
+      "keepout_count": 0,
+      "source_representation": "unplaced",
+      "evidence_status": "unverified",
+      "missing_evidence": [
+        "ingress protection target",
+        "assembly sequence and serviceability",
+        "tolerance stack and adhesive compression"
+      ]
+    }
+  ],
+  "intersections": [
+    {
+      "first": "frame_bottom",
+      "second": "usb_c_port_concept",
+      "volume_mm3": 5.299,
+      "kind": "interference"
+    },
+    {
+      "first": "battery_reference",
+      "second": "wireless_charging_placeholder",
+      "volume_mm3": 198.611,
+      "kind": "reservation_conflict"
+    },
+    {
+      "first": "wireless_charging_placeholder",
+      "second": "battery_pack_shell_concept",
+      "volume_mm3": 595.832,
+      "kind": "reservation_conflict"
+    }
+  ],
+  "nominal_gaps": [
+    {
+      "first": "rear_cover",
+      "second": "frame_left",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "rear_cover",
+      "second": "frame_right",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "rear_cover",
+      "second": "frame_top",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "rear_cover",
+      "second": "frame_bottom",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_left",
+      "second": "frame_top",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_left",
+      "second": "frame_bottom",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_left",
+      "second": "display_stack",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_left",
+      "second": "cover_glass",
+      "distance_mm": 0.05,
+      "kind": "small_gap"
+    },
+    {
+      "first": "frame_left",
+      "second": "touch_digitizer_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_left",
+      "second": "perimeter_gasket_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_right",
+      "second": "frame_top",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_right",
+      "second": "frame_bottom",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_right",
+      "second": "display_stack",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_right",
+      "second": "cover_glass",
+      "distance_mm": 0.05,
+      "kind": "small_gap"
+    },
+    {
+      "first": "frame_right",
+      "second": "touch_digitizer_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_right",
+      "second": "perimeter_gasket_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_top",
+      "second": "display_stack",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_top",
+      "second": "cover_glass",
+      "distance_mm": 0.05,
+      "kind": "small_gap"
+    },
+    {
+      "first": "frame_top",
+      "second": "touch_digitizer_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_top",
+      "second": "perimeter_gasket_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_bottom",
+      "second": "display_stack",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_bottom",
+      "second": "cover_glass",
+      "distance_mm": 0.05,
+      "kind": "small_gap"
+    },
+    {
+      "first": "frame_bottom",
+      "second": "touch_digitizer_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "frame_bottom",
+      "second": "perimeter_gasket_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "display_stack",
+      "second": "cover_glass",
+      "distance_mm": 0.15,
+      "kind": "small_gap"
+    },
+    {
+      "first": "display_stack",
+      "second": "touch_digitizer_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "cover_glass",
+      "second": "touch_digitizer_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "cover_glass",
+      "second": "perimeter_gasket_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "battery_reference",
+      "second": "battery_pack_shell_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "compute_soc",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "memory_a_32gb",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "memory_b_32gb",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "memory_c_32gb",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "memory_d_32gb",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "storage_ufs_1tb_reference",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "platform_pmic",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "battery_charger",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "usb_pd_controller",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "wifi_bluetooth",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "main_pcb_placeholder",
+      "second": "security_controller",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "rear_camera_placeholder",
+      "second": "front_camera_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "speaker_a_placeholder",
+      "second": "haptics_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "speaker_b_placeholder",
+      "second": "battery_pack_shell_concept",
+      "distance_mm": 0.5,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "compute_soc",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "memory_a_32gb",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "memory_b_32gb",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "memory_c_32gb",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "memory_d_32gb",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "storage_ufs_1tb_reference",
+      "distance_mm": 0.35,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "platform_pmic",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "battery_charger",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "usb_pd_controller",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "wifi_bluetooth",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "security_controller",
+      "distance_mm": 0.2,
+      "kind": "small_gap"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "graphite_spreader_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    },
+    {
+      "first": "thermal_spreader_placeholder",
+      "second": "phase_change_material_concept",
+      "distance_mm": 0.12,
+      "kind": "small_gap"
+    },
+    {
+      "first": "compute_soc",
+      "second": "graphite_spreader_concept",
+      "distance_mm": 0.4,
+      "kind": "small_gap"
+    },
+    {
+      "first": "memory_c_32gb",
+      "second": "storage_ufs_1tb_reference",
+      "distance_mm": 0.5,
+      "kind": "small_gap"
+    },
+    {
+      "first": "memory_d_32gb",
+      "second": "storage_ufs_1tb_reference",
+      "distance_mm": 0.5,
+      "kind": "small_gap"
+    },
+    {
+      "first": "graphite_spreader_concept",
+      "second": "phase_change_material_concept",
+      "distance_mm": 0.0,
+      "kind": "contact"
+    }
+  ],
+  "optical_paths": [
+    {
+      "camera_id": "rear_camera_placeholder",
+      "blocking_part_id": "rear_cover",
+      "face": "rear",
+      "axis_xy_mm": [
+        111.0,
+        76.5
+      ],
+      "lens_radius_mm": 4.16,
+      "aperture_radial_margin_mm": 0.84,
+      "solid_overlap_mm3": 0.0,
+      "pupil_prism_overlap_percent": 0.0,
+      "status": "nominal_prism_clear"
+    },
+    {
+      "camera_id": "front_camera_concept",
+      "blocking_part_id": "display_stack",
+      "face": "front",
+      "axis_xy_mm": [
+        88.0,
+        87.0
+      ],
+      "lens_radius_mm": 2.56,
+      "aperture_radial_margin_mm": 0.54,
+      "solid_overlap_mm3": 0.0,
+      "pupil_prism_overlap_percent": 0.0,
+      "status": "nominal_prism_clear"
+    },
+    {
+      "camera_id": "front_camera_concept",
+      "blocking_part_id": "touch_digitizer_concept",
+      "face": "front",
+      "axis_xy_mm": [
+        88.0,
+        87.0
+      ],
+      "lens_radius_mm": 2.56,
+      "aperture_radial_margin_mm": 0.54,
+      "solid_overlap_mm3": 0.0,
+      "pupil_prism_overlap_percent": 0.0,
+      "status": "nominal_prism_clear"
+    }
+  ],
+  "keepout_conflicts": [
+    {
+      "part_id": "battery_reference",
+      "keepout_id": "bottom_connector_zone",
+      "category": "connector",
+      "overlap_area_mm2": 14.0
+    },
+    {
+      "part_id": "main_pcb_placeholder",
+      "keepout_id": "bottom_connector_zone",
+      "category": "connector",
+      "overlap_area_mm2": 12.0
+    },
+    {
+      "part_id": "speaker_b_placeholder",
+      "keepout_id": "top_rf_edge",
+      "category": "rf",
+      "overlap_area_mm2": 88.0
+    },
+    {
+      "part_id": "battery_pack_shell_concept",
+      "keepout_id": "camera_service_zone",
+      "category": "service",
+      "overlap_area_mm2": 11.5
+    },
+    {
+      "part_id": "battery_pack_shell_concept",
+      "keepout_id": "bottom_connector_zone",
+      "category": "connector",
+      "overlap_area_mm2": 30.0
+    },
+    {
+      "part_id": "front_camera_concept",
+      "keepout_id": "top_rf_edge",
+      "category": "rf",
+      "overlap_area_mm2": 40.0
+    },
+    {
+      "part_id": "front_camera_concept",
+      "keepout_id": "camera_service_zone",
+      "category": "service",
+      "overlap_area_mm2": 4.0
+    },
+    {
+      "part_id": "microphone_bottom_concept",
+      "keepout_id": "bottom_rf_edge",
+      "category": "rf",
+      "overlap_area_mm2": 9.0
+    },
+    {
+      "part_id": "microphone_bottom_concept",
+      "keepout_id": "bottom_connector_zone",
+      "category": "connector",
+      "overlap_area_mm2": 9.0
+    },
+    {
+      "part_id": "microphone_top_concept",
+      "keepout_id": "top_rf_edge",
+      "category": "rf",
+      "overlap_area_mm2": 9.0
+    },
+    {
+      "part_id": "usb_c_port_concept",
+      "keepout_id": "bottom_rf_edge",
+      "category": "rf",
+      "overlap_area_mm2": 54.096
+    },
+    {
+      "part_id": "sensors_concept",
+      "keepout_id": "top_rf_edge",
+      "category": "rf",
+      "overlap_area_mm2": 16.0
+    },
+    {
+      "part_id": "sensors_concept",
+      "keepout_id": "camera_service_zone",
+      "category": "service",
+      "overlap_area_mm2": 8.0
+    }
+  ],
+  "zones": [
+    {
+      "id": "battery_without_wireless_charging",
+      "status": "warning",
+      "total_mm": 9.04,
+      "margin_mm": 0.46,
+      "basis": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml"
+    },
+    {
+      "id": "battery_with_wireless_charging",
+      "status": "fail",
+      "total_mm": 9.84,
+      "margin_mm": -0.34,
+      "basis": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml"
+    },
+    {
+      "id": "compute_hotspot",
+      "status": "pass",
+      "total_mm": 5.5,
+      "margin_mm": 4.0,
+      "basis": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml"
+    },
+    {
+      "id": "rear_camera",
+      "status": "pass",
+      "total_mm": 7.75,
+      "margin_mm": 1.75,
+      "basis": "cad/slate-pocket-v1r/envelope-model/zone-stackups.yaml"
+    }
+  ],
+  "caveat": "Camera pupil prisms screen nominal solid geometry, not optical transmission. Contacts and small gaps are not tolerance clearances. No fit, performance, or release approval is implied.",
+  "usb_candidate": {
+    "mpn": "USB4525-03-A",
+    "drawing_revision": "A1",
+    "source": "https://gct.co/download?name=USB4525.pdf&type=PDFDrawing",
+    "drawing_sha256": "9a474964ef895dba1d1a1850c23e65ca8074687bad685475e1dc8873bb1867e9",
+    "caveat": "Bounding envelope, not supplier STEP or released footprint."
+  }
+}

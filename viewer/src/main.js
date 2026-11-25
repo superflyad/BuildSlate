@@ -263,11 +263,13 @@ function renderProof() {
     concept: "Baseline concept",
     memory8: "Eight-package reference",
     phonefit: "Rejected phone layout",
+    usbfit: "USB connector outline",
   };
   const proofFiles = {
     concept: "proof.json",
     memory8: "memory-8x16-proof.json",
     phonefit: "phone-fit-conflict-proof.json",
+    usbfit: "usb4525-outline-proof.json",
   };
   document.querySelector("#proof-method").textContent =
     `${proofTitles[proofModel]} · ${proof.method}`;
@@ -438,6 +440,7 @@ function renderHardware() {
     `<div class="gate-item"><strong>Battery sourcing</strong><span>${esc(report.battery_fit.supplier_path_finding)} The listed cell remains a geometry benchmark; no Slate pack is selected. <a href="${esc(report.battery_fit.supplier_path_source)}" target="_blank" rel="noopener noreferrer">Enovix filing</a></span></div>` +
     `<div class="gate-item"><strong>Battery charge evidence</strong><span>No published charge limit for this cell. The listed ${esc(report.battery_fit.public_discharge_category)} band is for continuous discharge. ${esc(report.battery_fit.missing_design_evidence.join("; "))}</span></div>` +
     `<div class="gate-item"><strong>USB port interconnect</strong><span>The assumed port and main board are ${esc(report.usb_fit.minimum_box_separation_mm)} mm apart. Their clear corridor at board height is only ${esc(report.usb_fit.current_clear_corridor_width_mm)} mm wide; a full-port-width carrier crosses the pack envelope by ${esc(report.usb_fit.full_width_carrier_battery_envelope_overlap_mm.join(" × "))} mm. Shifting the port to the board edge would miss the current frame aperture by ${esc(report.usb_fit.shifted_port_frame_aperture_overrun_mm)} mm. These are assumed envelopes, not a routed or mounted connector. ${esc(report.usb_fit.candidate_mpn)} is a public candidate for a ${esc(report.usb_fit.candidate_pcb_thickness_mm)} mm PCB. Its detailed specification limits operation to ${esc(report.usb_fit.maximum_operating_voltage_v)} V and the product page lists ${esc(report.usb_fit.maximum_connector_current_a)} A. The ${esc(report.usb_fit.wired_charge_target_w)} W headline reaches their arithmetic ceiling and is not approved. <a href="${esc(report.usb_fit.source)}" target="_blank" rel="noopener noreferrer">Product page</a> · <a href="${esc(report.usb_fit.rating_source)}" target="_blank" rel="noopener noreferrer">detailed specification</a></span></div>` +
+    `<div class="gate-item"><strong>Drawing-based USB outline</strong><span>The public ${esc(report.usb_fit.gct_candidate_outline.mpn)} drawing envelope leaves ${esc(report.usb_fit.gct_candidate_outline.board_gap_y_mm)} mm to the main board and ${esc(report.usb_fit.gct_candidate_outline.board_overlap_x_mm)} mm of shared width. Centering its ${esc(report.usb_fit.gct_candidate_outline.box_mm[5])} mm profile in the current frame opening overruns the aperture by ${esc(report.usb_fit.gct_candidate_outline.frame_aperture_vertical_overrun_mm.join(" / "))} mm below / above. The STEP is an editable bounding envelope; shell stakes make this a conservative collision screen, not a released connector model. <a href="?model=usbfit&tab=proof">Inspect the CAD study</a> · <a href="${esc(report.usb_fit.gct_candidate_outline.source)}" target="_blank" rel="noopener noreferrer">manufacturer listing</a> · <a href="${esc(report.usb_fit.gct_candidate_outline.drawing_source)}" target="_blank" rel="noopener noreferrer">manufacturer drawing</a></span></div>` +
     `<div class="gate-item"><strong>Display geometry conflict</strong><span>Target ${esc(report.display_fit.target_diagonal_in)} in ${esc(report.display_fit.target_aspect_ratio)} needs an active rectangle of ${esc(report.display_fit.target_active_mm.join(" × "))} mm. The body is ${esc(report.display_fit.device_face_mm.join(" × "))} mm and the CAD display reserve is ${esc(report.display_fit.cad_display_reserve_mm.join(" × "))} mm. The active short side exceeds the body by ${esc(report.display_fit.short_side_overrun_mm.device_face)} mm and the reserve by ${esc(report.display_fit.short_side_overrun_mm.cad_reserve)} mm. ${esc(report.display_fit.resolution_px.join(" × "))} pixels are ${esc(report.display_fit.resolution_aspect_ratio)}, not the declared ${esc(report.display_fit.target_aspect_ratio)}. Design release stays blocked. <a href="https://github.com/superflyad/BuildSlate/blob/main/docs/engineering/display_geometry_fit.md" target="_blank" rel="noopener noreferrer">Geometry proof</a></span></div>` +
     `<div class="gate-item"><strong>128 GB memory geometry</strong><span>${esc(report.memory_package_fit.planning_sites)} assumed 32 GB sites; exact public ${esc(report.memory_package_fit.public_reference_part)} is ${esc(report.memory_package_fit.public_reference_capacity_gb)} GB and ${esc(report.memory_package_fit.public_reference_package_mm.join(" × "))} mm. It needs ${esc(report.memory_package_fit.required_public_reference_packages)} packages for 128 GB; the current sites fit neither its outline nor height. These separate memory boxes do not represent the observed X2 48 GB memory-on-package configuration. <a href="${esc(report.memory_package_fit.source)}" target="_blank" rel="noopener noreferrer">Manufacturer part</a></span></div>` +
     `<div class="gate-item"><strong>Exact 32 GB package rejected</strong><span>${esc(obsolete32.part_number)} is a ${esc(obsolete32.package_mm.join(" × "))} mm, ${esc(obsolete32.public_part_status)} Micron part. Four reach 128 GB by capacity, but none fit the current 14 × 10 mm sites. Four independent x64 connections need ${esc(obsolete32.independent_bus_width_bits)} data bits against the X2 Extreme's ${esc(memoryBus.controller_bus_width_bits)}-bit bus. This is not a selected part. <a href="${esc(obsolete32.source)}" target="_blank" rel="noopener noreferrer">Manufacturer status</a></span></div>` +
@@ -941,7 +944,7 @@ function displayModel(model) {
   meshes.clear();
   baseZ.clear();
   state.model = model;
-  state.proofConflicts = model === "phonefit";
+  state.proofConflicts = model === "phonefit" || model === "usbfit";
   document.querySelector("#proof-toggle").checked = state.proofConflicts;
   state.proof = state.proofs[model === "assembly" ? "concept" : model];
   state.assembly = state.assets[model].data;
@@ -999,7 +1002,9 @@ function displayModel(model) {
         ? "Eight reference packages · stack and topology unresolved"
         : model === "phonefit"
           ? "Rejected modem layout · four measured solid collisions"
-          : "Traceable source planning envelopes";
+          : model === "usbfit"
+            ? "GCT drawing envelope · port and frame collision screen"
+            : "Traceable source planning envelopes";
   document.querySelector("#part-detail").className = "detail-placeholder";
   document.querySelector("#part-detail").innerHTML =
     '<div class="detail-icon">◇</div><h2>Select a component</h2><p>Inspect geometry, evidence, and its source.</p>';
@@ -1031,10 +1036,16 @@ try {
   );
   if (!phoneProofResponse.ok)
     throw new Error(`phone CAD proof: HTTP ${phoneProofResponse.status}`);
+  const usbProofResponse = await fetch(
+    `${import.meta.env.BASE_URL}usb4525-outline-proof.json`,
+  );
+  if (!usbProofResponse.ok)
+    throw new Error(`USB CAD proof: HTTP ${usbProofResponse.status}`);
   state.proofs = {
     concept: await proofResponse.json(),
     memory8: await memoryProofResponse.json(),
     phonefit: await phoneProofResponse.json(),
+    usbfit: await usbProofResponse.json(),
   };
   const hardwareResponse = await fetch(
     `${import.meta.env.BASE_URL}hardware-readiness.json`,
@@ -1048,6 +1059,7 @@ try {
       ["concept", "concept"],
       ["memory8", "memory-8x16"],
       ["phonefit", "phone-fit-conflict"],
+      ["usbfit", "usb4525-outline"],
       ["assembly", "assembly"],
     ].map(async ([key, name]) => {
       const response = await fetch(`${import.meta.env.BASE_URL}${name}.json`);
@@ -1068,7 +1080,9 @@ try {
   state.assembly = state.assets.concept.data;
   makeKeepouts();
   displayModel(
-    ["concept", "memory8", "phonefit", "assembly"].includes(requestedModel)
+    ["concept", "memory8", "phonefit", "usbfit", "assembly"].includes(
+      requestedModel,
+    )
       ? requestedModel
       : "concept",
   );

@@ -32,6 +32,18 @@ def main() -> int:
         or report["current_corridor_envelope_blockers"]
         or report["full_width_carrier_battery_envelope_overlap_mm"] != [7.0, 1.0, 0.8]
         or report["shifted_port_frame_aperture_overrun_mm"] != 8.0
+        or report["gct_candidate_outline"]["mpn"] != "USB4525-03-A"
+        or report["gct_candidate_outline"]["box_mm"]
+        != [84.48, 0.0, 2.72, 11.04, 7.9, 3.16]
+        or report["gct_candidate_outline"]["frame_aperture_vertical_overrun_mm"]
+        != [0.08, 0.08]
+        or report["gct_candidate_outline"]["board_gap_y_mm"] != 4.1
+        or report["gct_candidate_outline"]["board_overlap_x_mm"] != 3.52
+        or report["gct_candidate_outline"][
+            "full_width_carrier_battery_envelope_overlap_mm"
+        ]
+        != [6.52, 1.0, 0.8]
+        or report["gct_candidate_outline"]["drawing_mating_cycles_used"] != 10000
         or report["target_at_connector_rating_ceiling"] is not True
         or report["source_consistency"] != "pass"
     ):
@@ -79,7 +91,7 @@ def main() -> int:
     changed[1]["board"]["outline_mm"]["thickness"] = 1.0
     if audit_data(*changed)["source_consistency"] != "fail":
         raise ValueError("Wrong PCB thickness passed the connector screen")
-    print("PASS: USB concept gap and public connector ratings")
+    print("PASS: USB concept and drawing-based connector envelope screens")
     return 0
 
 

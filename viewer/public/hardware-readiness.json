@@ -368,7 +368,42 @@
     "source": "https://www.amphenol-cs.com/product/12402075e512a.html",
     "rating_source": "https://cdn.amphenol-cs.com/media/wysiwyg/files/documentation/ps-susb013.pdf",
     "drawing_source": "https://cdn.amphenol-cs.com/media/wysiwyg/files/drawing/c12402075.pdf",
-    "caveat": "The 4 mm clear corridor is only an AABB routing screen, not a connector footprint or manufacturable flex. A full-width carrier crosses the assumed battery pack envelope. Moving the port to the PCB edge misses the modeled frame aperture. Connector mounting, flex bend and traces, pack clearance, retention, enclosure seal, PD design, and physical testing remain unresolved. Published ratings do not authorize charging."
+    "caveat": "The 4 mm clear corridor is only an AABB routing screen, not a connector footprint or manufacturable flex. A full-width carrier crosses the assumed battery pack envelope. Moving the port to the PCB edge misses the modeled frame aperture. Connector mounting, flex bend and traces, pack clearance, retention, enclosure seal, PD design, and physical testing remain unresolved. Published ratings do not authorize charging.",
+    "gct_candidate_outline": {
+      "status": "envelope_conflict_unqualified",
+      "mpn": "USB4525-03-A",
+      "interface": "USB_3_2_Gen_2_Type_C",
+      "drawing_revision": "A1",
+      "drawing_sha256": "9a474964ef895dba1d1a1850c23e65ca8074687bad685475e1dc8873bb1867e9",
+      "box_mm": [
+        84.48,
+        0.0,
+        2.72,
+        11.04,
+        7.9,
+        3.16
+      ],
+      "frame_aperture_width_mm": 12.0,
+      "frame_aperture_height_mm": 3.0,
+      "frame_aperture_vertical_overrun_mm": [
+        0.08,
+        0.08
+      ],
+      "board_gap_y_mm": 4.1,
+      "board_overlap_x_mm": 3.52,
+      "full_width_carrier_battery_envelope_overlap_mm": [
+        6.52,
+        1.0,
+        0.8
+      ],
+      "drawing_mating_cycles_used": 10000,
+      "product_page_mating_cycles": 20000,
+      "rated_voltage_v": 48,
+      "rated_current_a": 5,
+      "source": "https://gct.co/connector/usb4525",
+      "drawing_source": "https://gct.co/download?name=USB4525.pdf&type=PDFDrawing",
+      "caveat": "Centered rectangular drawing envelope only. The mounting span includes stakes and can overstate frame interference. The 0.8 mm connector offset does not qualify the 0.8 mm board. USB 3.2 Gen 2 is not USB4. No footprint, supplier STEP, PD design, or physical fit is released."
+    }
   },
   "cellular_reference_fit": {
     "status": "outline_blocked",
